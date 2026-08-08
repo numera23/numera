@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Paradoks Achilles dan Kura-Kura — Numera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FAFAF8;
+    --bg-panel: #F0F4FC;
+    --ink: #14171F;
+    --ink-soft: #565C6B;
+    --ink-faint: #9198A6;
+    --blue: #2452F0;
+    --blue-deep: #1638A8;
+    --blue-soft: #E1E9FC;
+    --tortoise: #2F9E6B;
+    --tortoise-soft: #DFF3E8;
+    --achilles: #E85B33;
+    --line: #E4E4E0;
+    --radius: 18px;
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    padding: 0 20px 80px;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ---------- Typography scaffolding ---------- */
+
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 40px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue);
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--blue);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(30px, 8vw, 42px);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    margin: 18px 0 14px;
+  }
+
+  .lede {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(18px, 4.6vw, 21px);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0 0 34px;
+  }
+
+  article p {
+    font-size: 17px;
+    line-height: 1.72;
+    color: #24272F;
+    margin: 0 0 20px;
+  }
+
+  article p b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .accent {
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  .accent-t { color: var(--tortoise); font-weight: 600; }
+  .accent-a { color: var(--achilles); font-weight: 600; }
+
+  h2.section {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(22px, 5.4vw, 27px);
+    line-height: 1.3;
+    margin: 46px 0 16px;
+  }
+
+  .divider {
+    width: 36px;
+    height: 3px;
+    background: var(--blue);
+    border-radius: 2px;
+    margin: 44px 0 0;
+  }
+
+  /* ---------- Pull quote / core idea box ---------- */
+
+  .pull {
+    background: var(--blue-soft);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+    margin: 30px 0;
+  }
+
+  .pull p {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(19px, 4.8vw, 22px);
+    line-height: 1.5;
+    color: var(--blue-deep);
+    margin: 0;
+  }
+
+  /* ---------- Interactive panels (shared) ---------- */
+
+  .panel {
+    background: var(--bg-panel);
+    border-radius: var(--radius);
+    padding: 22px 18px 24px;
+    margin: 28px 0 32px;
+    border: 1px solid #E6EBF7;
+  }
+
+  .panel-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+  }
+
+  .btn {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 15px;
+    color: #fff;
+    background: var(--blue);
+    padding: 12px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+  .btn.ghost {
+    background: transparent;
+    color: var(--blue);
+    border: 1.5px solid var(--blue-soft);
+    padding: 11px 18px;
+  }
+
+  /* ---------- Race track (interactive 1) ---------- */
+
+  .track-wrap { position: relative; }
+
+  .track {
+    position: relative;
+    height: 64px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #E6EBF7;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .meet-marker {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: repeating-linear-gradient(180deg, var(--ink-faint) 0 6px, transparent 6px 12px);
+    transition: left 0.2s ease;
+    z-index: 1;
+  }
+
+  .runner {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    font-size: 24px;
+    line-height: 1;
+    transition: left 0.05s linear;
+    will-change: left;
+  }
+
+  #achillesEl { top: 34%; }
+  #tortoiseEl { top: 72%; }
+
+  .track-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin: 4px 2px 16px;
+  }
+
+  .readout {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .stat {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px 12px 10px;
+    border: 1px solid #E6EBF7;
+  }
+
+  .stat .k {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+
+  .stat .v {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .stat.a .v { color: var(--achilles); }
+  .stat.t .v { color: var(--tortoise); }
+  .stat.time .v { color: var(--blue); }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .result-msg {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    min-height: 20px;
+  }
+  .result-msg b { color: var(--blue-deep); }
+
+  /* ---------- Step visualizer (interactive 2) ---------- */
+
+  .zeno-stage {
+    position: relative;
+    margin-bottom: 14px;
+  }
+
+  .zeno-track {
+    position: relative;
+    height: 92px;
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #E6EBF7;
+    overflow: hidden;
+    transform: scale(1);
+    transition: opacity 0.22s ease, transform 0.22s ease;
+  }
+
+  .zeno-track.zoom-flash { opacity: 0.35; transform: scale(0.94); }
+
+  .zeno-scale-note {
+    position: absolute;
+    left: 10px;
+    bottom: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--ink-faint);
+    background: rgba(255,255,255,0.9);
+    padding: 2px 7px;
+    border-radius: 6px;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .zeno-track::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 20px;
+    height: 1px;
+    background: #EEF1F8;
+  }
+
+  .zeno-zoom-badge {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--blue-deep);
+    background: var(--blue-soft);
+    padding: 3px 9px;
+    border-radius: 999px;
+    z-index: 3;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .zeno-zoom-badge.show { opacity: 1; }
+
+  .zeno-runner {
+    position: absolute;
+    bottom: 20px;
+    transform: translate(-50%, 0);
+    font-size: 30px;
+    line-height: 1;
+    transition: left 0.65s cubic-bezier(.4,0,.2,1);
+    will-change: left;
+    z-index: 2;
+  }
+
+  .zeno-runner .tag {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    color: var(--ink-faint);
+  }
+
+  #zenoA .tag { color: var(--achilles); }
+  #zenoT .tag { color: var(--tortoise); }
+
+  .zeno-caption {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    min-height: 48px;
+    margin: 4px 2px 16px;
+  }
+
+  .zeno-caption b { color: var(--ink); }
+
+  .zeno-progress-outer {
+    background: #fff;
+    border: 1px solid #E6EBF7;
+    border-radius: 12px;
+    height: 14px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .zeno-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), #7FA0F7);
+    width: 0%;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+  }
+
+  .zeno-progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin-bottom: 20px;
+  }
+
+  .zeno-dots {
+    display: flex;
+    gap: 7px;
+    margin-bottom: 18px;
+  }
+
+  .zeno-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #DDE3F0;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+
+  .zeno-dot.done {
+    background: var(--blue);
+    transform: scale(1.1);
+  }
+
+  .limit-note {
+    font-size: 13.5px;
+    color: var(--blue-deep);
+    background: var(--blue-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 2px;
+    margin-bottom: 4px;
+    display: none;
+    line-height: 1.55;
+  }
+
+  /* ---------- Rantai angka waktu ---------- */
+
+  .num-chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    margin: 6px 0 26px;
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink-faint);
+  }
+
+  .num-chain-item {
+    background: #fff;
+    border: 1px solid #E6EBF7;
+    border-radius: 8px;
+    padding: 5px 11px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .num-chain-item.final {
+    background: var(--blue-soft);
+    color: var(--blue-deep);
+    font-weight: 600;
+    border-color: transparent;
+  }
+
+  /* ---------- Footer ---------- */
+
+  .closing {
+    margin-top: 50px;
+  }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  footer .word {
+    font-family: var(--serif);
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  @media (min-width: 560px) {
+    body { padding: 0 24px 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Numera · Cerita Matematika</div>
+  <h1>Kenapa Achilles Tidak Bisa Menyusul Kura-Kura</h1>
+  <p class="lede">Padahal dia jauh lebih cepat. Selama lebih dari dua ribu tahun, tidak ada yang bisa membantah logikanya.</p>
+
+  <article>
+
+    <p>Achilles adalah pelari tercepat di dunia Yunani kuno. Kura-kura adalah salah satu makhluk paling lambat di bumi. Kalau keduanya diadu lari, siapa yang menang? Rasanya jawabannya jelas.</p>
+
+    <p>Tapi lebih dari dua ribu tahun lalu, seorang filsuf bernama <b>Zeno dari Elea</b> mengaku bisa membuktikan sesuatu yang aneh: <span class="accent">Achilles tidak akan pernah menyusul kura-kura itu</span>. Bahkan kalau lombanya dibiarkan berlangsung selamanya.</p>
+
+    <p>Kedengarannya konyol, kan? Tapi coba ikuti logikanya pelan-pelan. Kamu mungkin akan kesulitan menemukan di mana letak kesalahannya — dan itulah yang membuat banyak orang pintar terjebak selama ratusan tahun.</p>
+
+    <h2 class="section">Lombanya sendiri sebenarnya sederhana</h2>
+
+    <p><span class="accent-a">Achilles</span> berlari <b>10 meter per detik</b>. <span class="accent-t">Kura-kura</span> berjalan <b>1 meter per detik</b> — sepersepuluh kecepatan Achilles. Karena jelas lebih lambat, kura-kura diberi keunggulan awal: dia mulai <b>100 meter</b> di depan.</p>
+
+    <p>Coba jalankan sendiri lombanya.</p>
+
+    <div class="panel">
+      <div class="panel-label">Simulasi — Lomba Sesungguhnya</div>
+
+      <div class="track-wrap">
+        <div class="track" id="track">
+          <div class="meet-marker" id="meetMarker"></div>
+          <div class="runner" id="achillesEl">🏃</div>
+          <div class="runner" id="tortoiseEl">🐢</div>
+        </div>
+        <div class="track-meta"><span>Garis start</span><span>Titik pertemuan</span></div>
+      </div>
+
+      <div class="readout">
+        <div class="stat time"><div class="k">Waktu</div><div class="v" id="raceTime">0,0 dtk</div></div>
+        <div class="stat a"><div class="k">Achilles</div><div class="v" id="raceA">0 m</div></div>
+        <div class="stat t"><div class="k">Kura-kura</div><div class="v" id="raceT">100 m</div></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="raceBtn">▶ Jalankan Lomba</button>
+        <button class="btn ghost" id="raceResetBtn">Ulangi</button>
+      </div>
+      <div class="result-msg" id="raceMsg">Tekan jalankan untuk melihat apa yang terjadi.</div>
+    </div>
+
+    <p>Kalau kamu perhatikan, Achilles menyusul kura-kura setelah sekitar <b>11,1 detik</b>. Masuk akal. Itulah yang akan terjadi kalau lomba ini nyata.</p>
+
+    <h2 class="section">Tapi Zeno melihatnya berbeda</h2>
+
+    <p>Zeno tidak menyangkal hasil lombanya. Dia hanya mengajak kita berpikir langkah demi langkah, bukan sebagai satu gerakan yang mulus.</p>
+
+    <p>Begini caranya dia berpikir. Sebelum Achilles bisa menyusul kura-kura, dia harus lebih dulu <b>sampai di titik tempat kura-kura berada sekarang</b>. Masuk akal — Achilles pun berlari ke sana.</p>
+
+    <p>Tapi selama Achilles berlari menuju titik itu, kura-kura tidak diam saja. Dia terus berjalan, meski pelan. Jadi begitu Achilles sampai, <span class="accent-t">kura-kura sudah pindah sedikit lebih jauh</span>.</p>
+
+    <p>Achilles harus mengejar titik baru ini. Tapi begitu dia sampai, kura-kura — lagi-lagi — sudah bergeser sedikit lebih jauh. Dan ini terjadi lagi. Dan lagi. Dan lagi, tanpa henti.</p>
+
+    <p>Setiap kali Achilles sampai di tempat kura-kura tadi berada, kura-kura sudah pindah lagi. Jaraknya memang terus mengecil. Tapi — begitu klaim Zeno — tidak pernah benar-benar menjadi nol, karena selalu ada satu langkah lagi yang harus ditempuh.</p>
+
+    <p>Zeno menyimpulkan: karena ada <b>tak terhingga banyak langkah</b> seperti ini, Achilles butuh <b>waktu tak terhingga</b> untuk menyelesaikannya. Ini bukan akal-akalan. Ini kesimpulan logis, langkah demi langkah, dari argumen yang dia bangun sendiri — dan itulah yang membuatnya begitu sulit dibantah selama ratusan tahun.</p>
+
+    <p>Coba buktikan sendiri, langkah demi langkah.</p>
+
+    <div class="panel">
+      <div class="panel-label">Simulasi — Cara Berpikir Zeno</div>
+
+      <div class="zeno-stage">
+        <div class="zeno-track" id="zenoTrack">
+          <div class="zeno-zoom-badge" id="zenoZoomBadge">🔍 ×10</div>
+          <div class="zeno-scale-note">Skala diperbesar tiap langkah — bukan mundur</div>
+          <div class="zeno-runner" id="zenoA" style="left:10%;"><span class="tag">Achilles</span>🏃</div>
+          <div class="zeno-runner" id="zenoT" style="left:80%;"><span class="tag">Kura-kura</span>🐢</div>
+        </div>
+      </div>
+
+      <p class="zeno-caption" id="zenoCaption">Kura-kura mulai <b>100 meter</b> di depan Achilles. Tekan tombolnya untuk melihat cara Zeno berpikir, satu langkah setiap kali.</p>
+
+      <div class="readout">
+        <div class="stat time"><div class="k">Waktu Terpakai</div><div class="v" id="zenoTimeVal">0 dtk</div></div>
+        <div class="stat a"><div class="k">Sisa Jarak</div><div class="v" id="zenoGapVal">100 m</div></div>
+      </div>
+
+      <div class="zeno-progress-outer"><div class="zeno-progress-fill" id="zenoProgressFill"></div></div>
+      <div class="zeno-progress-label"><span>Menuju batas waktu lomba</span><span>≈ 11,1 dtk</span></div>
+
+      <div class="zeno-dots" id="zenoDots"></div>
+
+      <div class="limit-note" id="limitNote">Kalau langkah ini diteruskan tanpa henti, <b>Sisa Jarak</b> akan terus mengecil mendekati nol — itulah yang dalam matematika disebut <b>limit</b>. Sementara itu <b>Waktu Terpakai</b> berhenti di angka tetap, sekitar 11,1 detik. Di titik itulah Achilles dan kura-kura benar-benar bertemu.</div>
+
+      <div class="controls" style="margin-top:4px;">
+        <button class="btn" id="stepBtn">Langkah berikutnya →</button>
+        <button class="btn ghost" id="stepResetBtn">Ulangi</button>
+      </div>
+    </div>
+
+    <p>Perhatikan angka <span class="accent-a">Sisa Jarak</span> di panel itu. Setiap langkah yang benar-benar kamu tekan satu per satu — 10 meter, 1 meter, 0,1 meter, 0,01 meter — memang masih menyisakan jarak, sekecil apa pun itu. Kalau kamu berhenti di langkah manapun, selalu ada sisa.</p>
+
+    <p>Tapi coba bayangkan langkah ini diteruskan <b>tanpa henti</b>, bukan cuma enam kali seperti di simulasi tadi. Sisa jaraknya akan terus mengecil, mendekati nol, sedekat apapun yang kamu mau. Dalam bahasa matematika, itu artinya <b>limit</b> dari sisa jaraknya adalah nol. Dan itu berarti Achilles dan kura-kura benar-benar berada di titik yang sama — bukan "hampir".</p>
+
+    <p>Sekarang lihat angka satunya: <span class="accent">Waktu Terpakai</span>. Angka itu juga terus bertambah — tapi setiap tambahannya semakin lama semakin kecil.</p>
+
+    <div class="num-chain">
+      <span class="num-chain-item">10</span><span>→</span>
+      <span class="num-chain-item">11</span><span>→</span>
+      <span class="num-chain-item">11,1</span><span>→</span>
+      <span class="num-chain-item">11,11</span><span>→</span>
+      <span class="num-chain-item">11,111</span><span>→</span>
+      <span class="num-chain-item final">11,111... ≈ 100⁄9</span>
+    </div>
+
+    <p>Waktu itu <b>tidak menuju tak terhingga</b>. Dia menuju sebuah angka tetap: <b>11,111... detik</b> — sama persis dengan waktu balapan yang kamu lihat di simulasi pertama tadi. Dua cara berpikir yang sama sekali berbeda — gerakan yang mulus, dan tahapan yang tak terhingga banyaknya — ternyata berhenti di jawaban yang persis sama.</p>
+
+    <div class="divider"></div>
+
+    <h2 class="section">Zeno sebenarnya menemukan pertanyaan yang jauh lebih dalam</h2>
+
+    <p>Zeno bukan sedang berpikir sembarangan. Argumennya benar bahwa untuk sampai ke kura-kura, Achilles harus melewati tak terhingga banyak tahap — sampai di titik pertama, lalu titik kedua, titik ketiga, dan seterusnya, tanpa akhir. Itu benar secara logika, dan simulasi tadi baru saja menunjukkannya sendiri kepadamu.</p>
+
+    <p>Yang sebenarnya dia temukan bukan sekadar teka-teki lomba lari. Dia menemukan sebuah pertanyaan yang jauh lebih dalam, yang akan mengganggu para pemikir selama lebih dari dua ribu tahun berikutnya:</p>
+
+    <div class="pull">
+      <p>Bagaimana mungkin ada tak terhingga banyak langkah, tetapi semuanya selesai dalam waktu yang terbatas?</p>
+    </div>
+
+    <p>Pertanyaan ini terdengar sederhana. Tapi jawabannya baru benar-benar bisa dijelaskan secara ketat setelah lahirnya cabang matematika yang disebut <b>kalkulus</b> — lewat dua gagasan yang tadi kamu lihat sendiri di simulasi: <b>limit</b> dan <b>deret</b>.</p>
+
+    <p>Coba pikirkan begini. Kalau kamu menjumlahkan <b>10 + 1 + 0,1 + 0,01 + 0,001 + ...</b> sampai selamanya, apakah hasilnya tak terhingga? Ternyata tidak. Setiap angka baru jauh lebih kecil daripada sebelumnya — sepersepuluh dari yang sebelumnya. Karena mengecilnya secepat itu, jumlah semuanya berhenti di satu angka: <b>11,111...</b>, atau tepatnya <b>100⁄9</b>.</p>
+
+    <div class="pull">
+      <p>Tak terhingga banyak langkah, ternyata bisa muat dalam waktu yang sangat terbatas — asal setiap langkah berikutnya cukup cepat mengecil.</p>
+    </div>
+
+    <p>Matematikawan menyebut ini <b>deret konvergen</b>: sebuah jumlah dengan tak terhingga banyak suku, yang tetap memiliki total yang terbatas. Ide inilah yang, berabad-abad kemudian, menjadi salah satu dasar dari kalkulus — cara matematika menangani hal-hal yang berubah, mendekat, atau mengecil tanpa henti.</p>
+
+    <p>Jadi langkah-langkah Zeno itu nyata — tak terhingga banyaknya, persis seperti klaimnya. Yang butuh dua ribu tahun untuk benar-benar dipahami bukan langkahnya, melainkan bagaimana caranya tak terhingga banyak langkah itu bisa memiliki total waktu yang terbatas.</p>
+
+    <h2 class="section">Penutup</h2>
+
+    <p class="closing">Achilles memang menyusul kura-kura. Bukan karena paradoksnya keliru total, tapi karena tak terhingga tidak selalu berarti selamanya.</p>
+
+    <p>Kadang, tak terhingga banyak hal bisa muat dalam waktu yang sangat singkat. Kamu hanya perlu tahu cara menjumlahkannya.</p>
+
+  </article>
+
+  <footer>
+    <span class="word">Numera</span>
+    <span>Paradoks Achilles dan Kura-Kura</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var V_A = 10;      // kecepatan achilles m/s
+  var V_T = 1;        // kecepatan kura-kura m/s
+  var HEAD = 100;      // start awal kura-kura (m)
+  var CATCH_TIME = HEAD / (V_A - V_T); // 11.111... s
+
+  /* ---------------- Simulasi 1: lomba sesungguhnya ---------------- */
+
+  var track = document.getElementById('track');
+  var achillesEl = document.getElementById('achillesEl');
+  var tortoiseEl = document.getElementById('tortoiseEl');
+  var meetMarker = document.getElementById('meetMarker');
+  var raceTimeEl = document.getElementById('raceTime');
+  var raceAEl = document.getElementById('raceA');
+  var raceTEl = document.getElementById('raceT');
+  var raceBtn = document.getElementById('raceBtn');
+  var raceResetBtn = document.getElementById('raceResetBtn');
+  var raceMsg = document.getElementById('raceMsg');
+
+  var raceRunning = false;
+  var raceStart = null;
+  var raceAnim = null;
+  var raceDuration = 4200; // ms, waktu animasi nyata (dipercepat dari 11.1 detik simulasi)
+  var raceDone = false;
+  var lastDistA = 0;
+  var lastDistT = HEAD;
+  var MAX_DIST = HEAD + 40; // total lintasan sedikit lebih panjang dari titik pertemuan
+  var MEET_DIST = V_A * CATCH_TIME; // jarak tempuh Achilles saat benar-benar bertemu kura-kura
+
+  function trackWidthPx(){
+    var w = track.clientWidth;
+    return w - 34; // margin agar emoji tidak menabrak tepi
+  }
+
+  function setRunnerPositions(distA, distT){
+    var w = trackWidthPx();
+    var pxA = Math.min(distA / MAX_DIST, 1) * w;
+    var pxT = Math.min(distT / MAX_DIST, 1) * w;
+    achillesEl.style.left = pxA + 'px';
+    tortoiseEl.style.left = pxT + 'px';
+    lastDistA = distA;
+    lastDistT = distT;
+  }
+
+  function updateMeetMarker(){
+    var w = trackWidthPx();
+    var pxMeet = Math.min(MEET_DIST / MAX_DIST, 1) * w;
+    meetMarker.style.left = pxMeet + 'px';
+  }
+
+  function formatM(v){
+    if (v < 10) return v.toFixed(2) + ' m';
+    return Math.round(v) + ' m';
+  }
+
+  function resetRace(){
+    raceRunning = false;
+    raceDone = false;
+    if (raceAnim) cancelAnimationFrame(raceAnim);
+    raceStart = null;
+    updateMeetMarker();
+    setRunnerPositions(0, HEAD);
+    raceTimeEl.textContent = '0,0 dtk';
+    raceAEl.textContent = '0 m';
+    raceTEl.textContent = HEAD + ' m';
+    raceMsg.textContent = 'Tekan jalankan untuk melihat kapan mereka bertemu.';
+    raceBtn.textContent = '▶ Jalankan Lomba';
+    raceBtn.disabled = false;
+  }
+
+  function stepRace(ts){
+    if (!raceStart) raceStart = ts;
+    var elapsedMs = ts - raceStart;
+    var progress = Math.min(elapsedMs / raceDuration, 1);
+    var simTime = progress * CATCH_TIME;
+
+    var distA = V_A * simTime;
+    var distT = HEAD + V_T * simTime;
+
+    setRunnerPositions(distA, distT);
+    raceTimeEl.textContent = simTime.toFixed(1).replace('.', ',') + ' dtk';
+    raceAEl.textContent = formatM(distA);
+    raceTEl.textContent = formatM(distT);
+
+    if (progress < 1){
+      raceAnim = requestAnimationFrame(stepRace);
+    } else {
+      raceRunning = false;
+      raceDone = true;
+      raceBtn.textContent = '▶ Jalankan Lagi';
+      raceBtn.disabled = false;
+      raceMsg.innerHTML = '🤝 Mereka bertemu — sekitar <b>' + CATCH_TIME.toFixed(1).replace('.', ',') + ' detik</b>.';
+    }
+  }
+
+  raceBtn.addEventListener('click', function(){
+    if (raceRunning) return;
+    if (raceDone) resetRace();
+    raceRunning = true;
+    raceBtn.disabled = true;
+    raceMsg.textContent = 'Lomba sedang berjalan...';
+    raceAnim = requestAnimationFrame(stepRace);
+  });
+
+  raceResetBtn.addEventListener('click', resetRace);
+
+  window.addEventListener('resize', function(){
+    updateMeetMarker();
+    if (!raceRunning){
+      setRunnerPositions(lastDistA, lastDistT);
+    }
+  });
+
+  /* ---------------- Simulasi 2: langkah-langkah Zeno ---------------- */
+
+  var zenoA = document.getElementById('zenoA');
+  var zenoT = document.getElementById('zenoT');
+  var zenoTrack = document.getElementById('zenoTrack');
+  var zenoZoomBadge = document.getElementById('zenoZoomBadge');
+  var zenoCaption = document.getElementById('zenoCaption');
+  var zenoTimeVal = document.getElementById('zenoTimeVal');
+  var zenoGapVal = document.getElementById('zenoGapVal');
+  var zenoProgressFill = document.getElementById('zenoProgressFill');
+  var zenoDots = document.getElementById('zenoDots');
+  var stepBtn = document.getElementById('stepBtn');
+  var stepResetBtn = document.getElementById('stepResetBtn');
+  var limitNote = document.getElementById('limitNote');
+
+  var MAX_STEPS = 6;
+  var POS_A = 10;   // posisi awal achilles (%) di panggung visual
+  var POS_T_START = 80; // posisi kura-kura sebelum achilles mulai berlari (%)
+  var POS_T_END = 90;   // posisi kura-kura setelah bergeser sedikit (%)
+
+  var stepN = 0;
+  var cumTime = 0;
+  var animating = false;
+
+  function trimDecimal(s){
+    s = s.replace(/0+$/, '');
+    s = s.replace(/\.$/, '.0');
+    return s.replace('.', ',');
+  }
+
+  function fmtSmall(v){
+    var s = v >= 1 ? v.toFixed(v >= 10 ? 0 : 1) : v.toFixed(4);
+    return (v >= 10 ? s : trimDecimal(s)) + ' m';
+  }
+
+  function fmtTime(v){
+    return trimDecimal(v.toFixed(4)) + ' dtk';
+  }
+
+  function fmtZoom(n){
+    var factor = Math.pow(10, n);
+    if (factor >= 1000) return '🔍 ×' + Math.round(factor).toLocaleString('id-ID');
+    return '🔍 ×' + factor;
+  }
+
+  function buildDots(){
+    zenoDots.innerHTML = '';
+    for (var i = 0; i < MAX_STEPS; i++){
+      var d = document.createElement('div');
+      d.className = 'zeno-dot';
+      zenoDots.appendChild(d);
+    }
+  }
+
+  function updateDots(){
+    var dots = zenoDots.children;
+    for (var i = 0; i < dots.length; i++){
+      dots[i].classList.toggle('done', i < stepN);
+    }
+  }
+
+  function doStep(){
+    if (stepN >= MAX_STEPS || animating) return;
+    animating = true;
+    stepBtn.disabled = true;
+
+    var distThisStep = HEAD * Math.pow(0.1, stepN);       // jarak yang harus ditempuh Achilles langkah ini
+    var timeThisStep = distThisStep / V_A;
+    var remainingGap = HEAD * Math.pow(0.1, stepN + 1);     // sisa jarak setelah kura-kura bergeser lagi
+
+    zenoCaption.innerHTML = 'Achilles berlari ke titik itu. Sementara itu, kura-kura terus jalan sedikit lebih jauh...';
+
+    // fase gerak: achilles menyusul posisi lama kura-kura, kura-kura bergeser sedikit lagi
+    zenoA.style.left = POS_T_START + '%';
+    zenoT.style.left = POS_T_END + '%';
+
+    setTimeout(function(){
+      stepN++;
+      cumTime += timeThisStep;
+
+      zenoCaption.innerHTML = 'Achilles butuh <b>' + fmtTime(timeThisStep) + '</b> untuk sampai di sana. Tapi kura-kura sudah maju lagi. Sisa jaraknya sekarang tinggal <b>' + fmtSmall(remainingGap) + '</b>.';
+
+      zenoTimeVal.textContent = fmtTime(cumTime);
+      zenoGapVal.textContent = fmtSmall(remainingGap);
+
+      var timePct = Math.min(cumTime / CATCH_TIME * 100, 99.5);
+      zenoProgressFill.style.width = timePct + '%';
+
+      updateDots();
+
+      zenoZoomBadge.textContent = fmtZoom(stepN);
+      zenoZoomBadge.classList.add('show');
+
+      if (stepN >= MAX_STEPS){
+        stepBtn.textContent = 'Ini berlanjut selamanya...';
+        stepBtn.disabled = true;
+        limitNote.style.display = 'block';
+        animating = false;
+        return;
+      }
+
+      // jeda sebentar, lalu "zoom" ke skala berikutnya: posisi ikon direset tanpa animasi
+      setTimeout(function(){
+        zenoCaption.innerHTML = '🔍 Kita perbesar tampilannya ke bagian yang tersisa. Achilles dan kura-kura tidak mundur — kita cuma mengganti skala pengamatan.';
+        zenoTrack.classList.add('zoom-flash');
+        setTimeout(function(){
+          zenoA.style.transition = 'none';
+          zenoT.style.transition = 'none';
+          zenoA.style.left = POS_A + '%';
+          zenoT.style.left = POS_T_START + '%';
+          void zenoTrack.offsetWidth; // reflow
+          zenoA.style.transition = '';
+          zenoT.style.transition = '';
+          zenoTrack.classList.remove('zoom-flash');
+          stepBtn.disabled = false;
+          animating = false;
+        }, 220);
+      }, 900);
+
+    }, 650);
+  }
+
+  function resetSteps(){
+    stepN = 0;
+    cumTime = 0;
+    animating = false;
+    zenoA.style.transition = 'none';
+    zenoT.style.transition = 'none';
+    zenoA.style.left = POS_A + '%';
+    zenoT.style.left = POS_T_START + '%';
+    void zenoTrack.offsetWidth;
+    zenoA.style.transition = '';
+    zenoT.style.transition = '';
+    zenoZoomBadge.classList.remove('show');
+    zenoCaption.innerHTML = 'Kura-kura mulai <b>100 meter</b> di depan Achilles. Tekan tombolnya untuk melihat cara Zeno berpikir, satu langkah setiap kali.';
+    zenoTimeVal.textContent = '0 dtk';
+    zenoGapVal.textContent = HEAD + ' m';
+    zenoProgressFill.style.width = '0%';
+    buildDots();
+    stepBtn.disabled = false;
+    stepBtn.textContent = 'Langkah berikutnya →';
+    limitNote.style.display = 'none';
+  }
+
+  stepBtn.addEventListener('click', doStep);
+  stepResetBtn.addEventListener('click', resetSteps);
+
+  /* init */
+  resetRace();
+  resetSteps();
+
+})();
+</script>
+
+</body>
+</html>
