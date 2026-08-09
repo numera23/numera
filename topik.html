@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Topik Pembelajaran | Cakrawala Matematika</title>
+<title>Topik Pembelajaran | Numera </title>
 
 <!--
     =====================================================================
-    CAKRAWALA MATEMATIKA — topik.html
+    NUMERA — topik.html
     =====================================================================
     Halaman ini adalah PUSAT NAVIGASI seluruh materi (bukan halaman materi).
 
@@ -44,6 +44,7 @@
 
     :root {
         --primary: #2563EB;
+        --primary-hover: #1D4ED8;
         --bg: #F8FAFC;
         --card: #FFFFFF;
         --border: #E2E8F0;
@@ -81,12 +82,56 @@
     }
 
     /* =================================================================
+       HEADER / BRAND — konsisten dengan halaman Eksplorasi
+       ================================================================= */
+    .site-header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+        padding: 8px 20px;
+        background: rgba(248, 250, 252, 0.86);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .brand-mark {
+        width: 26px;
+        height: 26px;
+        border-radius: 10px;
+        background: linear-gradient(150deg, var(--primary), var(--primary-hover));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.28);
+    }
+
+    .brand-name {
+        font-weight: 800;
+        font-size: 14px;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+    }
+
+    /* =================================================================
        KONTAINER UTAMA
        ================================================================= */
     .container {
         max-width: 880px;
         margin: 0 auto;
-        padding: 32px 20px 64px;
+        padding: 12px 20px 20px;
     }
 
     /* =================================================================
@@ -94,26 +139,26 @@
        ================================================================= */
     .heading {
         text-align: center;
-        margin-bottom: 22px;
+        margin-bottom: 10px;
         animation: fadeInUp 0.5s ease both;
     }
 
     .heading h1 {
-        font-size: 26px;
-        font-weight: 700;
+        font-size: 19px;
+        font-weight: 800;
         letter-spacing: -0.02em;
-        margin-bottom: 8px;
+        margin-bottom: 3px;
     }
 
     .heading p {
-        font-size: 15px;
+        font-size: 11.5px;
         color: var(--text-secondary);
     }
 
     .topik-count {
-        font-size: 13px;
+        font-size: 10.5px;
         color: var(--text-secondary);
-        margin-top: 6px;
+        margin-top: 2px;
     }
 
     .topik-count strong {
@@ -128,21 +173,21 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 8px;
+        gap: 6px;
         max-width: 640px;
-        margin: 0 auto 18px;
+        margin: 0 auto 10px;
         animation: fadeInUp 0.5s ease 0.03s both;
     }
 
     .filter-chip {
         font-family: inherit;
-        font-size: 13px;
+        font-size: 11px;
         font-weight: 500;
         color: var(--text-secondary);
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 999px;
-        padding: 7px 16px;
+        padding: 7px 12px;
         cursor: pointer;
         transition: all 0.2s ease;
         white-space: nowrap;
@@ -165,28 +210,28 @@
     .search-wrap {
         position: relative;
         max-width: 520px;
-        margin: 0 auto 32px;
+        margin: 0 auto 14px;
         animation: fadeInUp 0.5s ease 0.06s both;
     }
 
     .search-icon {
         position: absolute;
-        left: 18px;
+        left: 14px;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 16px;
+        font-size: 14px;
         opacity: 0.55;
         pointer-events: none;
     }
 
     #searchInput {
         width: 100%;
-        padding: 14px 18px 14px 46px;
-        border-radius: 14px;
+        padding: 9px 14px 9px 38px;
+        border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--card);
         font-family: inherit;
-        font-size: 15px;
+        font-size: 13.5px;
         color: var(--text);
         outline: none;
         box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
@@ -208,7 +253,7 @@
     .topik-grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 9px;
     }
 
     @media (min-width: 640px) {
@@ -224,11 +269,11 @@
         position: relative;
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 10px;
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 18px 20px;
+        border-radius: 16px;
+        padding: 10px 14px;
         text-decoration: none;
         color: inherit;
         cursor: pointer;
@@ -261,13 +306,13 @@
 
     .topik-icon {
         flex-shrink: 0;
-        width: 52px;
-        height: 52px;
-        border-radius: 14px;
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 26px;
+        font-size: 18px;
         background: color-mix(in srgb, var(--accent, var(--primary)) 12%, white);
     }
 
@@ -277,25 +322,25 @@
     }
 
     .topik-nama {
-        font-size: 16px;
+        font-size: 13.5px;
         font-weight: 600;
-        margin-bottom: 6px;
+        margin-bottom: 3px;
         letter-spacing: -0.01em;
     }
 
     /* daftar modul ringkas (maks. 3 ditampilkan) */
     .topik-modul-list {
         list-style: none;
-        margin: 0 0 4px;
+        margin: 0 0 2px;
         padding: 0;
     }
 
     .topik-modul-list li {
         position: relative;
-        padding-left: 13px;
-        font-size: 12.5px;
+        padding-left: 11px;
+        font-size: 10.5px;
         color: var(--text-secondary);
-        line-height: 1.55;
+        line-height: 1.35;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -310,25 +355,25 @@
     }
 
     .topik-lebih {
-        font-size: 12px;
+        font-size: 10px;
         color: var(--text-secondary);
         opacity: 0.85;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
     }
 
     .topik-badge {
         display: inline-block;
-        font-size: 12px;
+        font-size: 10px;
         font-weight: 600;
         color: var(--accent, var(--primary));
         background: color-mix(in srgb, var(--accent, var(--primary)) 10%, white);
-        padding: 3px 10px;
+        padding: 2px 8px;
         border-radius: 999px;
     }
 
     .topik-arrow {
         flex-shrink: 0;
-        font-size: 18px;
+        font-size: 16px;
         color: var(--text-secondary);
         transition: transform 0.2s ease, color 0.2s ease;
     }
@@ -355,19 +400,19 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 64px 20px;
+        padding: 40px 20px;
         color: var(--text-secondary);
         animation: fadeInUp 0.4s ease both;
     }
 
     .empty-state .empty-icon {
-        font-size: 40px;
-        margin-bottom: 14px;
+        font-size: 32px;
+        margin-bottom: 10px;
         opacity: 0.6;
     }
 
     .empty-state p {
-        font-size: 14.5px;
+        font-size: 12.5px;
     }
 
     .empty-state.show {
@@ -379,8 +424,8 @@
        ================================================================= */
     footer {
         text-align: center;
-        padding: 28px 20px 36px;
-        font-size: 13px;
+        padding: 16px 20px 20px;
+        font-size: 11.5px;
         color: var(--text-secondary);
         border-top: 1px solid var(--border);
     }
@@ -408,7 +453,7 @@
 
     /* =================================================================
        BOTTOM NAVIGATION
-       Standar navigasi utama Cakrawala Matematika: 5 menu, fixed di
+       Standar navigasi utama Numera : 5 menu, fixed di
        bawah, lebar mengikuti canvas mobile (tidak melebar di PC/laptop).
        ================================================================= */
     .bottom-nav-spacer {
@@ -469,6 +514,21 @@
 
     <div class="app-shell">
 
+    <!-- ================= HEADER / BRAND ================= -->
+    <header class="site-header">
+        <div class="brand">
+            <div class="brand-mark">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="8.5" stroke="white" stroke-width="1.6"/>
+                    <path d="M12 3.5C14.5 6.5 15.8 9.2 15.8 12C15.8 14.8 14.5 17.5 12 20.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+                    <path d="M12 3.5C9.5 6.5 8.2 9.2 8.2 12C8.2 14.8 9.5 17.5 12 20.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="1.4" fill="white"/>
+                </svg>
+            </div>
+            <span class="brand-name">Numera</span>
+        </div>
+    </header>
+
     <div class="container">
 
         <!-- ================= HEADING ================= -->
@@ -508,15 +568,15 @@
 
     <!-- ================= FOOTER ================= -->
     <footer>
-        Cakrawala Matematika
+        Numera
     </footer>
 
     <!-- ================= BOTTOM NAVIGATION ================= -->
-    <!-- Struktur navigasi utama Cakrawala Matematika (5 menu). -->
+    <!-- Struktur navigasi utama Numera (5 menu). -->
     <!-- Ganti atribut href pada tiap <a> sesuai halaman tujuan. -->
     <nav class="bottom-nav" aria-label="Navigasi utama">
         <!-- GANTI href di bawah ini ke halaman Beranda yang sebenarnya -->
-        <a class="nav-item" href="beranda.html" data-nav="beranda">
+        <a class="nav-item" href="#" data-nav="beranda">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
             <span>Beranda</span>
         </a>
@@ -526,17 +586,17 @@
             <span>Topik</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Eksplorasi yang sebenarnya -->
-        <a class="nav-item" href="eksplorasi.html" data-nav="eksplorasi">
+        <a class="nav-item" href="#" data-nav="eksplorasi">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
             <span>Eksplorasi</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Arena Game yang sebenarnya -->
-        <a class="nav-item" href="arena.html" data-nav="arena">
+        <a class="nav-item" href="#" data-nav="arena">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
             <span>Arena Game</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Cakrawala yang sebenarnya -->
-        <a class="nav-item" href="cakrawala.html" data-nav="Cakrawala">
+        <a class="nav-item" href="#" data-nav="Cakrawala">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
             <span>Cakrawala</span>
         </a>
@@ -579,7 +639,7 @@
                     "Teorema Faktor",
                     "Akar Polinomial"
                 ],
-                link: "sub_polinom.html"
+                link: "polinomial.html"
             },
             {
                 nama: "Trigonometri",
