@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Persamaan Lingkaran | Numera</title>
+<title>Polinomial | Numera</title>
 
 <!--
     =====================================================================
@@ -68,6 +68,27 @@
         color: var(--text);
         -webkit-font-smoothing: antialiased;
         line-height: 1.5;
+    }
+
+    /* =================================================================
+       APP SHELL — canvas mobile
+       Membatasi seluruh halaman ke lebar aplikasi HP, konsisten dengan
+       topik.html. Di layar PC/laptop, konten tetap sempit dan berada
+       di tengah, tidak melebar mengikuti lebar monitor.
+       ================================================================= */
+    .app-shell {
+        max-width: 560px;
+        margin: 0 auto;
+        min-height: 100vh;
+        background: var(--bg);
+        position: relative;
+    }
+
+    @media (min-width: 561px) {
+        .app-shell {
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
     }
 
     .container {
@@ -310,11 +331,13 @@
     }
 
     .submodul-deskripsi {
-        font-size: 13px;
-        color: var(--text-secondary);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    font-size: 13px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 1.4;
     }
 
     .submodul-arrow {
@@ -381,9 +404,70 @@
             font-size: 34px;
         }
     }
+
+    /* =================================================================
+       BOTTOM NAVIGATION
+       Standar navigasi utama Numera: 5 menu, fixed di
+       bawah, lebar mengikuti canvas mobile (tidak melebar di PC/laptop).
+       Identik dengan bottom navigation pada topik.html.
+       ================================================================= */
+    .bottom-nav-spacer {
+        height: calc(72px + env(safe-area-inset-bottom));
+    }
+
+    .bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 560px;
+        display: flex;
+        z-index: 50;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid var(--border);
+        padding: 8px 4px calc(8px + env(safe-area-inset-bottom));
+    }
+
+    .nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 2px;
+        color: var(--text-secondary);
+        border-radius: 12px;
+        text-decoration: none;
+        transition: color 0.15s ease;
+    }
+
+    .nav-item svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .nav-item span {
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    .nav-item.active {
+        color: var(--primary);
+    }
+
+    .nav-item:active {
+        opacity: 0.7;
+    }
 </style>
 </head>
 <body>
+
+    <div class="app-shell">
 
     <div class="container">
 
@@ -406,7 +490,7 @@
         <!-- ================= KOMPETENSI (diisi otomatis dari array KOMPETENSI) ================= -->
         <div class="kompetensi-card">
             <div class="kompetensi-header">
-                <h2>🎯 Nanti Kamu Akan Bisa Apa?</h2>
+                <h2>🎯 Kompetensi yang Akan Dicapai</h2>
                 <p>Gambaran umum bab ini, bukan materi lengkap.</p>
             </div>
             <ul class="kompetensi-list" id="kompetensiList"></ul>
@@ -418,19 +502,55 @@
 
     </div>
 
+    <!-- ================= SPACER — mencegah konten tertutup bottom navigation ================= -->
+    <div class="bottom-nav-spacer"></div>
+
     <!-- ================= FOOTER ================= -->
     <footer>
         Numera
     </footer>
+
+    <!-- ================= BOTTOM NAVIGATION ================= -->
+    <!-- Struktur navigasi utama Numera (5 menu). -->
+    <!-- Ganti atribut href pada tiap <a> sesuai halaman tujuan. -->
+    <nav class="bottom-nav" aria-label="Navigasi utama">
+        <!-- GANTI href di bawah ini ke halaman Beranda yang sebenarnya -->
+        <a class="nav-item" href="beranda.html" data-nav="beranda">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
+            <span>Beranda</span>
+        </a>
+        <!-- Topik: menu aktif — Sub Topik masih berada di dalam bagian Topik -->
+        <a class="nav-item active" href="topik.html" data-nav="topik" aria-current="page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h7"/></svg>
+            <span>Topik</span>
+        </a>
+        <!-- GANTI href di bawah ini ke halaman Eksplorasi yang sebenarnya -->
+        <a class="nav-item" href="eksplorasi.html" data-nav="eksplorasi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
+            <span>Eksplorasi</span>
+        </a>
+        <!-- GANTI href di bawah ini ke halaman Arena Game yang sebenarnya -->
+        <a class="nav-item" href="arena.html" data-nav="arena">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
+            <span>Arena Game</span>
+        </a>
+        <!-- GANTI href di bawah ini ke halaman Cakrawala yang sebenarnya -->
+        <a class="nav-item" href="cakrawala.html" data-nav="Cakrawala">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
+            <span>Cakrawala</span>
+        </a>
+    </nav>
+
+    </div>
 
     <script>
         /* =============================================================
            DATA TOPIK — GANTI BAGIAN INI UNTUK SETIAP TOPIK BARU
            ============================================================= */
         const TOPIK_INFO = {
-            nama: "Persamaan Lingkaran",
-            ikon: "🟢",
-            deskripsi: "Pelajari cara memahami dan menentukan persamaan lingkaran, mulai dari pusat dan jari-jari hingga kedudukan titik dan garis terhadap lingkaran."
+            nama: "Polinomial",
+            ikon: "📘",
+            deskripsi: "Pelajari cara memanipulasi bentuk polinomial, mulai dari operasi dasar hingga menentukan akar-akarnya. Bab ini membekali kamu dengan alat penting untuk topik aljabar dan kalkulus lanjutan."
         };
 
         /* =============================================================
@@ -441,10 +561,11 @@
            tambahan.
            ============================================================= */
         const KOMPETENSI = [
-            "Mengenali seperti apa persamaan sebuah lingkaran.",
-            "Menemukan pusat dan jari-jari dari persamaannya.",
-            "Mengecek posisi sebuah titik atau garis terhadap lingkaran.",
-            "Membuat persamaan lingkaran dari informasi yang diberikan."
+            "Memahami konsep polinom.",
+            "Menentukan nilai polinom.",
+            "Menggunakan Teorema Sisa.",
+            "Menggunakan Teorema Faktor.",
+            "Melakukan pembagian dengan Skema Horner."
         ];
 
         /* =============================================================
@@ -461,58 +582,64 @@
            ============================================================= */
         const SUBMODUL = [
             {
-                judul: "Definisi & Unsur",
-                ikon: "🟢",
-                deskripsi: "Mengenal pusat, jari-jari, dan unsur penting lingkaran.",
-                link: "persamaan_lingkaran_definisi.html"
+                judul: "Definisi",
+                ikon: "📘",
+                deskripsi: "Mengenal Bentuk & Unsur Polinomial",
+                link: "definisi_polinomial.html"
             },
             {
-                judul: "Pusat O(0, 0)",
-                ikon: "⚫",
-                deskripsi: "Mengenal persamaan lingkaran yang berpusat di titik asal.",
-                link: "persamaan_lingkaran_o.html"
+                judul: "Operasi Polinomial",
+                ikon: "📗",
+                deskripsi: "Menjumlahkan & Mengurangkan Polinomial",
+                link: "penjumlahan_pengurangan_polinomial.html"
             },
             {
-                judul: "Pusat P(a, b)",
-                ikon: "⚪",
-                deskripsi: "Menentukan persamaan lingkaran dari pusat dan jari-jarinya.",
-                link: "persamaan_lingkaran_pab.html"
+                judul: "Perkalian Polinomial",
+                ikon: "📙",
+                deskripsi: "Mengalikan Dua atau Lebih Polinomial.",
+                link: "perkalian_polinomial.html"
             },
             {
-                judul: "Bentuk Umum",
-                ikon: "🔴",
-                deskripsi: "Mengenali bentuk umum persamaan lingkaran dan hubungannya dengan pusat.",
-                link: "persamaan_lingkaran_bu.html"
+                judul: "Cara Bersusun",
+                ikon: "📕",
+                deskripsi: "Membagi Polinomial Cara Bersusun",
+                link: "cara_bersusun.html"
             },
             {
-                judul: "Pusat & Jari-Jari",
-                ikon: "🔵",
-                deskripsi: "Menemukan pusat dan jari-jari dari bentuk umum persamaan lingkaran.",
-                link: "persamaan_lingkaran_pusatjari.html"
+                judul: "Cara Horner",
+                ikon: "📔",
+                deskripsi: "Membagi Polinomial Cara Horner",
+                link: "cara_horner.html"
             },
             {
-                judul: "Kedudukan Titik",
-                ikon: "🟠",
-                deskripsi: "Menentukan posisi sebuah titik terhadap lingkaran.",
-                link: "kedudukan_titik_lingkaran.html"
+                judul: "Teorema Sisa",
+                ikon: "📘",
+                deskripsi: "Menentukan Sisa Polinomial",
+                link: "teorema_sisa.html"
             },
             {
-                judul: "Kedudukan Garis",
-                ikon: "🟡",
-                deskripsi: "Menentukan posisi garis terhadap lingkaran.",
-                link: "persamaan_lingkaran_kedudukan_garis.html"
-            },  
+                judul: "Teorema Faktor",
+                ikon: "📗",
+                deskripsi: "Menentukan Faktor-Faktor Polinomial.",
+                link: "teorema_faktor.html"
+            },
             {
-                judul: "Persamaan Garis Singgung",
-                ikon: "🟣",
-                deskripsi: "Menentukan persamaan garis yang menyinggung lingkaran.",
-                link: "persamaan_lingkaran_pgs.html"
-            },    
+                judul: "Hubungan Akar & Koefisien",
+                ikon: "📙",
+                deskripsi: "Menghubungkan Akar Polinomial dengan Koefisiennya",
+                link: "hubungan_akar_koefisien.html"
+            },
             {
-                judul: "Hubungan Dua Lingkaran",
-                ikon: "🟤",
-                deskripsi: "Mengetahui posisi dua lingkaran berdasarkan pusat dan jari-jarinya.",
-                link: "persamaan_lingkaran_hubungan_dua.html"
+                judul: "Persamaan Polinomial",
+                ikon: "📕",
+                deskripsi: "Menentukan Persamaand dari Akarnya",
+                link: "menentukan_persamaan_polinomial.html"
+            },
+            {
+                judul: "Akar Polinomial",
+                ikon: "📔",
+                deskripsi: "Mencari Solusi Polinomial",
+                link: "akar_polinomial.html"
             }
 
             // Tambahkan subbab baru di sini, contoh:
