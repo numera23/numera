@@ -458,6 +458,62 @@
     border-color: transparent;
   }
 
+  /* ---------- Gambar artikel ---------- */
+
+  figure.img-block {
+    margin: 34px 0;
+  }
+
+  .img-block img {
+    width: 100%;
+    display: block;
+    border-radius: var(--radius);
+    background: var(--bg-panel);
+  }
+
+  .img-block.ratio-16-9 img,
+  .img-block.ratio-16-9 .img-placeholder { aspect-ratio: 16 / 9; object-fit: cover; }
+
+  .img-block.ratio-4-3 img,
+  .img-block.ratio-4-3 .img-placeholder { aspect-ratio: 4 / 3; object-fit: cover; }
+
+  .img-placeholder {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--bg-panel);
+    border: 1.5px dashed #C7D3EC;
+    border-radius: var(--radius);
+    color: var(--ink-faint);
+    font-size: 12.5px;
+    text-align: center;
+    padding: 22px;
+  }
+
+  .img-placeholder .icon { font-size: 22px; opacity: 0.7; }
+
+  .img-placeholder .fname {
+    font-family: "SFMono-Regular", Menlo, monospace;
+    font-size: 11.5px;
+    background: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #E6EBF7;
+    color: var(--ink-soft);
+  }
+
+  figure.img-block figcaption {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-faint);
+    text-align: center;
+    margin-top: 9px;
+    padding: 0 6px;
+  }
+
   /* ---------- Footer ---------- */
 
   .closing {
@@ -495,11 +551,29 @@
 
   <article>
 
+    <figure class="img-block ratio-16-9">
+      <img src="achilles_gambar.webp" alt="Ilustrasi Achilles dan kura-kura berlomba" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder">
+        <span class="icon">🖼️</span>
+        <span class="fname">images/hero-achilles-tortoise.jpg</span>
+      </div>
+      <figcaption>Dua peserta lomba yang paling tidak seimbang dalam sejarah matematika.</figcaption>
+    </figure>
+
     <p>Achilles adalah pelari tercepat di dunia Yunani kuno. Kura-kura adalah salah satu makhluk paling lambat di bumi. Kalau keduanya diadu lari, siapa yang menang? Rasanya jawabannya jelas.</p>
 
     <p>Tapi lebih dari dua ribu tahun lalu, seorang filsuf bernama <b>Zeno dari Elea</b> mengaku bisa membuktikan sesuatu yang aneh: <span class="accent">Achilles tidak akan pernah menyusul kura-kura itu</span>. Bahkan kalau lombanya dibiarkan berlangsung selamanya.</p>
 
     <p>Kedengarannya konyol, kan? Tapi coba ikuti logikanya pelan-pelan. Kamu mungkin akan kesulitan menemukan di mana letak kesalahannya — dan itulah yang membuat banyak orang pintar terjebak selama ratusan tahun.</p>
+
+    <figure class="img-block ratio-4-3">
+      <img src="images/zeno-of-elea.jpg" alt="Potret atau patung Zeno dari Elea" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder">
+        <span class="icon">🖼️</span>
+        <span class="fname">images/zeno-of-elea.jpg</span>
+      </div>
+      <figcaption>Zeno dari Elea (± 490–430 SM), filsuf yang menciptakan paradoks ini.</figcaption>
+    </figure>
 
     <h2 class="section">Lombanya sendiri sebenarnya sederhana</h2>
 
@@ -622,6 +696,15 @@
     <p>Matematikawan menyebut ini <b>deret konvergen</b>: sebuah jumlah dengan tak terhingga banyak suku, yang tetap memiliki total yang terbatas. Ide inilah yang, berabad-abad kemudian, menjadi salah satu dasar dari kalkulus — cara matematika menangani hal-hal yang berubah, mendekat, atau mengecil tanpa henti.</p>
 
     <p>Jadi langkah-langkah Zeno itu nyata — tak terhingga banyaknya, persis seperti klaimnya. Yang butuh dua ribu tahun untuk benar-benar dipahami bukan langkahnya, melainkan bagaimana caranya tak terhingga banyak langkah itu bisa memiliki total waktu yang terbatas.</p>
+
+    <figure class="img-block ratio-16-9">
+      <img src="images/infinite-series-limit.jpg" alt="Ilustrasi deret tak terhingga yang menyempit menuju satu titik" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder">
+        <span class="icon">🖼️</span>
+        <span class="fname">images/infinite-series-limit.jpg</span>
+      </div>
+      <figcaption>Tak terhingga banyak langkah, menyempit menuju satu titik yang pasti.</figcaption>
+    </figure>
 
     <h2 class="section">Penutup</h2>
 
