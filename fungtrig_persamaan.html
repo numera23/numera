@@ -1,0 +1,951 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Persamaan Fungsi Trigonometri
+Jenis      : Modul Interaktif (pakai KaTeX)
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Persamaan Fungsi Trigonometri — Numera</title>
+<meta name="description" content="Modul interaktif belajar persamaan fungsi trigonometri: makna solusi, hubungan dengan grafik, solusi berulang, dan solusi dalam interval — Numera">
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-soft:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+    --radius-card:18px;
+    --radius-btn:12px;
+    --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+    --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--text);
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:0 var(--sp-4);}
+
+  .topbar{position:sticky; top:0; z-index:50; background:rgba(248,250,252,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--border);}
+  .topbar-inner{max-width:900px; margin:0 auto; padding:10px var(--sp-4); font-size:13px; font-weight:600; color:var(--primary); letter-spacing:.2px;}
+  .progress-track{height:3px; background:var(--border); width:100%;}
+  .progress-bar{height:100%; width:0%; background:var(--primary); transition:width 80ms linear;}
+
+  main{padding-bottom:var(--sp-7);}
+  .fade-section{opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease;}
+  .fade-section.visible{opacity:1; transform:translateY(0);}
+
+  .card{background:var(--card); border-radius:var(--radius-card); box-shadow:var(--shadow); padding:var(--sp-5); margin-top:var(--sp-5);}
+  .section-num{display:inline-block; font-size:12.5px; font-weight:700; color:var(--primary); background:var(--primary-light); padding:3px 10px; border-radius:999px; margin-bottom:var(--sp-3); letter-spacing:.5px;}
+  h1{font-size:26px; font-weight:800; margin:var(--sp-3) 0 var(--sp-2); line-height:1.3;}
+  h2{font-size:20px; font-weight:700; margin:0 0 var(--sp-3); line-height:1.35;}
+  h3{font-size:15.5px; font-weight:700; margin:var(--sp-4) 0 6px; color:var(--primary-hover);}
+  h3:first-of-type{margin-top:0;}
+  p{font-size:15px; line-height:1.65; color:var(--text); margin:0 0 var(--sp-3);}
+  .soft{color:var(--text-soft);}
+  mark{background:var(--primary-light); color:var(--primary-hover); padding:1px 4px; border-radius:4px; font-weight:600;}
+
+  .header-card{margin-top:var(--sp-5);}
+  .pill-row{display:flex; gap:var(--sp-2); flex-wrap:wrap; margin-bottom:var(--sp-3);}
+  .pill{font-size:12.5px; font-weight:600; color:var(--primary); background:var(--primary-light); padding:5px 12px; border-radius:999px;}
+  .goal-list{margin:var(--sp-3) 0 0; padding-left:20px;}
+  .goal-list li{font-size:14.5px; line-height:1.6; color:var(--text-soft); margin-bottom:4px;}
+
+  .id-card{margin-top:var(--sp-5); background:var(--primary-light); border-radius:14px; padding:var(--sp-4);}
+  .id-card h3{color:var(--primary-hover); margin-top:0;}
+  .id-card p{font-size:13.5px; color:#1e3a8a; margin-bottom:var(--sp-3);}
+  .id-grid{display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3);}
+  .id-grid label{display:block; font-size:12.5px; font-weight:600; color:var(--text-soft); margin-bottom:4px;}
+  .id-grid input{width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); font-family:'Inter',sans-serif; font-size:14px; background:#fff;}
+  .id-grid input:focus{outline:none; border-color:var(--primary);}
+  .id-status{font-size:13px; font-weight:600; margin-top:var(--sp-2); min-height:16px;}
+  @media (max-width:520px){ .id-grid{grid-template-columns:1fr;} }
+
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:40px; padding:0 18px; border-radius:var(--radius-btn); font-family:'Inter',sans-serif; font-size:14px; font-weight:600; border:none; cursor:pointer; transition:all 200ms ease;}
+  .btn-primary{background:var(--primary); color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);}
+  .btn-outline{background:#fff; color:var(--primary); border:1px solid var(--border);}
+  .btn-outline:hover{border-color:var(--primary); background:var(--primary-light);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center;}
+
+  .step-nav{display:flex; align-items:center; justify-content:space-between; margin-top:var(--sp-4);}
+  .step-dots{display:flex; gap:6px;}
+  .step-dot{width:7px; height:7px; border-radius:50%; background:var(--border);}
+  .step-dot.active{background:var(--primary); width:20px; border-radius:4px; transition:all 200ms ease;}
+  .step-box{background:var(--bg); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-3); display:flex; flex-direction:column; align-items:center; gap:var(--sp-3);}
+  svg{max-width:100%; height:auto; display:block;}
+  .step-text{font-size:14.5px; line-height:1.65; color:var(--text); text-align:center; min-height:52px;}
+
+  .anim-box{background:var(--bg); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-4); display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .anim-readout{display:flex; gap:8px; flex-wrap:wrap; justify-content:center;}
+  .anim-readout .stat-chip{font-size:12.5px; font-weight:600; background:#fff; border:1px solid var(--border); padding:5px 10px; border-radius:10px;}
+  .anim-readout .stat-chip b{color:var(--primary);}
+
+  .sim-grid{display:grid; grid-template-columns:1fr; gap:var(--sp-4); margin-top:var(--sp-4);}
+  @media (min-width:640px){ .sim-grid{grid-template-columns:1fr 1fr;} }
+  .sim-visual{background:var(--bg); border-radius:14px; padding:var(--sp-3); display:flex; align-items:center; justify-content:center;}
+  .sim-controls{display:flex; flex-direction:column; gap:var(--sp-4); justify-content:center;}
+
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip-btn{padding:8px 14px; border-radius:999px; border:1px solid var(--border); background:#fff; font-family:'Inter',sans-serif; font-size:13.5px; font-weight:600; color:var(--text); cursor:pointer; transition:all .2s;}
+  .chip-btn:hover{background:var(--primary-light);}
+  .chip-btn.active{background:var(--primary); color:#fff; border-color:var(--primary);}
+
+  .control-label{display:flex; justify-content:space-between; align-items:center; font-size:13.5px; font-weight:700; margin-bottom:8px;}
+  .control-label .curval{color:var(--primary); font-weight:800;}
+  input[type=range]{width:100%; -webkit-appearance:none; height:6px; border-radius:999px; background:var(--border); outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--primary); cursor:pointer; border:3px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.25);}
+  input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; background:var(--primary); cursor:pointer; border:3px solid #fff;}
+
+  .equation-box{background:var(--text); color:#fff; border-radius:12px; padding:var(--sp-4); font-size:15px; font-weight:700; text-align:center; letter-spacing:.2px; line-height:1.7;}
+  .sol-line{font-size:13px; font-weight:600; margin-top:6px; color:#CBD5E1;}
+  .stat-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .stat-chip{font-size:12.5px; font-weight:600; background:var(--bg); border:1px solid var(--border); padding:6px 10px; border-radius:10px; color:var(--text);}
+  .stat-chip b{color:var(--primary);}
+
+  .insight-box{margin-top:var(--sp-3); background:#ECFDF5; border:1px solid #A7F3D0; border-radius:12px; padding:var(--sp-3) var(--sp-4); font-size:14px; color:#065F46; font-weight:600; display:none; align-items:flex-start; gap:8px;}
+  .insight-box.show{display:flex;}
+
+  .formula-box{overflow-x:auto; overflow-y:hidden; padding:8px 2px; -webkit-overflow-scrolling:touch;}
+  .formula-box::-webkit-scrollbar{height:4px;}
+
+  table.ref-table{width:100%; border-collapse:collapse; margin:var(--sp-3) 0; font-size:13.5px;}
+  table.ref-table th, table.ref-table td{border:1px solid var(--border); padding:6px 8px; text-align:center;}
+  table.ref-table th{background:var(--primary-light); color:var(--primary-hover); font-weight:700;}
+
+  .challenge-item{border:1px solid var(--border); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-4);}
+  .challenge-head{display:flex; align-items:center; gap:var(--sp-2); margin-bottom:var(--sp-3); flex-wrap:wrap;}
+  .level-badge{font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:999px; letter-spacing:.3px;}
+  .level-mudah{background:#D1FAE5; color:#065F46;}
+  .level-sedang{background:#FEF3C7; color:#92400E;}
+  .level-sulit{background:#FEE2E2; color:#991B1B;}
+  .challenge-inputs{display:flex; flex-wrap:wrap; gap:var(--sp-3); align-items:flex-end; margin:var(--sp-3) 0;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field label{font-size:12.5px; font-weight:600; color:var(--text-soft);}
+  .field input{width:96px; padding:9px 10px; border-radius:10px; border:1px solid var(--border); font-family:'Inter',sans-serif; font-size:14px;}
+  .field input:focus{outline:none; border-color:var(--primary);}
+  .feedback{margin-top:var(--sp-3); padding:var(--sp-3); border-radius:10px; font-size:14px; line-height:1.55; display:none;}
+  .feedback.show{display:block;}
+  .feedback.ok{background:#D1FAE5; color:#065F46;}
+  .feedback.bad{background:#FEE2E2; color:#991B1B;}
+  .send-status{font-size:12.5px; color:var(--text-soft); margin-top:6px; min-height:14px;}
+
+  .mistake-item{display:flex; gap:var(--sp-3); align-items:flex-start; margin-top:var(--sp-4);}
+  .mistake-x{flex-shrink:0; width:28px; height:28px; border-radius:50%; background:#FEE2E2; color:var(--error); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;}
+
+  .summary-list{list-style:none; margin:0; padding:0;}
+  .summary-list li{display:flex; gap:var(--sp-3); align-items:flex-start; font-size:14.5px; line-height:1.6; padding:var(--sp-3) 0; border-bottom:1px solid var(--border);}
+  .summary-list li:last-child{border-bottom:none;}
+  .summary-num{flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700;}
+  .done-badge{text-align:center; margin-top:var(--sp-5); font-size:14px; font-weight:700; color:var(--success);}
+
+  .site-footer{padding: var(--sp-5) 0 var(--sp-6); text-align:center;}
+  .footer-divider{height:1px; background:var(--border); margin-bottom:var(--sp-4);}
+  .footer-brand{font-size:13.5px; font-weight:700; color:var(--primary); margin:0 0 4px;}
+  .footer-text{font-size:13px; color:var(--text-soft); margin:0 0 2px;}
+  .footer-meta{font-size:12.5px; color:var(--text-soft); margin:0; opacity:.85;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Persamaan Fungsi Trigonometri</div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<main class="wrap">
+
+  <!-- 1. HEADER -->
+  <section class="header-card card">
+    <div class="pill-row">
+      <span class="pill">⏱ 15–20 menit</span>
+      <span class="pill">Trigonometri</span>
+    </div>
+    <h1>Persamaan Fungsi Trigonometri</h1>
+    <p class="soft">Setelah modul ini selesai, kamu akan bisa:</p>
+    <ul class="goal-list">
+      <li>Menjelaskan makna sebenarnya dari persamaan seperti sin x = a.</li>
+      <li>Melihat solusi persamaan trigonometri sebagai titik potong pada grafik.</li>
+      <li>Menentukan sudut-sudut yang memenuhi suatu persamaan trigonometri.</li>
+      <li>Memahami kenapa satu persamaan bisa punya lebih dari satu solusi, dan polanya berulang.</li>
+      <li>Menentukan solusi yang benar-benar berada di dalam interval yang diminta.</li>
+      <li>Memeriksa kembali apakah suatu nilai benar-benar solusi yang tepat.</li>
+    </ul>
+
+    <div class="id-card">
+      <h3>Isi dulu sebelum mulai 👋</h3>
+      <p>Jawabanmu di bagian Challenge otomatis terkirim ke gurumu. Tidak perlu login atau email apapun.</p>
+      <div class="id-grid">
+        <div><label>Nama lengkap</label><input type="text" id="namaSiswa" placeholder="Tulis namamu"></div>
+        <div><label>Kelas</label><input type="text" id="kelasSiswa" placeholder="Contoh: XI IPA 2"></div>
+      </div>
+      <div class="id-status" id="idStatus"></div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section class="card fade-section">
+    <span class="section-num">01</span>
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <p>Bayangkan sebuah bianglala (kincir raksasa) berputar terus-menerus di taman hiburan.</p>
+    <p>Sekarang coba jawab: <mark>di titik mana saja kereta bianglala itu berada tepat di setengah ketinggian maksimum?</mark></p>
+    <p>Kalau kamu perhatikan baik-baik, jawabannya bukan cuma satu titik. Ada saat kereta itu naik melewati ketinggian tersebut, dan ada saat dia turun melewatinya lagi.</p>
+    <p>Dan karena bianglala terus berputar, posisi itu akan tercapai lagi... dan lagi... setiap satu putaran penuh.</p>
+    <p>Nah, itulah persis yang terjadi saat kita menyelesaikan <mark>persamaan trigonometri</mark>. Kita sedang mencari "titik-titik" pada putaran itu yang menghasilkan nilai tertentu.</p>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="card fade-section">
+    <span class="section-num">02</span>
+    <h2>Penjelasan Sederhana</h2>
+
+    <h3>Apa sebenarnya arti sin x = a?</h3>
+    <p>Ketika kita menulis <b>sin x = 0,5</b>, kita bukan sedang "menghafal rumus". Kita sedang bertanya:</p>
+    <p><mark>"Sudut berapa saja yang membuat bianglala kita berada di ketinggian 0,5 (dari skala −1 sampai 1)?"</mark></p>
+    <p>Jawabannya adalah kumpulan sudut x. Kumpulan sudut inilah yang disebut <b>solusi</b> dari persamaan trigonometri tersebut.</p>
+
+    <h3>Sudut-sudut istimewa</h3>
+    <p>Untuk mencari sudut itu, kita perlu mengenal beberapa nilai sinus, kosinus, dan tangen di sudut-sudut yang sering muncul.</p>
+    <div style="overflow-x:auto;">
+    <table class="ref-table">
+      <tr><th>Sudut</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr>
+      <tr><td>sin</td><td>0</td><td>1/2</td><td>½√2</td><td>½√3</td><td>1</td></tr>
+      <tr><td>cos</td><td>1</td><td>½√3</td><td>½√2</td><td>1/2</td><td>0</td></tr>
+      <tr><td>tan</td><td>0</td><td>⅓√3</td><td>1</td><td>√3</td><td>—</td></tr>
+    </table>
+    </div>
+    <p class="soft">Tabel ini adalah "kamus" — kalau kamu tahu sin 30° = 1/2, kamu tahu salah satu sudut yang memenuhi sin x = 1/2 adalah x = 30°.</p>
+
+    <h3>Melihatnya lewat grafik</h3>
+    <p>Sekarang bayangkan grafik y = sin x sebagai rekaman gerakan bianglala dari waktu ke waktu.</p>
+    <p>Kalau kita gambar garis mendatar <b>y = a</b>, maka <mark>setiap titik potong garis itu dengan grafik adalah sebuah solusi</mark>.</p>
+    <p>Garis mendatar bisa memotong grafik gelombang lebih dari satu kali — itulah kenapa satu persamaan bisa punya banyak solusi.</p>
+
+    <h3>Solusi berulang (periodik)</h3>
+    <p>Karena grafik sin, cos, dan tan berulang terus (periodik), solusinya juga berulang setiap satu periode.</p>
+    <p>Untuk interval satu putaran penuh (0° sampai 360°), pola pasangan solusinya begini:</p>
+    <div class="formula-box">\[ \sin x = \sin \alpha \;\Rightarrow\; x = \alpha + k\cdot 2\pi \ \text{ atau } \ x = (\pi-\alpha) + k\cdot 2\pi \]</div>
+    <div class="formula-box">\[ \cos x = \cos \alpha \;\Rightarrow\; x = \pm\alpha + k\cdot 2\pi \]</div>
+    <div class="formula-box">\[ \tan x = \tan \alpha \;\Rightarrow\; x = \alpha + k\pi \]</div>
+    <p>dengan k = ..., −1, 0, 1, 2, ... (bilangan bulat apa saja). Bagian "+ k·2π" (atau "+ k·π" untuk tangen) inilah yang membuat solusinya berulang tanpa batas.</p>
+    <p class="soft">Khusus tangen, hanya ada SATU keluarga solusi (bukan dua) — karena grafik tangen hanya memotong garis y = a sekali setiap satu periode π, bukan dua kali seperti sin dan cos.</p>
+
+    <h3>Solusi dalam interval tertentu</h3>
+    <p>Karena solusinya berulang tanpa batas, biasanya soal membatasi dengan sebuah <b>interval</b>, misalnya "0° ≤ x ≤ 360°".</p>
+    <p>Tugas kita adalah mengambil HANYA solusi yang jatuh di dalam interval itu, dan membuang sisanya — walaupun secara matematis solusi lain tetap ada di luar interval.</p>
+
+    <h3>Memeriksa kembali solusi</h3>
+    <p>Cara paling aman memastikan jawabanmu benar: substitusikan kembali nilai x ke persamaan awal, lalu lihat apakah hasilnya memang sama dengan a.</p>
+    <p>Sampai sini masih masuk akal? Yuk kita coba selesaikan satu persamaan, langkah demi langkah.</p>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="card fade-section">
+    <span class="section-num">03</span>
+    <h2>Lihat Cara Kerjanya</h2>
+    <p class="soft">Kita selesaikan bersama: <b>sin x = 1/2</b>, untuk 0° ≤ x ≤ 360°. Tekan Next untuk lihat prosesnya.</p>
+
+    <div class="step-box">
+      <svg id="stepSvg" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg"></svg>
+      <p class="step-text" id="stepText"></p>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-outline" id="prevStepBtn">← Previous</button>
+      <div class="step-dots" id="stepDots"></div>
+      <button class="btn btn-primary" id="nextStepBtn">Next →</button>
+    </div>
+
+    <div class="anim-box">
+      <p class="soft" style="margin-bottom:0;text-align:center;font-size:13.5px;">🎬 Atau lihat animasinya: titik bergerak sepanjang grafik mencari solusi.</p>
+      <svg id="animSvg" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="anim-readout" id="animReadout"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="animPlayBtn">▶ Play</button>
+        <button class="btn btn-outline" id="animResetBtn">↻ Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="card fade-section">
+    <span class="section-num">04</span>
+    <h2>Coba Sendiri</h2>
+    <p class="soft">Pilih fungsinya, geser nilai a, dan pilih interval. Perhatikan titik hijau (solusi di dalam interval) dan titik abu-abu (solusi di luar interval, tanda bahwa polanya berulang).</p>
+
+    <div class="chip-row" id="funcChips" style="margin-bottom:var(--sp-3);">
+      <button class="chip-btn active" data-val="sin">sin x</button>
+      <button class="chip-btn" data-val="cos">cos x</button>
+      <button class="chip-btn" data-val="tan">tan x</button>
+    </div>
+
+    <div class="sim-grid">
+      <div class="sim-visual">
+        <svg id="simSvg" viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="sim-controls">
+        <div>
+          <label style="display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;margin-bottom:6px;">
+            Nilai a <span style="color:var(--primary);font-weight:800;" id="aVal">0.5</span>
+          </label>
+          <input type="range" id="sliderA" min="-2" max="2" step="0.1" value="0.5">
+        </div>
+
+        <div>
+          <div class="control-label">Interval</div>
+          <div class="chip-row" id="intervalChips">
+            <button class="chip-btn active" data-min="0" data-max="6.283185307179586">0 ≤ x ≤ 2π</button>
+            <button class="chip-btn" data-min="0" data-max="12.566370614359172">0 ≤ x ≤ 4π</button>
+            <button class="chip-btn" data-min="-3.141592653589793" data-max="3.141592653589793">−π ≤ x ≤ π</button>
+          </div>
+        </div>
+
+        <div class="equation-box" id="equationBox"></div>
+        <div class="stat-row" id="statRow"></div>
+      </div>
+    </div>
+    <div class="insight-box" id="insightBox">💡 <span id="insightText"></span></div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="card fade-section">
+    <span class="section-num">05</span>
+    <h2>Challenge</h2>
+    <p class="soft">Tiga soal, makin lama makin menantang. Jawabanmu otomatis tersimpan untuk gurumu.</p>
+
+    <!-- Soal 1 - Mudah -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-mudah">MUDAH</span>
+        <h3 style="margin:0;">Soal 1</h3>
+      </div>
+      <p>Tentukan SEMUA nilai x yang memenuhi <b>sin x = 1/2</b> untuk 0° ≤ x ≤ 360°. (Ada dua solusi.)</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>x₁ (°)</label><input type="number" step="any" id="s1x1"></div>
+        <div class="field"><label>x₂ (°)</label><input type="number" step="any" id="s1x2"></div>
+        <button class="btn btn-primary" onclick="checkSoal1()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb1"></div>
+      <div class="send-status" id="send0"></div>
+    </div>
+
+    <!-- Soal 2 - Sedang -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-sedang">SEDANG</span>
+        <h3 style="margin:0;">Soal 2</h3>
+      </div>
+      <p>Tentukan SEMUA nilai x yang memenuhi <b>cos x = −1/2</b> untuk 0° ≤ x ≤ 360°.</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>x₁ (°)</label><input type="number" step="any" id="s2x1"></div>
+        <div class="field"><label>x₂ (°)</label><input type="number" step="any" id="s2x2"></div>
+        <button class="btn btn-primary" onclick="checkSoal2()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb2"></div>
+      <div class="send-status" id="send1"></div>
+    </div>
+
+    <!-- Soal 3 - Sulit -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-sulit">SULIT</span>
+        <h3 style="margin:0;">Soal 3</h3>
+      </div>
+      <p>Untuk interval 0 ≤ x ≤ 2π, tentukan JUMLAH solusi (0, 1, atau 2) dari masing-masing persamaan berikut, TANPA menggambar dulu — coba prediksi dari nilai a-nya:</p>
+      <p class="soft">(1) sin x = 0,3 &nbsp;&nbsp; (2) sin x = 1 &nbsp;&nbsp; (3) sin x = 1,5</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Jumlah (1)</label><input type="number" step="1" id="s3n1"></div>
+        <div class="field"><label>Jumlah (2)</label><input type="number" step="1" id="s3n2"></div>
+        <div class="field"><label>Jumlah (3)</label><input type="number" step="1" id="s3n3"></div>
+        <button class="btn btn-primary" onclick="checkSoal3()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb3"></div>
+      <div class="send-status" id="send2"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="card fade-section">
+    <span class="section-num">06</span>
+    <h2>Kesalahan yang Sering Terjadi</h2>
+
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Hanya menuliskan satu solusi.</strong></p>
+        <p class="soft">Banyak siswa berhenti setelah menemukan satu sudut, padahal sin dan cos biasanya punya PASANGAN solusi dalam satu putaran (kecuali di titik puncak/lembah). Selalu cek apakah ada solusi kedua.</p>
+      </div>
+    </div>
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Salah menentukan kuadran saat nilai a negatif.</strong></p>
+        <p class="soft">Kalau hasilnya negatif, pasangan solusinya TIDAK sama dengan pola nilai positif. Perhatikan di kuadran mana fungsi tersebut benar-benar bernilai negatif sebelum menuliskan solusi.</p>
+      </div>
+    </div>
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Memasukkan solusi yang berada di luar interval.</strong></p>
+        <p class="soft">Solusi umum (dengan +k·360°) jumlahnya tak terhingga. Selalu saring dulu: hanya solusi yang benar-benar berada di dalam interval yang diminta yang boleh dituliskan sebagai jawaban akhir.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="card fade-section">
+    <span class="section-num">07</span>
+    <h2>Ringkasan</h2>
+    <ul class="summary-list">
+      <li><span class="summary-num">1</span><span>Menyelesaikan sin x = a berarti mencari sudut-sudut yang membuat nilai sinusnya sama dengan a.</span></li>
+      <li><span class="summary-num">2</span><span>Secara visual, solusi adalah titik potong antara grafik fungsi trigonometri dan garis y = a.</span></li>
+      <li><span class="summary-num">3</span><span>Karena grafiknya periodik, satu persamaan bisa punya lebih dari satu solusi, dan pola solusi itu berulang setiap satu periode.</span></li>
+      <li><span class="summary-num">4</span><span>Sin dan cos umumnya punya dua keluarga solusi per periode, sedangkan tan hanya satu.</span></li>
+      <li><span class="summary-num">5</span><span>Solusi akhir harus disaring supaya hanya nilai yang berada di dalam interval yang diminta yang dituliskan sebagai jawaban.</span></li>
+    </ul>
+    <p class="done-badge">✓ Selesai — Persamaan Fungsi Trigonometri</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ================= PROGRESS BAR ================= */
+(function(){
+  var bar = document.getElementById('progressBar');
+  function update(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var height = h.scrollHeight - h.clientHeight;
+    bar.style.width = (height>0 ? (scrolled/height)*100 : 0) + '%';
+  }
+  document.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+/* ================= FADE UP ================= */
+(function(){
+  var els = document.querySelectorAll('.fade-section');
+  if(!('IntersectionObserver' in window)){ els.forEach(function(el){el.classList.add('visible');}); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ if(entry.isIntersecting){ entry.target.classList.add('visible'); io.unobserve(entry.target); } });
+  }, {threshold:0.12});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ================= IDENTITAS SISWA ================= */
+function getIdentitas(){
+  return { nama: document.getElementById('namaSiswa').value.trim(), kelas: document.getElementById('kelasSiswa').value.trim() };
+}
+function identitasLengkap(){
+  var id = getIdentitas();
+  var statusEl = document.getElementById('idStatus');
+  if(!id.nama || !id.kelas){
+    statusEl.textContent = 'Isi nama dan kelas dulu ya, sebelum cek jawaban.';
+    statusEl.style.color = '#B91C1C';
+    document.getElementById('namaSiswa').focus();
+    return false;
+  }
+  statusEl.textContent = '';
+  return true;
+}
+
+/* ================= KaTeX render ================= */
+function renderMath(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, { delimiters:[ {left:'\\[',right:'\\]',display:true}, {left:'\\(',right:'\\)',display:false} ] });
+  }
+}
+window.addEventListener('load', renderMath);
+
+/* ================= SVG HELPERS ================= */
+var SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs){ var e = document.createElementNS(SVGNS, tag); for(var k in attrs){ e.setAttribute(k, attrs[k]); } return e; }
+
+function fmtPi(x){
+  if(Math.abs(x) < 1e-6) return '0';
+  var denoms = [1,2,3,4,6,12];
+  for(var i=0;i<denoms.length;i++){
+    var d = denoms[i];
+    var n = x / (Math.PI/d);
+    if(Math.abs(n - Math.round(n)) < 1e-3){
+      var num = Math.round(n);
+      var g = gcd(Math.abs(num), d);
+      num = num/g; var den = d/g;
+      var sign = num<0 ? '−' : '';
+      num = Math.abs(num);
+      var numTxt = num===1 ? 'π' : (num+'π');
+      return sign + (den===1 ? numTxt : (numTxt+'/'+den));
+    }
+  }
+  return x.toFixed(2);
+}
+function gcd(a,b){ return b===0 ? (a||1) : gcd(b, a%b); }
+
+/* ================= STEP DIAGRAM (single period, 0-360deg) ================= */
+(function(){
+  var svg = document.getElementById('stepSvg');
+  var textEl = document.getElementById('stepText');
+  var dotsWrap = document.getElementById('stepDots');
+  var prevBtn = document.getElementById('prevStepBtn');
+  var nextBtn = document.getElementById('nextStepBtn');
+
+  var padX = 26, padY = 20, W = 340, H = 220;
+  var plotW = W - padX*2, plotH = H - padY*2;
+  var xMin = 0, xMax = 2*Math.PI;
+  var yMin = -1.4, yMax = 1.4;
+  function px(x){ return padX + (x - xMin)/(xMax-xMin)*plotW; }
+  function py(y){ return padY + plotH - (y - yMin)/(yMax-yMin)*plotH; }
+
+  var a = 0.5;
+  var alpha = Math.asin(a); // pi/6
+  var x1 = alpha, x2 = Math.PI - alpha;
+
+  function baseAxes(){
+    svg.innerHTML = '';
+    for(var gx=0; gx<=2*Math.PI+0.01; gx+=Math.PI/2){
+      svg.appendChild(el('line',{x1:px(gx),y1:padY,x2:px(gx),y2:H-padY,stroke:'#F1F5F9','stroke-width':1}));
+    }
+    svg.appendChild(el('line',{x1:padX,y1:py(0),x2:W-padX,y2:py(0),stroke:'#94A3B8','stroke-width':1.3}));
+    svg.appendChild(el('line',{x1:px(0),y1:padY,x2:px(0),y2:H-padY,stroke:'#94A3B8','stroke-width':1.3}));
+    var labs=[[0,'0°'],[Math.PI/2,'90°'],[Math.PI,'180°'],[3*Math.PI/2,'270°'],[2*Math.PI,'360°']];
+    labs.forEach(function(L){
+      var t = el('text',{x:px(L[0])-12,y:H-padY+14,'font-size':9.5,fill:'#94A3B8'}); t.textContent=L[1]; svg.appendChild(t);
+    });
+    var curve = el('path',{d:sinPath(), fill:'none', stroke:'#2563EB','stroke-width':2.5});
+    svg.appendChild(curve);
+  }
+  function sinPath(){
+    var d0=''; var first=true;
+    for(var xp=0; xp<=2*Math.PI+0.001; xp+=0.05){
+      var X=px(xp), Y=py(Math.sin(xp));
+      d0 += (first?'M':'L')+X.toFixed(1)+','+Y.toFixed(1)+' '; first=false;
+    }
+    return d0;
+  }
+
+  var texts = [
+    'Kita punya persamaan <mark>sin x = 1/2</mark>, dengan 0° ≤ x ≤ 360°. Ini artinya kita cari sudut yang nilai sinusnya tepat 1/2.',
+    'Gambarkan garis mendatar <mark>y = 1/2</mark> di atas grafik sin x. Perhatikan di mana garis ini memotong grafiknya.',
+    'Dari tabel sudut istimewa, kita tahu <mark>sin 30° = 1/2</mark>. Jadi 30° adalah salah satu solusinya (sudut referensi α = 30°).',
+    'Karena sin bernilai positif di kuadran I dan II, ada solusi KEDUA: x = 180° − 30° = <mark>150°</mark>.',
+    'Karena interval kita 0°–360° hanya mencakup satu putaran, solusi lain (misalnya 30°+360°=390°) berada DI LUAR interval, jadi tidak dipakai.',
+    'Periksa kembali: sin(30°) = 0,5 ✓ dan sin(150°) = 0,5 ✓. Jadi solusinya adalah <mark>x = 30° atau x = 150°</mark>.'
+  ];
+  var step = 0, total = texts.length;
+
+  function buildDots(){
+    dotsWrap.innerHTML = '';
+    for(var i=0;i<total;i++){ var d=document.createElement('div'); d.className='step-dot'; dotsWrap.appendChild(d); }
+  }
+  buildDots();
+
+  function render(){
+    baseAxes();
+    if(step >= 1){
+      svg.appendChild(el('line',{x1:padX,y1:py(a),x2:W-padX,y2:py(a),stroke:'#F59E0B','stroke-width':2,'stroke-dasharray':'5,4'}));
+      var lbl = el('text',{x:W-padX-26,y:py(a)-6,'font-size':10.5,fill:'#92400E','font-weight':700}); lbl.textContent='y = 1/2'; svg.appendChild(lbl);
+    }
+    if(step >= 2){
+      svg.appendChild(el('circle',{cx:px(x1),cy:py(a),r:5.5,fill:'#10B981'}));
+      var t1 = el('text',{x:px(x1)-10,y:py(a)+20,'font-size':10.5,fill:'#065F46','font-weight':700}); t1.textContent='30°'; svg.appendChild(t1);
+    }
+    if(step >= 3){
+      svg.appendChild(el('circle',{cx:px(x2),cy:py(a),r:5.5,fill:'#10B981'}));
+      var t2 = el('text',{x:px(x2)-14,y:py(a)+20,'font-size':10.5,fill:'#065F46','font-weight':700}); t2.textContent='150°'; svg.appendChild(t2);
+    }
+    if(step >= 5){
+      [x1,x2].forEach(function(xx){
+        svg.appendChild(el('circle',{cx:px(xx),cy:py(a),r:8,fill:'none',stroke:'#10B981','stroke-width':2}));
+      });
+    }
+    textEl.innerHTML = texts[step];
+    var dots = dotsWrap.children;
+    for(var i=0;i<dots.length;i++){ dots[i].classList.toggle('active', i===step); }
+    prevBtn.disabled = (step===0);
+    nextBtn.disabled = (step===total-1);
+  }
+  prevBtn.addEventListener('click', function(){ if(step>0){ step--; render(); } });
+  nextBtn.addEventListener('click', function(){ if(step<total-1){ step++; render(); } });
+  render();
+
+  /* expose helpers for animation block */
+  window.__stepHelpers = { px:px, py:py, baseAxes:baseAxes, a:a, x1:x1, x2:x2, W:W, H:H };
+})();
+
+/* ================= ANIMASI: titik bergerak (Play/Pause/Reset) ================= */
+(function(){
+  var svg = document.getElementById('animSvg');
+  var playBtn = document.getElementById('animPlayBtn');
+  var resetBtn = document.getElementById('animResetBtn');
+  var readout = document.getElementById('animReadout');
+  var H = window.__stepHelpers;
+
+  var xDeg = 0;
+  var playing = false;
+  var timer = null;
+  var found = [];
+
+  function drawFrame(){
+    H.baseAxes.call(null); // rebuild base axes onto stepSvg's own function won't target animSvg; so redo manually below
+  }
+
+  function baseAnim(){
+    svg.innerHTML = '';
+    var padX=26, padY=20, W=H.W, Hh=H.H;
+    var plotW=W-padX*2, plotH=Hh-padY*2;
+    var xMin=0,xMax=2*Math.PI,yMin=-1.4,yMax=1.4;
+    function px(x){ return padX + (x-xMin)/(xMax-xMin)*plotW; }
+    function py(y){ return padY + plotH - (y-yMin)/(yMax-yMin)*plotH; }
+    for(var gx=0; gx<=2*Math.PI+0.01; gx+=Math.PI/2){
+      svg.appendChild(el('line',{x1:px(gx),y1:padY,x2:px(gx),y2:Hh-padY,stroke:'#F1F5F9','stroke-width':1}));
+    }
+    svg.appendChild(el('line',{x1:padX,y1:py(0),x2:W-padX,y2:py(0),stroke:'#94A3B8','stroke-width':1.3}));
+    svg.appendChild(el('line',{x1:px(0),y1:padY,x2:px(0),y2:Hh-padY,stroke:'#94A3B8','stroke-width':1.3}));
+    var d0=''; var first=true;
+    for(var xp=0; xp<=2*Math.PI+0.001; xp+=0.05){
+      var X=px(xp), Y=py(Math.sin(xp));
+      d0 += (first?'M':'L')+X.toFixed(1)+','+Y.toFixed(1)+' '; first=false;
+    }
+    svg.appendChild(el('path',{d:d0, fill:'none', stroke:'#CBD5E1','stroke-width':2.2}));
+    svg.appendChild(el('line',{x1:padX,y1:py(0.5),x2:W-padX,y2:py(0.5),stroke:'#F59E0B','stroke-width':2,'stroke-dasharray':'5,4'}));
+
+    found.forEach(function(fx){
+      svg.appendChild(el('circle',{cx:px(fx),cy:py(0.5),r:7,fill:'#10B981'}));
+    });
+
+    var rad = xDeg*Math.PI/180;
+    var yNow = Math.sin(rad);
+    var pt = el('circle',{cx:px(rad),cy:py(yNow),r:6,fill:'#2563EB',stroke:'#fff','stroke-width':2});
+    svg.appendChild(pt);
+
+    readout.innerHTML =
+      '<span class="stat-chip">x = <b>'+Math.round(xDeg)+'°</b></span>'+
+      '<span class="stat-chip">sin x = <b>'+yNow.toFixed(2)+'</b></span>'+
+      '<span class="stat-chip">solusi ditemukan: <b>'+found.length+'</b></span>';
+  }
+
+  function tick(){
+    xDeg += 2;
+    if(xDeg > 360){ xDeg = 360; stop(); baseAnim(); return; }
+    var prev = xDeg - 2;
+    [30,150].forEach(function(sol){
+      if(prev < sol && xDeg >= sol && found.indexOf(sol*Math.PI/180) === -1){
+        found.push(sol*Math.PI/180);
+        stop();
+        baseAnim();
+        setTimeout(function(){ if(xDeg<360) start(); }, 650);
+        return;
+      }
+    });
+    baseAnim();
+  }
+
+  function start(){
+    if(playing) return;
+    playing = true;
+    playBtn.textContent = '⏸ Pause';
+    timer = setInterval(tick, 45);
+  }
+  function stop(){
+    playing = false;
+    playBtn.textContent = '▶ Play';
+    if(timer){ clearInterval(timer); timer = null; }
+  }
+  function reset(){
+    stop();
+    xDeg = 0; found = [];
+    baseAnim();
+  }
+
+  playBtn.addEventListener('click', function(){ playing ? stop() : start(); });
+  resetBtn.addEventListener('click', reset);
+
+  baseAnim();
+})();
+
+/* ================= SECTION 5: COBA SENDIRI ================= */
+(function(){
+  var svg = document.getElementById('simSvg');
+  var sliderA = document.getElementById('sliderA');
+  var aValEl = document.getElementById('aVal');
+  var funcChips = document.querySelectorAll('#funcChips .chip-btn');
+  var intervalChips = document.querySelectorAll('#intervalChips .chip-btn');
+  var insightBox = document.getElementById('insightBox');
+  var insightText = document.getElementById('insightText');
+
+  var state = { func:'sin', a:0.5, intMin:0, intMax:2*Math.PI };
+
+  var padX=30, padY=20, W=360, H=260;
+  var plotW=W-padX*2, plotH=H-padY*2;
+  var xMinDom=-2*Math.PI, xMaxDom=4*Math.PI;
+  var yMinDom=-3, yMaxDom=3;
+  function px(x){ return padX + (x-xMinDom)/(xMaxDom-xMinDom)*plotW; }
+  function py(y){ return padY + plotH/2 - (y/(yMaxDom-yMinDom))*plotH; }
+
+  function curveY(x){
+    if(state.func==='sin') return Math.sin(x);
+    if(state.func==='cos') return Math.cos(x);
+    return Math.tan(x);
+  }
+  function curvePath(){
+    var d0=''; var first=true;
+    var step = state.func==='tan' ? 0.02 : 0.04;
+    for(var xp=xMinDom; xp<=xMaxDom+0.001; xp+=step){
+      var y = curveY(xp);
+      if(state.func==='tan' && Math.abs(y) > 3.4){ first=true; continue; }
+      var X=px(xp), Y=py(Math.max(-3.4,Math.min(3.4,y)));
+      d0 += (first?'M':'L')+X.toFixed(1)+','+Y.toFixed(1)+' '; first=false;
+    }
+    return d0;
+  }
+
+  function computeSolutions(){
+    var sols = [];
+    var a = state.a;
+    if(state.func==='tan'){
+      var alpha = Math.atan(a);
+      for(var k=-6;k<=6;k++){
+        var x = alpha + k*Math.PI;
+        if(x>=xMinDom-0.001 && x<=xMaxDom+0.001) sols.push(x);
+      }
+    } else if(Math.abs(a) <= 1+1e-9){
+      var b1,b2;
+      if(state.func==='sin'){
+        var base = Math.asin(Math.max(-1,Math.min(1,a)));
+        b1 = base; b2 = Math.PI - base;
+      } else {
+        var baseC = Math.acos(Math.max(-1,Math.min(1,a)));
+        b1 = baseC; b2 = -baseC;
+      }
+      for(var k2=-4;k2<=4;k2++){
+        var xa = b1 + k2*2*Math.PI;
+        var xb = b2 + k2*2*Math.PI;
+        if(xa>=xMinDom-0.001 && xa<=xMaxDom+0.001) sols.push(xa);
+        if(Math.abs(b1-b2) > 1e-6 && xb>=xMinDom-0.001 && xb<=xMaxDom+0.001) sols.push(xb);
+      }
+    }
+    sols = sols.filter(function(v,i,arr){ return arr.findIndex(function(w){return Math.abs(w-v)<1e-6;})===i; });
+    sols.sort(function(x,y){return x-y;});
+    return sols;
+  }
+
+  function draw(){
+    svg.innerHTML = '';
+    // grid
+    for(var k=-4;k<=8;k++){
+      var gx = k*Math.PI/2;
+      if(gx<xMinDom||gx>xMaxDom) continue;
+      svg.appendChild(el('line',{x1:px(gx),y1:0,x2:px(gx),y2:H,stroke:'#F1F5F9','stroke-width':1}));
+    }
+    // interval band
+    svg.appendChild(el('rect',{x:px(state.intMin),y:0,width:Math.max(0,px(state.intMax)-px(state.intMin)),height:H,fill:'rgba(37,99,235,.06)'}));
+    // axes
+    svg.appendChild(el('line',{x1:0,y1:py(0),x2:W,y2:py(0),stroke:'#94A3B8','stroke-width':1.3}));
+    svg.appendChild(el('line',{x1:px(0),y1:0,x2:px(0),y2:H,stroke:'#94A3B8','stroke-width':1.3}));
+
+    // curve
+    svg.appendChild(el('path',{d:curvePath(), fill:'none', stroke:'#2563EB','stroke-width':2.4}));
+
+    // line y=a (only if within visible y range)
+    if(state.func!=='tan' ? Math.abs(state.a) <= 3 : true){
+      svg.appendChild(el('line',{x1:0,y1:py(state.a),x2:W,y2:py(state.a),stroke:'#F59E0B','stroke-width':2,'stroke-dasharray':'5,4'}));
+    }
+
+    var allSols = computeSolutions();
+    var inInterval = allSols.filter(function(x){ return x>=state.intMin-1e-6 && x<=state.intMax+1e-6; });
+    var outInterval = allSols.filter(function(x){ return !(x>=state.intMin-1e-6 && x<=state.intMax+1e-6); });
+
+    outInterval.forEach(function(x){
+      svg.appendChild(el('circle',{cx:px(x),cy:py(curveY(x)),r:4,fill:'#94A3B8'}));
+    });
+    inInterval.forEach(function(x){
+      svg.appendChild(el('circle',{cx:px(x),cy:py(curveY(x)),r:6.5,fill:'#10B981'}));
+    });
+
+    updateUI(inInterval);
+  }
+
+  function updateUI(inInterval){
+    sliderA.disabled = false;
+    aValEl.textContent = state.a.toFixed(1);
+    document.getElementById('equationBox').innerHTML =
+      state.func + ' x = ' + state.a.toFixed(1) +
+      '<div class="sol-line">' + (inInterval.length ? ('x = ' + inInterval.map(function(x){return fmtPi(x);}).join(', ')) : 'Tidak ada solusi di interval ini') + '</div>';
+
+    document.getElementById('statRow').innerHTML =
+      '<span class="stat-chip">Fungsi: <b>'+state.func+'</b></span>'+
+      '<span class="stat-chip">Solusi di interval: <b>'+inInterval.length+'</b></span>';
+
+    checkInsight(inInterval);
+  }
+
+  function checkInsight(inInterval){
+    var shown = false;
+    if(state.func!=='tan' && Math.abs(state.a) > 1+1e-9){
+      insightText.textContent = 'Nilai a berada di luar jangkauan fungsi (−1 sampai 1), makanya garis y = a sama sekali tidak memotong grafiknya — tidak ada solusi!';
+      shown = true;
+    } else if(state.func!=='tan' && Math.abs(Math.abs(state.a)-1) < 0.05){
+      insightText.textContent = 'Pas di titik puncak/lembah! Garis y = a hanya menyentuh grafik SATU kali per periode, bukan dua kali seperti biasanya.';
+      shown = true;
+    } else if(state.func==='tan'){
+      insightText.textContent = 'Karena tangen tidak dibatasi rentang nilainya, garis y = a berapa pun pasti memotong grafiknya — minimal satu kali setiap periode π.';
+      shown = true;
+    } else if(inInterval.length >= 2){
+      insightText.textContent = 'Perhatikan, ada lebih dari satu solusi dalam interval ini — karena grafiknya berulang, garis y = a bisa memotongnya lebih dari sekali.';
+      shown = true;
+    } else if(inInterval.length === 0){
+      insightText.textContent = 'Di interval ini kebetulan tidak ada solusi yang masuk, walau grafik tetap berpotongan di tempat lain (lihat titik abu-abu di luar area biru).';
+      shown = true;
+    }
+    insightBox.classList.toggle('show', shown);
+  }
+
+  sliderA.addEventListener('input', function(){ state.a = parseFloat(sliderA.value); draw(); });
+  funcChips.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      funcChips.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.func = btn.dataset.val;
+      draw();
+    });
+  });
+  intervalChips.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      intervalChips.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      state.intMin = parseFloat(btn.dataset.min);
+      state.intMax = parseFloat(btn.dataset.max);
+      draw();
+    });
+  });
+
+  draw();
+})();
+
+/* ================= CHALLENGE CHECKING ================= */
+function showFeedback(id, ok, msg){
+  var f = document.getElementById(id);
+  f.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+  f.textContent = msg;
+}
+function closeTo(a,b,t){ return Math.abs(a-b) <= (t||0.6); }
+function matchesPair(v1,v2,t1,t2){
+  return (closeTo(v1,t1)&&closeTo(v2,t2)) || (closeTo(v1,t2)&&closeTo(v2,t1));
+}
+
+// Soal 1: sin x = 1/2 -> 30, 150
+function checkSoal1(){
+  if(!identitasLengkap()) return;
+  var v1 = parseFloat(document.getElementById('s1x1').value);
+  var v2 = parseFloat(document.getElementById('s1x2').value);
+  var benar = matchesPair(v1,v2,30,150);
+  if(benar){
+    showFeedback('fb1', true, 'Benar! sin 30° = 1/2, dan karena sin juga positif di kuadran II, solusi keduanya adalah 180° − 30° = 150°.');
+  } else if((closeTo(v1,30)||closeTo(v2,30)) && !(closeTo(v1,150)||closeTo(v2,150))){
+    showFeedback('fb1', false, 'Sudah benar untuk x = 30°, tapi baru satu solusi. Ingat, sin juga bernilai positif di kuadran II — cari solusi keduanya dengan 180° − 30°.');
+  } else {
+    showFeedback('fb1', false, 'Belum tepat. Ingat tabel sudut istimewa: sin 30° = 1/2. Karena sin positif di kuadran I dan II, solusinya ada dua: 30° dan (180° − 30°).');
+  }
+  kirimKeGuru(1, 'x1='+v1, 'x2='+v2, benar);
+}
+
+// Soal 2: cos x = -1/2 -> 120, 240
+function checkSoal2(){
+  if(!identitasLengkap()) return;
+  var v1 = parseFloat(document.getElementById('s2x1').value);
+  var v2 = parseFloat(document.getElementById('s2x2').value);
+  var benar = matchesPair(v1,v2,120,240);
+  if(benar){
+    showFeedback('fb2', true, 'Tepat! Karena cos negatif di kuadran II dan III, solusinya adalah 180° − 60° = 120° dan 180° + 60° = 240°.');
+  } else if(matchesPair(v1,v2,60,300)){
+    showFeedback('fb2', false, 'Sepertinya kamu mengerjakan seolah cos x = +1/2 (yang solusinya 60° dan 300°). Karena nilainya NEGATIF (−1/2), solusinya harus ada di kuadran II dan III, yaitu 120° dan 240° — bukan kuadran I dan IV.');
+  } else {
+    showFeedback('fb2', false, 'Belum tepat. Sudut referensinya adalah 60° (karena cos 60° = 1/2). Karena hasilnya negatif, cari kuadran di mana cos memang bernilai negatif: kuadran II (180° − 60°) dan kuadran III (180° + 60°).');
+  }
+  kirimKeGuru(2, 'x1='+v1, 'x2='+v2, benar);
+}
+
+// Soal 3: jumlah solusi sin x = 0.3 (2), sin x = 1 (1), sin x = 1.5 (0)
+function checkSoal3(){
+  if(!identitasLengkap()) return;
+  var n1 = parseInt(document.getElementById('s3n1').value,10);
+  var n2 = parseInt(document.getElementById('s3n2').value,10);
+  var n3 = parseInt(document.getElementById('s3n3').value,10);
+  var benar = (n1===2 && n2===1 && n3===0);
+  if(benar){
+    showFeedback('fb3', true, 'Tepat sekali! a = 0,3 ada dalam jangkauan (−1 sampai 1) dan bukan di puncak, jadi 2 solusi. a = 1 tepat di puncak grafik, jadi hanya 1 solusi (garis hanya menyentuh sekali). a = 1,5 di luar jangkauan sinus, jadi 0 solusi.');
+  } else if(n2===2 || n3>0){
+    showFeedback('fb3', false, 'Ingat rentang nilai sinus hanya dari −1 sampai 1. Untuk a = 1 (tepat di puncak), garis y = a hanya menyentuh grafik SATU kali, bukan dua. Untuk a = 1,5, garis y = a berada di luar jangkauan grafik sama sekali, jadi TIDAK ADA solusi.');
+  } else {
+    showFeedback('fb3', false, 'Belum tepat. Bandingkan nilai a dengan jangkauan sinus (−1 sampai 1): jika |a| < 1 biasanya 2 solusi, jika |a| = 1 tepat 1 solusi (titik puncak/lembah), dan jika |a| > 1 tidak ada solusi sama sekali.');
+  }
+  kirimKeGuru(3, 'n1='+n1+',n2='+n2+',n3='+n3, '', benar);
+}
+
+/* ================= KIRIM KE GURU (Google Apps Script) ================= */
+/* Tempel URL Web App Google Apps Script di sini (satu URL sama dipakai untuk SEMUA modul) */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, benar){
+  var idx = nomorSoal - 1;
+  var statusEl = document.getElementById('send'+idx);
+  if(!SCRIPT_URL){ if(statusEl) statusEl.textContent=''; return; }
+  var id = getIdentitas();
+  var namaKelas = id.nama + ' — ' + id.kelas;
+  var payload = {
+    topik: 'Persamaan Fungsi Trigonometri',
+    nama: namaKelas,
+    soal: nomorSoal,
+    jawaban: jawaban1,
+    jawaban2: jawaban2 || '',
+    benar: benar ? 'Benar' : 'Salah',
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  if(statusEl) statusEl.textContent = 'Mengirim ke guru...';
+  fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(payload) })
+    .then(function(){ if(statusEl) statusEl.textContent = 'Terkirim ke guru ✓'; })
+    .catch(function(){ if(statusEl) statusEl.textContent = 'Gagal mengirim (periksa koneksi internet).'; });
+}
+</script>
+</body>
+</html>

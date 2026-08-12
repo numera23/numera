@@ -1,0 +1,787 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Pemodelan dengan Fungsi Trigonometri
+Jenis      : Modul Interaktif (pakai KaTeX)
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Pemodelan dengan Fungsi Trigonometri — Numera</title>
+<meta name="description" content="Modul interaktif belajar pemodelan fenomena periodik dengan fungsi trigonometri: amplitudo, periode, garis tengah, dan penyusunan model dari data — Numera">
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<style>
+  :root{
+    --primary:#2563EB; --primary-hover:#1D4ED8; --primary-light:#DBEAFE;
+    --bg:#F8FAFC; --card:#FFFFFF; --text:#0F172A; --text-soft:#64748B; --border:#E2E8F0;
+    --success:#10B981; --warning:#F59E0B; --error:#EF4444;
+    --radius-card:18px; --radius-btn:12px;
+    --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px;
+    --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; overflow-x:hidden;}
+  .wrap{max-width:900px; margin:0 auto; padding:0 var(--sp-4);}
+
+  .topbar{position:sticky; top:0; z-index:50; background:rgba(248,250,252,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--border);}
+  .topbar-inner{max-width:900px; margin:0 auto; padding:10px var(--sp-4); font-size:13px; font-weight:600; color:var(--primary); letter-spacing:.2px;}
+  .progress-track{height:3px; background:var(--border); width:100%;}
+  .progress-bar{height:100%; width:0%; background:var(--primary); transition:width 80ms linear;}
+
+  main{padding-bottom:var(--sp-7);}
+  .fade-section{opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease;}
+  .fade-section.visible{opacity:1; transform:translateY(0);}
+
+  .card{background:var(--card); border-radius:var(--radius-card); box-shadow:var(--shadow); padding:var(--sp-5); margin-top:var(--sp-5);}
+  .section-num{display:inline-block; font-size:12.5px; font-weight:700; color:var(--primary); background:var(--primary-light); padding:3px 10px; border-radius:999px; margin-bottom:var(--sp-3); letter-spacing:.5px;}
+  h1{font-size:26px; font-weight:800; margin:var(--sp-3) 0 var(--sp-2); line-height:1.3;}
+  h2{font-size:20px; font-weight:700; margin:0 0 var(--sp-3); line-height:1.35;}
+  h3{font-size:15.5px; font-weight:700; margin:var(--sp-4) 0 6px; color:var(--primary-hover);}
+  h3:first-of-type{margin-top:0;}
+  p{font-size:15px; line-height:1.65; color:var(--text); margin:0 0 var(--sp-3);}
+  .soft{color:var(--text-soft);}
+  mark{background:var(--primary-light); color:var(--primary-hover); padding:1px 4px; border-radius:4px; font-weight:600;}
+
+  .header-card{margin-top:var(--sp-5);}
+  .pill-row{display:flex; gap:var(--sp-2); flex-wrap:wrap; margin-bottom:var(--sp-3);}
+  .pill{font-size:12.5px; font-weight:600; color:var(--primary); background:var(--primary-light); padding:5px 12px; border-radius:999px;}
+  .goal-list{margin:var(--sp-3) 0 0; padding-left:20px;}
+  .goal-list li{font-size:14.5px; line-height:1.6; color:var(--text-soft); margin-bottom:4px;}
+
+  .id-card{margin-top:var(--sp-5); background:var(--primary-light); border-radius:14px; padding:var(--sp-4);}
+  .id-card h3{color:var(--primary-hover); margin-top:0;}
+  .id-card p{font-size:13.5px; color:#1e3a8a; margin-bottom:var(--sp-3);}
+  .id-grid{display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3);}
+  .id-grid label{display:block; font-size:12.5px; font-weight:600; color:var(--text-soft); margin-bottom:4px;}
+  .id-grid input{width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); font-family:'Inter',sans-serif; font-size:14px; background:#fff;}
+  .id-grid input:focus{outline:none; border-color:var(--primary);}
+  .id-status{font-size:13px; font-weight:600; margin-top:var(--sp-2); min-height:16px;}
+  @media (max-width:520px){ .id-grid{grid-template-columns:1fr;} }
+
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:40px; padding:0 18px; border-radius:var(--radius-btn); font-family:'Inter',sans-serif; font-size:14px; font-weight:600; border:none; cursor:pointer; transition:all 200ms ease;}
+  .btn-primary{background:var(--primary); color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);}
+  .btn-outline{background:#fff; color:var(--primary); border:1px solid var(--border);}
+  .btn-outline:hover{border-color:var(--primary); background:var(--primary-light);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center;}
+
+  .step-nav{display:flex; align-items:center; justify-content:space-between; margin-top:var(--sp-4);}
+  .step-dots{display:flex; gap:6px;}
+  .step-dot{width:7px; height:7px; border-radius:50%; background:var(--border);}
+  .step-dot.active{background:var(--primary); width:20px; border-radius:4px; transition:all 200ms ease;}
+  .step-box{background:var(--bg); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-3); display:flex; flex-direction:column; align-items:center; gap:var(--sp-3);}
+  svg{max-width:100%; height:auto; display:block;}
+  .step-text{font-size:14.5px; line-height:1.65; color:var(--text); text-align:center; min-height:56px;}
+
+  .sim-grid{display:grid; grid-template-columns:1fr; gap:var(--sp-4); margin-top:var(--sp-4);}
+  @media (min-width:640px){ .sim-grid{grid-template-columns:auto 1fr;} }
+  .sim-visual{background:var(--bg); border-radius:14px; padding:var(--sp-3); display:flex; align-items:center; justify-content:center; gap:var(--sp-3); flex-wrap:wrap;}
+  .sim-controls{display:flex; flex-direction:column; gap:var(--sp-4); justify-content:center;}
+
+  .control-label{display:flex; justify-content:space-between; align-items:center; font-size:13.5px; font-weight:700; margin-bottom:8px;}
+  .control-label .curval{color:var(--primary); font-weight:800;}
+  input[type=range]{width:100%; -webkit-appearance:none; height:6px; border-radius:999px; background:var(--border); outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--primary); cursor:pointer; border:3px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.25);}
+  input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; background:var(--primary); cursor:pointer; border:3px solid #fff;}
+
+  .stepper{display:flex; align-items:center; gap:10px;}
+  .stepper button{width:40px; height:40px; border-radius:var(--radius-btn); border:1px solid var(--border); background:#fff; font-size:18px; font-weight:800; color:var(--primary); cursor:pointer; transition:background .2s;}
+  .stepper button:hover{background:var(--primary-light);}
+  .stepper button:active{transform:scale(.95);}
+  .stepper .stepper-display{flex:1; text-align:center; font-size:15px; font-weight:700; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-btn); padding:9px 6px;}
+
+  .equation-box{background:var(--text); color:#fff; border-radius:12px; padding:var(--sp-4); font-size:14.5px; font-weight:700; text-align:center; letter-spacing:.2px; line-height:1.7;}
+  .stat-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .stat-chip{font-size:12.5px; font-weight:600; background:var(--bg); border:1px solid var(--border); padding:6px 10px; border-radius:10px; color:var(--text);}
+  .stat-chip b{color:var(--primary);}
+
+  .insight-box{margin-top:var(--sp-3); background:#ECFDF5; border:1px solid #A7F3D0; border-radius:12px; padding:var(--sp-3) var(--sp-4); font-size:14px; color:#065F46; font-weight:600; display:none; align-items:flex-start; gap:8px;}
+  .insight-box.show{display:flex;}
+
+  .formula-box{overflow-x:auto; overflow-y:hidden; padding:8px 2px; -webkit-overflow-scrolling:touch;}
+  .formula-box::-webkit-scrollbar{height:4px;}
+
+  .challenge-item{border:1px solid var(--border); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-4);}
+  .challenge-head{display:flex; align-items:center; gap:var(--sp-2); margin-bottom:var(--sp-3); flex-wrap:wrap;}
+  .level-badge{font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:999px; letter-spacing:.3px;}
+  .level-mudah{background:#D1FAE5; color:#065F46;}
+  .level-sedang{background:#FEF3C7; color:#92400E;}
+  .level-sulit{background:#FEE2E2; color:#991B1B;}
+  .challenge-inputs{display:flex; flex-wrap:wrap; gap:var(--sp-3); align-items:flex-end; margin:var(--sp-3) 0;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field label{font-size:12.5px; font-weight:600; color:var(--text-soft);}
+  .field input{width:96px; padding:9px 10px; border-radius:10px; border:1px solid var(--border); font-family:'Inter',sans-serif; font-size:14px;}
+  .field input:focus{outline:none; border-color:var(--primary);}
+  .feedback{margin-top:var(--sp-3); padding:var(--sp-3); border-radius:10px; font-size:14px; line-height:1.55; display:none;}
+  .feedback.show{display:block;}
+  .feedback.ok{background:#D1FAE5; color:#065F46;}
+  .feedback.bad{background:#FEE2E2; color:#991B1B;}
+  .send-status{font-size:12.5px; color:var(--text-soft); margin-top:6px; min-height:14px;}
+
+  .mistake-item{display:flex; gap:var(--sp-3); align-items:flex-start; margin-top:var(--sp-4);}
+  .mistake-x{flex-shrink:0; width:28px; height:28px; border-radius:50%; background:#FEE2E2; color:var(--error); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;}
+
+  .summary-list{list-style:none; margin:0; padding:0;}
+  .summary-list li{display:flex; gap:var(--sp-3); align-items:flex-start; font-size:14.5px; line-height:1.6; padding:var(--sp-3) 0; border-bottom:1px solid var(--border);}
+  .summary-list li:last-child{border-bottom:none;}
+  .summary-num{flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700;}
+  .done-badge{text-align:center; margin-top:var(--sp-5); font-size:14px; font-weight:700; color:var(--success);}
+
+  .site-footer{padding: var(--sp-5) 0 var(--sp-6); text-align:center;}
+  .footer-divider{height:1px; background:var(--border); margin-bottom:var(--sp-4);}
+  .footer-brand{font-size:13.5px; font-weight:700; color:var(--primary); margin:0 0 4px;}
+  .footer-text{font-size:13px; color:var(--text-soft); margin:0 0 2px;}
+  .footer-meta{font-size:12.5px; color:var(--text-soft); margin:0; opacity:.85;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Pemodelan dengan Fungsi Trigonometri</div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<main class="wrap">
+
+  <!-- 1. HEADER (tanpa label kelas) -->
+  <section class="header-card card">
+    <div class="pill-row">
+      <span class="pill">⏱ 15–20 menit</span>
+      <span class="pill">Trigonometri</span>
+    </div>
+    <h1>Pemodelan dengan Fungsi Trigonometri</h1>
+    <p class="soft">Setelah modul ini selesai, kamu akan bisa:</p>
+    <ul class="goal-list">
+      <li>Menjelaskan apa itu pemodelan matematika dan kenapa fungsi trigonometri cocok untuk pola berulang.</li>
+      <li>Menentukan garis tengah, amplitudo, dan periode dari data sebuah fenomena nyata.</li>
+      <li>Menyusun model fungsi sinus/kosinus dari informasi tersebut.</li>
+      <li>Menafsirkan arti setiap parameter dalam konteks fenomenanya, bukan sekadar angka.</li>
+      <li>Menggunakan model untuk memprediksi nilai pada waktu tertentu, dan memeriksa kewajarannya.</li>
+    </ul>
+
+    <div class="id-card">
+      <h3>Isi dulu sebelum mulai 👋</h3>
+      <p>Jawabanmu di bagian Challenge otomatis terkirim ke gurumu. Tidak perlu login atau email apapun.</p>
+      <div class="id-grid">
+        <div><label>Nama lengkap</label><input type="text" id="namaSiswa" placeholder="Tulis namamu"></div>
+        <div><label>Kelas</label><input type="text" id="kelasSiswa" placeholder="Contoh: XI IPA 2"></div>
+      </div>
+      <div class="id-status" id="idStatus"></div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section class="card fade-section">
+    <span class="section-num">01</span>
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <p>Nelayan di pelabuhan sering tahu persis jam berapa air laut akan pasang, bahkan tanpa melihat jam terus-menerus setiap hari.</p>
+    <p>Padahal tinggi air laut itu terus naik-turun. Kok bisa mereka memprediksinya dengan cukup akurat?</p>
+    <p>Jawabannya: karena pola naik-turun air laut itu <mark>berulang dengan teratur</mark>. Kalau suatu pola berulang secara teratur, kita sebenarnya bisa "menerjemahkannya" menjadi sebuah rumus matematika.</p>
+    <p>Rumus itulah yang disebut <b>model</b>. Dan begitu kita punya model, kita bisa memprediksi kondisi di waktu-waktu yang belum pernah diukur sama sekali.</p>
+    <p>Menurutmu, informasi apa saja yang perlu kita catat dari air laut itu supaya bisa membuat modelnya?</p>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="card fade-section">
+    <span class="section-num">02</span>
+    <h2>Penjelasan Sederhana</h2>
+
+    <h3>Apa itu pemodelan matematika?</h3>
+    <p><b>Pemodelan</b> adalah proses menerjemahkan fenomena nyata menjadi sebuah fungsi matematika, supaya fenomena itu bisa dihitung dan diprediksi.</p>
+    <p>Alurnya kira-kira begini: <mark>fenomena nyata → kita amati polanya → kita ambil beberapa angka penting → angka itu jadi parameter → tersusunlah sebuah fungsi</mark>.</p>
+
+    <h3>Kenapa harus fungsi trigonometri?</h3>
+    <p>Karena fungsi sinus dan kosinus punya sifat <b>periodik</b> — nilainya naik-turun lalu berulang persis dengan pola yang sama. Ini pas sekali untuk fenomena yang berulang: ombak, ayunan, putaran roda, suhu harian, atau tinggi air laut.</p>
+    <p class="soft">Kamu sudah tahu apa arti amplitudo dan periode dari materi Transformasi Grafik Fungsi. Sekarang kita pakai keduanya untuk membangun model dari sebuah fenomena nyata.</p>
+
+    <h3>Empat angka penting dari sebuah fenomena</h3>
+    <p>Untuk membuat model, ada beberapa angka yang perlu kita "gali" dari fenomenanya:</p>
+    <p><b>Garis tengah</b> — rata-rata antara nilai tertinggi dan terendah. Ini posisi "normal" fenomenanya kalau tidak sedang di puncak atau lembah.</p>
+    <div class="formula-box">\[ \text{garis tengah} = \dfrac{\text{maksimum} + \text{minimum}}{2} \]</div>
+    <p><b>Amplitudo</b> — seberapa jauh fenomena itu menyimpang dari garis tengahnya. Ini BUKAN nilai maksimumnya, tapi jarak dari garis tengah ke puncak.</p>
+    <div class="formula-box">\[ \text{amplitudo} = \dfrac{\text{maksimum} - \text{minimum}}{2} \]</div>
+    <p><b>Periode</b> — waktu yang dibutuhkan untuk kembali ke pola yang persis sama (satu siklus penuh).</p>
+    <p><b>Fase</b> — kapan siklus itu "dimulai". Kalau pengukuran kebetulan dimulai tepat saat fenomenanya berada di puncak, kita bisa pakai fungsi kosinus tanpa pergeseran fase tambahan, karena cos(0) memang bernilai maksimum.</p>
+
+    <h3>Menyusun model</h3>
+    <p>Setelah keempat angka itu didapat, modelnya disusun seperti ini (kalau pengukuran dimulai dari puncak):</p>
+    <div class="formula-box">\[ h(t) = a \cdot \cos\left(\dfrac{2\pi}{T}\, t\right) + d \]</div>
+    <p>dengan <b>a</b> = amplitudo, <b>T</b> = periode, <b>d</b> = garis tengah, dan <b>t</b> = waktu. Ingat, ini BUKAN rumus untuk dihafal begitu saja — setiap huruf punya arti nyata yang sudah kita bahas di atas.</p>
+
+    <h3>Membaca model kembali</h3>
+    <p>Setelah dapat model, tugas kita belum selesai. Kita harus bisa membaca artinya kembali: berapa nilai maksimumnya (d+a)? Berapa nilai pada waktu tertentu? Apakah hasilnya masuk akal dibanding fenomena aslinya?</p>
+    <p>Sampai sini masih masuk akal? Yuk kita coba bangun satu model bersama-sama, langkah demi langkah.</p>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="card fade-section">
+    <span class="section-num">03</span>
+    <h2>Lihat Cara Kerjanya</h2>
+    <p class="soft">Seorang nelayan mencatat tinggi air laut setiap 3 jam, mulai pukul 00.00 tepat saat air sedang pasang tertinggi. Yuk susun modelnya.</p>
+
+    <div class="step-box">
+      <svg id="stepSvg" viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg"></svg>
+      <p class="step-text" id="stepText"></p>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-outline" id="prevStepBtn">← Previous</button>
+      <div class="step-dots" id="stepDots"></div>
+      <button class="btn btn-primary" id="nextStepBtn">Next →</button>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="card fade-section">
+    <span class="section-num">04</span>
+    <h2>Coba Sendiri</h2>
+    <p class="soft">Ini pelabuhan versimu sendiri. Ubah amplitudo, periode, dan garis tengahnya, lalu tekan Play untuk melihat air pasang-surut sekaligus grafiknya secara bersamaan.</p>
+
+    <div class="sim-grid">
+      <div class="sim-visual">
+        <svg id="tankSvg" viewBox="0 0 140 260" xmlns="http://www.w3.org/2000/svg" style="width:110px;"></svg>
+        <svg id="graphSvg" viewBox="0 0 280 260" xmlns="http://www.w3.org/2000/svg" style="flex:1; min-width:200px;"></svg>
+      </div>
+
+      <div class="sim-controls">
+        <div class="btn-row" style="justify-content:flex-start;">
+          <button class="btn btn-primary" id="playBtn">▶ Play</button>
+          <button class="btn btn-outline" id="resetBtn">↺ Reset</button>
+        </div>
+
+        <div>
+          <div class="control-label">Amplitudo (a) <span class="curval" id="aVal">1 m</span></div>
+          <input type="range" id="sliderA" min="0.5" max="6" step="0.5" value="1">
+        </div>
+
+        <div>
+          <div class="control-label">Periode (T) <span class="curval" id="tVal">12 jam</span></div>
+          <input type="range" id="sliderT" min="4" max="20" step="1" value="12">
+        </div>
+
+        <div>
+          <div class="control-label">Garis tengah (d) <span class="curval" id="dVal">2 m</span></div>
+          <div class="stepper">
+            <button id="dMinus">−</button>
+            <div class="stepper-display" id="dDisplay">d = 2 m</div>
+            <button id="dPlus">+</button>
+          </div>
+        </div>
+
+        <div class="equation-box" id="equationBox"></div>
+        <div class="stat-row" id="statRow"></div>
+      </div>
+    </div>
+    <div class="insight-box" id="insightBox">💡 <span id="insightText"></span></div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="card fade-section">
+    <span class="section-num">05</span>
+    <h2>Challenge</h2>
+    <p class="soft">Tiga soal, makin lama makin menantang. Jawabanmu otomatis tersimpan untuk gurumu.</p>
+
+    <!-- Soal 1 - Mudah -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-mudah">MUDAH</span>
+        <h3 style="margin:0;">Soal 1</h3>
+      </div>
+      <p>Tinggi kursi sebuah bianglala berayun antara <b>2 meter</b> (paling rendah) dan <b>10 meter</b> (paling tinggi) dari tanah.</p>
+      <p class="soft">Tentukan amplitudo dan garis tengah model ketinggian kursi tersebut.</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Amplitudo (m)</label><input type="number" step="any" id="s1a"></div>
+        <div class="field"><label>Garis tengah (m)</label><input type="number" step="any" id="s1d"></div>
+        <button class="btn btn-primary" onclick="checkSoal1()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb1"></div>
+      <div class="send-status" id="send0"></div>
+    </div>
+
+    <!-- Soal 2 - Sedang -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-sedang">SEDANG</span>
+        <h3 style="margin:0;">Soal 2</h3>
+      </div>
+      <p>Suhu suatu kota berubah periodik sepanjang hari: mencapai <b>maksimum 30°C</b> pukul 14.00, dan <b>minimum 18°C</b> pukul 02.00 (12 jam kemudian).</p>
+      <p class="soft">Berapa AMPLITUDO dari model suhu ini?</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Amplitudo (°C)</label><input type="number" step="any" id="s2a"></div>
+        <button class="btn btn-primary" onclick="checkSoal2()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb2"></div>
+      <div class="send-status" id="send1"></div>
+    </div>
+
+    <!-- Soal 3 - Sulit -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-sulit">SULIT</span>
+        <h3 style="margin:0;">Soal 3</h3>
+      </div>
+      <p>Sebuah model diketahui: <b>h(t) = 4·cos((π/6)·t) + 10</b>.</p>
+      <p class="soft">Jika PERIODE fenomena aslinya ternyata 2 kali lebih panjang dari yang tersirat pada model ini (amplitudo dan garis tengah tidak berubah), berapa periode BARU-nya (dalam satuan waktu yang sama)?</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Periode baru</label><input type="number" step="any" id="s3t"></div>
+        <button class="btn btn-primary" onclick="checkSoal3()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb3"></div>
+      <div class="send-status" id="send2"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="card fade-section">
+    <span class="section-num">06</span>
+    <h2>Kesalahan yang Sering Terjadi</h2>
+
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Mengira amplitudo sama dengan nilai maksimum.</strong></p>
+        <p class="soft">Amplitudo adalah JARAK dari garis tengah ke puncak, bukan nilai puncaknya sendiri. Kalau maksimum 30 dan minimum 18, amplitudonya (30−18)/2 = 6, bukan 30.</p>
+      </div>
+    </div>
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Mengira garis tengah selalu nol.</strong></p>
+        <p class="soft">Kalau fenomenanya tidak berayun di sekitar angka 0 (misalnya tinggi air laut, suhu, atau tinggi bianglala dari tanah), garis tengahnya BUKAN nol. Selalu hitung dari rata-rata maksimum dan minimum yang sebenarnya.</p>
+      </div>
+    </div>
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Salah membaca informasi "satu siklus".</strong></p>
+        <p class="soft">Kadang soal memberi info "dari puncak ke lembah" — itu baru SETENGAH periode, bukan satu periode penuh. Periode penuh adalah dari puncak kembali ke puncak berikutnya.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="card fade-section">
+    <span class="section-num">07</span>
+    <h2>Ringkasan</h2>
+    <ul class="summary-list">
+      <li><span class="summary-num">1</span><span>Pemodelan adalah proses menerjemahkan fenomena nyata yang berulang menjadi fungsi matematika.</span></li>
+      <li><span class="summary-num">2</span><span>Fungsi trigonometri cocok untuk fenomena periodik karena nilainya naik-turun dan berulang secara teratur.</span></li>
+      <li><span class="summary-num">3</span><span>Garis tengah, amplitudo, dan periode digali dari nilai maksimum, minimum, dan waktu satu siklus fenomena.</span></li>
+      <li><span class="summary-num">4</span><span>Model umumnya berbentuk h(t) = a·cos((2π/T)·t) + d, dengan setiap huruf mewakili makna nyata pada fenomenanya.</span></li>
+      <li><span class="summary-num">5</span><span>Model harus bisa "dibaca kembali" — dipakai untuk memprediksi nilai dan dicek kewajarannya terhadap fenomena aslinya.</span></li>
+    </ul>
+    <p class="done-badge">✓ Selesai — Pemodelan dengan Fungsi Trigonometri</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ================= PROGRESS BAR ================= */
+(function(){
+  var bar = document.getElementById('progressBar');
+  function update(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var height = h.scrollHeight - h.clientHeight;
+    bar.style.width = (height>0 ? (scrolled/height)*100 : 0) + '%';
+  }
+  document.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+/* ================= FADE UP ================= */
+(function(){
+  var els = document.querySelectorAll('.fade-section');
+  if(!('IntersectionObserver' in window)){ els.forEach(function(el){el.classList.add('visible');}); return; }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){ if(entry.isIntersecting){ entry.target.classList.add('visible'); io.unobserve(entry.target); } });
+  }, {threshold:0.12});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ================= IDENTITAS SISWA ================= */
+function getIdentitas(){
+  return { nama: document.getElementById('namaSiswa').value.trim(), kelas: document.getElementById('kelasSiswa').value.trim() };
+}
+function identitasLengkap(){
+  var id = getIdentitas();
+  var statusEl = document.getElementById('idStatus');
+  if(!id.nama || !id.kelas){
+    statusEl.textContent = 'Isi nama dan kelas dulu ya, sebelum cek jawaban.';
+    statusEl.style.color = '#B91C1C';
+    document.getElementById('namaSiswa').focus();
+    return false;
+  }
+  statusEl.textContent = '';
+  return true;
+}
+
+/* ================= KaTeX render ================= */
+function renderMath(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, { delimiters:[ {left:'\\[',right:'\\]',display:true}, {left:'\\(',right:'\\)',display:false} ] });
+  }
+}
+window.addEventListener('load', renderMath);
+
+/* ================= SVG HELPERS ================= */
+var SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs){ var e = document.createElementNS(SVGNS, tag); for(var k in attrs){ e.setAttribute(k, attrs[k]); } return e; }
+
+/* ================= SECTION 4: STEP-BY-STEP MEMBANGUN MODEL ================= */
+(function(){
+  var svg = document.getElementById('stepSvg');
+  var textEl = document.getElementById('stepText');
+  var dotsWrap = document.getElementById('stepDots');
+  var prevBtn = document.getElementById('prevStepBtn');
+  var nextBtn = document.getElementById('nextStepBtn');
+
+  var padX=32, padY=20, W=340, H=220;
+  var plotW=W-padX*2, plotH=H-padY*2;
+  var tMin=0, tMax=12;
+  var yMin=0, yMax=4;
+  function px(t){ return padX + (t-tMin)/(tMax-tMin)*plotW; }
+  function py(y){ return padY + plotH - (y-yMin)/(yMax-yMin)*plotH; }
+
+  var data = [[0,3],[3,2],[6,1],[9,2],[12,3]];
+
+  function baseAxes(){
+    svg.innerHTML = '';
+    for(var gt=0; gt<=12; gt+=3){
+      svg.appendChild(el('line',{x1:px(gt),y1:padY,x2:px(gt),y2:H-padY,stroke:'#F1F5F9','stroke-width':1}));
+    }
+    svg.appendChild(el('line',{x1:padX,y1:H-padY,x2:W-padX,y2:H-padY,stroke:'#94A3B8','stroke-width':1.3}));
+    svg.appendChild(el('line',{x1:padX,y1:padY,x2:padX,y2:H-padY,stroke:'#94A3B8','stroke-width':1.3}));
+    data.forEach(function(p){
+      var t = el('text',{x:px(p[0])-8,y:H-padY+14,'font-size':9.5,fill:'#94A3B8'}); t.textContent=p[0]+'j'; svg.appendChild(t);
+    });
+    var ylab = el('text',{x:4,y:py(0)+3,'font-size':9,fill:'#94A3B8'}); ylab.textContent='0m'; svg.appendChild(ylab);
+  }
+
+  function plotData(){
+    data.forEach(function(p){
+      svg.appendChild(el('circle',{cx:px(p[0]),cy:py(p[1]),r:5,fill:'#2563EB'}));
+    });
+  }
+  function plotCurve(){
+    var d0=''; var first=true;
+    for(var t=0; t<=12; t+=0.2){
+      var y = Math.cos((Math.PI/6)*t)+2;
+      var X=px(t),Y=py(y);
+      d0 += (first?'M':'L')+X.toFixed(1)+','+Y.toFixed(1)+' '; first=false;
+    }
+    svg.appendChild(el('path',{d:d0, fill:'none', stroke:'#2563EB','stroke-width':2.3}));
+  }
+
+  var texts = [
+    'Nelayan mencatat tinggi air setiap 3 jam. Datanya: (0,3) (3,2) (6,1) (9,2) (12,3) — dalam meter. Kita lihat dulu titik-titiknya di grafik.',
+    'Nilai <mark>maksimum = 3 m</mark> (di jam 0 dan 12), nilai <mark>minimum = 1 m</mark> (di jam 6).',
+    'Garis tengah = (3+1)/2 = <mark>2 m</mark>. Ini "posisi normal" air laut kalau sedang tidak di puncak atau lembah.',
+    'Amplitudo = (3−1)/2 = <mark>1 m</mark>. Artinya air naik-turun sejauh 1 meter dari garis tengahnya.',
+    'Dari puncak (jam 0) kembali ke puncak berikutnya (jam 12) — jadi periodenya <mark>T = 12 jam</mark>.',
+    'Karena pengukuran dimulai TEPAT saat air di puncak (jam 0), kita pakai <mark>kosinus</mark> — karena cos(0) memang bernilai maksimum, jadi tidak perlu pergeseran fase tambahan.',
+    'Model akhirnya: <mark>h(t) = 1·cos((2π/12)·t) + 2</mark>, atau disederhanakan h(t) = cos((π/6)t) + 2.',
+    'Periksa: saat t=6, h(6) = cos(π) + 2 = −1 + 2 = 1 m. Cocok dengan data minimum tadi! Model kita masuk akal. ✓'
+  ];
+  var step = 0, total = texts.length;
+
+  function buildDots(){
+    dotsWrap.innerHTML = '';
+    for(var i=0;i<total;i++){ var d=document.createElement('div'); d.className='step-dot'; dotsWrap.appendChild(d); }
+  }
+  buildDots();
+
+  function render(){
+    baseAxes();
+    plotData();
+
+    if(step >= 1){
+      [[0,3],[12,3]].forEach(function(p){ svg.appendChild(el('circle',{cx:px(p[0]),cy:py(p[1]),r:7,fill:'none',stroke:'#10B981','stroke-width':2})); });
+      svg.appendChild(el('circle',{cx:px(6),cy:py(1),r:7,fill:'none',stroke:'#EF4444','stroke-width':2}));
+    }
+    if(step >= 2){
+      svg.appendChild(el('line',{x1:padX,y1:py(2),x2:W-padX,y2:py(2),stroke:'#F59E0B','stroke-width':2,'stroke-dasharray':'5,4'}));
+    }
+    if(step >= 3){
+      svg.appendChild(el('line',{x1:px(1),y1:py(2),x2:px(1),y2:py(3),stroke:'#2563EB','stroke-width':2}));
+    }
+    if(step >= 6){
+      plotCurve();
+    }
+    if(step === 7){
+      svg.appendChild(el('circle',{cx:px(6),cy:py(1),r:8,fill:'#10B981'}));
+    }
+
+    textEl.innerHTML = texts[step];
+    var dots = dotsWrap.children;
+    for(var i=0;i<dots.length;i++){ dots[i].classList.toggle('active', i===step); }
+    prevBtn.disabled = (step===0);
+    nextBtn.disabled = (step===total-1);
+  }
+  prevBtn.addEventListener('click', function(){ if(step>0){ step--; render(); } });
+  nextBtn.addEventListener('click', function(){ if(step<total-1){ step++; render(); } });
+  render();
+})();
+
+/* ================= SECTION 5: COBA SENDIRI (PELABUHAN + GRAFIK) ================= */
+(function(){
+  var tankSvg = document.getElementById('tankSvg');
+  var graphSvg = document.getElementById('graphSvg');
+  var sliderA = document.getElementById('sliderA');
+  var sliderT = document.getElementById('sliderT');
+  var dPlus = document.getElementById('dPlus');
+  var dMinus = document.getElementById('dMinus');
+  var playBtn = document.getElementById('playBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var insightBox = document.getElementById('insightBox');
+  var insightText = document.getElementById('insightText');
+
+  var params = { a:1, T:12, d:2 };
+  var defaults = { a:1, T:12, d:2 };
+  var t = 0;
+  var playing = false;
+  var timer = null;
+
+  function bVal(){ return 2*Math.PI/params.T; }
+  function hAt(tt){ return params.a*Math.cos(bVal()*tt)+params.d; }
+
+  function drawTank(){
+    tankSvg.innerHTML = '';
+    var W=140,H=260,padTop=26,padBottom=20;
+    var curMax = params.d+params.a, curMin = params.d-params.a;
+    var domMin = curMin-0.8, domMax = curMax+0.8;
+    function py(v){ return H-padBottom - (v-domMin)/(domMax-domMin)*(H-padTop-padBottom); }
+
+    tankSvg.appendChild(el('rect',{x:20,y:padTop,width:100,height:H-padTop-padBottom,fill:'#EFF6FF',stroke:'#94A3B8','stroke-width':1.5,rx:8}));
+
+    var hNow = hAt(t);
+    var waterY = py(hNow);
+    tankSvg.appendChild(el('rect',{x:22,y:waterY,width:96,height:Math.max(0,(H-padBottom-waterY)),fill:'#93C5FD',opacity:.85,rx:6}));
+
+    tankSvg.appendChild(el('line',{x1:16,y1:py(curMax),x2:124,y2:py(curMax),stroke:'#10B981','stroke-width':1,'stroke-dasharray':'3,3'}));
+    tankSvg.appendChild(el('line',{x1:16,y1:py(curMin),x2:124,y2:py(curMin),stroke:'#EF4444','stroke-width':1,'stroke-dasharray':'3,3'}));
+    tankSvg.appendChild(el('line',{x1:16,y1:py(params.d),x2:124,y2:py(params.d),stroke:'#F59E0B','stroke-width':1.3,'stroke-dasharray':'2,2'}));
+
+    var txt = el('text',{x:70,y:16,'text-anchor':'middle','font-size':12,'font-weight':800,fill:'#1D4ED8'});
+    txt.textContent = hNow.toFixed(1)+' m';
+    tankSvg.appendChild(txt);
+  }
+
+  function drawGraph(){
+    graphSvg.innerHTML = '';
+    var W=280,H=260,padX=28,padY=20;
+    var tMax = 2*params.T;
+    var curMax = params.d+params.a, curMin = params.d-params.a;
+    var yPad = Math.max(0.5, params.a*0.3);
+    var domMin = curMin-yPad, domMax = curMax+yPad;
+    function px(tt){ return padX + (tt/tMax)*(W-2*padX); }
+    function py(v){ return H-padY - (v-domMin)/(domMax-domMin)*(H-2*padY); }
+
+    for(var k=0;k<=2;k++){
+      var gx = k*params.T;
+      graphSvg.appendChild(el('line',{x1:px(gx),y1:padY,x2:px(gx),y2:H-padY,stroke:'#F1F5F9','stroke-width':1}));
+      var lb = el('text',{x:px(gx)-6,y:H-padY+14,'font-size':9.5,fill:'#94A3B8'}); lb.textContent=(k*params.T)+'j'; graphSvg.appendChild(lb);
+    }
+    graphSvg.appendChild(el('line',{x1:padX,y1:H-padY,x2:W-padX,y2:H-padY,stroke:'#94A3B8','stroke-width':1.3}));
+    graphSvg.appendChild(el('line',{x1:padX,y1:py(params.d),x2:W-padX,y2:py(params.d),stroke:'#F59E0B','stroke-width':1.2,'stroke-dasharray':'4,3'}));
+
+    var d0=''; var first=true;
+    for(var tt=0; tt<=tMax; tt+=params.T/60){
+      var y = hAt(tt);
+      var X=px(tt), Y=py(y);
+      d0 += (first?'M':'L')+X.toFixed(1)+','+Y.toFixed(1)+' '; first=false;
+    }
+    graphSvg.appendChild(el('path',{d:d0, fill:'none', stroke:'#2563EB','stroke-width':2.3}));
+
+    var tMod = t % tMax; if(tMod<0) tMod += tMax;
+    graphSvg.appendChild(el('circle',{cx:px(tMod),cy:py(hAt(t)),r:6,fill:'#EF4444',stroke:'#fff','stroke-width':2}));
+  }
+
+  function updateUI(){
+    document.getElementById('aVal').textContent = params.a + ' m';
+    document.getElementById('tVal').textContent = params.T + ' jam';
+    document.getElementById('dDisplay').textContent = 'd = ' + params.d + ' m';
+    document.getElementById('dVal').textContent = params.d + ' m';
+
+    document.getElementById('equationBox').textContent =
+      'h(t) = ' + params.a + '·cos((2π/' + params.T + ')·t) + ' + params.d;
+
+    document.getElementById('statRow').innerHTML =
+      '<span class="stat-chip">Maks: <b>'+(params.d+params.a).toFixed(1)+' m</b></span>'+
+      '<span class="stat-chip">Min: <b>'+(params.d-params.a).toFixed(1)+' m</b></span>';
+
+    checkInsight();
+  }
+
+  function checkInsight(){
+    var shown = false;
+    var aChanged = Math.abs(params.a - defaults.a) > 1e-6;
+    var tChanged = Math.abs(params.T - defaults.T) > 1e-6;
+    var dChanged = Math.abs(params.d - defaults.d) > 1e-6;
+
+    if(aChanged && !tChanged){
+      insightText.textContent = 'Amplitudo berubah, tapi periode tetap sama — satu siklus tetap berlangsung dalam waktu yang sama, hanya naik-turunnya jadi lebih jauh (atau dekat).';
+      shown = true;
+    } else if(tChanged && !aChanged){
+      insightText.textContent = 'Periode berubah, tapi tinggi maksimum & minimumnya tetap sama — hanya butuh waktu lebih lama (atau cepat) untuk satu siklus penuh.';
+      shown = true;
+    } else if(dChanged){
+      insightText.textContent = 'Garis tengah bergeser, artinya rata-rata ketinggian air berubah. Tapi jarak naik-turunnya (amplitudo) tetap sama seperti semula.';
+      shown = true;
+    } else if(aChanged && tChanged){
+      insightText.textContent = 'Sekarang amplitudo DAN periode sama-sama berubah — coba ubah satu per satu supaya lebih jelas efek masing-masing.';
+      shown = true;
+    }
+    insightBox.classList.toggle('show', shown);
+  }
+
+  function drawAll(){ drawTank(); drawGraph(); updateUI(); }
+
+  function tick(){
+    t += params.T/60;
+    drawAll();
+  }
+  function start(){
+    if(playing) return;
+    playing = true;
+    playBtn.textContent = '⏸ Pause';
+    timer = setInterval(tick, 60);
+  }
+  function stop(){
+    playing = false;
+    playBtn.textContent = '▶ Play';
+    if(timer){ clearInterval(timer); timer = null; }
+  }
+  function reset(){
+    stop();
+    t = 0;
+    drawAll();
+  }
+
+  playBtn.addEventListener('click', function(){ playing ? stop() : start(); });
+  resetBtn.addEventListener('click', reset);
+
+  sliderA.addEventListener('input', function(){ params.a = parseFloat(sliderA.value); reset(); });
+  sliderT.addEventListener('input', function(){ params.T = parseFloat(sliderT.value); reset(); });
+  dPlus.addEventListener('click', function(){ params.d = Math.min(12, params.d+1); reset(); });
+  dMinus.addEventListener('click', function(){ params.d = Math.max(0, params.d-1); reset(); });
+
+  drawAll();
+})();
+
+/* ================= CHALLENGE CHECKING ================= */
+function showFeedback(id, ok, msg){
+  var f = document.getElementById(id);
+  f.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+  f.textContent = msg;
+}
+function closeTo(a,b,t){ return Math.abs(a-b) <= (t||0.3); }
+
+// Soal 1: bianglala 2m-10m -> amplitudo=4, garis tengah=6
+function checkSoal1(){
+  if(!identitasLengkap()) return;
+  var a = parseFloat(document.getElementById('s1a').value);
+  var d = parseFloat(document.getElementById('s1d').value);
+  var benar = closeTo(a,4) && closeTo(d,6);
+  if(benar){
+    showFeedback('fb1', true, 'Benar! Garis tengah = (10+2)/2 = 6 m, dan amplitudo = (10−2)/2 = 4 m — jarak dari garis tengah ke titik tertinggi.');
+  } else if(closeTo(a,10) || closeTo(a,8)){
+    showFeedback('fb1', false, 'Amplitudo bukan nilai maksimum (10) ataupun selisih maksimum-minimum (8) secara langsung. Amplitudo adalah SETENGAH dari selisih itu: (10−2)/2 = 4.');
+  } else {
+    showFeedback('fb1', false, 'Belum tepat. Garis tengah = (maksimum+minimum)/2 = (10+2)/2 = 6. Amplitudo = (maksimum−minimum)/2 = (10−2)/2 = 4.');
+  }
+  kirimKeGuru(1, 'a='+a, 'd='+d, benar);
+}
+
+// Soal 2: suhu max 30 min 18 -> amplitudo=6
+function checkSoal2(){
+  if(!identitasLengkap()) return;
+  var a = parseFloat(document.getElementById('s2a').value);
+  var benar = closeTo(a,6);
+  if(benar){
+    showFeedback('fb2', true, 'Tepat! Amplitudo = (30−18)/2 = 6°C — itulah jarak suhu dari rata-ratanya (garis tengah 24°C) ke titik tertinggi.');
+  } else if(closeTo(a,30)){
+    showFeedback('fb2', false, 'Itu nilai maksimumnya (30°C), bukan amplitudonya. Amplitudo adalah JARAK dari garis tengah ke puncak: (30−18)/2 = 6°C.');
+  } else if(closeTo(a,12)){
+    showFeedback('fb2', false, 'Itu adalah selisih maksimum dan minimum (30−18=12), tapi amplitudo adalah SETENGAH dari selisih tersebut, yaitu 6°C.');
+  } else {
+    showFeedback('fb2', false, 'Belum tepat. Rumusnya: amplitudo = (maksimum − minimum) / 2 = (30 − 18) / 2 = 6°C.');
+  }
+  kirimKeGuru(2, 'a='+a, '', benar);
+}
+
+// Soal 3: T asli = 2pi/(pi/6) = 12, digandakan -> 24
+function checkSoal3(){
+  if(!identitasLengkap()) return;
+  var v = parseFloat(document.getElementById('s3t').value);
+  var benar = closeTo(v,24,0.5);
+  if(benar){
+    showFeedback('fb3', true, 'Tepat! Dari b = π/6, periode aslinya T = 2π/b = 2π/(π/6) = 12. Digandakan menjadi 24.');
+  } else if(closeTo(v,12,0.5)){
+    showFeedback('fb3', false, 'Itu adalah periode ASLI dari model (T = 2π/(π/6) = 12), tapi soal minta periode yang SUDAH digandakan, yaitu 12 × 2 = 24.');
+  } else if(closeTo(v,6,0.5)){
+    showFeedback('fb3', false, 'Sepertinya kamu membagi periode asli, bukan menggandakannya. Periode asli adalah 12, dan kita diminta menggandakannya menjadi 24, bukan membaginya menjadi 6.');
+  } else {
+    showFeedback('fb3', false, 'Belum tepat. Pertama cari periode asli dari b: T = 2π/b = 2π/(π/6) = 12. Karena diminta 2 kali lebih panjang, jawabannya 12 × 2 = 24.');
+  }
+  kirimKeGuru(3, 'T='+v, '', benar);
+}
+
+/* ================= KIRIM KE GURU (Google Apps Script) ================= */
+/* Tempel URL Web App Google Apps Script di sini (satu URL sama dipakai untuk SEMUA modul) */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, benar){
+  var idx = nomorSoal - 1;
+  var statusEl = document.getElementById('send'+idx);
+  if(!SCRIPT_URL){ if(statusEl) statusEl.textContent=''; return; }
+  var id = getIdentitas();
+  var namaKelas = id.nama + ' — ' + id.kelas;
+  var payload = {
+    topik: 'Pemodelan dengan Fungsi Trigonometri',
+    nama: namaKelas,
+    soal: nomorSoal,
+    jawaban: jawaban1,
+    jawaban2: jawaban2 || '',
+    benar: benar ? 'Benar' : 'Salah',
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  if(statusEl) statusEl.textContent = 'Mengirim ke guru...';
+  fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(payload) })
+    .then(function(){ if(statusEl) statusEl.textContent = 'Terkirim ke guru ✓'; })
+    .catch(function(){ if(statusEl) statusEl.textContent = 'Gagal mengirim (periksa koneksi internet).'; });
+}
+</script>
+</body>
+</html>

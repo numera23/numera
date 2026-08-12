@@ -1,0 +1,929 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Amplitudo, Periode, dan Pergeseran Fase
+Jenis      : Modul Interaktif (pakai KaTeX)
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Amplitudo, Periode, dan Pergeseran Fase — Numera</title>
+<meta name="description" content="Modul interaktif belajar amplitudo, periode, dan pergeseran fase pada grafik fungsi sinus dan cosinus — Numera">
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-soft:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+    --radius-card:18px;
+    --radius-btn:12px;
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+    --sp-7:48px;
+    --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:0 var(--sp-4);}
+
+  /* TOPBAR */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width:900px; margin:0 auto; padding:10px var(--sp-4);
+    font-size:13px; font-weight:600; color:var(--primary);
+    letter-spacing:.2px;
+  }
+  .progress-track{height:3px; background:var(--border); width:100%;}
+  .progress-bar{height:100%; width:0%; background:var(--primary); transition:width 80ms linear;}
+
+  main{padding-bottom:var(--sp-7);}
+
+  /* FADE UP */
+  .fade-section{opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease;}
+  .fade-section.visible{opacity:1; transform:translateY(0);}
+
+  /* CARD */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius-card);
+    box-shadow:var(--shadow);
+    padding:var(--sp-5);
+    margin-top:var(--sp-5);
+  }
+  .section-num{
+    display:inline-block; font-size:12.5px; font-weight:700; color:var(--primary);
+    background:var(--primary-light); padding:3px 10px; border-radius:999px; margin-bottom:var(--sp-3);
+    letter-spacing:.5px;
+  }
+  h1{font-size:26px; font-weight:800; margin:var(--sp-3) 0 var(--sp-2); line-height:1.3;}
+  h2{font-size:20px; font-weight:700; margin:0 0 var(--sp-3); line-height:1.35;}
+  h3{font-size:15.5px; font-weight:700; margin:var(--sp-4) 0 var(--sp-2); color:var(--primary-hover);}
+  h3:first-of-type{margin-top:0;}
+  p{font-size:15px; line-height:1.65; color:var(--text); margin:0 0 var(--sp-3);}
+  .soft{color:var(--text-soft);}
+  mark{background:var(--primary-light); color:var(--primary-hover); padding:1px 4px; border-radius:4px; font-weight:600;}
+
+  /* HEADER */
+  .header-card{margin-top:var(--sp-5);}
+  .pill-row{display:flex; gap:var(--sp-2); flex-wrap:wrap; margin-bottom:var(--sp-3);}
+  .pill{
+    font-size:12.5px; font-weight:600; color:var(--primary);
+    background:var(--primary-light); padding:5px 12px; border-radius:999px;
+  }
+  .goal-list{margin:var(--sp-3) 0 0; padding-left:20px;}
+  .goal-list li{font-size:14.5px; line-height:1.6; color:var(--text-soft); margin-bottom:4px;}
+
+  /* ID CARD */
+  .id-card{
+    margin-top:var(--sp-5);
+    background:var(--primary-light);
+    border-radius:14px;
+    padding:var(--sp-4);
+  }
+  .id-card h3{color:var(--primary-hover); margin-top:0;}
+  .id-card p{font-size:13.5px; color:#1e3a8a; margin-bottom:var(--sp-3);}
+  .id-grid{display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3);}
+  .id-grid label{display:block; font-size:12.5px; font-weight:600; color:var(--text-soft); margin-bottom:4px;}
+  .id-grid input{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+    font-family:'Inter',sans-serif; font-size:14px; background:#fff;
+  }
+  .id-grid input:focus{outline:none; border-color:var(--primary);}
+  .id-status{font-size:13px; font-weight:600; margin-top:var(--sp-2); min-height:16px;}
+
+  @media (max-width:520px){ .id-grid{grid-template-columns:1fr;} }
+
+  /* BUTTONS */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    min-height:40px; padding:0 18px; border-radius:var(--radius-btn);
+    font-family:'Inter',sans-serif; font-size:14px; font-weight:600;
+    border:none; cursor:pointer; transition:all 200ms ease;
+  }
+  .btn-primary{background:var(--primary); color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);}
+  .btn-outline{background:#fff; color:var(--primary); border:1px solid var(--border);}
+  .btn-outline:hover{border-color:var(--primary); background:var(--primary-light);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* STEP VISUAL */
+  .step-nav{display:flex; align-items:center; justify-content:space-between; margin-top:var(--sp-4);}
+  .step-dots{display:flex; gap:6px;}
+  .step-dot{width:7px; height:7px; border-radius:50%; background:var(--border);}
+  .step-dot.active{background:var(--primary); width:20px; border-radius:4px; transition:all 200ms ease;}
+  .step-box{
+    background:var(--bg); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-3);
+    display:flex; flex-direction:column; align-items:center; gap:var(--sp-3);
+  }
+  svg{max-width:100%; height:auto; display:block;}
+  .step-text{font-size:14.5px; line-height:1.65; color:var(--text); text-align:center; min-height:56px;}
+
+  /* SIMULATION / INTERAKSI */
+  .sim-visual{background:var(--bg); border-radius:14px; padding:var(--sp-3); display:flex; align-items:center; justify-content:center; margin-top:var(--sp-4);}
+  .hint-text{font-size:13px; color:var(--text-soft); line-height:1.55; margin-bottom:0;}
+
+  .toggle-row{display:flex; gap:var(--sp-2); flex-wrap:wrap; align-items:center; justify-content:space-between; margin-top:var(--sp-4);}
+  .toggle-chip{
+    font-size:13px; font-weight:700; padding:8px 16px; border-radius:999px;
+    border:1.5px solid var(--border); background:#fff; color:var(--text-soft);
+    cursor:pointer; transition:all 200ms ease; font-family:'Inter',sans-serif;
+  }
+  .toggle-chip[data-func="sin"].active{background:var(--primary); color:#fff; border-color:var(--primary);}
+  .toggle-chip[data-func="cos"].active{background:var(--warning); color:#fff; border-color:var(--warning);}
+  .toggle-chip:not(.active):hover{border-color:var(--primary);}
+  .toggle-left{display:flex; gap:var(--sp-2);}
+
+  .control-grid{display:grid; grid-template-columns:1fr; gap:var(--sp-4); margin-top:var(--sp-4);}
+  @media (min-width:640px){ .control-grid{grid-template-columns:1fr 1fr;} }
+  .slider-block{background:var(--bg); border-radius:14px; padding:var(--sp-3) var(--sp-4);}
+  .slider-row{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:2px;}
+  .slider-row label{font-size:13.5px; font-weight:700; color:var(--text);}
+  .slider-value{font-size:13.5px; font-weight:700; color:var(--primary);}
+  .slider-range-label{display:flex; justify-content:space-between; font-size:11px; color:var(--text-soft); margin-top:2px;}
+
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:999px;
+    background:var(--border); outline:none; margin:6px 0 2px; cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--primary);
+    cursor:pointer; border:3px solid #fff; box-shadow:0 1px 4px rgba(15,23,42,.25);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:22px; height:22px; border-radius:50%; background:var(--primary); cursor:pointer;
+    border:3px solid #fff; box-shadow:0 1px 4px rgba(15,23,42,.25);
+  }
+  input[type=range]::-moz-range-track{ background:var(--border); height:6px; border-radius:999px; }
+
+  .reset-row{display:flex; justify-content:flex-end; margin-top:var(--sp-3);}
+
+  .equation-box{
+    background:var(--text); color:#fff; border-radius:12px; padding:var(--sp-4);
+    font-size:15.5px; font-weight:700; text-align:center; letter-spacing:.2px; line-height:1.7;
+    margin-top:var(--sp-4);
+  }
+  .equation-box .soft{color:#CBD5E1;}
+  .insight-box{
+    margin-top:var(--sp-3); background:#ECFDF5; border:1px solid #A7F3D0; border-radius:12px;
+    padding:var(--sp-3) var(--sp-4); font-size:14px; color:#065F46; font-weight:600;
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  }
+
+  /* KATEX RESPONSIVE */
+  .katex-display{overflow-x:auto; overflow-y:hidden; padding:4px 0; margin:var(--sp-2) 0;}
+  .katex{font-size:1.02em;}
+  @media (max-width:400px){ .katex{font-size:.9em;} }
+
+  /* CHALLENGE */
+  .challenge-item{border:1px solid var(--border); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-4);}
+  .challenge-head{display:flex; align-items:center; gap:var(--sp-2); margin-bottom:var(--sp-3); flex-wrap:wrap;}
+  .level-badge{font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:999px; letter-spacing:.3px;}
+  .level-mudah{background:#D1FAE5; color:#065F46;}
+  .level-sedang{background:#FEF3C7; color:#92400E;}
+  .level-sulit{background:#FEE2E2; color:#991B1B;}
+  .challenge-inputs{display:flex; flex-wrap:wrap; gap:var(--sp-3); align-items:flex-end; margin:var(--sp-3) 0;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field label{font-size:12.5px; font-weight:600; color:var(--text-soft);}
+  .field input{
+    width:120px; padding:9px 10px; border-radius:10px; border:1px solid var(--border);
+    font-family:'Inter',sans-serif; font-size:14px;
+  }
+  .field input:focus{outline:none; border-color:var(--primary);}
+  .feedback{
+    margin-top:var(--sp-3); padding:var(--sp-3); border-radius:10px; font-size:14px; line-height:1.55;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{background:#D1FAE5; color:#065F46;}
+  .feedback.bad{background:#FEE2E2; color:#991B1B;}
+  .send-status{font-size:12.5px; color:var(--text-soft); margin-top:6px; min-height:14px;}
+
+  /* MISTAKES */
+  .mistake-item{display:flex; gap:var(--sp-3); align-items:flex-start; margin-top:var(--sp-4);}
+  .mistake-x{
+    flex-shrink:0; width:28px; height:28px; border-radius:50%; background:#FEE2E2; color:var(--error);
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;
+  }
+
+  /* SUMMARY */
+  .summary-list{list-style:none; margin:0; padding:0;}
+  .summary-list li{
+    display:flex; gap:var(--sp-3); align-items:flex-start; font-size:14.5px; line-height:1.6;
+    padding:var(--sp-3) 0; border-bottom:1px solid var(--border);
+  }
+  .summary-list li:last-child{border-bottom:none;}
+  .summary-num{
+    flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--primary); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700;
+  }
+  .done-badge{
+    text-align:center; margin-top:var(--sp-5); font-size:14px; font-weight:700; color:var(--success);
+  }
+
+  /* FOOTER */
+  .site-footer{padding: var(--sp-5) 0 var(--sp-6); text-align:center;}
+  .footer-divider{height:1px; background:var(--border); margin-bottom:var(--sp-4);}
+  .footer-brand{font-size:13.5px; font-weight:700; color:var(--primary); margin:0 0 4px;}
+  .footer-text{font-size:13px; color:var(--text-soft); margin:0 0 2px;}
+  .footer-meta{font-size:12.5px; color:var(--text-soft); margin:0; opacity:.85;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Amplitudo, Periode, dan Pergeseran Fase</div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<main class="wrap">
+
+  <!-- 1. HEADER -->
+  <section class="header-card card">
+    <div class="pill-row">
+      <span class="pill">Fungsi Trigonometri</span>
+      <span class="pill">⏱ 20–25 menit</span>
+    </div>
+    <h1>Amplitudo, Periode, dan Pergeseran Fase</h1>
+    <p class="soft">Setelah modul ini selesai, kamu akan bisa:</p>
+    <ul class="goal-list">
+      <li>Mengenali bentuk umum y = A sin(B(x−C)) + D dan y = A cos(B(x−C)) + D.</li>
+      <li>Menjelaskan arti amplitudo (A) — seberapa tinggi grafik berayun dari garis tengahnya.</li>
+      <li>Menjelaskan arti periode (dikendalikan B) — seberapa panjang satu pola lengkap grafik.</li>
+      <li>Menjelaskan arti pergeseran fase (C) — seberapa jauh pola grafik bergeser mendatar.</li>
+      <li>Mengenali peran garis tengah (D) pada bentuk umum grafik.</li>
+      <li>Membaca nilai A, periode, dan C dari bentuk fungsi maupun grafiknya — dan sebaliknya.</li>
+    </ul>
+
+    <div class="id-card">
+      <h3>Isi dulu sebelum mulai 👋</h3>
+      <p>Jawabanmu di bagian Challenge otomatis terkirim ke gurumu. Tidak perlu login atau email apapun.</p>
+      <div class="id-grid">
+        <div><label>Nama lengkap</label><input type="text" id="namaSiswa" placeholder="Tulis namamu"></div>
+        <div><label>Kelas</label><input type="text" id="kelasSiswa" placeholder="Contoh: XI IPA 2"></div>
+      </div>
+      <div class="id-status" id="idStatus"></div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section class="card fade-section">
+    <span class="section-num">01</span>
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <p>Bayangkan dua ayunan taman. Ayunan pertama diayun pelan-pelan tapi tinggi sekali. Ayunan kedua diayun rendah tapi cepat sekali bolak-baliknya.</p>
+    <p>Keduanya sama-sama "berayun", tapi bentuk ayunannya beda: satu tinggi-lambat, satu rendah-cepat.</p>
+    <p>Sekarang bayangkan ayunan ketiga, yang mulai diayun beberapa detik <mark>lebih telat</mark> dari yang lain — pola ayunannya sama, cuma titik mulainya beda.</p>
+    <p>Grafik sinus dan cosinus juga begitu. Ada grafik yang "tinggi ayunannya" beda, ada yang "kecepatan ayunannya" beda, dan ada yang cuma "titik mulainya" beda. Menurutmu, apa nama masing-masing sifat itu dalam matematika?</p>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="card fade-section">
+    <span class="section-num">02</span>
+    <h2>Penjelasan Sederhana</h2>
+
+    <h3>Bentuk Umum Fungsinya</h3>
+    <p>Grafik sinus dan cosinus yang sudah "diubah bentuknya" biasanya ditulis seperti ini:</p>
+    <p>\[ y = A\sin\big(B(x-C)\big) + D \qquad y = A\cos\big(B(x-C)\big) + D \]</p>
+    <p>Jangan panik lihat banyak huruf. Setiap huruf itu punya satu tugas saja, dan kita akan bahas satu-satu.</p>
+
+    <h3>Amplitudo (A)</h3>
+    <p>Amplitudo itu <mark>seberapa tinggi/rendah grafik berayun dari garis tengahnya</mark> — persis seperti ayunan yang diayun tinggi tadi.</p>
+    <p>Nilai maksimum grafik adalah D + |A|, dan nilai minimumnya D − |A|. Kalau A negatif, grafiknya tetap setinggi |A|, cuma dibalik (terbalik atas-bawah).</p>
+
+    <h3>Periode (dikendalikan oleh B)</h3>
+    <p>Periode itu <mark>seberapa panjang satu pola lengkap grafik</mark>, sebelum polanya mengulang dari awal lagi.</p>
+    <p>Semakin besar B, semakin "rapat" grafiknya — polanya selesai lebih cepat. Rumusnya:</p>
+    <p>\[ \text{Periode} = \dfrac{360^\circ}{|B|} \quad \left(\text{atau } \dfrac{2\pi}{|B|} \text{ dalam radian}\right) \]</p>
+
+    <h3>Pergeseran Fase (C)</h3>
+    <p>Pergeseran fase itu <mark>seberapa jauh pola grafik bergeser mendatar</mark> — seperti ayunan yang mulainya lebih telat tadi. Bentuk grafiknya sama persis, cuma posisinya geser.</p>
+    <p>Kalau C positif, grafik geser ke kanan. Kalau C negatif, geser ke kiri.</p>
+    <p class="soft">Hati-hati: kalau bentuknya y = sin(2x − 60°), fase-nya <strong>bukan</strong> 60°. Harus difaktorkan dulu jadi sin(2(x − 30°)) — baru ketahuan C-nya = 30°.</p>
+
+    <h3>Garis Tengah (D)</h3>
+    <p>D menggeser <mark>seluruh grafik naik atau turun</mark>. Kalau A dan periode bicara soal bentuk, D bicara soal posisi vertikal saja — bentuknya tidak berubah sama sekali.</p>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="card fade-section">
+    <span class="section-num">03</span>
+    <h2>Lihat Cara Kerjanya</h2>
+    <p class="soft">Mari kita bangun grafik y = 2 sin(2(x − 45°)) + 1 sedikit demi sedikit, mulai dari grafik paling dasar. Tekan Next untuk lanjut.</p>
+
+    <div class="step-box">
+      <svg id="stepSvg" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg"></svg>
+      <p class="step-text" id="stepText"></p>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-outline" id="prevStepBtn">← Previous</button>
+      <div class="step-dots" id="stepDots"></div>
+      <button class="btn btn-primary" id="nextStepBtn">Next →</button>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="card fade-section">
+    <span class="section-num">04</span>
+    <h2>Coba Sendiri</h2>
+    <p class="soft">Geser keempat kontrol di bawah dan lihat langsung bagaimana grafiknya berubah. Kurva abu-abu tipis adalah grafik dasar (sebelum diubah), sebagai pembanding.</p>
+
+    <div class="toggle-row">
+      <div class="toggle-left">
+        <button type="button" class="toggle-chip active" data-func="sin" id="btnSin">Sinus</button>
+        <button type="button" class="toggle-chip" data-func="cos" id="btnCos">Cosinus</button>
+      </div>
+    </div>
+
+    <div class="sim-visual">
+      <svg id="graphSvg" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div class="equation-box" id="funcEqBox"></div>
+    <div class="insight-box" id="funcInsight">💡 <span id="funcInsightText">Geser salah satu kontrol di bawah untuk melihat perubahannya.</span></div>
+
+    <div class="control-grid">
+      <div class="slider-block">
+        <div class="slider-row"><label>Amplitudo (A)</label><span class="slider-value" id="ampVal">1</span></div>
+        <input type="range" id="ampRange" min="0.5" max="3" step="0.5" value="1">
+        <div class="slider-range-label"><span>0,5 (pipih)</span><span>3 (tinggi)</span></div>
+      </div>
+      <div class="slider-block">
+        <div class="slider-row"><label>Periode</label><span class="slider-value" id="periodVal">360°</span></div>
+        <input type="range" id="periodRange" min="0" max="4" step="1" value="3">
+        <div class="slider-range-label"><span>90° (rapat)</span><span>720° (lebar)</span></div>
+      </div>
+      <div class="slider-block">
+        <div class="slider-row"><label>Pergeseran Fase (C)</label><span class="slider-value" id="phaseVal">0°</span></div>
+        <input type="range" id="phaseRange" min="-180" max="180" step="15" value="0">
+        <div class="slider-range-label"><span>−180° (kiri)</span><span>180° (kanan)</span></div>
+      </div>
+      <div class="slider-block">
+        <div class="slider-row"><label>Garis Tengah (D)</label><span class="slider-value" id="shiftVal">0</span></div>
+        <input type="range" id="shiftRange" min="-2" max="2" step="0.5" value="0">
+        <div class="slider-range-label"><span>−2 (turun)</span><span>2 (naik)</span></div>
+      </div>
+    </div>
+
+    <div class="reset-row">
+      <button type="button" class="btn btn-outline" id="resetBtn">↺ Reset ke Semula</button>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="card fade-section">
+    <span class="section-num">05</span>
+    <h2>Challenge</h2>
+    <p class="soft">Tiga soal, makin lama makin menantang. Jawabanmu otomatis tersimpan untuk gurumu.</p>
+
+    <!-- Soal 1 - Mudah (Amplitudo) -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-mudah">MUDAH</span>
+        <h3 style="margin:0;">Soal 1</h3>
+      </div>
+      <p>Diberikan fungsi y = 4 sin(2x). Berapa <strong>amplitudo</strong>-nya?</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Amplitudo =</label><input type="number" step="0.1" id="s1v"></div>
+        <button class="btn btn-primary" onclick="checkSoal1()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb1"></div>
+      <div class="send-status" id="send0"></div>
+    </div>
+
+    <!-- Soal 2 - Sedang (Pergeseran Fase, jebakan faktorisasi B) -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-sedang">SEDANG</span>
+        <h3 style="margin:0;">Soal 2</h3>
+      </div>
+      <p>Diberikan fungsi y = sin(2x − 60°). Berapa besar <strong>pergeseran fasenya</strong>? (positif = kanan, negatif = kiri)</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Fase (°) =</label><input type="number" step="1" id="s2v"></div>
+        <button class="btn btn-primary" onclick="checkSoal2()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb2"></div>
+      <div class="send-status" id="send1"></div>
+    </div>
+
+    <!-- Soal 3 - Sulit (Bandingkan/urutkan periode tiga fungsi) -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-sulit">SULIT</span>
+        <h3 style="margin:0;">Soal 3</h3>
+      </div>
+      <p>Perhatikan tiga fungsi ini: f(x) = 2 sin(x), g(x) = 2 sin(2x), dan h(x) = 2 sin(4x). Tentukan <strong>periode</strong> masing-masing (dalam derajat).</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Periode f =</label><input type="number" step="1" id="s3f"></div>
+        <div class="field"><label>Periode g =</label><input type="number" step="1" id="s3g"></div>
+        <div class="field"><label>Periode h =</label><input type="number" step="1" id="s3h"></div>
+        <button class="btn btn-primary" onclick="checkSoal3()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb3"></div>
+      <div class="send-status" id="send2"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="card fade-section">
+    <span class="section-num">06</span>
+    <h2>Kesalahan yang Sering Terjadi</h2>
+
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Lupa memfaktorkan B sebelum membaca pergeseran fase.</strong></p>
+        <p class="soft">Pada y = sin(2x − 60°), fase BUKAN 60°. Harus difaktorkan dulu: sin(2(x − 30°)) — baru fase-nya ketahuan 30°.</p>
+      </div>
+    </div>
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Mengira semakin besar B, periodenya semakin besar.</strong></p>
+        <p class="soft">Sebaliknya! Periode = 360°/|B|. Semakin besar B, periodenya justru semakin KECIL — grafiknya makin rapat, bukan makin lebar.</p>
+      </div>
+    </div>
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Mengira A negatif berarti amplitudonya negatif.</strong></p>
+        <p class="soft">Amplitudo selalu berupa jarak (nilai positif). A negatif pada rumus artinya grafik dibalik (refleksi), bukan amplitudonya jadi minus.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="card fade-section">
+    <span class="section-num">07</span>
+    <h2>Ringkasan</h2>
+    <ul class="summary-list">
+      <li><span class="summary-num">1</span><span>Bentuk umum: y = A sin(B(x−C)) + D (berlaku juga untuk cos), dengan A = amplitudo, B mengatur periode, C = pergeseran fase, D = garis tengah.</span></li>
+      <li><span class="summary-num">2</span><span>Amplitudo (A) menentukan tinggi ayunan grafik dari garis tengahnya; maksimum = D+|A|, minimum = D−|A|.</span></li>
+      <li><span class="summary-num">3</span><span>Periode = 360°/|B| — makin besar B, makin pendek periodenya (grafik makin rapat).</span></li>
+      <li><span class="summary-num">4</span><span>Pergeseran fase (C) menggeser grafik mendatar tanpa mengubah bentuknya; faktorkan B dulu sebelum membaca C.</span></li>
+      <li><span class="summary-num">5</span><span>Garis tengah (D) menggeser grafik vertikal, ikut mengubah nilai maksimum-minimum, tapi tidak mengubah amplitudo maupun periode.</span></li>
+    </ul>
+    <p class="done-badge">✓ Selesai — Amplitudo, Periode, dan Pergeseran Fase</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ================= KATEX HELPER ================= */
+function renderKatexIn(elm){
+  if(window.renderMathInElement && elm){
+    renderMathInElement(elm, {
+      delimiters: [
+        {left:'\\[', right:'\\]', display:true},
+        {left:'\\(', right:'\\)', display:false}
+      ],
+      throwOnError:false
+    });
+  }
+}
+document.addEventListener('DOMContentLoaded', function(){
+  renderKatexIn(document.body);
+});
+
+/* ================= PROGRESS BAR ================= */
+(function(){
+  var bar = document.getElementById('progressBar');
+  function update(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var height = h.scrollHeight - h.clientHeight;
+    var pct = height > 0 ? (scrolled / height) * 100 : 0;
+    bar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+/* ================= FADE UP ================= */
+(function(){
+  var els = document.querySelectorAll('.fade-section');
+  if(!('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ================= IDENTITAS SISWA ================= */
+function getIdentitas(){
+  var nama = document.getElementById('namaSiswa').value.trim();
+  var kelas = document.getElementById('kelasSiswa').value.trim();
+  return { nama: nama, kelas: kelas };
+}
+function identitasLengkap(){
+  var id = getIdentitas();
+  var statusEl = document.getElementById('idStatus');
+  if(!id.nama || !id.kelas){
+    statusEl.textContent = 'Isi nama dan kelas dulu ya, sebelum cek jawaban.';
+    statusEl.style.color = '#B91C1C';
+    document.getElementById('namaSiswa').focus();
+    return false;
+  }
+  statusEl.textContent = '';
+  return true;
+}
+
+/* ================= SVG HELPERS ================= */
+var SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs){
+  var e = document.createElementNS(SVGNS, tag);
+  for(var k in attrs){ e.setAttribute(k, attrs[k]); }
+  return e;
+}
+
+/* ================= GEOMETRI GRAFIK BERSAMA ================= */
+var G_DOMAIN_MIN = -180, G_DOMAIN_MAX = 900;
+var G_PLOT_X0 = 12, G_PLOT_X1 = 392;
+var G_PLOT_Y0 = 34, G_PLOT_Y1 = 190;
+var G_CY = (G_PLOT_Y0 + G_PLOT_Y1) / 2;
+var G_SCALE_X = (G_PLOT_X1 - G_PLOT_X0) / (G_DOMAIN_MAX - G_DOMAIN_MIN);
+var G_SCALE_Y = ((G_PLOT_Y1 - G_PLOT_Y0) / 2) / 5;
+
+function gx(deg){ return G_PLOT_X0 + (deg - G_DOMAIN_MIN) * G_SCALE_X; }
+function gy(val){ return G_CY - val * G_SCALE_Y; }
+
+function curveValue(fn, A, B, C, D, deg){
+  var rad = B * (deg - C) * Math.PI / 180;
+  var base = fn === 'cos' ? Math.cos(rad) : Math.sin(rad);
+  return A * base + D;
+}
+function ghostValue(fn, deg){
+  var rad = deg * Math.PI / 180;
+  return fn === 'cos' ? Math.cos(rad) : Math.sin(rad);
+}
+function buildCurvePoints(fn, A, B, C, D){
+  var pts = '';
+  for(var d = G_DOMAIN_MIN; d <= G_DOMAIN_MAX; d += 6){
+    pts += gx(d) + ',' + gy(curveValue(fn, A, B, C, D, d)) + ' ';
+  }
+  return pts.trim();
+}
+function buildGhostPoints(fn){
+  var pts = '';
+  for(var d = G_DOMAIN_MIN; d <= G_DOMAIN_MAX; d += 6){
+    pts += gx(d) + ',' + gy(ghostValue(fn, d)) + ' ';
+  }
+  return pts.trim();
+}
+
+function drawAxes(svg){
+  svg.appendChild(el('rect', {x:G_PLOT_X0, y:G_PLOT_Y0, width:(G_PLOT_X1-G_PLOT_X0), height:(G_PLOT_Y1-G_PLOT_Y0), fill:'none'}));
+  svg.appendChild(el('line', {x1:G_PLOT_X0, y1:gy(0), x2:G_PLOT_X1, y2:gy(0), stroke:'#CBD5E1', 'stroke-width':1.3}));
+  var ticks = [-180,0,180,360,540,720,900];
+  ticks.forEach(function(t){
+    svg.appendChild(el('line', {x1:gx(t), y1:G_PLOT_Y0, x2:gx(t), y2:G_PLOT_Y1, stroke:'#F1F5F9', 'stroke-width':1}));
+    var lbl = el('text', {x:gx(t), y:G_PLOT_Y1+13, 'font-size':8.5, fill:'#94A3B8', 'text-anchor':'middle'});
+    lbl.textContent = t + '°';
+    svg.appendChild(lbl);
+  });
+}
+
+/* ================= STEP DIAGRAM (Section 4) ================= */
+(function(){
+  var svg = document.getElementById('stepSvg');
+  var textEl = document.getElementById('stepText');
+  var dotsWrap = document.getElementById('stepDots');
+  var prevBtn = document.getElementById('prevStepBtn');
+  var nextBtn = document.getElementById('nextStepBtn');
+
+  var steps = [
+    { A:1, B:1,   C:0,  D:0, text:'Ini grafik dasar \\(y=\\sin x\\). Tinggi maksimum 1, minimum −1, satu gelombang penuh selesai dalam 360°.' },
+    { A:2, B:1,   C:0,  D:0, text:'Sekarang kita ubah A jadi 2 → \\(y=2\\sin x\\). Grafik meregang vertikal: maksimum jadi 2, minimum jadi −2. Periode dan posisinya <strong>TIDAK</strong> berubah.' },
+    { A:2, B:2,   C:0,  D:0, text:'Sekarang periodenya kita buat 180° → \\(y=2\\sin(2x)\\). Grafik jadi lebih rapat. Amplitudo <strong>TETAP</strong> 2, tapi satu gelombang selesai dua kali lebih cepat.' },
+    { A:2, B:2,   C:45, D:0, text:'Sekarang kita tambahkan pergeseran fase 45° → \\(y=2\\sin\\big(2(x-45^\\circ)\\big)\\). Bentuknya <strong>PERSIS SAMA</strong>, hanya bergeser 45° ke kanan.' },
+    { A:2, B:2,   C:45, D:1, text:'Terakhir kita naikkan garis tengahnya jadi 1 → \\(y=2\\sin\\big(2(x-45^\\circ)\\big)+1\\). Seluruh grafik naik 1 satuan: maksimum sekarang 3, minimum sekarang −1.' }
+  ];
+
+  var step = 0;
+  var totalSteps = steps.length;
+
+  function buildDots(){
+    dotsWrap.innerHTML = '';
+    for(var i=0;i<totalSteps;i++){
+      var d = document.createElement('div');
+      d.className = 'step-dot';
+      dotsWrap.appendChild(d);
+    }
+  }
+  buildDots();
+
+  function render(){
+    svg.innerHTML = '';
+    drawAxes(svg);
+
+    var s = steps[step];
+    // ghost = grafik dasar y = sin x
+    svg.appendChild(el('polyline', {points:buildGhostPoints('sin'), fill:'none', stroke:'#94A3B8', 'stroke-width':1.5, 'stroke-dasharray':'3,3', opacity:'0.6'}));
+    // kurva aktif langkah ini
+    svg.appendChild(el('polyline', {points:buildCurvePoints('sin', s.A, s.B, s.C, s.D), fill:'none', stroke:'#2563EB', 'stroke-width':2.8}));
+    // garis tengah
+    svg.appendChild(el('line', {x1:G_PLOT_X0, y1:gy(s.D), x2:G_PLOT_X1, y2:gy(s.D), stroke:'#F59E0B', 'stroke-width':1.2, 'stroke-dasharray':'4,3'}));
+
+    textEl.innerHTML = s.text;
+    renderKatexIn(textEl);
+
+    var dots = dotsWrap.children;
+    for(var i=0;i<dots.length;i++){
+      dots[i].classList.toggle('active', i === step);
+    }
+    prevBtn.disabled = (step === 0);
+    nextBtn.disabled = (step === totalSteps-1);
+  }
+
+  prevBtn.addEventListener('click', function(){ if(step>0){ step--; render(); } });
+  nextBtn.addEventListener('click', function(){ if(step<totalSteps-1){ step++; render(); } });
+
+  render();
+})();
+
+/* ================= COBA SENDIRI: GRAFIK INTERAKTIF (Section 5) ================= */
+(function(){
+  var svg = document.getElementById('graphSvg');
+  var eqBox = document.getElementById('funcEqBox');
+  var insightText = document.getElementById('funcInsightText');
+  var btnSin = document.getElementById('btnSin');
+  var btnCos = document.getElementById('btnCos');
+
+  var ampRange = document.getElementById('ampRange');
+  var periodRange = document.getElementById('periodRange');
+  var phaseRange = document.getElementById('phaseRange');
+  var shiftRange = document.getElementById('shiftRange');
+
+  var ampVal = document.getElementById('ampVal');
+  var periodVal = document.getElementById('periodVal');
+  var phaseVal = document.getElementById('phaseVal');
+  var shiftVal = document.getElementById('shiftVal');
+
+  var periodOptions = [90, 120, 180, 360, 720];
+  var activeFunc = 'sin';
+  var lastChanged = null;
+
+  var DEFAULTS = { amp:1, periodIdx:3, phase:0, shift:0 };
+
+  function currentParams(){
+    var A = parseFloat(ampRange.value);
+    var P = periodOptions[parseInt(periodRange.value,10)];
+    var B = 360 / P;
+    var C = parseFloat(phaseRange.value);
+    var D = parseFloat(shiftRange.value);
+    return { A:A, B:B, P:P, C:C, D:D };
+  }
+
+  function fmt(n){
+    return (Math.round(n*100)/100).toString();
+  }
+
+  function render(){
+    var p = currentParams();
+    var fname = activeFunc === 'sin' ? 'sin' : 'cos';
+    var color = activeFunc === 'sin' ? '#2563EB' : '#F59E0B';
+
+    svg.innerHTML = '';
+    drawAxes(svg);
+
+    // ghost: grafik dasar
+    svg.appendChild(el('polyline', {points:buildGhostPoints(activeFunc), fill:'none', stroke:'#94A3B8', 'stroke-width':1.5, 'stroke-dasharray':'3,3', opacity:'0.55'}));
+
+    // garis tengah D
+    svg.appendChild(el('line', {x1:G_PLOT_X0, y1:gy(p.D), x2:G_PLOT_X1, y2:gy(p.D), stroke:'#F59E0B', 'stroke-width':1.2, 'stroke-dasharray':'4,3'}));
+    var midLbl = el('text', {x:G_PLOT_X1-4, y:gy(p.D)-4, 'font-size':8.5, fill:'#B45309', 'text-anchor':'end'});
+    midLbl.textContent = 'garis tengah';
+    svg.appendChild(midLbl);
+
+    // maks/min dashed
+    svg.appendChild(el('line', {x1:G_PLOT_X0, y1:gy(p.D+p.A), x2:G_PLOT_X1, y2:gy(p.D+p.A), stroke:'#A7F3D0', 'stroke-width':1.2, 'stroke-dasharray':'2,3'}));
+    svg.appendChild(el('line', {x1:G_PLOT_X0, y1:gy(p.D-p.A), x2:G_PLOT_X1, y2:gy(p.D-p.A), stroke:'#A7F3D0', 'stroke-width':1.2, 'stroke-dasharray':'2,3'}));
+
+    // indikator amplitudo (bracket vertikal) di x=0
+    var ax = gx(0);
+    svg.appendChild(el('line', {x1:ax, y1:gy(p.D+p.A), x2:ax, y2:gy(p.D-p.A), stroke:'#10B981', 'stroke-width':1.6}));
+    svg.appendChild(el('line', {x1:ax-5, y1:gy(p.D+p.A), x2:ax+5, y2:gy(p.D+p.A), stroke:'#10B981', 'stroke-width':1.6}));
+    svg.appendChild(el('line', {x1:ax-5, y1:gy(p.D-p.A), x2:ax+5, y2:gy(p.D-p.A), stroke:'#10B981', 'stroke-width':1.6}));
+    var ampLbl = el('text', {x:ax+8, y:gy(p.D)+3, 'font-size':9, fill:'#047857', 'font-weight':700});
+    ampLbl.textContent = 'A';
+    svg.appendChild(ampLbl);
+
+    // bracket periode dari x=C sampai x=C+P
+    var by = 20;
+    svg.appendChild(el('line', {x1:gx(p.C), y1:by, x2:gx(p.C+p.P), y2:by, stroke:'#2563EB', 'stroke-width':1.6}));
+    svg.appendChild(el('line', {x1:gx(p.C), y1:by-4, x2:gx(p.C), y2:by+4, stroke:'#2563EB', 'stroke-width':1.6}));
+    svg.appendChild(el('line', {x1:gx(p.C+p.P), y1:by-4, x2:gx(p.C+p.P), y2:by+4, stroke:'#2563EB', 'stroke-width':1.6}));
+    var pLbl = el('text', {x:(gx(p.C)+gx(p.C+p.P))/2, y:by-6, 'font-size':9, fill:'#1D4ED8', 'text-anchor':'middle', 'font-weight':700});
+    pLbl.textContent = 'periode = ' + p.P + '°';
+    svg.appendChild(pLbl);
+
+    // penanda titik awal original (x=0) vs setelah fase (x=C)
+    svg.appendChild(el('line', {x1:gx(0), y1:G_PLOT_Y0, x2:gx(0), y2:G_PLOT_Y1, stroke:'#CBD5E1', 'stroke-width':1, 'stroke-dasharray':'2,2'}));
+    if(Math.abs(p.C) > 0.01){
+      svg.appendChild(el('line', {x1:gx(p.C), y1:G_PLOT_Y0, x2:gx(p.C), y2:G_PLOT_Y1, stroke:color, 'stroke-width':1, 'stroke-dasharray':'2,2'}));
+    }
+
+    // kurva aktif
+    svg.appendChild(el('polyline', {points:buildCurvePoints(activeFunc, p.A, p.B, p.C, p.D), fill:'none', stroke:color, 'stroke-width':2.8}));
+
+    // update label kontrol
+    ampVal.textContent = fmt(p.A);
+    periodVal.textContent = p.P + '°';
+    phaseVal.textContent = p.C + '°';
+    shiftVal.textContent = fmt(p.D);
+
+    // equation box (HTML biasa, real-time, tanpa KaTeX agar ringan saat drag)
+    var cTxt = p.C === 0 ? 'x' : ('(x − ' + (p.C>0?'':'') + p.C + '°)');
+    eqBox.innerHTML = 'y = ' + fmt(p.A) + ' · ' + fname + '(' + fmt(p.B) + cTxt + ')' + (p.D !== 0 ? (p.D>0?' + ':' − ') + fmt(Math.abs(p.D)) : '') +
+      '<br><span class="soft" style="font-size:12px; font-weight:600;">maks = ' + fmt(p.D+p.A) + ', min = ' + fmt(p.D-p.A) + '</span>';
+
+    // insight dinamis
+    var msg = 'Geser salah satu kontrol di bawah untuk melihat perubahannya.';
+    if(lastChanged === 'amp'){
+      msg = 'Amplitudo jadi ' + fmt(p.A) + '. Tinggi puncak berubah (maks ' + fmt(p.D+p.A) + ', min ' + fmt(p.D-p.A) + '), tapi periode dan posisinya TETAP sama.';
+    } else if(lastChanged === 'period'){
+      msg = 'Periode jadi ' + p.P + '°. Grafik jadi lebih ' + (p.P<360?'rapat':(p.P>360?'lebar':'seperti semula')) + ' secara horizontal, tapi tinggi puncak (amplitudo) TETAP sama.';
+    } else if(lastChanged === 'phase'){
+      msg = p.C === 0 ? 'Fase kembali ke 0° — grafik sejajar dengan grafik dasar lagi.' : ('Fase digeser ' + p.C + '°. Bentuk grafik PERSIS SAMA, cuma posisinya geser ' + Math.abs(p.C) + '° ke ' + (p.C>0?'kanan':'kiri') + '.');
+    } else if(lastChanged === 'shift'){
+      msg = p.D === 0 ? 'Garis tengah kembali ke y = 0.' : ('Garis tengah jadi y = ' + fmt(p.D) + '. Seluruh grafik ' + (p.D>0?'naik':'turun') + ', tapi bentuknya (amplitudo & periode) TETAP sama.');
+    }
+    insightText.textContent = msg;
+  }
+
+  ampRange.addEventListener('input', function(){ lastChanged='amp'; render(); });
+  periodRange.addEventListener('input', function(){ lastChanged='period'; render(); });
+  phaseRange.addEventListener('input', function(){ lastChanged='phase'; render(); });
+  shiftRange.addEventListener('input', function(){ lastChanged='shift'; render(); });
+
+  btnSin.addEventListener('click', function(){
+    activeFunc = 'sin';
+    btnSin.classList.add('active');
+    btnCos.classList.remove('active');
+    render();
+  });
+  btnCos.addEventListener('click', function(){
+    activeFunc = 'cos';
+    btnCos.classList.add('active');
+    btnSin.classList.remove('active');
+    render();
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    ampRange.value = DEFAULTS.amp;
+    periodRange.value = DEFAULTS.periodIdx;
+    phaseRange.value = DEFAULTS.phase;
+    shiftRange.value = DEFAULTS.shift;
+    lastChanged = null;
+    render();
+  });
+
+  render();
+})();
+
+/* ================= CHALLENGE CHECKING ================= */
+function showFeedback(id, ok, msg){
+  var f = document.getElementById(id);
+  f.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+  f.textContent = msg;
+}
+
+function checkSoal1(){
+  if(!identitasLengkap()) return;
+  var v = parseFloat(document.getElementById('s1v').value);
+  var benar = !isNaN(v) && Math.abs(v - 4) < 0.05;
+  if(benar){
+    showFeedback('fb1', true, 'Betul! Pada y = 4 sin(2x), angka di depan sin (yaitu 4) adalah amplitudonya.');
+  } else if(!isNaN(v) && Math.abs(v - 2) < 0.05){
+    showFeedback('fb1', false, 'Sepertinya kamu memasukkan angka di DALAM kurung (koefisien x), bukan angka di depan sin. Amplitudo adalah angka pengali paling depan, yaitu 4.');
+  } else {
+    showFeedback('fb1', false, 'Belum tepat. Amplitudo adalah angka yang mengalikan sin/cos di paling depan rumus. Pada y = 4 sin(2x), amplitudonya 4.');
+  }
+  kirimKeGuru(1, 'amplitudo='+v, '', benar);
+}
+
+function checkSoal2(){
+  if(!identitasLengkap()) return;
+  var v = parseFloat(document.getElementById('s2v').value);
+  var benar = !isNaN(v) && Math.abs(v - 30) < 0.5;
+  if(benar){
+    showFeedback('fb2', true, 'Tepat! sin(2x − 60°) = sin(2(x − 30°)), jadi fase-nya 30° ke kanan.');
+  } else if(!isNaN(v) && Math.abs(v - 60) < 0.5){
+    showFeedback('fb2', false, 'Hampir! 60° itu angka sebelum difaktorkan. Karena sin(2x−60°) = sin(2(x−30°)), fase-nya 60°÷2 = 30°, bukan 60° langsung.');
+  } else {
+    showFeedback('fb2', false, 'Belum tepat. Faktorkan dulu B=2 dari dalam kurung: sin(2x−60°) = sin(2(x−30°)). Fase-nya adalah C = 30° (ke kanan, karena positif).');
+  }
+  kirimKeGuru(2, 'fase='+v, '', benar);
+}
+
+function checkSoal3(){
+  if(!identitasLengkap()) return;
+  var f = parseFloat(document.getElementById('s3f').value);
+  var g = parseFloat(document.getElementById('s3g').value);
+  var h = parseFloat(document.getElementById('s3h').value);
+  var okF = !isNaN(f) && Math.abs(f-360) < 2;
+  var okG = !isNaN(g) && Math.abs(g-180) < 2;
+  var okH = !isNaN(h) && Math.abs(h-90) < 2;
+  var benar = okF && okG && okH;
+
+  if(benar){
+    showFeedback('fb3', true, 'Betul semua! Periode f=360°, g=180°, h=90°. Urutan dari terbesar ke terkecil: f > g > h — semakin besar B (1, 2, 4), semakin kecil periodenya.');
+  } else {
+    var salah = [];
+    if(!okF){ salah.push(!isNaN(f) && Math.abs(f-1)<0.5 ? 'f (itu nilai B-nya, bukan periodenya — periode f = 360°÷1 = 360°)' : 'f (periode f = 360°÷B = 360°÷1 = 360°)'); }
+    if(!okG){ salah.push(!isNaN(g) && Math.abs(g-2)<0.5 ? 'g (itu nilai B-nya, bukan periodenya — periode g = 360°÷2 = 180°)' : 'g (periode g = 360°÷B = 360°÷2 = 180°)'); }
+    if(!okH){ salah.push(!isNaN(h) && Math.abs(h-4)<0.5 ? 'h (itu nilai B-nya, bukan periodenya — periode h = 360°÷4 = 90°)' : 'h (periode h = 360°÷B = 360°÷4 = 90°)'); }
+    showFeedback('fb3', false, 'Belum semua tepat. Yang perlu dicek lagi: ' + salah.join('; ') + '.');
+  }
+  kirimKeGuru(3, 'f='+f+',g='+g+',h='+h, '', benar);
+}
+
+/* ================= KIRIM KE GURU (Google Apps Script) ================= */
+/* Tempel URL Web App Google Apps Script di sini (satu URL sama dipakai untuk SEMUA modul) */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, benar){
+  var idx = nomorSoal - 1;
+  var statusEl = document.getElementById('send'+idx);
+  if(!SCRIPT_URL){ if(statusEl) statusEl.textContent=''; return; }
+  var id = getIdentitas();
+  var namaKelas = id.nama + ' — ' + id.kelas;
+  var payload = {
+    topik: 'Amplitudo, Periode, dan Pergeseran Fase',
+    nama: namaKelas,
+    soal: nomorSoal,
+    jawaban: jawaban1,
+    jawaban2: jawaban2 || '',
+    benar: benar ? 'Benar' : 'Salah',
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  if(statusEl) statusEl.textContent = 'Mengirim ke guru...';
+  fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(payload) })
+    .then(function(){ if(statusEl) statusEl.textContent = 'Terkirim ke guru ✓'; })
+    .catch(function(){ if(statusEl) statusEl.textContent = 'Gagal mengirim (periksa koneksi internet).'; });
+}
+</script>
+</body>
+</html>

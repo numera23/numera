@@ -1,0 +1,870 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Sudut dan Radian
+Jenis      : Modul Interaktif (pakai KaTeX)
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sudut dan Radian — Numera</title>
+<meta name="description" content="Modul interaktif belajar sudut dan radian, konversi derajat-radian, serta hubungan sudut dengan panjang busur — Numera">
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-soft:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+    --radius-card:18px;
+    --radius-btn:12px;
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+    --sp-7:48px;
+    --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:900px; margin:0 auto; padding:0 var(--sp-4);}
+
+  /* TOPBAR */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width:900px; margin:0 auto; padding:10px var(--sp-4);
+    font-size:13px; font-weight:600; color:var(--primary);
+    letter-spacing:.2px;
+  }
+  .progress-track{height:3px; background:var(--border); width:100%;}
+  .progress-bar{height:100%; width:0%; background:var(--primary); transition:width 80ms linear;}
+
+  main{padding-bottom:var(--sp-7);}
+
+  /* FADE UP */
+  .fade-section{opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease;}
+  .fade-section.visible{opacity:1; transform:translateY(0);}
+
+  /* CARD */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius-card);
+    box-shadow:var(--shadow);
+    padding:var(--sp-5);
+    margin-top:var(--sp-5);
+  }
+  .section-num{
+    display:inline-block; font-size:12.5px; font-weight:700; color:var(--primary);
+    background:var(--primary-light); padding:3px 10px; border-radius:999px; margin-bottom:var(--sp-3);
+    letter-spacing:.5px;
+  }
+  h1{font-size:26px; font-weight:800; margin:var(--sp-3) 0 var(--sp-2); line-height:1.3;}
+  h2{font-size:20px; font-weight:700; margin:0 0 var(--sp-3); line-height:1.35;}
+  h3{font-size:16px; font-weight:700; margin:0 0 var(--sp-2);}
+  p{font-size:15px; line-height:1.65; color:var(--text); margin:0 0 var(--sp-3);}
+  .soft{color:var(--text-soft);}
+  mark{background:var(--primary-light); color:var(--primary-hover); padding:1px 4px; border-radius:4px; font-weight:600;}
+
+  /* HEADER */
+  .header-card{margin-top:var(--sp-5);}
+  .pill-row{display:flex; gap:var(--sp-2); flex-wrap:wrap; margin-bottom:var(--sp-3);}
+  .pill{
+    font-size:12.5px; font-weight:600; color:var(--primary);
+    background:var(--primary-light); padding:5px 12px; border-radius:999px;
+  }
+  .goal-list{margin:var(--sp-3) 0 0; padding-left:20px;}
+  .goal-list li{font-size:14.5px; line-height:1.6; color:var(--text-soft); margin-bottom:4px;}
+
+  /* ID CARD */
+  .id-card{
+    margin-top:var(--sp-5);
+    background:var(--primary-light);
+    border-radius:14px;
+    padding:var(--sp-4);
+  }
+  .id-card h3{color:var(--primary-hover);}
+  .id-card p{font-size:13.5px; color:#1e3a8a; margin-bottom:var(--sp-3);}
+  .id-grid{display:grid; grid-template-columns:1fr 1fr; gap:var(--sp-3);}
+  .id-grid label{display:block; font-size:12.5px; font-weight:600; color:var(--text-soft); margin-bottom:4px;}
+  .id-grid input{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+    font-family:'Inter',sans-serif; font-size:14px; background:#fff;
+  }
+  .id-grid input:focus{outline:none; border-color:var(--primary);}
+  .id-status{font-size:13px; font-weight:600; margin-top:var(--sp-2); min-height:16px;}
+
+  @media (max-width:520px){ .id-grid{grid-template-columns:1fr;} }
+
+  /* BUTTONS */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    min-height:40px; padding:0 18px; border-radius:var(--radius-btn);
+    font-family:'Inter',sans-serif; font-size:14px; font-weight:600;
+    border:none; cursor:pointer; transition:all 200ms ease;
+  }
+  .btn-primary{background:var(--primary); color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);}
+  .btn-outline{background:#fff; color:var(--primary); border:1px solid var(--border);}
+  .btn-outline:hover{border-color:var(--primary); background:var(--primary-light);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* STEP VISUAL */
+  .step-nav{display:flex; align-items:center; justify-content:space-between; margin-top:var(--sp-4);}
+  .step-dots{display:flex; gap:6px;}
+  .step-dot{width:7px; height:7px; border-radius:50%; background:var(--border);}
+  .step-dot.active{background:var(--primary); width:20px; border-radius:4px; transition:all 200ms ease;}
+  .step-box{
+    background:var(--bg); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-3);
+    display:flex; flex-direction:column; align-items:center; gap:var(--sp-3);
+  }
+  svg{max-width:100%; height:auto; display:block;}
+  .step-text{font-size:14.5px; line-height:1.65; color:var(--text); text-align:center; min-height:52px;}
+
+  /* SIMULATION / INTERAKSI */
+  .sim-grid{display:grid; grid-template-columns:1fr; gap:var(--sp-4); margin-top:var(--sp-4);}
+  @media (min-width:640px){ .sim-grid{grid-template-columns:1fr 1fr;} }
+  .sim-visual{background:var(--bg); border-radius:14px; padding:var(--sp-3); display:flex; align-items:center; justify-content:center;}
+  .sim-controls{display:flex; flex-direction:column; gap:var(--sp-3); justify-content:center;}
+  .drag-handle{cursor:grab; touch-action:none;}
+  .drag-handle:active{cursor:grabbing;}
+  .hint-text{font-size:13px; color:var(--text-soft); line-height:1.55;}
+  .angle-chip-row{display:flex; flex-wrap:wrap; gap:6px;}
+  .angle-chip{
+    font-size:12.5px; font-weight:600; padding:7px 12px; border-radius:999px;
+    border:1px solid var(--border); background:#fff; color:var(--text);
+    cursor:pointer; transition:all 200ms ease; font-family:'Inter',sans-serif;
+  }
+  .angle-chip:hover{border-color:var(--primary); color:var(--primary);}
+  .angle-chip.active{background:var(--primary); color:#fff; border-color:var(--primary);}
+  .equation-box{
+    background:var(--text); color:#fff; border-radius:12px; padding:var(--sp-4);
+    font-size:15px; font-weight:700; text-align:center; letter-spacing:.2px; line-height:1.7;
+    margin-top:var(--sp-4);
+  }
+  .equation-box .soft{color:#CBD5E1;}
+  .insight-box{
+    margin-top:var(--sp-3); background:#ECFDF5; border:1px solid #A7F3D0; border-radius:12px;
+    padding:var(--sp-3) var(--sp-4); font-size:14px; color:#065F46; font-weight:600;
+    display:none; align-items:center; gap:8px; flex-wrap:wrap;
+  }
+  .insight-box.show{display:flex;}
+
+  /* KATEX RESPONSIVE */
+  .katex-display{overflow-x:auto; overflow-y:hidden; padding:4px 0; margin:var(--sp-2) 0;}
+  .katex{font-size:1.05em;}
+  @media (max-width:400px){ .katex{font-size:.95em;} }
+
+  /* CHALLENGE */
+  .challenge-item{border:1px solid var(--border); border-radius:14px; padding:var(--sp-4); margin-top:var(--sp-4);}
+  .challenge-head{display:flex; align-items:center; gap:var(--sp-2); margin-bottom:var(--sp-3); flex-wrap:wrap;}
+  .level-badge{font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:999px; letter-spacing:.3px;}
+  .level-mudah{background:#D1FAE5; color:#065F46;}
+  .level-sedang{background:#FEF3C7; color:#92400E;}
+  .level-sulit{background:#FEE2E2; color:#991B1B;}
+  .challenge-inputs{display:flex; flex-wrap:wrap; gap:var(--sp-3); align-items:flex-end; margin:var(--sp-3) 0;}
+  .field{display:flex; flex-direction:column; gap:4px;}
+  .field label{font-size:12.5px; font-weight:600; color:var(--text-soft);}
+  .field input{
+    width:96px; padding:9px 10px; border-radius:10px; border:1px solid var(--border);
+    font-family:'Inter',sans-serif; font-size:14px;
+  }
+  .field input:focus{outline:none; border-color:var(--primary);}
+  .frac-hint{font-size:13px; color:var(--text-soft); align-self:center; padding-bottom:9px;}
+  .feedback{
+    margin-top:var(--sp-3); padding:var(--sp-3); border-radius:10px; font-size:14px; line-height:1.55;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{background:#D1FAE5; color:#065F46;}
+  .feedback.bad{background:#FEE2E2; color:#991B1B;}
+  .send-status{font-size:12.5px; color:var(--text-soft); margin-top:6px; min-height:14px;}
+
+  /* MISTAKES */
+  .mistake-item{display:flex; gap:var(--sp-3); align-items:flex-start; margin-top:var(--sp-4);}
+  .mistake-x{
+    flex-shrink:0; width:28px; height:28px; border-radius:50%; background:#FEE2E2; color:var(--error);
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px;
+  }
+
+  /* SUMMARY */
+  .summary-list{list-style:none; margin:0; padding:0;}
+  .summary-list li{
+    display:flex; gap:var(--sp-3); align-items:flex-start; font-size:14.5px; line-height:1.6;
+    padding:var(--sp-3) 0; border-bottom:1px solid var(--border);
+  }
+  .summary-list li:last-child{border-bottom:none;}
+  .summary-num{
+    flex-shrink:0; width:26px; height:26px; border-radius:50%; background:var(--primary); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700;
+  }
+  .done-badge{
+    text-align:center; margin-top:var(--sp-5); font-size:14px; font-weight:700; color:var(--success);
+  }
+
+  /* FOOTER */
+  .site-footer{padding: var(--sp-5) 0 var(--sp-6); text-align:center;}
+  .footer-divider{height:1px; background:var(--border); margin-bottom:var(--sp-4);}
+  .footer-brand{font-size:13.5px; font-weight:700; color:var(--primary); margin:0 0 4px;}
+  .footer-text{font-size:13px; color:var(--text-soft); margin:0 0 2px;}
+  .footer-meta{font-size:12.5px; color:var(--text-soft); margin:0; opacity:.85;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Sudut dan Radian</div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<main class="wrap">
+
+  <!-- 1. HEADER -->
+  <section class="header-card card">
+    <div class="pill-row">
+      <span class="pill">Fungsi Trigonometri</span>
+      <span class="pill">⏱ 15–20 menit</span>
+    </div>
+    <h1>Sudut dan Radian</h1>
+    <p class="soft">Setelah modul ini selesai, kamu akan bisa:</p>
+    <ul class="goal-list">
+      <li>Memahami bahwa derajat dan radian adalah dua satuan berbeda untuk mengukur sudut yang sama.</li>
+      <li>Menjelaskan pengertian 1 radian dari hubungan busur dan jari-jari lingkaran.</li>
+      <li>Mengubah sudut dari derajat ke radian, dan sebaliknya.</li>
+      <li>Mengenali nilai radian dari sudut-sudut istimewa (kelipatan π).</li>
+    </ul>
+
+    <div class="id-card">
+      <h3>Isi dulu sebelum mulai 👋</h3>
+      <p>Jawabanmu di bagian Challenge otomatis terkirim ke gurumu. Tidak perlu login atau email apapun.</p>
+      <div class="id-grid">
+        <div><label>Nama lengkap</label><input type="text" id="namaSiswa" placeholder="Tulis namamu"></div>
+        <div><label>Kelas</label><input type="text" id="kelasSiswa" placeholder="Contoh: X IPA 2"></div>
+      </div>
+      <div class="id-status" id="idStatus"></div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section class="card fade-section">
+    <span class="section-num">01</span>
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <p>Coba perhatikan kalkulator HP-mu. Ada mode "DEG" dan ada mode "RAD".</p>
+    <p>Keduanya sama-sama dipakai untuk mengukur sudut. Tapi kenapa harus ada dua cara berbeda untuk mengukur benda yang sama?</p>
+    <p>Ini mirip seperti mengukur panjang meja: bisa pakai <mark>sentimeter</mark>, bisa juga pakai <mark>inci</mark>. Panjangnya tidak berubah, cuma satuannya yang beda.</p>
+    <p>Nah, sudut juga begitu. Derajat itu satu satuan. Radian itu satuan yang lain.</p>
+    <p>Bedanya, radian punya cara pandang yang jauh lebih "alami" untuk lingkaran — dan nanti kamu akan lihat kenapa. Menurutmu, dari mana ya asal-usul satuan radian ini?</p>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="card fade-section">
+    <span class="section-num">02</span>
+    <h2>Penjelasan Sederhana</h2>
+    <p>Derajat itu asalnya dari kesepakatan lama: satu putaran penuh dibagi rata jadi 360 bagian. Angka 360 ini murni kesepakatan, tidak ada hubungannya dengan bentuk lingkaran itu sendiri.</p>
+    <p>Radian beda. Radian dibuat berdasarkan lingkaran itu sendiri, bukan kesepakatan bebas.</p>
+    <p>Begini definisinya: <mark>1 radian</mark> adalah besar sudut pusat, ketika panjang busur yang dibentuk persis <mark>sama panjang</mark> dengan jari-jari lingkaran (r).</p>
+    <p>Karena keliling lingkaran penuh itu 2πr (yaitu 2π kali panjang jari-jari), maka satu putaran penuh sama dengan 2π radian. Dan karena satu putaran penuh juga sama dengan 360°, kita dapat hubungan penting:</p>
+    <p>\[ 360^\circ = 2\pi \text{ rad} \quad \Longrightarrow \quad 180^\circ = \pi \text{ rad} \]</p>
+    <p>Dari sini, lahir dua rumus konversi yang akan sering kamu pakai:</p>
+    <p>\[ \theta_{rad} = \theta_{deg} \times \dfrac{\pi}{180} \qquad\qquad \theta_{deg} = \theta_{rad} \times \dfrac{180}{\pi} \]</p>
+    <p>Selain itu, radian juga langsung menghubungkan sudut dengan panjang busur (s) lewat rumus <strong>s = r × θ</strong> — asal θ-nya dalam radian, bukan derajat.</p>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="card fade-section">
+    <span class="section-num">03</span>
+    <h2>Lihat Cara Kerjanya</h2>
+    <p class="soft">Mari kita "bangun" pengertian 1 radian langkah demi langkah, langsung dari lingkarannya. Tekan Next untuk lanjut.</p>
+
+    <div class="step-box">
+      <svg id="stepSvg" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg"></svg>
+      <p class="step-text" id="stepText"></p>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn btn-outline" id="prevStepBtn">← Previous</button>
+      <div class="step-dots" id="stepDots"></div>
+      <button class="btn btn-primary" id="nextStepBtn">Next →</button>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="card fade-section">
+    <span class="section-num">04</span>
+    <h2>Coba Sendiri</h2>
+    <p class="soft">Ini lingkaran satuan (r = 1). <strong>Geser (drag) titik biru</strong> di tepi lingkaran untuk mengubah sudutnya, atau tekan salah satu tombol sudut cepat di bawah.</p>
+
+    <div class="sim-grid">
+      <div class="sim-visual">
+        <svg id="angleSvg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" style="touch-action:none;">
+          <line x1="0" y1="150" x2="300" y2="150" stroke="#E2E8F0" stroke-width="1.5"></line>
+          <line x1="150" y1="0" x2="150" y2="300" stroke="#E2E8F0" stroke-width="1.5"></line>
+          <circle cx="150" cy="150" r="105" fill="rgba(37,99,235,.06)" stroke="#2563EB" stroke-width="2"></circle>
+          <line x1="150" y1="150" x2="255" y2="150" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3,3"></line>
+          <path id="angleArc" d="" fill="none" stroke="#F59E0B" stroke-width="4" stroke-linecap="round"></path>
+          <line id="angleRadiusLine" x1="150" y1="150" x2="255" y2="150" stroke="#2563EB" stroke-width="2.5"></line>
+          <circle cx="150" cy="150" r="4" fill="#0F172A"></circle>
+          <circle id="angleHandle" class="drag-handle" cx="255" cy="150" r="12" fill="#fff" stroke="#2563EB" stroke-width="3"></circle>
+        </svg>
+      </div>
+      <div class="sim-controls">
+        <p class="hint-text">Sudut diukur mulai dari garis putus-putus (0°), berlawanan arah jarum jam.</p>
+        <div class="angle-chip-row" id="angleChips">
+          <button type="button" class="angle-chip" data-deg="0">0°</button>
+          <button type="button" class="angle-chip" data-deg="30">30°</button>
+          <button type="button" class="angle-chip" data-deg="45">45°</button>
+          <button type="button" class="angle-chip" data-deg="60">60°</button>
+          <button type="button" class="angle-chip" data-deg="90">90°</button>
+          <button type="button" class="angle-chip" data-deg="180">180°</button>
+          <button type="button" class="angle-chip" data-deg="270">270°</button>
+          <button type="button" class="angle-chip" data-deg="360">360°</button>
+        </div>
+      </div>
+    </div>
+    <div class="equation-box" id="angleEqBox"></div>
+    <div class="insight-box" id="angleInsight">💡 <span id="angleInsightText"></span></div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="card fade-section">
+    <span class="section-num">05</span>
+    <h2>Challenge</h2>
+    <p class="soft">Tiga soal, makin lama makin menantang. Jawabanmu otomatis tersimpan untuk gurumu.</p>
+
+    <!-- Soal 1 - Mudah -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-mudah">MUDAH</span>
+        <h3 style="margin:0;">Soal 1</h3>
+      </div>
+      <p>Ubah sudut 60° menjadi radian. Tulis jawabanmu dalam bentuk pecahan kali π, yaitu <strong>k·π / n</strong>.</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>k (pembilang)</label><input type="number" id="s1k"></div>
+        <span class="frac-hint">· π /</span>
+        <div class="field"><label>n (penyebut)</label><input type="number" id="s1n"></div>
+        <button class="btn btn-primary" onclick="checkSoal1()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb1"></div>
+      <div class="send-status" id="send0"></div>
+    </div>
+
+    <!-- Soal 2 - Sedang -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-sedang">SEDANG</span>
+        <h3 style="margin:0;">Soal 2</h3>
+      </div>
+      <p>Sebuah sudut besarnya \( \dfrac{5\pi}{6} \) rad. Berapa besar sudut itu dalam derajat?</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Besar sudut (°)</label><input type="number" id="s2d"></div>
+        <button class="btn btn-primary" onclick="checkSoal2()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb2"></div>
+      <div class="send-status" id="send1"></div>
+    </div>
+
+    <!-- Soal 3 - Sulit (kerja mundur) -->
+    <div class="challenge-item">
+      <div class="challenge-head">
+        <span class="level-badge level-sulit">SULIT</span>
+        <h3 style="margin:0;">Soal 3</h3>
+      </div>
+      <p>Sebuah lingkaran berjari-jari r = 4 cm. Sebuah busur pada lingkaran itu panjangnya \( s = \dfrac{2\pi}{3} \) cm (≈ 2,09 cm). Berapa besar sudut pusat yang menghadap busur tersebut, dalam derajat?</p>
+      <div class="challenge-inputs">
+        <div class="field"><label>Besar sudut (°)</label><input type="number" id="s3d"></div>
+        <button class="btn btn-primary" onclick="checkSoal3()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fb3"></div>
+      <div class="send-status" id="send2"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="card fade-section">
+    <span class="section-num">06</span>
+    <h2>Kesalahan yang Sering Terjadi</h2>
+
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Tertukar arah rumus konversi.</strong></p>
+        <p class="soft">Derajat ke radian pakai π/180. Radian ke derajat pakai kebalikannya, yaitu 180/π. Kalau tertukar, hasilnya jadi bilangan yang sangat kecil atau sangat besar.</p>
+      </div>
+    </div>
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Mengira 1 radian sama dengan 1°.</strong></p>
+        <p class="soft">Padahal 1 radian itu sekitar 57,3°. Radian bukan bilangan bulat yang rapi seperti derajat.</p>
+      </div>
+    </div>
+    <div class="mistake-item">
+      <div class="mistake-x">✕</div>
+      <div>
+        <p style="margin-bottom:2px;"><strong>Memakai rumus s = rθ dengan θ masih dalam derajat.</strong></p>
+        <p class="soft">Rumus ini hanya berlaku kalau θ dalam radian. Kalau soalnya masih dalam derajat, ubah dulu ke radian sebelum dikalikan dengan r.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="card fade-section">
+    <span class="section-num">07</span>
+    <h2>Ringkasan</h2>
+    <ul class="summary-list">
+      <li><span class="summary-num">1</span><span>Derajat dan radian adalah dua satuan berbeda untuk mengukur sudut yang sama.</span></li>
+      <li><span class="summary-num">2</span><span>1 radian adalah besar sudut pusat ketika panjang busurnya sama dengan jari-jari lingkaran.</span></li>
+      <li><span class="summary-num">3</span><span>Satu putaran penuh = 360° = 2π radian, sehingga 180° = π radian.</span></li>
+      <li><span class="summary-num">4</span><span>Konversi: radian = derajat × (π/180); derajat = radian × (180/π).</span></li>
+      <li><span class="summary-num">5</span><span>Panjang busur dihitung dengan s = r × θ, asalkan θ dalam radian.</span></li>
+    </ul>
+    <p class="done-badge">✓ Selesai — Sudut dan Radian</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ================= KATEX HELPER ================= */
+function renderKatexIn(elm){
+  if(window.renderMathInElement && elm){
+    renderMathInElement(elm, {
+      delimiters: [
+        {left:'\\[', right:'\\]', display:true},
+        {left:'\\(', right:'\\)', display:false}
+      ],
+      throwOnError:false
+    });
+  }
+}
+document.addEventListener('DOMContentLoaded', function(){
+  renderKatexIn(document.body);
+});
+
+/* ================= PROGRESS BAR ================= */
+(function(){
+  var bar = document.getElementById('progressBar');
+  function update(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var height = h.scrollHeight - h.clientHeight;
+    var pct = height > 0 ? (scrolled / height) * 100 : 0;
+    bar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+/* ================= FADE UP ================= */
+(function(){
+  var els = document.querySelectorAll('.fade-section');
+  if(!('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ================= IDENTITAS SISWA ================= */
+function getIdentitas(){
+  var nama = document.getElementById('namaSiswa').value.trim();
+  var kelas = document.getElementById('kelasSiswa').value.trim();
+  return { nama: nama, kelas: kelas };
+}
+function identitasLengkap(){
+  var id = getIdentitas();
+  var statusEl = document.getElementById('idStatus');
+  if(!id.nama || !id.kelas){
+    statusEl.textContent = 'Isi nama dan kelas dulu ya, sebelum cek jawaban.';
+    statusEl.style.color = '#B91C1C';
+    document.getElementById('namaSiswa').focus();
+    return false;
+  }
+  statusEl.textContent = '';
+  return true;
+}
+
+/* ================= SVG HELPERS ================= */
+var SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs){
+  var e = document.createElementNS(SVGNS, tag);
+  for(var k in attrs){ e.setAttribute(k, attrs[k]); }
+  return e;
+}
+
+/* ================= STEP DIAGRAM (Section 4) ================= */
+(function(){
+  var svg = document.getElementById('stepSvg');
+  var textEl = document.getElementById('stepText');
+  var dotsWrap = document.getElementById('stepDots');
+  var prevBtn = document.getElementById('prevStepBtn');
+  var nextBtn = document.getElementById('nextStepBtn');
+
+  var cx = 100, cy = 150, R = 90;
+  function px(deg){ return cx + R*Math.cos(deg*Math.PI/180); }
+  function py(deg){ return cy - R*Math.sin(deg*Math.PI/180); }
+
+  var oneRadDeg = 180/Math.PI; // ~57.2958
+
+  var texts = [
+    'Ini sebuah lingkaran dengan pusat O dan jari-jari r. Titik A ada di tepi lingkaran.',
+    'Sekarang kita "jalan" sepanjang tepi lingkaran (busur), sejauh <mark>satu kali panjang jari-jari r</mark>, sampai berhenti di titik B.',
+    'Sudut AOB yang terbentuk di pusat itu punya nama khusus: <mark>1 radian</mark>. Coba tebak, kira-kira berapa besar sudut itu dalam derajat?',
+    'Ternyata 1 radian itu sekitar <mark>57,3°</mark> — bukan angka bulat yang rapi seperti kelipatan derajat biasa.',
+    'Kalau langkah "jalan sejauh r" ini kita ulangi terus mengelilingi lingkaran penuh, kita butuh sekitar 6,28 kali (yaitu 2π kali). Jadi satu putaran penuh = 2π radian = 360°.',
+    'Dari situ kita dapat rumus konversinya: \\[ \\theta_{rad} = \\theta_{deg} \\times \\dfrac{\\pi}{180} \\qquad \\theta_{deg} = \\theta_{rad} \\times \\dfrac{180}{\\pi} \\]'
+  ];
+
+  var step = 0;
+  var totalSteps = texts.length;
+
+  function buildDots(){
+    dotsWrap.innerHTML = '';
+    for(var i=0;i<totalSteps;i++){
+      var d = document.createElement('div');
+      d.className = 'step-dot';
+      dotsWrap.appendChild(d);
+    }
+  }
+  buildDots();
+
+  function render(){
+    svg.innerHTML = '';
+
+    // pusat & titik A (0 derajat)
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:R, fill:'rgba(37,99,235,.06)', stroke:'#2563EB', 'stroke-width':2}));
+    svg.appendChild(el('circle', {cx:cx, cy:cy, r:3.5, fill:'#0F172A'}));
+    var oLbl = el('text', {x:cx-16, y:cy+16, 'font-size':11.5, fill:'#0F172A', 'font-weight':700});
+    oLbl.textContent = 'O';
+    svg.appendChild(oLbl);
+
+    svg.appendChild(el('line', {x1:cx, y1:cy, x2:px(0), y2:py(0), stroke:'#94A3B8', 'stroke-width':2}));
+    svg.appendChild(el('circle', {cx:px(0), cy:py(0), r:4, fill:'#94A3B8'}));
+    var aLbl = el('text', {x:px(0)+8, y:py(0)+4, 'font-size':11.5, fill:'#475569', 'font-weight':700});
+    aLbl.textContent = 'A';
+    svg.appendChild(aLbl);
+
+    if(step >= 1){
+      // busur sepanjang r dari A ke B (sudut = 1 rad)
+      var large = oneRadDeg > 180 ? 1 : 0;
+      var dPath = 'M ' + px(0) + ' ' + py(0) + ' A ' + R + ' ' + R + ' 0 ' + large + ' 0 ' + px(oneRadDeg) + ' ' + py(oneRadDeg);
+      svg.appendChild(el('path', {d:dPath, fill:'none', stroke:'#F59E0B', 'stroke-width':4, 'stroke-linecap':'round'}));
+      var bLbl = el('text', {x:px(oneRadDeg)+6, y:py(oneRadDeg)-8, 'font-size':11.5, fill:'#92400E', 'font-weight':700});
+      bLbl.textContent = 'B';
+      svg.appendChild(bLbl);
+    }
+
+    if(step >= 2){
+      svg.appendChild(el('line', {x1:cx, y1:cy, x2:px(oneRadDeg), y2:py(oneRadDeg), stroke:'#2563EB', 'stroke-width':2.5}));
+      var midDeg = oneRadDeg/2;
+      var angLbl = el('text', {x:px(midDeg)*0.55+cx*0.45, y:py(midDeg)*0.55+cy*0.45, 'font-size':11, fill:'#2563EB', 'font-weight':700});
+      angLbl.textContent = '1 rad';
+      svg.appendChild(angLbl);
+    }
+
+    if(step >= 3){
+      var noteLbl = el('text', {x:10, y:20, 'font-size':12, fill:'#0F172A', 'font-weight':700});
+      noteLbl.textContent = '1 radian ≈ 57,3°';
+      svg.appendChild(noteLbl);
+    }
+
+    if(step >= 4){
+      // tanda garis putus-putus sekeliling lingkaran tiap kelipatan 1 rad (menandai 2π ~ 6.28 kali)
+      for(var m=1; m<=6; m++){
+        var dg = m*oneRadDeg;
+        if(dg < 360){
+          svg.appendChild(el('line', {x1:cx, y1:cy, x2:px(dg), y2:py(dg), stroke:'#CBD5E1', 'stroke-width':1.3, 'stroke-dasharray':'2,2'}));
+        }
+      }
+      var fullLbl = el('text', {x:10, y:255, 'font-size':11.5, fill:'#0F172A', 'font-weight':700});
+      fullLbl.textContent = '2π rad ≈ 6,28 rad = satu putaran penuh';
+      svg.appendChild(fullLbl);
+    }
+
+    textEl.innerHTML = texts[step];
+    renderKatexIn(textEl);
+
+    var dots = dotsWrap.children;
+    for(var i=0;i<dots.length;i++){
+      dots[i].classList.toggle('active', i === step);
+    }
+    prevBtn.disabled = (step === 0);
+    nextBtn.disabled = (step === totalSteps-1);
+  }
+
+  prevBtn.addEventListener('click', function(){ if(step>0){ step--; render(); } });
+  nextBtn.addEventListener('click', function(){ if(step<totalSteps-1){ step++; render(); } });
+
+  render();
+})();
+
+/* ================= COBA SENDIRI: DRAG SUDUT (Section 5) ================= */
+(function(){
+  var svg = document.getElementById('angleSvg');
+  var handle = document.getElementById('angleHandle');
+  var arcPath = document.getElementById('angleArc');
+  var radiusLine = document.getElementById('angleRadiusLine');
+  var eqBox = document.getElementById('angleEqBox');
+  var insightBox = document.getElementById('angleInsight');
+  var insightText = document.getElementById('angleInsightText');
+  var chips = document.querySelectorAll('.angle-chip');
+
+  var cx = 150, cy = 150, R = 105;
+  var current = 45;
+
+  var special = [
+    {deg:0,   k:0,  n:1},
+    {deg:30,  k:1,  n:6},
+    {deg:45,  k:1,  n:4},
+    {deg:60,  k:1,  n:3},
+    {deg:90,  k:1,  n:2},
+    {deg:120, k:2,  n:3},
+    {deg:135, k:3,  n:4},
+    {deg:150, k:5,  n:6},
+    {deg:180, k:1,  n:1},
+    {deg:210, k:7,  n:6},
+    {deg:225, k:5,  n:4},
+    {deg:240, k:4,  n:3},
+    {deg:270, k:3,  n:2},
+    {deg:300, k:5,  n:3},
+    {deg:315, k:7,  n:4},
+    {deg:330, k:11, n:6},
+    {deg:360, k:2,  n:1}
+  ];
+
+  function pointFor(deg){
+    var rad = deg*Math.PI/180;
+    return { x: cx + R*Math.cos(rad), y: cy - R*Math.sin(rad) };
+  }
+
+  function findSpecial(deg){
+    for(var i=0;i<special.length;i++){
+      if(Math.abs(deg - special[i].deg) < 1.4) return special[i];
+    }
+    return null;
+  }
+
+  function katexFrac(k, n){
+    if(n === 1){ return k === 1 ? '\\pi' : (k + '\\pi'); }
+    var top = k === 1 ? '\\pi' : (k + '\\pi');
+    return '\\dfrac{' + top + '}{' + n + '}';
+  }
+
+  function render(deg){
+    var snap = findSpecial(deg);
+    current = snap ? snap.deg : deg;
+
+    var p = pointFor(current);
+    handle.setAttribute('cx', p.x);
+    handle.setAttribute('cy', p.y);
+    radiusLine.setAttribute('x2', p.x);
+    radiusLine.setAttribute('y2', p.y);
+
+    var d = '';
+    if(current > 0.5){
+      var endDeg = current >= 359.9 ? 359.85 : current;
+      var endP = pointFor(endDeg);
+      var largeArc = endDeg > 180 ? 1 : 0;
+      d = 'M ' + (cx+R) + ' ' + cy + ' A ' + R + ' ' + R + ' 0 ' + largeArc + ' 0 ' + endP.x + ' ' + endP.y;
+    }
+    arcPath.setAttribute('d', d);
+
+    var rad = current*Math.PI/180;
+    var radRounded = rad.toFixed(2);
+
+    eqBox.innerHTML = 'θ = ' + Math.round(current) + '&deg; = ' + radRounded + ' rad' +
+      '<br><span class="soft" style="font-size:12.5px; font-weight:600;">Karena r = 1 (lingkaran satuan), panjang busur s = θ = ' + radRounded + ' satuan.</span>';
+
+    chips.forEach(function(c){
+      c.classList.toggle('active', parseFloat(c.dataset.deg) === current);
+    });
+
+    if(snap){
+      insightText.innerHTML = 'Sudut istimewa! \\(' + Math.round(current) + '^\\circ = ' + katexFrac(snap.k, snap.n) + '\\text{ rad}\\)';
+      renderKatexIn(insightText);
+      insightBox.classList.add('show');
+    } else {
+      insightBox.classList.remove('show');
+    }
+  }
+
+  function angleFromPointer(evt){
+    var pt = svg.createSVGPoint();
+    pt.x = evt.clientX; pt.y = evt.clientY;
+    var loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+    var dx = loc.x - cx;
+    var dy = cy - loc.y;
+    var rad = Math.atan2(dy, dx);
+    var deg = rad*180/Math.PI;
+    if(deg < 0){ deg += 360; }
+    return deg;
+  }
+
+  var dragging = false;
+
+  handle.addEventListener('pointerdown', function(evt){
+    dragging = true;
+    handle.setPointerCapture(evt.pointerId);
+    evt.preventDefault();
+  });
+  svg.addEventListener('pointermove', function(evt){
+    if(!dragging) return;
+    render(angleFromPointer(evt));
+  });
+  handle.addEventListener('pointerup', function(){ dragging = false; });
+  handle.addEventListener('pointercancel', function(){ dragging = false; });
+
+  svg.addEventListener('pointerdown', function(evt){
+    if(evt.target === handle) return;
+    dragging = true;
+    render(angleFromPointer(evt));
+  });
+  document.addEventListener('pointerup', function(){ dragging = false; });
+
+  chips.forEach(function(c){
+    c.addEventListener('click', function(){
+      render(parseFloat(c.dataset.deg));
+    });
+  });
+
+  render(current);
+})();
+
+/* ================= CHALLENGE CHECKING ================= */
+function showFeedback(id, ok, msg){
+  var f = document.getElementById(id);
+  f.className = 'feedback show ' + (ok ? 'ok' : 'bad');
+  f.textContent = msg;
+}
+
+function checkSoal1(){
+  if(!identitasLengkap()) return;
+  var k = parseFloat(document.getElementById('s1k').value);
+  var n = parseFloat(document.getElementById('s1n').value);
+  var valid = !isNaN(k) && !isNaN(n) && n !== 0;
+  var benar = valid && Math.abs((k/n) - (1/3)) < 0.001;
+  if(benar){
+    showFeedback('fb1', true, 'Betul! 60° × π/180 = 60π/180 = π/3 rad. Jadi k = 1 dan n = 3 (atau pecahan senilai lainnya).');
+  } else if(valid && Math.abs((k/n) - 60) < 0.5){
+    showFeedback('fb1', false, 'Sepertinya kamu menuliskan 60 langsung sebagai radian. Ingat, harus dikalikan dulu dengan π/180: 60 × π/180 = π/3.');
+  } else if(valid && Math.abs((k/n) - 3) < 0.01){
+    showFeedback('fb1', false, 'Hampir tepat! Sepertinya pembilang dan penyebutnya tertukar posisi. Coba cek lagi: 60π/180 itu hasilnya π per berapa?');
+  } else {
+    showFeedback('fb1', false, 'Belum tepat. Gunakan rumus radian = derajat × π/180, lalu sederhanakan pecahannya: 60 × π/180 = 60π/180 = π/3.');
+  }
+  kirimKeGuru(1, 'k='+k, 'n='+n, benar);
+}
+
+function checkSoal2(){
+  if(!identitasLengkap()) return;
+  var d = parseFloat(document.getElementById('s2d').value);
+  var benar = !isNaN(d) && Math.abs(d - 150) < 0.5;
+  if(benar){
+    showFeedback('fb2', true, 'Tepat! (5π/6) × (180/π) = (5 × 180)/6 = 150°.');
+  } else if(!isNaN(d) && Math.abs(d - 30) < 0.5){
+    showFeedback('fb2', false, 'Sepertinya kamu cuma menghitung π/6 dan lupa mengalikan dengan angka 5-nya. Sudutnya itu 5π/6, bukan π/6 saja.');
+  } else {
+    showFeedback('fb2', false, 'Belum tepat. Gunakan rumus derajat = radian × 180/π: (5π/6) × (180/π) = (5×180)/6 = 150°.');
+  }
+  kirimKeGuru(2, 'derajat='+d, '', benar);
+}
+
+function checkSoal3(){
+  if(!identitasLengkap()) return;
+  var d = parseFloat(document.getElementById('s3d').value);
+  var benar = !isNaN(d) && Math.abs(d - 30) < 0.5;
+  if(benar){
+    showFeedback('fb3', true, 'Betul! θ = s/r = (2π/3)/4 = π/6 rad. Diubah ke derajat: (π/6) × (180/π) = 30°.');
+  } else if(!isNaN(d) && Math.abs(d - 120) < 0.5){
+    showFeedback('fb3', false, 'Sepertinya kamu langsung mengubah s ke derajat tanpa membaginya dengan r dulu. Cari θ = s/r dulu (dalam radian), baru ubah ke derajat.');
+  } else {
+    showFeedback('fb3', false, 'Belum tepat. Langkah 1: θ (rad) = s/r = (2π/3)/4. Langkah 2: ubah ke derajat dengan × 180/π. Coba hitung ulang.');
+  }
+  kirimKeGuru(3, 'derajat='+d, '', benar);
+}
+
+/* ================= KIRIM KE GURU (Google Apps Script) ================= */
+/* Tempel URL Web App Google Apps Script di sini (satu URL sama dipakai untuk SEMUA modul) */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, benar){
+  var idx = nomorSoal - 1;
+  var statusEl = document.getElementById('send'+idx);
+  if(!SCRIPT_URL){ if(statusEl) statusEl.textContent=''; return; }
+  var id = getIdentitas();
+  var namaKelas = id.nama + ' — ' + id.kelas;
+  var payload = {
+    topik: 'Sudut dan Radian',
+    nama: namaKelas,
+    soal: nomorSoal,
+    jawaban: jawaban1,
+    jawaban2: jawaban2 || '',
+    benar: benar ? 'Benar' : 'Salah',
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  if(statusEl) statusEl.textContent = 'Mengirim ke guru...';
+  fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(payload) })
+    .then(function(){ if(statusEl) statusEl.textContent = 'Terkirim ke guru ✓'; })
+    .catch(function(){ if(statusEl) statusEl.textContent = 'Gagal mengirim (periksa koneksi internet).'; });
+}
+</script>
+</body>
+</html>

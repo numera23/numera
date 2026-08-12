@@ -1,0 +1,986 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Grafik Fungsi Tangen
+Jenis      : Modul Interaktif (pakai KaTeX)
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Grafik Fungsi Tangen — Numera</title>
+<meta name="description" content="Modul interaktif belajar grafik fungsi tangen: periode, asimtot, dan cara menggambarnya.">
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+  --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px;
+  --radius-card:18px;
+  --radius-btn:12px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.wrap{max-width:900px;margin:0 auto;padding:0 var(--sp-4);}
+img,canvas{max-width:100%;}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;margin:0 auto;padding:10px var(--sp-4);
+  font-size:13px;font-weight:700;color:var(--primary);
+  letter-spacing:.2px;
+}
+.progress-track{height:3px;background:var(--border);width:100%;}
+.progress-bar{height:3px;background:var(--primary);width:0%;transition:width .1s linear;}
+
+/* Sections */
+section{padding:var(--sp-6) 0;}
+.fade-up{opacity:0;transform:translateY(16px);transition:opacity .5s ease, transform .5s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+.card{
+  background:var(--card);
+  border-radius:var(--radius-card);
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  padding:var(--sp-5);
+  border:1px solid var(--border);
+}
+
+h1{font-size:26px;font-weight:800;margin:0 0 6px;line-height:1.25;}
+h2{font-size:20px;font-weight:800;margin:0 0 var(--sp-3);}
+h3{font-size:16px;font-weight:700;margin:0 0 6px;}
+p{font-size:15px;line-height:1.65;color:var(--text);margin:0 0 12px;}
+.soft{color:var(--text-soft);}
+.eyebrow{
+  font-size:12.5px;font-weight:700;color:var(--primary);
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;
+}
+mark{background:var(--primary-light);color:var(--primary-hover);padding:1px 5px;border-radius:5px;font-weight:600;}
+
+/* Header meta chips */
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 var(--sp-4);}
+.chip{
+  font-size:12.5px;font-weight:600;color:var(--primary-hover);
+  background:var(--primary-light);padding:5px 12px;border-radius:999px;
+}
+.goal-list{margin:0;padding-left:18px;}
+.goal-list li{font-size:14.5px;line-height:1.6;margin-bottom:4px;color:var(--text);}
+
+/* Identity card */
+.id-card{
+  background:var(--primary-light);
+  border-radius:var(--radius-card);
+  padding:var(--sp-4) var(--sp-5);
+  margin-top:var(--sp-4);
+}
+.id-card h3{color:var(--primary-hover);margin-bottom:4px;}
+.id-card p{color:#1E3A8A;font-size:13.5px;margin-bottom:12px;}
+.id-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.id-grid label{display:block;font-size:12.5px;font-weight:600;color:#1E3A8A;margin-bottom:4px;}
+.id-grid input{
+  width:100%;padding:10px 12px;border-radius:var(--radius-btn);
+  border:1px solid #BFDBFE;font-family:inherit;font-size:14px;
+  background:#fff;color:var(--text);
+}
+.id-grid input:focus{outline:2px solid var(--primary);outline-offset:1px;}
+.id-status{font-size:13px;font-weight:600;margin-top:8px;min-height:16px;}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-height:40px;padding:0 18px;border-radius:var(--radius-btn);
+  font-family:inherit;font-size:14.5px;font-weight:700;
+  border:1px solid transparent;cursor:pointer;transition:all .2s ease;
+  background:var(--primary);color:#fff;
+}
+.btn:hover{background:var(--primary-hover);}
+.btn:active{transform:scale(.97);}
+.btn.secondary{background:#fff;color:var(--primary);border:1px solid var(--border);}
+.btn.secondary:hover{background:var(--primary-light);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+
+/* Step viewer */
+.step-shell{margin-top:var(--sp-4);}
+.step-dots{display:flex;gap:6px;justify-content:center;margin:14px 0 4px;}
+.step-dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .2s;}
+.step-dot.active{background:var(--primary);}
+.step-canvas-box{
+  background:var(--bg);border:1px solid var(--border);border-radius:14px;
+  padding:10px;margin-bottom:var(--sp-3);
+}
+.step-values{
+  display:flex;gap:8px;flex-wrap:wrap;margin:10px 0;
+}
+.val-pill{
+  font-size:13px;font-weight:600;background:var(--bg);border:1px solid var(--border);
+  padding:6px 10px;border-radius:10px;color:var(--text);
+}
+.val-pill b{color:var(--primary);}
+
+/* Coba sendiri controls */
+.control-block{margin-bottom:var(--sp-4);}
+.control-label{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13.5px;font-weight:700;margin-bottom:8px;
+}
+.control-label .curval{color:var(--primary);font-weight:800;}
+.stepper{display:flex;align-items:center;gap:10px;}
+.stepper button{
+  width:40px;height:40px;border-radius:var(--radius-btn);border:1px solid var(--border);
+  background:#fff;font-size:18px;font-weight:800;color:var(--primary);cursor:pointer;
+  transition:background .2s;
+}
+.stepper button:hover{background:var(--primary-light);}
+.stepper button:active{transform:scale(.95);}
+.stepper .stepper-display{
+  flex:1;text-align:center;font-size:15px;font-weight:700;
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-btn);
+  padding:9px 6px;
+}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+.chip-btn{
+  padding:8px 14px;border-radius:999px;border:1px solid var(--border);
+  background:#fff;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--text);
+  cursor:pointer;transition:all .2s;
+}
+.chip-btn:hover{background:var(--primary-light);}
+.chip-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+.toggle-row{display:flex;gap:8px;}
+.toggle-row .chip-btn{flex:1;}
+
+.graph-box{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:8px;margin:var(--sp-3) 0;
+}
+.graph-caption{font-size:12px;color:var(--text-soft);text-align:center;margin-top:4px;}
+
+.insight-box{
+  margin-top:var(--sp-4);padding:14px 16px;border-radius:14px;
+  background:#ECFDF5;border:1px solid #A7F3D0;
+  display:none;align-items:flex-start;gap:10px;
+}
+.insight-box.show{display:flex;}
+.insight-box .ico{font-size:18px;}
+.insight-box p{margin:0;font-size:13.5px;color:#065F46;font-weight:600;line-height:1.5;}
+
+/* Challenge */
+.challenge-card{margin-bottom:var(--sp-5);}
+.level-badge{
+  display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.4px;
+  padding:4px 11px;border-radius:999px;margin-bottom:10px;text-transform:uppercase;
+}
+.level-mudah{background:#D1FAE5;color:#065F46;}
+.level-sedang{background:#FEF3C7;color:#92400E;}
+.level-sulit{background:#FEE2E2;color:#991B1B;}
+.q-input-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:12px 0;}
+.q-input-row input[type=number]{
+  width:120px;padding:10px 12px;border-radius:var(--radius-btn);
+  border:1px solid var(--border);font-family:inherit;font-size:15px;text-align:center;
+}
+.q-input-row input[type=number]:focus{outline:2px solid var(--primary);outline-offset:1px;}
+.q-note{font-size:13px;color:var(--text-soft);margin-top:2px;}
+.feedback-box{
+  margin-top:10px;padding:12px 14px;border-radius:12px;font-size:13.5px;
+  font-weight:600;line-height:1.5;display:none;
+}
+.feedback-box.show{display:block;}
+.fb-correct{background:#D1FAE5;color:#065F46;}
+.fb-wrong{background:#FEE2E2;color:#991B1B;}
+.send-status{font-size:12px;color:var(--text-soft);margin-top:6px;min-height:14px;}
+
+/* Kesalahan umum */
+.mistake-item{
+  display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);
+}
+.mistake-item:last-child{border-bottom:none;}
+.mistake-x{
+  flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#FEE2E2;color:var(--error);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;
+}
+
+/* Ringkasan */
+.summary-list{list-style:none;margin:0;padding:0;}
+.summary-list li{
+  display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);font-size:14.5px;line-height:1.55;
+}
+.summary-list li:last-child{border-bottom:none;}
+.summary-num{
+  flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--primary-light);
+  color:var(--primary-hover);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;
+}
+
+/* Selesai badge */
+.done-badge{
+  text-align:center;font-size:13.5px;font-weight:700;color:var(--success);
+  background:#ECFDF5;border:1px solid #A7F3D0;padding:12px;border-radius:14px;margin-top:var(--sp-5);
+}
+
+/* Formula box for KaTeX display */
+.formula-box{
+  overflow-x:auto;overflow-y:hidden;padding:10px 4px;-webkit-overflow-scrolling:touch;
+}
+.formula-box::-webkit-scrollbar{height:4px;}
+
+/* Footer */
+.site-footer{padding: var(--sp-5) 0 var(--sp-6); text-align:center;}
+.footer-divider{height:1px; background:var(--border); margin-bottom:var(--sp-4);}
+.footer-brand{font-size:13.5px; font-weight:700; color:var(--primary); margin:0 0 4px;}
+.footer-text{font-size:13px; color:var(--text-soft); margin:0 0 2px;}
+.footer-meta{font-size:12.5px; color:var(--text-soft); margin:0; opacity:.85;}
+
+@media (max-width:480px){
+  h1{font-size:22px;}
+  .id-grid{grid-template-columns:1fr;}
+  .card{padding:var(--sp-4);}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Grafik Fungsi Tangen</div>
+</div>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section id="sec-header">
+    <div class="card">
+      <div class="eyebrow">Modul Interaktif</div>
+      <h1>Grafik Fungsi Tangen</h1>
+      <p class="soft">Belajar kenapa grafiknya "terputus-putus" dan bagaimana pola itu terbentuk.</p>
+      <div class="meta-row">
+        <span class="chip">📚 Fungsi Trigonometri</span>
+        <span class="chip">⏱️ 15–20 menit</span>
+        <span class="chip">🎯 Trigonometri</span>
+      </div>
+      <h3>Setelah modul ini, kamu bisa:</h3>
+      <ul class="goal-list">
+        <li>Menjelaskan kenapa grafik tangen punya garis yang "tidak boleh disentuh" (asimtot).</li>
+        <li>Menentukan periode grafik <span id="gp1"></span> dari nilai <span id="gp2"></span>.</li>
+        <li>Memprediksi bentuk grafik <span id="gp3"></span> hanya dari nilai a, b, c, dan d.</li>
+      </ul>
+
+      <div class="id-card">
+        <h3>Isi dulu sebelum mulai 👋</h3>
+        <p>Jawabanmu di bagian Challenge otomatis terkirim ke gurumu. Tidak perlu login atau email apapun.</p>
+        <div class="id-grid">
+          <div><label>Nama lengkap</label><input type="text" id="namaSiswa" placeholder="Tulis namamu"></div>
+          <div><label>Kelas</label><input type="text" id="kelasSiswa" placeholder="Contoh: XI IPA 2"></div>
+        </div>
+        <div class="id-status" id="idStatus"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR? -->
+  <section class="fade-up">
+    <div class="card">
+      <div class="eyebrow">Pernahkah Kamu Berpikir?</div>
+      <h2>Kenapa ada grafik yang "menghilang" lalu muncul lagi?</h2>
+      <p>Coba bayangkan grafik <span id="gp4"></span>. Kalau kamu gambar pelan-pelan dari kiri ke kanan, di satu titik grafiknya tiba-tiba <mark>melesat ke atas tak berhenti</mark>.</p>
+      <p>Terus... tiba-tiba dia muncul lagi dari bawah, di sisi lain. Seperti teleportasi.</p>
+      <p>Aneh, kan? Padahal grafik <span id="gp5"></span> atau <span id="gp6"></span> tidak pernah begitu — mereka mulus, naik turun dengan tenang.</p>
+      <p>Nah, di modul ini kita bongkar kenapa fungsi tangen "berkelakuan" seperti itu. Ternyata, jawabannya sesederhana satu hal: <mark>pembagian dengan angka yang mendekati nol</mark>.</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="fade-up">
+    <div class="card">
+      <div class="eyebrow">Penjelasan Sederhana</div>
+      <h2>Tangen itu sebenarnya cuma pembagian</h2>
+      <p>Ayo mulai dari definisinya. Fungsi tangen didefinisikan sebagai perbandingan sinus dan kosinus:</p>
+      <div class="formula-box">\[ \tan\theta = \dfrac{\sin\theta}{\cos\theta} \]</div>
+      <p>Nah, ini kuncinya. Kalau <b>cos θ = 0</b>, kamu membagi dengan nol. Dan membagi dengan nol itu tidak punya hasil — hasilnya "tak terhingga".</p>
+      <p>Coba perhatikan: cos θ bernilai 0 di sudut 90°, 270°, dan seterusnya (kelipatan 180° dari situ). Nah, di titik-titik itulah grafik tangen "melesat" dan tidak pernah menyentuh garisnya.</p>
+      <p>Garis vertikal tak kasat mata yang tidak boleh disentuh grafik ini disebut <mark>asimtot</mark>. Bayangkan seperti dinding kaca — grafiknya boleh mendekat sedekat mungkin, tapi tidak pernah boleh menyentuh apalagi menembusnya.</p>
+      <p>Karena pola sin dan cos berulang setiap 180° (bukan 360° seperti sin/cos biasa), grafik tangen juga berulang setiap <b>180° atau π radian</b>. Inilah yang disebut <mark>periode</mark> fungsi tangen — dan ini lebih pendek dibanding sinus/kosinus.</p>
+      <p>Sampai sini masih masuk akal? Yuk kita lihat langsung bagaimana grafik ini terbentuk, langkah demi langkah.</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="fade-up">
+    <div class="card">
+      <div class="eyebrow">Lihat Cara Kerjanya</div>
+      <h2>Mengikuti titik dari 0° sampai lewat 90°</h2>
+      <p>Perhatikan bagaimana nilai tangen berubah saat sudutnya bertambah, terutama saat mendekati 90°.</p>
+
+      <div class="step-shell">
+        <div class="step-canvas-box">
+          <canvas id="stepCanvas" width="600" height="260" style="width:100%;height:auto;display:block;"></canvas>
+        </div>
+        <div class="step-values" id="stepValues"></div>
+        <p id="stepText" style="min-height:70px;"></p>
+        <div class="step-dots" id="stepDots"></div>
+        <div class="btn-row" style="justify-content:center;margin-top:10px;">
+          <button class="btn secondary" id="stepPrev">← Sebelumnya</button>
+          <button class="btn" id="stepNext">Selanjutnya →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="fade-up">
+    <div class="card">
+      <div class="eyebrow">Coba Sendiri</div>
+      <h2>Ubah grafiknya, lihat apa yang terjadi</h2>
+      <p>Bentuk umum grafik tangen adalah <span id="gp7"></span>. Ayo utak-atik setiap huruf, dan perhatikan bagian mana yang berubah pada grafiknya.</p>
+
+      <div class="graph-box">
+        <canvas id="mainCanvas" width="700" height="320" style="width:100%;height:auto;display:block;"></canvas>
+        <div class="graph-caption">Garis putus-putus abu-abu = asimtot (batas yang tidak boleh disentuh grafik)</div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-label">Kecuraman / arah (a) <span class="curval" id="aVal">1</span></div>
+        <div class="toggle-row">
+          <button class="chip-btn active" data-ctrl="a" data-val="1">Normal (a = 1)</button>
+          <button class="chip-btn" data-ctrl="a" data-val="-1">Cerminan (a = −1)</button>
+          <button class="chip-btn" data-ctrl="a" data-val="2">Lebih curam (a = 2)</button>
+        </div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-label">Periode / kerapatan (b) <span class="curval" id="bVal">1</span></div>
+        <div class="stepper">
+          <button id="bMinus">−</button>
+          <div class="stepper-display" id="bDisplay">b = 1</div>
+          <button id="bPlus">+</button>
+        </div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-label">Pergeseran mendatar (c) <span class="curval" id="cVal">0</span></div>
+        <div class="chip-row">
+          <button class="chip-btn active" data-ctrl="c" data-val="0">c = 0</button>
+          <button class="chip-btn" data-ctrl="c" data-val="0.7853981633974483">c = π/4</button>
+          <button class="chip-btn" data-ctrl="c" data-val="1.5707963267948966">c = π/2</button>
+          <button class="chip-btn" data-ctrl="c" data-val="-0.7853981633974483">c = −π/4</button>
+        </div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-label">Pergeseran vertikal (d) <span class="curval" id="dVal">0</span></div>
+        <div class="stepper">
+          <button id="dMinus">−</button>
+          <div class="stepper-display" id="dDisplay">d = 0</div>
+          <button id="dPlus">+</button>
+        </div>
+      </div>
+
+      <div class="formula-box" style="margin-top:6px;">
+        <span id="asimtotFormula" style="font-size:13.5px;color:var(--text-soft);"></span>
+      </div>
+
+      <div class="insight-box" id="insightBox">
+        <span class="ico">💡</span>
+        <p id="insightText"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="fade-up">
+    <div class="card">
+      <div class="eyebrow">Challenge</div>
+      <h2>Sekarang giliranmu</h2>
+      <p>Kerjakan tiga soal berikut. Jawabanmu langsung dicek dan otomatis terkirim ke gurumu.</p>
+    </div>
+
+    <!-- Soal 1 - Mudah -->
+    <div class="card challenge-card" style="margin-top:var(--sp-4);">
+      <span class="level-badge level-mudah">Mudah</span>
+      <h3>Soal 1 — Periode Grafik</h3>
+      <p>Diketahui grafik <span id="gp8"></span>. Periode grafik ini bisa ditulis sebagai <b>k·π</b>.</p>
+      <p class="q-note">Berapa nilai <b>k</b>? (Boleh dalam bentuk desimal, misalnya 0.5)</p>
+      <div class="q-input-row">
+        <span>k =</span>
+        <input type="number" step="any" id="q1input" placeholder="...">
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="checkQ1()">Cek Jawaban</button>
+      </div>
+      <div class="feedback-box" id="q1feedback"></div>
+      <div class="send-status" id="send0"></div>
+    </div>
+
+    <!-- Soal 2 - Sedang -->
+    <div class="card challenge-card">
+      <span class="level-badge level-sedang">Sedang</span>
+      <h3>Soal 2 — Jebakan Tanda</h3>
+      <p>Ingat, tangen adalah <mark>fungsi ganjil</mark>: <span id="gp9"></span> selalu berlaku untuk semua θ.</p>
+      <p>Kalau grafik <span id="gp10"></span> ditulis ulang dalam bentuk <span id="gp11"></span>, berapa nilai <b>a</b>?</p>
+      <div class="q-input-row">
+        <span>a =</span>
+        <input type="number" step="any" id="q2input" placeholder="...">
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="checkQ2()">Cek Jawaban</button>
+      </div>
+      <div class="feedback-box" id="q2feedback"></div>
+      <div class="send-status" id="send1"></div>
+    </div>
+
+    <!-- Soal 3 - Sulit -->
+    <div class="card challenge-card">
+      <span class="level-badge level-sulit">Sulit</span>
+      <h3>Soal 3 — Cari Nilai Pembatas</h3>
+      <p>Grafik <span id="gp12"></span> (dengan b &gt; 0) punya asimtot pertama di sebelah kanan sumbu-y saat <span id="gp13"></span>.</p>
+      <p class="q-note">Tentukan nilai <b>b</b> supaya salah satu asimtot grafik ini tepat berada di <b>x = π/6</b>. (Petunjuk: samakan bx dengan π/2, lalu ganti x dengan π/6.)</p>
+      <div class="q-input-row">
+        <span>b =</span>
+        <input type="number" step="any" id="q3input" placeholder="...">
+      </div>
+      <div class="btn-row">
+        <button class="btn" onclick="checkQ3()">Cek Jawaban</button>
+      </div>
+      <div class="feedback-box" id="q3feedback"></div>
+      <div class="send-status" id="send2"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="fade-up">
+    <div class="card">
+      <div class="eyebrow">Kesalahan yang Sering Terjadi</div>
+      <h2>Hati-hati dengan hal-hal ini</h2>
+
+      <div class="mistake-item">
+        <div class="mistake-x">✕</div>
+        <div>
+          <h3>Lupa asimtot itu berulang</h3>
+          <p>Banyak yang hanya ingat asimtot di x = π/2, padahal asimtotnya ada tak hingga banyak: setiap π satuan (π/2, 3π/2, 5π/2, dan seterusnya, plus arah negatif). Selalu tambahkan "+ kπ".</p>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-x">✕</div>
+        <div>
+          <h3>Menganggap tangen punya amplitudo</h3>
+          <p>Beda dengan sin/cos, tangen tidak dibatasi nilai maksimum-minimumnya. Nilai <b>a</b> di sini mengatur seberapa curam grafik, bukan seberapa tinggi puncaknya — karena memang tidak ada puncaknya.</p>
+        </div>
+      </div>
+
+      <div class="mistake-item">
+        <div class="mistake-x">✕</div>
+        <div>
+          <h3>Mengira pergeseran vertikal memindahkan asimtot</h3>
+          <p>Menambahkan <b>d</b> hanya menggeser grafik ke atas/bawah. Posisi asimtotnya (garis vertikal) sama sekali tidak berubah, karena asimtot ditentukan oleh <b>b</b> dan <b>c</b>, bukan <b>d</b>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="fade-up">
+    <div class="card">
+      <div class="eyebrow">Ringkasan</div>
+      <h2>5 hal penting untuk diingat</h2>
+      <ul class="summary-list">
+        <li><span class="summary-num">1</span><span>Tangen adalah hasil bagi sinus dengan kosinus: tan θ = sin θ / cos θ.</span></li>
+        <li><span class="summary-num">2</span><span>Grafik "melesat" tak terhingga di titik-titik cos θ = 0 — di sinilah letak asimtot.</span></li>
+        <li><span class="summary-num">3</span><span>Periode dasar tangen adalah π (180°), lebih pendek dari periode sin/cos.</span></li>
+        <li><span class="summary-num">4</span><span>Pada bentuk umum a·tan(b(x−c))+d: b mengatur periode & posisi asimtot, c menggeser mendatar, d menggeser vertikal (tanpa memengaruhi asimtot).</span></li>
+        <li><span class="summary-num">5</span><span>Tangen adalah fungsi ganjil: tan(−x) = −tan(x), jadi grafiknya simetris terhadap titik pusat.</span></li>
+      </ul>
+
+      <div class="done-badge" id="doneBadge">✓ Selesai — Grafik Fungsi Tangen</div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ============ Progress bar ============ */
+window.addEventListener('scroll', function(){
+  var h = document.documentElement;
+  var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressBar').style.width = (scrolled||0) + '%';
+});
+
+/* ============ Fade-up on scroll ============ */
+var faders = document.querySelectorAll('.fade-up');
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+},{threshold:0.15});
+faders.forEach(function(el){ io.observe(el); });
+
+/* ============ Plain-text formula fills (tidak perlu KaTeX) ============ */
+document.getElementById('gp1').textContent = 'T = π/|b|';
+document.getElementById('gp2').textContent = 'b';
+document.getElementById('gp3').textContent = 'y = a·tan(b(x−c)) + d';
+document.getElementById('gp4').textContent = 'y = tan(x)';
+document.getElementById('gp5').textContent = 'y = sin(x)';
+document.getElementById('gp6').textContent = 'y = cos(x)';
+document.getElementById('gp7').textContent = 'y = a·tan(b(x − c)) + d';
+document.getElementById('gp8').textContent = 'y = tan(3x)';
+document.getElementById('gp9').textContent = 'tan(−θ) = −tan(θ)';
+document.getElementById('gp10').textContent = 'y = tan(−x)';
+document.getElementById('gp11').textContent = 'y = a·tan(x)';
+document.getElementById('gp12').textContent = 'y = tan(bx)';
+document.getElementById('gp13').textContent = 'x = π/(2b)';
+
+/* ============ KaTeX render helper ============ */
+function renderMath(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left:'\\[', right:'\\]', display:true},
+        {left:'\\(', right:'\\)', display:false}
+      ]
+    });
+  }
+}
+window.addEventListener('load', renderMath);
+
+/* ============ Identitas siswa ============ */
+function getIdentitas(){
+  var nama = document.getElementById('namaSiswa').value.trim();
+  var kelas = document.getElementById('kelasSiswa').value.trim();
+  return { nama: nama, kelas: kelas };
+}
+function identitasLengkap(){
+  var id = getIdentitas();
+  var statusEl = document.getElementById('idStatus');
+  if(!id.nama || !id.kelas){
+    statusEl.textContent = 'Isi nama dan kelas dulu ya, sebelum cek jawaban.';
+    statusEl.style.color = '#B91C1C';
+    document.getElementById('namaSiswa').focus();
+    return false;
+  }
+  statusEl.textContent = '';
+  return true;
+}
+
+/* ============ SECTION 4: Lihat Cara Kerjanya ============ */
+var steps = [
+  {
+    angle: 0,
+    title: 'Mulai dari sudut 0°',
+    text: 'Di sudut 0°, sin θ = 0 dan cos θ = 1. Jadi tan θ = 0 ÷ 1 = 0. Titik pertama grafik ada tepat di tengah, di (0, 0).'
+  },
+  {
+    angle: 45,
+    title: 'Sudut 45°',
+    text: 'Di sudut 45°, sin θ dan cos θ bernilai sama besar (≈0.71). Hasil baginya jadi 1. Grafik mulai naik dengan santai.'
+  },
+  {
+    angle: 80,
+    title: 'Sudut 80°, mendekati 90°',
+    text: '<mark>Pembagi (cos θ) makin kecil</mark> — sekarang cos 80° ≈ 0.17. Karena kita membagi dengan angka kecil, hasilnya jadi besar. Grafik mulai melesat naik.'
+  },
+  {
+    angle: 89.5,
+    title: 'Sudut 89.5°, hampir 90°',
+    text: 'cos θ sekarang hampir 0 (≈0.009). Hasil bagi jadi sangat besar, hampir tak terhingga. Grafik "menghilang" ke atas — inilah kenapa muncul garis asimtot di x = 90° (π/2).'
+  },
+  {
+    angle: -80,
+    title: 'Muncul lagi setelah 180°',
+    text: 'Begitu melewati asimtot, grafik muncul lagi dari bawah — lalu polanya berulang setiap 180° (π radian). Itulah kenapa fungsi tangen disebut periodik dengan periode π.'
+  }
+];
+var stepIdx = 0;
+
+function drawStepCanvas(angleDeg){
+  var c = document.getElementById('stepCanvas');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height;
+  ctx.clearRect(0,0,w,h);
+
+  var xMin = -100, xMax = 100; // derajat, area tampil
+  var yMax = 4; // batas tampil nilai tan
+  var padding = 30;
+  var plotW = w - padding*2;
+  var plotH = h - padding*2;
+
+  function toPx(deg){ return padding + ( (deg - xMin) / (xMax - xMin) ) * plotW; }
+  function toPy(val){ return padding + plotH/2 - (val/yMax) * (plotH/2); }
+
+  // sumbu
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padding, toPy(0)); ctx.lineTo(w-padding, toPy(0));
+  ctx.moveTo(toPx(0), padding); ctx.lineTo(toPx(0), h-padding);
+  ctx.stroke();
+
+  // asimtot di 90 dan -90
+  ctx.strokeStyle = '#94A3B8';
+  ctx.setLineDash([5,5]);
+  [90,-90].forEach(function(a){
+    ctx.beginPath();
+    ctx.moveTo(toPx(a), padding); ctx.lineTo(toPx(a), h-padding);
+    ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  // kurva tan
+  ctx.strokeStyle = '#2563EB';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  var first = true;
+  for(var deg = xMin; deg <= xMax; deg += 0.5){
+    var rad = deg * Math.PI/180;
+    var val = Math.tan(rad);
+    if(Math.abs(val) > yMax*1.4){ first = true; continue; }
+    var px = toPx(deg), py = toPy(val);
+    if(first){ ctx.moveTo(px,py); first = false; } else { ctx.lineTo(px,py); }
+  }
+  ctx.stroke();
+
+  // titik penanda
+  var rad0 = angleDeg * Math.PI/180;
+  var val0 = Math.tan(rad0);
+  if(Math.abs(val0) <= yMax*1.4){
+    ctx.fillStyle = '#EF4444';
+    ctx.beginPath();
+    ctx.arc(toPx(angleDeg), toPy(Math.max(-yMax,Math.min(yMax,val0))), 6, 0, Math.PI*2);
+    ctx.fill();
+  } else {
+    // panah ke atas/bawah menandakan "menghilang"
+    ctx.fillStyle = '#EF4444';
+    var arrowX = toPx(angleDeg);
+    var arrowY = val0 > 0 ? padding+8 : h-padding-8;
+    ctx.beginPath();
+    ctx.moveTo(arrowX-7, arrowY + (val0>0?14:-14));
+    ctx.lineTo(arrowX+7, arrowY + (val0>0?14:-14));
+    ctx.lineTo(arrowX, arrowY);
+    ctx.fill();
+  }
+
+  // label
+  ctx.fillStyle = '#64748B';
+  ctx.font = '11px Inter, sans-serif';
+  ctx.fillText('−90°', toPx(-90)-14, h-padding+16);
+  ctx.fillText('0°', toPx(0)-6, h-padding+16);
+  ctx.fillText('90°', toPx(90)-8, h-padding+16);
+}
+
+function renderStep(){
+  var s = steps[stepIdx];
+  document.getElementById('stepText').innerHTML = '<b>' + s.title + '</b><br>' + s.text;
+  var rad = s.angle * Math.PI/180;
+  var sinV = Math.sin(rad), cosV = Math.cos(rad), tanV = Math.tan(rad);
+  var tanDisplay = Math.abs(tanV) > 50 ? (tanV>0?'→ +∞':'→ −∞') : tanV.toFixed(2);
+  document.getElementById('stepValues').innerHTML =
+    '<span class="val-pill">sudut: <b>' + s.angle + '°</b></span>' +
+    '<span class="val-pill">sin: <b>' + sinV.toFixed(2) + '</b></span>' +
+    '<span class="val-pill">cos: <b>' + cosV.toFixed(2) + '</b></span>' +
+    '<span class="val-pill">tan: <b>' + tanDisplay + '</b></span>';
+  drawStepCanvas(s.angle);
+
+  var dots = document.getElementById('stepDots');
+  dots.innerHTML = '';
+  steps.forEach(function(_,i){
+    var d = document.createElement('div');
+    d.className = 'step-dot' + (i===stepIdx?' active':'');
+    dots.appendChild(d);
+  });
+  document.getElementById('stepPrev').disabled = (stepIdx===0);
+  document.getElementById('stepNext').disabled = (stepIdx===steps.length-1);
+}
+document.getElementById('stepPrev').addEventListener('click', function(){ if(stepIdx>0){ stepIdx--; renderStep(); } });
+document.getElementById('stepNext').addEventListener('click', function(){ if(stepIdx<steps.length-1){ stepIdx++; renderStep(); } });
+renderStep();
+
+/* ============ SECTION 5: Coba Sendiri ============ */
+var params = { a:1, b:1, c:0, d:0 };
+
+function drawMainGraph(){
+  var c = document.getElementById('mainCanvas');
+  var ctx = c.getContext('2d');
+  var w = c.width, h = c.height;
+  ctx.clearRect(0,0,w,h);
+
+  var xMin = -2*Math.PI, xMax = 2*Math.PI;
+  var yMax = 6;
+  var padding = 34;
+  var plotW = w - padding*2;
+  var plotH = h - padding*2;
+
+  function toPx(x){ return padding + ((x - xMin)/(xMax - xMin)) * plotW; }
+  function toPy(y){ return padding + plotH/2 - (y/yMax) * (plotH/2); }
+
+  // grid vertikal tiap pi/2
+  ctx.strokeStyle = '#F1F5F9';
+  ctx.lineWidth = 1;
+  for(var k = -4; k <= 4; k++){
+    var gx = k * Math.PI/2;
+    if(gx < xMin || gx > xMax) continue;
+    ctx.beginPath();
+    ctx.moveTo(toPx(gx), padding); ctx.lineTo(toPx(gx), h-padding);
+    ctx.stroke();
+  }
+
+  // sumbu
+  ctx.strokeStyle = '#CBD5E1';
+  ctx.lineWidth = 1.3;
+  ctx.beginPath();
+  ctx.moveTo(padding, toPy(0)); ctx.lineTo(w-padding, toPy(0));
+  ctx.moveTo(toPx(0), padding); ctx.lineTo(toPx(0), h-padding);
+  ctx.stroke();
+
+  // label sumbu-x
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '11px Inter, sans-serif';
+  var labels = [[-2*Math.PI,'-2π'],[-Math.PI,'-π'],[Math.PI,'π'],[2*Math.PI,'2π']];
+  labels.forEach(function(L){
+    ctx.fillText(L[1], toPx(L[0])-8, toPy(0)+16);
+  });
+
+  // asimtot: b(x-c) = pi/2 + k*pi  ->  x = c + (pi/2 + k*pi)/b
+  var asimtots = [];
+  for(var k2=-6;k2<=6;k2++){
+    var ax = params.c + (Math.PI/2 + k2*Math.PI)/params.b;
+    if(ax >= xMin-0.5 && ax <= xMax+0.5) asimtots.push(ax);
+  }
+  ctx.strokeStyle = '#94A3B8';
+  ctx.setLineDash([5,5]);
+  ctx.lineWidth = 1.3;
+  asimtots.forEach(function(ax){
+    ctx.beginPath();
+    ctx.moveTo(toPx(ax), padding); ctx.lineTo(toPx(ax), h-padding);
+    ctx.stroke();
+  });
+  ctx.setLineDash([]);
+
+  // kurva
+  ctx.strokeStyle = '#2563EB';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  var first = true;
+  var stepPx = 1;
+  for(var px = padding; px <= w-padding; px += stepPx){
+    var x = xMin + ((px - padding)/plotW) * (xMax - xMin);
+    var y = params.a * Math.tan(params.b*(x - params.c)) + params.d;
+    if(!isFinite(y) || Math.abs(y) > yMax*1.5){ first = true; continue; }
+    var py = toPy(y);
+    if(first){ ctx.moveTo(px,py); first=false; } else { ctx.lineTo(px,py); }
+  }
+  ctx.stroke();
+}
+
+function fmtNum(n){
+  if(Math.abs(n - Math.PI/4) < 1e-6) return 'π/4';
+  if(Math.abs(n + Math.PI/4) < 1e-6) return '−π/4';
+  if(Math.abs(n - Math.PI/2) < 1e-6) return 'π/2';
+  if(Number.isInteger(n)) return String(n);
+  return n.toFixed(2);
+}
+
+function updateAsimtotFormula(){
+  var bTxt = params.b;
+  var cTxt = params.c === 0 ? 'x' : ('(x − ' + fmtNum(params.c) + ')');
+  document.getElementById('asimtotFormula').innerHTML =
+    'Asimtot terdekat: x = ' + fmtNum(params.c) + ' + π/(2·' + bTxt + ') + k·π/' + bTxt + ' &nbsp;(k = ..., −1, 0, 1, ...)';
+}
+
+function checkInsight(){
+  var box = document.getElementById('insightBox');
+  var txt = document.getElementById('insightText');
+  var shown = false;
+
+  if(params.a===1 && params.b===1 && params.c===0 && params.d===0){
+    txt.textContent = 'Ini bentuk paling dasar: y = tan(x) — semua modifikasi lain adalah variasi dari bentuk ini!';
+    shown = true;
+  } else if(Math.abs(params.c - Math.PI/2) < 1e-6){
+    txt.textContent = 'Hati-hati! Karena c = π/2, sekarang ada asimtot yang tepat berada di x = 0 — grafiknya jadi "terpotong" persis di tengah sumbu-y.';
+    shown = true;
+  } else if(params.a === -1){
+    txt.textContent = 'Karena a bernilai negatif, grafik jadi cerminan dari y = tan(bx) terhadap sumbu-x. Bagian yang tadinya naik sekarang jadi turun.';
+    shown = true;
+  } else if(params.b === 2){
+    txt.textContent = 'Semakin besar b, semakin rapat asimtotnya — periode grafik jadi setengah dari periode y = tan(x).';
+    shown = true;
+  } else if(params.d !== 0 && params.a===1 && params.b===1 && params.c===0){
+    txt.textContent = 'Perhatikan: walau grafiknya bergeser naik/turun karena d, posisi asimtotnya SAMA SEKALI TIDAK BERUBAH.';
+    shown = true;
+  }
+
+  if(shown){ box.classList.add('show'); } else { box.classList.remove('show'); }
+}
+
+function refreshGraph(){
+  document.getElementById('aVal').textContent = params.a;
+  document.getElementById('bVal').textContent = params.b;
+  document.getElementById('bDisplay').textContent = 'b = ' + params.b;
+  document.getElementById('cVal').textContent = fmtNum(params.c);
+  document.getElementById('dVal').textContent = params.d;
+  document.getElementById('dDisplay').textContent = 'd = ' + params.d;
+  drawMainGraph();
+  updateAsimtotFormula();
+  checkInsight();
+}
+
+document.querySelectorAll('[data-ctrl="a"]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('[data-ctrl="a"]').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    params.a = parseFloat(btn.dataset.val);
+    refreshGraph();
+  });
+});
+document.querySelectorAll('[data-ctrl="c"]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('[data-ctrl="c"]').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    params.c = parseFloat(btn.dataset.val);
+    refreshGraph();
+  });
+});
+document.getElementById('bPlus').addEventListener('click', function(){
+  params.b = Math.min(4, Math.round((params.b + 0.5)*100)/100);
+  refreshGraph();
+});
+document.getElementById('bMinus').addEventListener('click', function(){
+  params.b = Math.max(0.5, Math.round((params.b - 0.5)*100)/100);
+  refreshGraph();
+});
+document.getElementById('dPlus').addEventListener('click', function(){
+  params.d = Math.min(4, params.d + 1);
+  refreshGraph();
+});
+document.getElementById('dMinus').addEventListener('click', function(){
+  params.d = Math.max(-4, params.d - 1);
+  refreshGraph();
+});
+
+refreshGraph();
+
+/* ============ Pengiriman ke Google Apps Script ============ */
+/* Tempel URL Web App Google Apps Script di sini (satu URL sama dipakai untuk SEMUA modul) */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, benar){
+  var idx = nomorSoal - 1;
+  var statusEl = document.getElementById('send'+idx);
+  if(!SCRIPT_URL){ if(statusEl) statusEl.textContent=''; return; }
+  var id = getIdentitas();
+  var namaKelas = id.nama + ' — ' + id.kelas;
+  var payload = {
+    topik: 'Grafik Fungsi Tangen',
+    nama: namaKelas,
+    soal: nomorSoal,
+    jawaban: jawaban1,
+    jawaban2: jawaban2 || '',
+    benar: benar ? 'Benar' : 'Salah',
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  if(statusEl) statusEl.textContent = 'Mengirim ke guru...';
+  fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(payload) })
+    .then(function(){ if(statusEl) statusEl.textContent = 'Terkirim ke guru ✓'; })
+    .catch(function(){ if(statusEl) statusEl.textContent = 'Gagal mengirim (periksa koneksi internet).'; });
+}
+
+/* ============ Challenge checking ============ */
+function showFeedback(elId, correct, msg){
+  var el = document.getElementById(elId);
+  el.className = 'feedback-box show ' + (correct ? 'fb-correct' : 'fb-wrong');
+  el.textContent = msg;
+}
+
+// Soal 1: y = tan(3x) -> periode = pi/3 -> k = 1/3
+function checkQ1(){
+  if(!identitasLengkap()) return;
+  var v = parseFloat(document.getElementById('q1input').value);
+  if(isNaN(v)){ showFeedback('q1feedback', false, 'Isi dulu jawabannya ya.'); return; }
+  var target = 1/3;
+  var correct = Math.abs(v - target) < 0.01;
+  if(correct){
+    showFeedback('q1feedback', true, 'Benar! Periode y = tan(bx) adalah π/|b|. Karena b = 3, periodenya π/3, jadi k = 1/3 ≈ 0.33.');
+  } else {
+    showFeedback('q1feedback', false, 'Belum tepat. Ingat rumusnya: periode tan(bx) = π/|b|. Di sini b = 3, jadi periode = π/3. Coba tulis k sebagai pecahan desimal dari 1/3.');
+  }
+  kirimKeGuru(1, v, '', correct);
+}
+
+// Soal 2: tan(-x) = -1 * tan(x) -> a = -1
+function checkQ2(){
+  if(!identitasLengkap()) return;
+  var v = parseFloat(document.getElementById('q2input').value);
+  if(isNaN(v)){ showFeedback('q2feedback', false, 'Isi dulu jawabannya ya.'); return; }
+  var correct = Math.abs(v - (-1)) < 0.001;
+  if(correct){
+    showFeedback('q2feedback', true, 'Benar! Karena tangen fungsi ganjil, tan(−x) = −tan(x), jadi a = −1.');
+  } else {
+    showFeedback('q2feedback', false, 'Belum tepat. Ini soal jebakan tanda — banyak yang lupa bahwa tan(−x) sama dengan −tan(x), bukan tan(x). Coba cek lagi identitas fungsi ganjilnya.');
+  }
+  kirimKeGuru(2, v, '', correct);
+}
+
+// Soal 3: b(pi/6) = pi/2 -> b = 3
+function checkQ3(){
+  if(!identitasLengkap()) return;
+  var v = parseFloat(document.getElementById('q3input').value);
+  if(isNaN(v)){ showFeedback('q3feedback', false, 'Isi dulu jawabannya ya.'); return; }
+  var correct = Math.abs(v - 3) < 0.05;
+  if(correct){
+    showFeedback('q3feedback', true, 'Tepat sekali! Dari b·(π/6) = π/2, kalikan kedua ruas dengan 6/π, didapat b = 3.');
+  } else {
+    showFeedback('q3feedback', false, 'Belum tepat. Samakan b·x dengan π/2, lalu masukkan x = π/6: b·(π/6) = π/2. Selesaikan persamaan ini untuk mencari b.');
+  }
+  kirimKeGuru(3, v, '', correct);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,782 @@
+<!--
+==========================================================
+Numera
+
+Judul      : Konsep Fungsi Trigonometri
+Bab        : Fungsi Trigonometri — Modul 1
+Jenis      : Modul Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konsep Fungsi Trigonometri · Numera</title>
+<meta name="description" content="Modul interaktif belajar konsep fungsi trigonometri: sin, cos, dan tan sebagai fungsi, serta hubungannya dengan lingkaran satuan.">
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-soft:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+    --radius-card:18px;
+    --radius-btn:12px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* ===== Topbar & progress ===== */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border);
+    padding:10px 16px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--primary);
+    text-align:center;
+    letter-spacing:.2px;
+  }
+  .progress-bar{
+    position:sticky; top:36px; z-index:49;
+    height:3px; width:0%;
+    background:var(--primary);
+    transition:width 80ms linear;
+  }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:var(--sp-4) var(--sp-4) var(--sp-6);
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius-card);
+    box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    padding:var(--sp-5);
+    margin-bottom:var(--sp-5);
+  }
+
+  .section{
+    opacity:0; transform:translateY(16px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .section.visible{ opacity:1; transform:translateY(0); }
+
+  h1{font-size:24px; font-weight:800; margin:0 0 6px;}
+  h2{font-size:19px; font-weight:700; margin:0 0 var(--sp-3); color:var(--text);}
+  h3{font-size:16px; font-weight:700; margin:0 0 6px;}
+  p{line-height:1.65; margin:0 0 var(--sp-3); color:var(--text);}
+  .soft{color:var(--text-soft);}
+  .eyebrow{
+    display:inline-block; font-size:12px; font-weight:700; color:var(--primary);
+    background:var(--primary-light); padding:4px 10px; border-radius:999px;
+    margin-bottom:var(--sp-3); letter-spacing:.3px;
+  }
+  mark{
+    background:var(--primary-light);
+    color:var(--primary-hover);
+    padding:1px 5px; border-radius:6px; font-weight:600;
+  }
+
+  .meta-row{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:var(--sp-4);}
+  .chip{
+    font-size:12.5px; font-weight:600; color:var(--text-soft);
+    background:var(--bg); border:1px solid var(--border);
+    padding:6px 12px; border-radius:999px;
+  }
+
+  ul.goals{margin:0 0 var(--sp-3); padding-left:20px;}
+  ul.goals li{margin-bottom:4px; line-height:1.55;}
+
+  /* ===== Kotak identitas siswa ===== */
+  .id-card{
+    background:var(--primary-light);
+    border-radius:14px;
+    padding:var(--sp-4);
+    margin-top:var(--sp-4);
+  }
+  .id-card h3{color:var(--primary-hover); margin-bottom:4px;}
+  .id-card p{color:#1E3A8A; font-size:13.5px; margin-bottom:var(--sp-3);}
+  .id-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .id-grid label{display:block; font-size:12.5px; font-weight:600; color:#1E3A8A; margin-bottom:4px;}
+  .id-grid input{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid #BFDBFE;
+    font-family:inherit; font-size:14px; background:#fff; color:var(--text);
+  }
+  .id-grid input:focus{outline:2px solid var(--primary); outline-offset:1px;}
+  .id-status{min-height:18px; font-size:12.5px; font-weight:600; margin-top:8px;}
+  @media (max-width:520px){ .id-grid{grid-template-columns:1fr;} }
+
+  /* ===== Buttons ===== */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    border:none; cursor:pointer; font-family:inherit; font-weight:600; font-size:14px;
+    border-radius:var(--radius-btn); padding:10px 18px; min-height:40px;
+    transition:background .2s ease, transform .1s ease, opacity .2s ease;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn-primary{ background:var(--primary); color:#fff; }
+  .btn-primary:hover{ background:var(--primary-hover); }
+  .btn-primary:disabled{ opacity:.4; cursor:not-allowed; }
+  .btn-ghost{ background:var(--bg); color:var(--text); border:1px solid var(--border); }
+  .btn-ghost:hover{ background:#EEF2F7; }
+  .btn-ghost:disabled{ opacity:.4; cursor:not-allowed; }
+
+  /* ===== Simulasi lingkaran satuan ===== */
+  .sim-stage{
+    background:var(--bg); border-radius:14px; padding:var(--sp-3);
+    display:flex; justify-content:center; margin-bottom:var(--sp-4);
+  }
+  .sim-stage svg{width:100%; max-width:340px; height:auto;}
+  .sliders{display:grid; gap:var(--sp-4); margin-bottom:var(--sp-4);}
+  .slider-row label{
+    display:flex; justify-content:space-between; font-size:13.5px; font-weight:600;
+    margin-bottom:6px;
+  }
+  .slider-row label span{color:var(--primary); font-weight:700;}
+  input[type="range"]{
+    width:100%; -webkit-appearance:none; height:6px; border-radius:999px;
+    background:var(--border); outline:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+    background:var(--primary); cursor:pointer; border:3px solid #fff;
+    box-shadow:0 1px 4px rgba(15,23,42,.25);
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:20px; height:20px; border-radius:50%; background:var(--primary);
+    cursor:pointer; border:3px solid #fff; box-shadow:0 1px 4px rgba(15,23,42,.25);
+  }
+
+  .status-box{
+    border-radius:14px; padding:var(--sp-4); font-size:14px; font-weight:700;
+    text-align:center; background:var(--primary-light); color:var(--primary-hover);
+    transition:background .25s ease, color .25s ease;
+  }
+  .status-sub{display:block; font-weight:500; font-size:12.5px; margin-top:4px; color:var(--text-soft);}
+
+  /* ===== Kartu nilai sin/cos/tan ===== */
+  .val-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:var(--sp-4);}
+  .val-card{border-radius:12px; padding:10px 8px; text-align:center;}
+  .val-card .val-label{font-size:12px; font-weight:700; margin-bottom:2px;}
+  .val-card .val-num{font-size:15px; font-weight:800;}
+  .val-sin{background:#ECFDF5; color:#047857;}
+  .val-cos{background:var(--primary-light); color:var(--primary-hover);}
+  .val-tan{background:#FEF3C7; color:#B45309;}
+  @media (max-width:380px){ .val-card .val-num{font-size:13px;} }
+
+  .insight-box{
+    margin-top:var(--sp-3); border-radius:14px; padding:var(--sp-3) var(--sp-4);
+    background:#ECFDF5; border:1px solid #A7F3D0; color:#065F46;
+    font-size:13.5px; line-height:1.55; display:none;
+  }
+  .insight-box.show{display:block;}
+  .insight-box b{color:#047857;}
+
+  /* ===== Accordion contoh sederhana ===== */
+  .acc-item{border:1px solid var(--border); border-radius:12px; margin-bottom:10px; overflow:hidden;}
+  .acc-item:last-child{margin-bottom:0;}
+  .acc-head{
+    width:100%; text-align:left; background:#fff; border:none; cursor:pointer;
+    padding:12px 14px; font-family:inherit; font-size:13.5px; font-weight:700; color:var(--text);
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+  .acc-head .arrow{transition:transform .2s ease; color:var(--primary); flex:0 0 auto;}
+  .acc-item.open .acc-head .arrow{transform:rotate(180deg);}
+  .acc-body{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+  .acc-body-inner{padding:0 14px 14px; font-size:13.5px; color:var(--text-soft); line-height:1.6;}
+
+  /* ===== Challenge ===== */
+  .level-badge{
+    display:inline-block; font-size:11.5px; font-weight:700; padding:3px 10px;
+    border-radius:999px; margin-bottom:8px; letter-spacing:.3px;
+  }
+  .level-mudah{background:#D1FAE5; color:#047857;}
+  .level-sedang{background:#FEF3C7; color:#B45309;}
+  .level-sulit{background:#FEE2E2; color:#B91C1C;}
+
+  .quiz-block{border-top:1px solid var(--border); padding-top:var(--sp-4); margin-top:var(--sp-4);}
+  .quiz-block:first-of-type{border-top:none; padding-top:0; margin-top:0;}
+
+  .opt-grid{display:grid; gap:8px; margin:var(--sp-3) 0;}
+  .opt-btn{
+    text-align:left; padding:11px 14px; border-radius:12px; border:1px solid var(--border);
+    background:#fff; font-family:inherit; font-size:13.5px; cursor:pointer; color:var(--text);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .opt-btn:hover{ border-color:var(--primary); }
+  .opt-btn.selected{ border-color:var(--primary); background:var(--primary-light); font-weight:600; }
+  .opt-btn.correct{ border-color:var(--success); background:#D1FAE5; font-weight:600; }
+  .opt-btn.wrong{ border-color:var(--error); background:#FEE2E2; font-weight:600; }
+
+  .feedback{
+    margin-top:var(--sp-3); padding:12px 14px; border-radius:12px; font-size:13.5px;
+    line-height:1.55; display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{ background:#D1FAE5; color:#065F46; border:1px solid #A7F3D0;}
+  .feedback.bad{ background:#FEE2E2; color:#991B1B; border:1px solid #FECACA;}
+  .send-status{font-size:12px; color:var(--text-soft); margin-top:6px; min-height:16px;}
+
+  /* ===== Refleksi ===== */
+  .reflect-block{margin-bottom:var(--sp-4);}
+  .reflect-block:last-of-type{margin-bottom:0;}
+  .reflect-block label{display:block; font-size:13.5px; font-weight:700; margin-bottom:8px;}
+  textarea{
+    width:100%; min-height:90px; padding:12px 14px; border-radius:12px; border:1px solid var(--border);
+    font-family:inherit; font-size:13.5px; color:var(--text); background:#fff; resize:vertical;
+  }
+  textarea:focus{outline:2px solid var(--primary); outline-offset:1px;}
+
+  /* ===== Ringkasan ===== */
+  .sum-list{display:grid; gap:10px;}
+  .sum-item{display:flex; gap:12px; align-items:flex-start;}
+  .sum-num{
+    flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+    background:var(--primary); color:#fff; font-weight:700; font-size:13px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .done-badge{
+    text-align:center; margin-top:var(--sp-4); padding:12px; border-radius:12px;
+    background:#D1FAE5; color:#047857; font-weight:700; font-size:13.5px;
+  }
+
+  /* ===== Footer identitas ===== */
+  .site-footer{padding: var(--sp-5) 0 var(--sp-6); text-align:center;}
+  .footer-divider{height:1px; background:var(--border); margin-bottom:var(--sp-4);}
+  .footer-brand{font-size:13.5px; font-weight:700; color:var(--primary); margin:0 0 4px;}
+  .footer-text{font-size:13px; color:var(--text-soft); margin:0 0 2px;}
+  .footer-meta{font-size:12.5px; color:var(--text-soft); margin:0; opacity:.85;}
+
+  @media (max-width:480px){
+    h1{font-size:21px;}
+    .card{padding:var(--sp-4);}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+<div class="topbar">Numera · Konsep Fungsi Trigonometri</div>
+
+<main class="wrap">
+
+  <!-- 1. HEADER -->
+  <header id="sec-header" class="card section">
+    <span class="eyebrow">Modul Interaktif · Fungsi Trigonometri </span>
+    <h1>Konsep Fungsi Trigonometri</h1>
+    <p class="soft">Selama ini kamu mungkin hanya menghafal nilai sin, cos, dan tan untuk sudut-sudut tertentu. Di modul ini kita akan lihat sesuatu yang lebih penting: sin, cos, dan tan itu sebenarnya adalah <b>fungsi</b>.</p>
+    <div class="meta-row">
+      <span class="chip">📘 Fungsi Trigonometri</span>
+      <span class="chip">⏱️ 15–20 menit</span>
+      <span class="chip">🎯 Memahami sin, cos, tan sebagai fungsi (bukan sekadar angka hafalan)</span>
+    </div>
+    <ul class="goals">
+      <li>Menjelaskan apa yang dimaksud dengan <mark>fungsi trigonometri</mark>.</li>
+      <li>Memahami sin, cos, dan tan sebagai fungsi dengan input dan output.</li>
+      <li>Memahami domain dan range dasar sin, cos, dan tan.</li>
+      <li>Menghubungkan fungsi trigonometri dengan lingkaran satuan secara konseptual.</li>
+    </ul>
+
+    <div class="id-card">
+      <h3>Isi dulu sebelum mulai 👋</h3>
+      <p>Jawabanmu di bagian Cek Pemahaman dan Refleksi otomatis terkirim ke gurumu. Tidak perlu login atau email apapun.</p>
+      <div class="id-grid">
+        <div><label>Nama lengkap</label><input type="text" id="namaSiswa" placeholder="Tulis namamu"></div>
+        <div><label>Kelas</label><input type="text" id="kelasSiswa" placeholder="Contoh: X IPA 2"></div>
+      </div>
+      <div class="id-status" id="idStatus"></div>
+    </div>
+  </header>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR? -->
+  <section id="sec2" class="card section">
+    <h2>Pernahkah kamu berpikir?</h2>
+    <p>Bayangkan jarum jam dinding yang berputar pelan mengelilingi porosnya.</p>
+    <p>Ketika jarum itu berputar, sudutnya berubah terus-menerus. Tapi coba perhatikan ujung jarumnya — posisinya juga berubah secara <b>teratur</b>, naik-turun, kiri-kanan, mengikuti pola yang bisa ditebak.</p>
+    <p>Kalau sudutnya kita tahu, sebenarnya kita juga bisa menebak persis di mana posisi ujung jarum itu berada. Menarik, kan? Artinya, setiap sudut sepertinya "dipasangkan" dengan satu posisi tertentu.</p>
+    <p>Pertanyaannya: kalau sebuah sudut berubah, apakah nilai yang berkaitan dengannya juga berubah secara teratur — dan bisa dihitung?</p>
+  </section>
+
+  <!-- 3. DARI SUDUT KE NILAI -->
+  <section id="sec3" class="card section">
+    <h2>Dari sudut ke nilai</h2>
+    <p>Coba lihat sesuatu yang mungkin belum pernah kamu sadari: sin, cos, dan tan sebenarnya bekerja persis seperti <b>mesin</b>.</p>
+    <p>Sebuah mesin punya aturan yang jelas: kamu masukkan sesuatu (input), mesin memprosesnya, lalu keluar sesuatu yang lain (output). Setiap kali kamu masukkan input yang sama, mesin itu akan selalu mengeluarkan output yang sama juga.</p>
+    <p>Nah, sin, cos, dan tan juga bekerja seperti itu:</p>
+    <ul class="goals">
+      <li><b>Input</b>-nya adalah sebuah <mark>sudut</mark>.</li>
+      <li><b>Mesin</b>-nya adalah aturan sin, cos, atau tan.</li>
+      <li><b>Output</b>-nya adalah sebuah <mark>nilai</mark> — satu angka tertentu.</li>
+    </ul>
+    <p>Jadi alurnya kira-kira begini:</p>
+    <p style="text-align:center; font-weight:700; color:var(--primary-hover);">sudut &nbsp;→&nbsp; [ mesin sin ] &nbsp;→&nbsp; nilai sin</p>
+    <p style="text-align:center; font-weight:700; color:var(--primary-hover);">sudut &nbsp;→&nbsp; [ mesin cos ] &nbsp;→&nbsp; nilai cos</p>
+    <p style="text-align:center; font-weight:700; color:var(--primary-hover); margin-bottom:0;">sudut &nbsp;→&nbsp; [ mesin tan ] &nbsp;→&nbsp; nilai tan</p>
+  </section>
+
+  <!-- 4. SIN, COS, TAN SEBAGAI FUNGSI -->
+  <section id="sec4" class="card section">
+    <h2>Sin, cos, dan tan sebagai fungsi</h2>
+    <p>Dalam matematika, "mesin" seperti itu punya nama: <b>fungsi</b>.</p>
+    <p>Sebuah fungsi adalah aturan yang memasangkan setiap input dengan tepat satu output. Karena sin θ, cos θ, dan tan θ masing-masing memasangkan setiap sudut θ dengan tepat satu nilai, artinya:</p>
+    <p style="text-align:center; font-size:16px; font-weight:800; color:var(--primary-hover);">sin θ, cos θ, dan tan θ adalah fungsi trigonometri.</p>
+    <p>Simbol <mark>θ</mark> (dibaca "theta") di sini hanyalah nama untuk sudut yang kita masukkan — sama seperti kita biasa menulis f(x) untuk fungsi pada umumnya, hanya saja inputnya berupa sudut, bukan sembarang angka.</p>
+    <p>Artinya, kalau kamu mengganti nilai θ, nilai sin θ, cos θ, dan tan θ juga akan ikut berubah — dan perubahannya <b>tidak sembarangan</b>, melainkan mengikuti pola yang bisa kita lihat langsung. Yuk coba di bagian berikutnya.</p>
+  </section>
+
+  <!-- 5. VISUALISASI: SUDUT BERPUTAR -->
+  <section id="sec5" class="card section">
+    <h2>Lihat sendiri: sudut berputar</h2>
+    <p>Geser slider sudut di bawah ini. Slidernya hanya berhenti di sudut-sudut istimewa (0°, 30°, 45°, 60°, 90°, dan seterusnya) — sudut-sudut yang nilai sin, cos, tan-nya sudah kamu kenal dalam bentuk pecahan dan akar, bukan desimal.</p>
+
+    <div class="sim-stage">
+      <svg id="circSvg" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div class="sliders">
+      <div class="slider-row">
+        <label>Sudut (θ) <span id="valTheta">45</span>°</label>
+        <input type="range" id="thetaSlider" min="0" max="16" step="1" value="2">
+      </div>
+    </div>
+
+    <div class="val-grid">
+      <div class="val-card val-sin"><div class="val-label">sin θ</div><div class="val-num" id="valSin">½√2</div></div>
+      <div class="val-card val-cos"><div class="val-label">cos θ</div><div class="val-num" id="valCos">½√2</div></div>
+      <div class="val-card val-tan"><div class="val-label">tan θ</div><div class="val-num" id="valTan">1</div></div>
+    </div>
+
+    <div class="status-box" id="circStatus">Geser slider untuk mulai bereksplorasi</div>
+    <div class="insight-box" id="circInsight"></div>
+  </section>
+
+  <!-- 6. HUBUNGAN DENGAN LINGKARAN SATUAN -->
+  <section id="sec6" class="card section">
+    <h2>Kenapa titik itu bisa memberi nilai sin dan cos?</h2>
+    <p>Coba lihat lagi visualisasi di atas. Lingkaran yang kamu lihat punya jari-jari 1 satuan — makanya disebut <mark>lingkaran satuan</mark>.</p>
+    <p>Titik biru bergerak di sekeliling lingkaran itu. Nah, ternyata posisi titik itu punya arti khusus:</p>
+    <ul class="goals">
+      <li>Garis putus-putus <b>mendatar</b> (ke sumbu-x) menunjukkan seberapa jauh titik itu bergeser ke kanan/kiri — inilah nilai <mark>cos θ</mark>.</li>
+      <li>Garis putus-putus <b>tegak</b> (ke sumbu-y) menunjukkan seberapa jauh titik itu bergeser ke atas/bawah — inilah nilai <mark>sin θ</mark>.</li>
+    </ul>
+    <p>Jadi, cos θ dan sin θ bukan angka yang muncul dari udara — keduanya adalah <b>koordinat x dan y</b> dari titik yang berputar mengelilingi lingkaran satuan. Setiap sudut θ menentukan satu posisi titik, dan posisi itu langsung memberi tahu kita nilai sin dan cos-nya.</p>
+  </section>
+
+  <!-- 7. DOMAIN DAN RANGE DASAR -->
+  <section id="sec7" class="card section">
+    <h2>Seberapa jauh nilainya bisa pergi?</h2>
+    <p>Karena sin θ dan cos θ adalah koordinat titik pada lingkaran satuan yang jari-jarinya cuma 1, titik itu tidak mungkin bergeser lebih dari 1 satuan ke arah mana pun.</p>
+    <p>Itu sebabnya:</p>
+    <p style="text-align:center; font-weight:700; color:var(--primary-hover);">−1 ≤ sin θ ≤ 1 &nbsp;&nbsp;dan&nbsp;&nbsp; −1 ≤ cos θ ≤ 1</p>
+    <p>Berapa pun sudut yang kamu coba, nilai sin dan cos tidak akan pernah keluar dari rentang itu. Kamu bisa membuktikannya sendiri dengan menggeser slider di atas — coba perhatikan, apakah angka sin atau cos pernah melewati 1 atau kurang dari −1?</p>
+    <p>Bagaimana dengan tan θ? Tan θ dihitung dari sin θ dibagi cos θ. Masalahnya, ada sudut-sudut tertentu (misalnya 90° dan 270°) di mana cos θ = 0. Karena kita tidak boleh membagi dengan nol, pada sudut-sudut itu <mark>tan θ tidak terdefinisi</mark> — coba geser slider ke 90° dan lihat sendiri apa yang terjadi pada kartu nilai tan di atas.</p>
+  </section>
+
+  <!-- 8. CONTOH SEDERHANA -->
+  <section id="sec8" class="card section">
+    <h2>Contoh sederhana</h2>
+    <p class="soft">Coba jawab dulu di kepalamu sebelum membuka penjelasannya. Ini bukan soal hitungan — cukup pakai pemahaman konsepnya.</p>
+
+    <div class="acc-item">
+      <button class="acc-head" type="button">Jika sudut diperbesar, apa yang terjadi pada nilai sin? <span class="arrow">▾</span></button>
+      <div class="acc-body"><div class="acc-body-inner">Tergantung dari mana sudutnya diperbesar. Saat sudut bergerak dari 0° ke 90°, titik pada lingkaran naik, jadi sin θ ikut membesar. Tapi begitu sudut lewat 90° menuju 180°, titik itu mulai turun lagi, sehingga sin θ malah mengecil. Perubahannya tidak selalu satu arah.</div></div>
+    </div>
+
+    <div class="acc-item">
+      <button class="acc-head" type="button">Apakah nilai sin selalu bertambah seiring sudut membesar? <span class="arrow">▾</span></button>
+      <div class="acc-body"><div class="acc-body-inner">Tidak. Sin θ hanya bertambah pada rentang sudut tertentu (misalnya 0° sampai 90°), lalu berkurang di rentang lain (90° sampai 270°), lalu bertambah lagi. Titik pada lingkaran satuan bergerak naik-turun berulang, bukan naik terus-menerus.</div></div>
+    </div>
+
+    <div class="acc-item">
+      <button class="acc-head" type="button">Mengapa nilai sin tidak pernah lebih dari 1? <span class="arrow">▾</span></button>
+      <div class="acc-body"><div class="acc-body-inner">Karena sin θ adalah koordinat-y dari titik pada lingkaran satuan, dan jari-jari lingkaran itu cuma 1. Titik itu tidak mungkin naik lebih tinggi dari puncak lingkaran, jadi nilainya tidak mungkin melebihi 1.</div></div>
+    </div>
+
+    <div class="acc-item">
+      <button class="acc-head" type="button">Apa yang terjadi ketika titik pada lingkaran satuan berpindah? <span class="arrow">▾</span></button>
+      <div class="acc-body"><div class="acc-body-inner">Setiap kali titik itu berpindah ke posisi baru, koordinat x dan y-nya juga berubah — dan itu artinya nilai cos θ dan sin θ ikut berubah mengikuti posisi barunya. Posisi titik dan pasangan nilai (cos θ, sin θ) selalu bergerak bersamaan.</div></div>
+    </div>
+  </section>
+
+  <!-- 9. CEK PEMAHAMAN -->
+  <section id="sec9" class="card section">
+    <h2>Cek pemahaman</h2>
+    <p class="soft">Kerjakan tiga soal konsep berikut. Jawabanmu otomatis terkirim ke guru setiap kali kamu klik "Cek jawaban".</p>
+
+    <!-- Soal 1 -->
+    <div class="quiz-block">
+      <span class="level-badge level-mudah">MUDAH</span>
+      <h3>Soal 1</h3>
+      <p>Sebuah fungsi menerima satu input dan menghasilkan tepat satu output. Manakah pernyataan yang <b>paling tepat</b> menggambarkan sin θ?</p>
+      <div class="opt-grid" id="q1opts">
+        <button class="opt-btn" data-val="a">sin θ hanya berlaku untuk sudut-sudut istimewa saja</button>
+        <button class="opt-btn" data-val="b">sin θ adalah fungsi yang memasangkan setiap sudut dengan satu nilai output tertentu</button>
+        <button class="opt-btn" data-val="c">sin θ selalu menghasilkan nilai yang sama untuk semua sudut</button>
+        <button class="opt-btn" data-val="d">sin θ bukan fungsi karena hasilnya berubah-ubah</button>
+      </div>
+      <button class="btn btn-primary" id="q1check">Cek jawaban</button>
+      <div class="feedback" id="q1fb"></div>
+      <div class="send-status" id="send0"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="quiz-block">
+      <span class="level-badge level-sedang">SEDANG</span>
+      <h3>Soal 2</h3>
+      <p>Saat sudut θ diperbesar dari 0° menuju 90°, titik pada lingkaran satuan bergerak naik dan menjauh dari sumbu-y. Apa yang terjadi pada sin θ dan cos θ?</p>
+      <div class="opt-grid" id="q2opts">
+        <button class="opt-btn" data-val="a">sin θ bertambah, cos θ berkurang</button>
+        <button class="opt-btn" data-val="b">sin θ berkurang, cos θ bertambah</button>
+        <button class="opt-btn" data-val="c">keduanya bertambah bersamaan</button>
+        <button class="opt-btn" data-val="d">keduanya tidak berubah</button>
+      </div>
+      <button class="btn btn-primary" id="q2check">Cek jawaban</button>
+      <div class="feedback" id="q2fb"></div>
+      <div class="send-status" id="send1"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="quiz-block">
+      <span class="level-badge level-sulit">SULIT</span>
+      <h3>Soal 3</h3>
+      <p>Pada θ = 90°, nilai cos θ = 0. Apa yang terjadi pada tan θ di sudut tersebut, dan mengapa?</p>
+      <div class="opt-grid" id="q3opts">
+        <button class="opt-btn" data-val="a">tan θ = 0, karena semua fungsi trigonometri bernilai sama saat 90°</button>
+        <button class="opt-btn" data-val="b">tan θ = 1, karena sin θ dan cos θ sama besar</button>
+        <button class="opt-btn" data-val="c">tan θ tidak terdefinisi, karena tan θ = sin θ ÷ cos θ dan pembagian dengan nol tidak diperbolehkan</button>
+        <button class="opt-btn" data-val="d">tan θ pasti bernilai tak hingga, seperti angka biasa</button>
+      </div>
+      <button class="btn btn-primary" id="q3check">Cek jawaban</button>
+      <div class="feedback" id="q3fb"></div>
+      <div class="send-status" id="send2"></div>
+    </div>
+  </section>
+
+  <!-- 10. RANGKUMAN -->
+  <section id="sec10" class="card section">
+    <h2>Rangkuman</h2>
+    <div class="sum-list">
+      <div class="sum-item">
+        <div class="sum-num">1</div>
+        <p style="margin:0;">Sin θ, cos θ, dan tan θ adalah <b>fungsi</b> — masing-masing menerima sudut sebagai input dan menghasilkan tepat satu nilai sebagai output.</p>
+      </div>
+      <div class="sum-item">
+        <div class="sum-num">2</div>
+        <p style="margin:0;">Nilai sin θ dan cos θ berasal dari <b>koordinat titik</b> pada lingkaran satuan: cos θ adalah koordinat-x, sin θ adalah koordinat-y.</p>
+      </div>
+      <div class="sum-item">
+        <div class="sum-num">3</div>
+        <p style="margin:0;">Karena jari-jari lingkaran satuan cuma 1, nilai sin θ dan cos θ selalu berada di antara <b>−1 dan 1</b>.</p>
+      </div>
+      <div class="sum-item">
+        <div class="sum-num">4</div>
+        <p style="margin:0;">Tan θ = sin θ ÷ cos θ, sehingga <b>tidak terdefinisi</b> pada sudut-sudut di mana cos θ = 0 (misalnya 90° dan 270°).</p>
+      </div>
+    </div>
+    <div class="done-badge">✓ Selesai — Konsep Fungsi Trigonometri</div>
+  </section>
+
+  <!-- 11. REFLEKSI -->
+  <section id="sec11" class="card section">
+    <h2>Refleksi</h2>
+    <p class="soft">Coba jelaskan kembali dengan bahasamu sendiri. Tidak ada jawaban benar atau salah — tulis saja pemahamanmu.</p>
+
+    <div class="reflect-block">
+      <label>1. Dengan kata-katamu sendiri, apa yang dimaksud dengan fungsi trigonometri?</label>
+      <textarea id="ref1" placeholder="Tulis penjelasanmu di sini..."></textarea>
+    </div>
+    <div class="reflect-block">
+      <label>2. Menurutmu, kenapa lingkaran satuan bisa membantu kita memahami sin dan cos?</label>
+      <textarea id="ref2" placeholder="Tulis penjelasanmu di sini..."></textarea>
+    </div>
+
+    <button class="btn btn-primary" id="refSend">Kirim refleksi ke guru</button>
+    <div class="send-status" id="sendRef"></div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ================= Progress bar & fade-up ================= */
+(function(){
+  var bar = document.getElementById('progressBar');
+  function onScroll(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? (scrolled/max)*100 : 0;
+    bar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  var sections = document.querySelectorAll('.section');
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  sections.forEach(function(s){ obs.observe(s); });
+})();
+
+/* ================= Identitas siswa ================= */
+function getIdentitas(){
+  var nama = document.getElementById('namaSiswa').value.trim();
+  var kelas = document.getElementById('kelasSiswa').value.trim();
+  return { nama: nama, kelas: kelas };
+}
+function identitasLengkap(){
+  var id = getIdentitas();
+  var statusEl = document.getElementById('idStatus');
+  if(!id.nama || !id.kelas){
+    statusEl.textContent = 'Isi nama dan kelas dulu ya, sebelum cek jawaban.';
+    statusEl.style.color = '#B91C1C';
+    document.getElementById('namaSiswa').focus();
+    return false;
+  }
+  statusEl.textContent = '';
+  return true;
+}
+
+/* ================= Accordion: Contoh sederhana ================= */
+document.querySelectorAll('.acc-head').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var item = btn.closest('.acc-item');
+    var body = item.querySelector('.acc-body');
+    var isOpen = item.classList.contains('open');
+    if(isOpen){
+      item.classList.remove('open');
+      body.style.maxHeight = null;
+    } else {
+      item.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  });
+});
+
+/* ================= Section 5: Visualisasi lingkaran satuan (sudut istimewa) ================= */
+var CX = 160, CY = 160, R = 120;
+var thetaSlider = document.getElementById('thetaSlider');
+var valTheta = document.getElementById('valTheta');
+var valSin = document.getElementById('valSin');
+var valCos = document.getElementById('valCos');
+var valTan = document.getElementById('valTan');
+var circSvg = document.getElementById('circSvg');
+var circStatus = document.getElementById('circStatus');
+var circInsight = document.getElementById('circInsight');
+var seenMax = false, seenUndefined = false;
+
+/* Tabel sudut istimewa: nilai eksak (pecahan/akar) supaya sesuai dengan
+   apa yang dipelajari siswa (½√2, ½√3, dst), bukan bentuk desimal. */
+var HALF = '½', HALF3 = '⅓';
+var SPECIAL = [
+  { deg:0,   sin:'0',      cos:'1',      tan:'0'        },
+  { deg:30,  sin:HALF,     cos:HALF+'√3', tan:HALF3+'√3' },
+  { deg:45,  sin:HALF+'√2', cos:HALF+'√2', tan:'1'       },
+  { deg:60,  sin:HALF+'√3', cos:HALF,     tan:'√3'       },
+  { deg:90,  sin:'1',      cos:'0',      tan:null        },
+  { deg:120, sin:HALF+'√3', cos:'-'+HALF, tan:'-√3'      },
+  { deg:135, sin:HALF+'√2', cos:'-'+HALF+'√2', tan:'-1'  },
+  { deg:150, sin:HALF,     cos:'-'+HALF+'√3', tan:'-'+HALF3+'√3' },
+  { deg:180, sin:'0',      cos:'-1',     tan:'0'         },
+  { deg:210, sin:'-'+HALF, cos:'-'+HALF+'√3', tan:HALF3+'√3' },
+  { deg:225, sin:'-'+HALF+'√2', cos:'-'+HALF+'√2', tan:'1' },
+  { deg:240, sin:'-'+HALF+'√3', cos:'-'+HALF, tan:'√3'   },
+  { deg:270, sin:'-1',    cos:'0',      tan:null         },
+  { deg:300, sin:'-'+HALF+'√3', cos:HALF, tan:'-√3'      },
+  { deg:315, sin:'-'+HALF+'√2', cos:HALF+'√2', tan:'-1'  },
+  { deg:330, sin:'-'+HALF, cos:HALF+'√3', tan:'-'+HALF3+'√3' },
+  { deg:360, sin:'0',     cos:'1',      tan:'0'          }
+];
+
+function renderCircle(idx){
+  var s = SPECIAL[idx];
+  var thetaDeg = s.deg;
+  var rad = thetaDeg * Math.PI / 180;
+  var cosNum = Math.cos(rad);
+  var sinNum = Math.sin(rad);
+  var px = CX + R * cosNum;
+  var py = CY - R * sinNum;
+
+  var svg =
+    '<line x1="10" y1="'+CY+'" x2="310" y2="'+CY+'" stroke="#CBD5E1" stroke-width="1.5"/>' +
+    '<line x1="'+CX+'" y1="10" x2="'+CX+'" y2="310" stroke="#CBD5E1" stroke-width="1.5"/>' +
+    '<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="#94A3B8" stroke-width="1.5"/>' +
+    '<line x1="'+CX+'" y1="'+CY+'" x2="'+px+'" y2="'+py+'" stroke="#2563EB" stroke-width="2"/>' +
+    '<line x1="'+px+'" y1="'+py+'" x2="'+px+'" y2="'+CY+'" stroke="#10B981" stroke-width="2" stroke-dasharray="4 4"/>' +
+    '<line x1="'+CX+'" y1="'+py+'" x2="'+px+'" y2="'+py+'" stroke="#2563EB" stroke-width="2" stroke-dasharray="4 4"/>' +
+    '<circle cx="'+CX+'" cy="'+CY+'" r="3" fill="#0F172A"/>' +
+    '<circle cx="'+px+'" cy="'+py+'" r="6" fill="#2563EB" stroke="#fff" stroke-width="2"/>';
+  circSvg.innerHTML = svg;
+
+  valTheta.textContent = thetaDeg;
+  valSin.textContent = s.sin;
+  valCos.textContent = s.cos;
+
+  var tanUndefined = s.tan === null;
+  valTan.textContent = tanUndefined ? '—' : s.tan;
+
+  circStatus.innerHTML = 'θ = ' + thetaDeg + '° &nbsp;→&nbsp; titik berada di (' + s.cos + ', ' + s.sin + ')' +
+    '<span class="status-sub">Garis biru mendatar = cos θ &nbsp;|&nbsp; garis hijau tegak = sin θ</span>';
+
+  if(tanUndefined && !seenUndefined){
+    seenUndefined = true;
+    circInsight.className = 'insight-box show';
+    circInsight.innerHTML = '<b>Perhatikan!</b> Di sudut ini cos θ = 0, sehingga tan θ (= sin θ ÷ cos θ) tidak terdefinisi — itu sebabnya kartu tan menampilkan tanda "—".';
+  } else if((thetaDeg === 90 || thetaDeg === 270) && !seenMax){
+    seenMax = true;
+    circInsight.className = 'insight-box show';
+    circInsight.innerHTML = '<b>Pola ditemukan!</b> Di sudut ini sin θ persis mencapai batas maksimalnya, yaitu 1 (atau −1). Titik pada lingkaran memang tidak bisa bergeser lebih jauh dari itu.';
+  } else {
+    circInsight.className = 'insight-box';
+    circInsight.innerHTML = '';
+  }
+}
+thetaSlider.addEventListener('input', function(){ renderCircle(parseInt(thetaSlider.value, 10)); });
+renderCircle(2);
+
+/* ================= Kirim ke guru (Google Apps Script) ================= */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, benar, statusElId){
+  var statusEl = document.getElementById(statusElId);
+  if(!SCRIPT_URL){ if(statusEl) statusEl.textContent=''; return; }
+  var id = getIdentitas();
+  var namaKelas = id.nama + ' — ' + id.kelas;
+  var payload = {
+    topik: 'Fungsi Trigonometri - Konsep Fungsi Trigonometri',
+    nama: namaKelas,
+    soal: nomorSoal,
+    jawaban: jawaban1,
+    jawaban2: jawaban2 || '',
+    benar: benar,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  if(statusEl) statusEl.textContent = 'Mengirim ke guru...';
+  fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify(payload) })
+    .then(function(){ if(statusEl) statusEl.textContent = 'Terkirim ke guru ✓'; })
+    .catch(function(){ if(statusEl) statusEl.textContent = 'Gagal mengirim (periksa koneksi internet).'; });
+}
+
+/* ================= Section 9: Cek Pemahaman ================= */
+var optLabel = {
+  a: 'Pilihan A', b: 'Pilihan B', c: 'Pilihan C', d: 'Pilihan D'
+};
+
+function setupQuiz(qId, correctVal, fbCorrect, fbWrong, soalNumber, sendId){
+  var selected = null;
+  var optsWrap = document.getElementById(qId + 'opts');
+  optsWrap.querySelectorAll('.opt-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      optsWrap.querySelectorAll('.opt-btn').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      selected = btn.getAttribute('data-val');
+    });
+  });
+  document.getElementById(qId + 'check').addEventListener('click', function(){
+    if(!identitasLengkap()) return;
+    var fb = document.getElementById(qId + 'fb');
+    if(!selected){
+      fb.className = 'feedback bad show';
+      fb.textContent = 'Pilih salah satu jawaban dulu ya.';
+      return;
+    }
+    var isCorrect = selected === correctVal;
+    optsWrap.querySelectorAll('.opt-btn').forEach(function(b){
+      if(b.getAttribute('data-val') === correctVal) b.classList.add('correct');
+      else if(b.classList.contains('selected') && !isCorrect) b.classList.add('wrong');
+    });
+    fb.className = 'feedback ' + (isCorrect ? 'ok' : 'bad') + ' show';
+    fb.textContent = isCorrect ? fbCorrect : fbWrong;
+    kirimKeGuru(soalNumber, selected.toUpperCase(), '', isCorrect ? 'Benar' : 'Salah', sendId);
+  });
+}
+
+setupQuiz(
+  'q1', 'b',
+  'Betul! Sin θ memasangkan setiap sudut dengan tepat satu nilai output — itulah yang membuatnya disebut fungsi.',
+  'Belum tepat. Ingat, ciri utama sebuah fungsi adalah: setiap input (sudut) dipasangkan dengan tepat satu output (nilai). Sin θ berlaku untuk semua sudut, bukan cuma sudut istimewa, dan nilainya memang berubah-ubah — tapi itu wajar karena outputnya memang bergantung pada inputnya.',
+  1, 'send0'
+);
+
+setupQuiz(
+  'q2', 'a',
+  'Betul! Saat sudut mendekati 90°, titik pada lingkaran bergerak naik (menjauhi sumbu-x) dan mendekati sumbu-y, sehingga sin θ membesar sementara cos θ mengecil menuju 0.',
+  'Belum tepat. Coba bayangkan lagi titiknya: saat mendekati 90°, titik itu naik tinggi (mendekati puncak lingkaran) sekaligus bergeser mendekati sumbu-y. Naik berarti sin θ (koordinat-y) membesar, dan mendekati sumbu-y berarti cos θ (koordinat-x) mengecil menuju 0.',
+  2, 'send1'
+);
+
+setupQuiz(
+  'q3', 'c',
+  'Betul! Karena tan θ = sin θ ÷ cos θ, dan pembagian dengan nol tidak diperbolehkan dalam matematika, tan θ tidak terdefinisi tepat di sudut-sudut di mana cos θ = 0.',
+  'Belum tepat. Ingat rumusnya: tan θ = sin θ ÷ cos θ. Saat cos θ = 0, kita jadi harus membagi dengan nol — dan itu tidak diperbolehkan dalam matematika. Karena itu, tan θ dikatakan tidak terdefinisi di sudut tersebut, bukan bernilai 0 atau angka tertentu.',
+  3, 'send2'
+);
+
+/* ================= Section 11: Refleksi ================= */
+document.getElementById('refSend').addEventListener('click', function(){
+  if(!identitasLengkap()) return;
+  var r1 = document.getElementById('ref1').value.trim();
+  var r2 = document.getElementById('ref2').value.trim();
+  var statusEl = document.getElementById('sendRef');
+  if(!r1 || !r2){
+    statusEl.textContent = 'Isi kedua refleksi dulu sebelum dikirim ya.';
+    statusEl.style.color = '#B91C1C';
+    return;
+  }
+  statusEl.style.color = '';
+  kirimKeGuru('Refleksi', r1, r2, '-', 'sendRef');
+});
+</script>
+</body>
+</html>
