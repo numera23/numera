@@ -7,7 +7,7 @@
 
 <!--
     =====================================================================
-    Numera — TEMPLATE HALAMAN DETAIL TOPIK (LANDING PAGE BAB)
+    NUMERA — TEMPLATE HALAMAN DETAIL TOPIK (LANDING PAGE BAB)
     =====================================================================
     Ini adalah file MASTER / TEMPLATE.
 
@@ -331,11 +331,13 @@
     }
 
     .submodul-deskripsi {
-        font-size: 13px;
-        color: var(--text-secondary);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    font-size: 13px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 1.4;
     }
 
     .submodul-arrow {
@@ -488,7 +490,7 @@
         <!-- ================= KOMPETENSI (diisi otomatis dari array KOMPETENSI) ================= -->
         <div class="kompetensi-card">
             <div class="kompetensi-header">
-                <h2>🎯 Kompetensi yang Akan Dicapai</h2>
+                <h2>🎯 Setelah ini, kamu akan bisa apa?</h2>
                 <p>Gambaran umum bab ini, bukan materi lengkap.</p>
             </div>
             <ul class="kompetensi-list" id="kompetensiList"></ul>
@@ -513,7 +515,7 @@
     <!-- Ganti atribut href pada tiap <a> sesuai halaman tujuan. -->
     <nav class="bottom-nav" aria-label="Navigasi utama">
         <!-- GANTI href di bawah ini ke halaman Beranda yang sebenarnya -->
-        <a class="nav-item" href="#" data-nav="beranda">
+        <a class="nav-item" href="beranda.html" data-nav="beranda">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
             <span>Beranda</span>
         </a>
@@ -523,17 +525,17 @@
             <span>Topik</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Eksplorasi yang sebenarnya -->
-        <a class="nav-item" href="#" data-nav="eksplorasi">
+        <a class="nav-item" href="eksplorasi.html" data-nav="eksplorasi">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
             <span>Eksplorasi</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Arena Game yang sebenarnya -->
-        <a class="nav-item" href="#" data-nav="arena">
+        <a class="nav-item" href="arena.html" data-nav="arena">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
             <span>Arena Game</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Cakrawala yang sebenarnya -->
-        <a class="nav-item" href="#" data-nav="Cakrawala">
+        <a class="nav-item" href="cakrawala.html" data-nav="Cakrawala">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
             <span>Cakrawala</span>
         </a>
@@ -548,7 +550,7 @@
         const TOPIK_INFO = {
             nama: "Fungsi Trigonometri",
             ikon: "📈",
-            deskripsi: "Pelajari bentuk dasar grafik trigonometri dan berbagai unsur di dalamnya. Bab ini membekali kamu untuk menguasai trigonometri secara utuh."
+            deskripsi: "Pelajari cara mengidentifikasi amplitudo, fase, periode, dan transformasi grafik sinus, cosinus, & tangen."
         };
 
         /* =============================================================
@@ -559,9 +561,10 @@
            tambahan.
            ============================================================= */
         const KOMPETENSI = [
-            "Memahami amplitudo, periode, dan fase.",
-            "Mengetahui pergeseran grafik.",
-            "Mengetahui transformasi grafik."
+            "Mengenali Grafik Sinus, Cosinus, & Tangen.",
+            "Menentukan amplitudo, periode, & fase.",
+            "Mengetahui transformasi grafik fungsi.",
+            "Mengetahui pergeseran grafik fungsi."
         ];
 
         /* =============================================================
@@ -578,52 +581,52 @@
            ============================================================= */
         const SUBMODUL = [
             {
-                judul: "Konsep Fungsi",
-                ikon: "📈",
-                deskripsi: "Kenali konsep dan karakteristik dasar fungsi trigonometri.",
-                link: "fungtrig_konsep.html"
+                judul: "Konsep Fungsi Trigonometri",
+                ikon: "📉",
+                deskripsi: "Kenali fungsi trigonometri",
+                link: "persamaan_lingkaran_definisi.html"
             },
             {
                 judul: "Sudut & Radian",
-                ikon: "📉",
-                deskripsi: "Pahami ukuran sudut dan radian dalam trigonometri.",
-                link: "fungtrig_sudutradian.html"
+                ikon: "💹",
+                deskripsi: "Pahami sudut dan radian.",
+                link: "persamaan_lingkaran_o.html"
             },
             {
-                judul: "Amplitudo, Periode, dan Fase",
-                ikon: "💹",
-                deskripsi: "Kenali parameter yang membentuk grafik trigonometri.",
-                link: "fungtrig_amplitudo_periode.html"
-            },
-			{
-                judul: "Grafik Sinus Cosinus",
+                judul: "Amplitudo, Periode, & Fase",
                 ikon: "📈",
-                deskripsi: "Pahami bentuk dan sifat grafik sinus dan cosinus.",
-                link: "fungtrig_grafik_sincos.html"
-			},
-		    {
-                judul: "Transformasi Fungsi",
+                deskripsi: "Kenali karakteristik grafik.",
+                link: "persamaan_lingkaran_pab.html"
+            },
+            {
+                judul: "Grafik Sinus & Cosinus",
                 ikon: "📉",
-                deskripsi: "Amati bagaimana perubahan parameter mengubah grafik.",
-                link: "fungtrig_transformasi.html"
-			},
-			{
+                deskripsi: "Pelajari grafik sinus dan cosinus.",
+                link: "persamaan_lingkaran_bu.html"
+            },
+            {
+                judul: "Transformasi Grafik Fungsi",
+                ikon: "💹",
+                deskripsi: "Amati perubahan grafik.",
+                link: "persamaan_lingkaran_pusatjari.html"
+            },
+            {
                 judul: "Grafik Fungsi Tangen",
-                ikon: "💹",
-                deskripsi: "Kenali grafik tangen, periode, dan asimtotnya.",
-                link: "fungtrig_grafik_tangen.html"
-			},
-			{
-                judul: "Pemodelan Fungsi",
                 ikon: "📈",
-                deskripsi: "Gunakan fungsi trigonometri untuk memodelkan fenomena periodik.",
-                link: "fungtrig_pemodelan.html"
-			},
+                deskripsi: "Kenali grafik dan asimtot tangen.",
+                link: "persamaan_lingkaran_kedudukan_titik.html"
+            },
             {
-                judul: "Persamaan Fungsi",
+                judul: "Pemodelan Fungsi Trigonometri",
                 ikon: "📉",
-                deskripsi: "Pelajari cara menentukan dan menyelesaikan persamaan trigonometri.",
-                link: "fungtrig_persamaan.html"
+                deskripsi: "Terapkan trigonometri pada fenomena periodik.",
+                link: "persamaan_lingkaran_kedudukan_garis.html"
+            },
+            {
+                judul: "Persamaan Fungsi Trigonometri",
+                ikon: "💹",
+                deskripsi: "Pelajari persamaan trigonometri.",
+                link: "persamaan_lingkaran_pgs.html"
             }
 
             // Tambahkan subbab baru di sini, contoh:
