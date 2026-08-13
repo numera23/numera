@@ -1,0 +1,715 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Grafik Fungsi Sinus dan Cosinus — Pergeseran Vertikal
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Grafik Sinus &amp; Cosinus — Pergeseran Vertikal | Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif pengaruh pergeseran vertikal pada grafik fungsi sinus dan cosinus.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+  --curve-cos:#7C3AED;
+  --curve-cos-light:#EDE9FE;
+
+  --sp-1:4px;
+  --sp-2:8px;
+  --sp-3:12px;
+  --sp-4:16px;
+  --sp-5:24px;
+  --sp-6:32px;
+
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 var(--sp-4);
+}
+
+/* ===== TOPBAR ===== */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;
+  margin:0 auto;
+  padding:var(--sp-3) var(--sp-4);
+  font-size:13px;
+  font-weight:600;
+  color:var(--text-soft);
+  letter-spacing:.2px;
+}
+.topbar-inner strong{color:var(--primary);}
+.progress-track{
+  height:3px;
+  width:100%;
+  background:var(--border);
+}
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:var(--primary);
+  transition:width 80ms linear;
+}
+
+/* ===== HEADER ===== */
+header.hero{
+  padding:var(--sp-6) 0 var(--sp-5);
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  font-size:12.5px;
+  font-weight:700;
+  padding:6px 12px;
+  border-radius:999px;
+  margin-bottom:var(--sp-4);
+}
+h1{
+  font-size:26px;
+  line-height:1.3;
+  font-weight:800;
+  margin:0 0 var(--sp-3);
+  letter-spacing:-.3px;
+}
+.hero-meta{
+  font-size:14px;
+  color:var(--text-soft);
+  margin:0 0 4px;
+}
+.hero-time{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--primary-hover);
+  margin:var(--sp-3) 0 var(--sp-3);
+}
+.hero-invite{
+  font-size:15.5px;
+  font-weight:600;
+  margin:0;
+  color:var(--text);
+}
+
+/* ===== SECTIONS ===== */
+section{
+  margin-bottom:var(--sp-6);
+}
+.section-eyebrow{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  font-weight:700;
+  color:var(--text-soft);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  margin-bottom:var(--sp-3);
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  padding:var(--sp-5);
+}
+
+.misi-text{
+  font-size:16.5px;
+  line-height:1.6;
+  margin:0;
+}
+.misi-text .q{
+  display:block;
+  margin-top:8px;
+  color:var(--primary-hover);
+  font-weight:600;
+}
+
+/* ===== LAB CONTROLS ===== */
+.control-group{
+  margin-bottom:var(--sp-5);
+}
+.control-label{
+  font-size:13px;
+  font-weight:700;
+  color:var(--text-soft);
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  margin-bottom:var(--sp-3);
+  display:block;
+}
+
+.toggle-row{
+  display:flex;
+  gap:var(--sp-2);
+  flex-wrap:wrap;
+}
+.chip{
+  border:1.5px solid var(--border);
+  background:var(--card);
+  padding:9px 16px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--text-soft);
+  cursor:pointer;
+  transition:all 180ms ease;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  user-select:none;
+  min-height:40px;
+}
+.chip .dot{
+  width:9px;height:9px;border-radius:50%;
+  background:currentColor;
+  opacity:.5;
+}
+.chip.active-sin{
+  border-color:var(--primary);
+  color:var(--primary-hover);
+  background:var(--primary-light);
+}
+.chip.active-sin .dot{background:var(--primary);opacity:1;}
+.chip.active-cos{
+  border-color:var(--curve-cos);
+  color:var(--curve-cos);
+  background:var(--curve-cos-light);
+}
+.chip.active-cos .dot{background:var(--curve-cos);opacity:1;}
+
+.amp-display{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  margin-bottom:var(--sp-2);
+}
+.amp-value{
+  font-size:34px;
+  font-weight:800;
+  color:var(--primary-hover);
+  font-variant-numeric:tabular-nums;
+}
+.amp-value span{font-size:16px;font-weight:600;color:var(--text-soft);}
+
+input[type="range"]{
+  -webkit-appearance:none;
+  width:100%;
+  height:6px;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--border) 0%, var(--border) var(--fillmin,50%), var(--primary) var(--fillmin,50%), var(--primary) var(--fillmax,50%), var(--border) var(--fillmax,50%), var(--border) 100%);
+  outline:none;
+  margin:var(--sp-2) 0;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:26px;height:26px;
+  border-radius:50%;
+  background:#fff;
+  border:3px solid var(--primary);
+  box-shadow:0 2px 6px rgba(37,99,235,.35);
+  cursor:pointer;
+}
+input[type="range"]::-moz-range-thumb{
+  width:26px;height:26px;
+  border-radius:50%;
+  background:#fff;
+  border:3px solid var(--primary);
+  cursor:pointer;
+}
+.range-labels{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  color:var(--text-soft);
+}
+
+.preset-row{
+  display:flex;
+  gap:var(--sp-2);
+  flex-wrap:wrap;
+  margin-top:var(--sp-3);
+}
+.preset-btn{
+  border:1.5px solid var(--border);
+  background:var(--card);
+  color:var(--text);
+  font-weight:600;
+  font-size:13.5px;
+  padding:8px 14px;
+  border-radius:var(--radius-btn);
+  cursor:pointer;
+  min-height:40px;
+  transition:all 180ms ease;
+}
+.preset-btn:hover{
+  border-color:var(--primary);
+  color:var(--primary-hover);
+  background:var(--primary-light);
+}
+.preset-btn.zero{
+  border-color:var(--text-soft);
+  color:var(--text);
+}
+.preset-btn.random{
+  border-color:var(--curve-cos);
+  color:var(--curve-cos);
+}
+.preset-btn.random:hover{
+  background:var(--curve-cos-light);
+}
+
+/* ===== GRAPH ===== */
+.graph-box{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:var(--sp-3);
+  margin:var(--sp-4) 0;
+}
+svg{display:block;width:100%;height:auto;}
+.legend{
+  display:flex;
+  gap:var(--sp-4);
+  font-size:12.5px;
+  color:var(--text-soft);
+  padding:0 4px var(--sp-2);
+  flex-wrap:wrap;
+}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block;}
+.legend i.dashed{background:repeating-linear-gradient(90deg, var(--text-soft) 0 4px, transparent 4px 7px);}
+
+/* ===== READOUT ===== */
+.readout-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:var(--sp-2);
+  margin-top:var(--sp-4);
+}
+.readout-card{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:var(--sp-3) var(--sp-2);
+  text-align:center;
+}
+.readout-label{
+  font-size:11px;
+  font-weight:700;
+  color:var(--text-soft);
+  text-transform:uppercase;
+  letter-spacing:.3px;
+  margin-bottom:4px;
+}
+.readout-value{
+  font-size:20px;
+  font-weight:800;
+  color:var(--text);
+  font-variant-numeric:tabular-nums;
+}
+.readout-card.cat .readout-value{font-size:16px;}
+
+.hint{
+  font-size:13.5px;
+  color:var(--text-soft);
+  margin-top:var(--sp-4);
+  line-height:1.5;
+}
+
+/* ===== DUGAAN ===== */
+textarea{
+  width:100%;
+  min-height:100px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-btn);
+  padding:var(--sp-3);
+  font-family:'Inter',sans-serif;
+  font-size:14.5px;
+  color:var(--text);
+  resize:vertical;
+  background:var(--bg);
+}
+textarea:focus{
+  outline:none;
+  border-color:var(--primary);
+  background:var(--card);
+}
+.dugaan-note{
+  font-size:12.5px;
+  color:var(--text-soft);
+  margin-top:var(--sp-2);
+}
+
+/* ===== LANJUT MODUL ===== */
+.next-card{
+  background:linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  border-radius:var(--radius-card);
+  padding:var(--sp-5);
+  color:#fff;
+  text-align:center;
+}
+.next-card p{
+  margin:0 0 var(--sp-4);
+  font-size:15px;
+  line-height:1.6;
+  opacity:.95;
+}
+.btn-modul{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:#fff;
+  color:var(--primary-hover);
+  font-weight:700;
+  font-size:15px;
+  padding:12px 26px;
+  border-radius:var(--radius-btn);
+  text-decoration:none;
+  min-height:44px;
+  transition:transform 180ms ease, box-shadow 180ms ease;
+}
+.btn-modul:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
+}
+
+/* ===== FOOTER ===== */
+.site-footer{
+  padding:var(--sp-5) 0 var(--sp-6);
+  text-align:center;
+}
+.footer-divider{
+  height:1px;
+  background:var(--border);
+  margin-bottom:var(--sp-4);
+}
+.footer-brand{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--primary);
+  margin:0 0 4px;
+}
+.footer-text{
+  font-size:13px;
+  color:var(--text-soft);
+  margin:0 0 2px;
+}
+.footer-meta{
+  font-size:12.5px;
+  color:var(--text-soft);
+  margin:0;
+  opacity:.85;
+}
+
+@media (max-width:480px){
+  h1{font-size:22px;}
+  .readout-row{gap:6px;}
+  .readout-value{font-size:16px;}
+  .readout-card.cat .readout-value{font-size:14px;}
+  .amp-value{font-size:28px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner"><strong>NUMERA</strong> · 🧪 Grafik Sinus &amp; Cosinus — Eksplorasi</div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ HEADER ============ -->
+  <header class="hero">
+    <span class="badge">🧪 Eksplorasi</span>
+    <h1>Grafik Fungsi Sinus dan Cosinus — Pergeseran Vertikal</h1>
+    <p class="hero-meta">Bagian dari materi Grafik Fungsi Trigonometri · Kerjakan sebelum buka Modul</p>
+    <div class="hero-time">⏱ Sekitar 3–5 menit</div>
+    <p class="hero-invite">Yuk, coba geser grafiknya ke atas dan ke bawah.</p>
+  </header>
+
+  <!-- ============ 🎯 MISI EKSPLORASI ============ -->
+  <section id="misi">
+    <div class="section-eyebrow">🎯 Misi Eksplorasi</div>
+    <div class="card">
+      <p class="misi-text">
+        Geser slider Pergeseran Vertikal, lalu perhatikan garis tengah gelombangnya.
+        <span class="q">Apa yang berubah, dan apa yang tetap sama?</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ 🧪 LABORATORIUM MATEMATIKA ============ -->
+  <section id="lab">
+    <div class="section-eyebrow">🧪 Laboratorium Matematika</div>
+    <div class="card">
+
+      <div class="control-group">
+        <span class="control-label">Tampilkan Grafik</span>
+        <div class="toggle-row">
+          <div class="chip active-sin" id="chipSin"><span class="dot"></span>Sinus</div>
+          <div class="chip active-cos" id="chipCos"><span class="dot"></span>Cosinus</div>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="amp-display">
+          <span class="control-label" style="margin-bottom:0;">Pergeseran Vertikal</span>
+          <span class="amp-value" id="ampValue">0.0</span>
+        </div>
+        <input type="range" id="ampSlider" min="-2" max="2" step="0.1" value="0">
+        <div class="range-labels"><span>▼ Bawah</span><span>Atas ▲</span></div>
+
+        <div class="preset-row">
+          <button class="preset-btn" data-amp="-2">−2</button>
+          <button class="preset-btn" data-amp="-1">−1</button>
+          <button class="preset-btn zero" data-amp="0">Awal</button>
+          <button class="preset-btn" data-amp="1">1</button>
+          <button class="preset-btn" data-amp="2">2</button>
+          <button class="preset-btn random" id="randomBtn">🎲 Acak</button>
+        </div>
+      </div>
+
+      <div class="graph-box">
+        <div class="legend">
+          <span><i class="dashed"></i>Grafik Awal</span>
+          <span><i style="background:var(--success)"></i>Garis Tengah Saat Ini</span>
+          <span><i style="background:var(--primary)"></i>Sinus</span>
+          <span><i style="background:var(--curve-cos)"></i>Cosinus</span>
+        </div>
+        <svg id="graph" viewBox="0 0 700 360" xmlns="http://www.w3.org/2000/svg">
+          <line x1="20" y1="180" x2="680" y2="180" stroke="var(--border)" stroke-width="1"></line>
+          <path id="pathSinGhost" fill="none" stroke="var(--text-soft)" stroke-width="2" stroke-linecap="round" stroke-dasharray="5 6" opacity="0.55"></path>
+          <path id="pathCosGhost" fill="none" stroke="var(--text-soft)" stroke-width="2" stroke-linecap="round" stroke-dasharray="5 6" opacity="0.55"></path>
+          <line id="lineMid" x1="20" y1="180" x2="680" y2="180" stroke="var(--success)" stroke-width="2.5"></line>
+          <path id="pathSin" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"></path>
+          <path id="pathCos" fill="none" stroke="var(--curve-cos)" stroke-width="3" stroke-linecap="round"></path>
+        </svg>
+      </div>
+
+      <div class="readout-row">
+        <div class="readout-card">
+          <div class="readout-label">Posisi Garis Tengah</div>
+          <div class="readout-value" id="valGeser">0.0</div>
+        </div>
+        <div class="readout-card cat">
+          <div class="readout-label">Arah</div>
+          <div class="readout-value" id="valArah">Tidak Bergeser</div>
+        </div>
+        <div class="readout-card">
+          <div class="readout-label">Jarak dari Awal</div>
+          <div class="readout-value" id="valJarak">0.0</div>
+        </div>
+      </div>
+
+      <p class="hint">Coba geser ke atas, lalu ke bawah. Perhatikan garis tengahnya dan bandingkan dengan grafik awal (garis putus-putus abu).</p>
+    </div>
+  </section>
+
+  <!-- ============ 💭 DUGAAN SAYA ============ -->
+  <section id="dugaan">
+    <div class="section-eyebrow">💭 Dugaan Saya</div>
+    <div class="card">
+      <textarea id="dugaanBox" placeholder="Tulis pola yang kamu lihat di sini..."></textarea>
+      <p class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <!-- ============ 🚀 LANJUT KE MODUL ============ -->
+  <section id="lanjut">
+    <div class="section-eyebrow">🚀 Lanjut ke Modul</div>
+    <div class="next-card">
+      <p>Kamu sudah coba sendiri dan mungkin sudah punya dugaan. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GANTI href="#" di bawah ini dengan URL Modul pasangan -->
+      <a href="#" class="btn-modul">Lanjut ke Modul →</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-divider"></div>
+      <p class="footer-brand">Numera</p>
+      <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+      <p class="footer-meta">Versi 1.0 · © 2026</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var CX0=20,CX1=680,CY=180,SCALE=55,BASE_CYCLES=2;
+
+  var slider=document.getElementById('ampSlider');
+  var ampValue=document.getElementById('ampValue');
+  var pathSin=document.getElementById('pathSin');
+  var pathCos=document.getElementById('pathCos');
+  var pathSinGhost=document.getElementById('pathSinGhost');
+  var pathCosGhost=document.getElementById('pathCosGhost');
+  var lineMid=document.getElementById('lineMid');
+  var valGeser=document.getElementById('valGeser');
+  var valArah=document.getElementById('valArah');
+  var valJarak=document.getElementById('valJarak');
+  var chipSin=document.getElementById('chipSin');
+  var chipCos=document.getElementById('chipCos');
+
+  var showSin=true, showCos=true;
+
+  function buildPath(shift, useCos){
+    var d='';
+    var span=CX1-CX0;
+    var centerY=CY-(shift*SCALE);
+    for(var px=0; px<=span; px+=3){
+      var t=(px/span)*BASE_CYCLES*2*Math.PI;
+      var val=useCos?Math.cos(t):Math.sin(t);
+      var x=CX0+px;
+      var y=centerY-(val*SCALE);
+      d+= (px===0?'M':'L') + x.toFixed(1)+' '+y.toFixed(1)+' ';
+    }
+    return d;
+  }
+
+  function arah(shift){
+    if(shift>0.05) return 'Atas';
+    if(shift<-0.05) return 'Bawah';
+    return 'Tidak Bergeser';
+  }
+
+  function render(){
+    var shift=parseFloat(slider.value);
+    ampValue.textContent=(shift>0?'+':'')+shift.toFixed(1);
+
+    var pct=((shift-(-2))/(2-(-2)))*100;
+    var zeroPct=((0-(-2))/(2-(-2)))*100;
+    if(shift>=0){
+      slider.style.setProperty('--fillmin', zeroPct+'%');
+      slider.style.setProperty('--fillmax', pct+'%');
+    }else{
+      slider.style.setProperty('--fillmin', pct+'%');
+      slider.style.setProperty('--fillmax', zeroPct+'%');
+    }
+
+    pathSin.setAttribute('d', buildPath(shift,false));
+    pathCos.setAttribute('d', buildPath(shift,true));
+    pathSin.style.display=showSin?'block':'none';
+    pathCos.style.display=showCos?'block':'none';
+
+    pathSinGhost.setAttribute('d', buildPath(0,false));
+    pathCosGhost.setAttribute('d', buildPath(0,true));
+    pathSinGhost.style.display=showSin?'block':'none';
+    pathCosGhost.style.display=showCos?'block':'none';
+
+    var midY=CY-(shift*SCALE);
+    lineMid.setAttribute('y1',midY);
+    lineMid.setAttribute('y2',midY);
+
+    valGeser.textContent=(shift>0?'+':'')+shift.toFixed(1);
+    valArah.textContent=arah(shift);
+    valJarak.textContent=Math.abs(shift).toFixed(1);
+  }
+
+  slider.addEventListener('input', render);
+
+  document.querySelectorAll('.preset-btn[data-amp]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      slider.value=btn.getAttribute('data-amp');
+      render();
+    });
+  });
+
+  document.getElementById('randomBtn').addEventListener('click', function(){
+    var r=(Math.random()*4-2).toFixed(1);
+    slider.value=r;
+    render();
+  });
+
+  chipSin.addEventListener('click', function(){
+    showSin=!showSin;
+    chipSin.classList.toggle('active-sin', showSin);
+    render();
+  });
+  chipCos.addEventListener('click', function(){
+    showCos=!showCos;
+    chipCos.classList.toggle('active-cos', showCos);
+    render();
+  });
+
+  render();
+
+  /* Progress bar scroll */
+  var fill=document.getElementById('progressFill');
+  function updateProgress(){
+    var h=document.documentElement;
+    var scrolled=h.scrollTop;
+    var max=h.scrollHeight-h.clientHeight;
+    var pct=max>0?(scrolled/max*100):0;
+    fill.style.width=pct+'%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+})();
+</script>
+
+</body>
+</html>

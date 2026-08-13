@@ -1,0 +1,418 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Grafik Fungsi Tangen
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Grafik Fungsi Tangen | Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif grafik fungsi tangen: periode dan asimtot vertikal.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px;
+  --radius-card:18px; --radius-btn:12px;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.wrap{max-width:900px;margin:0 auto;padding:0 var(--sp-4);}
+
+.topbar{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+.topbar-inner{max-width:900px;margin:0 auto;padding:var(--sp-3) var(--sp-4);font-size:13px;font-weight:600;color:var(--text-soft);letter-spacing:.2px;}
+.topbar-inner strong{color:var(--primary);}
+.progress-track{height:3px;width:100%;background:var(--border);}
+.progress-fill{height:100%;width:0%;background:var(--primary);transition:width 80ms linear;}
+
+header.hero{padding:var(--sp-6) 0 var(--sp-5);}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--primary-light);color:var(--primary-hover);font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:999px;margin-bottom:var(--sp-4);}
+h1{font-size:26px;line-height:1.3;font-weight:800;margin:0 0 var(--sp-3);letter-spacing:-.3px;}
+.hero-meta{font-size:14px;color:var(--text-soft);margin:0 0 4px;}
+.hero-time{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--primary-hover);margin:var(--sp-3) 0 var(--sp-3);}
+.hero-invite{font-size:15.5px;font-weight:600;margin:0;color:var(--text);}
+
+section{margin-bottom:var(--sp-6);}
+.section-eyebrow{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.6px;margin-bottom:var(--sp-3);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);box-shadow:var(--shadow-card);padding:var(--sp-5);}
+
+.misi-text{font-size:16.5px;line-height:1.6;margin:0;}
+.misi-text .q{display:block;margin-top:8px;color:var(--primary-hover);font-weight:600;}
+
+/* ===== INFO STRIP ===== */
+.info-strip{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-2);margin-bottom:var(--sp-4);}
+.info-box{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:var(--sp-3);}
+.info-box.wide{grid-column:1 / -1;}
+.info-label{font-size:10.5px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px;}
+.info-value{font-size:15px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word;}
+.info-value.eq{color:var(--primary-hover);font-size:16px;}
+.info-value.asim{color:var(--error);font-size:13.5px;font-weight:600;}
+
+/* ===== GRAPH ===== */
+.graph-box{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:var(--sp-3);margin-bottom:var(--sp-4);}
+svg{display:block;width:100%;height:auto;}
+.legend{display:flex;gap:var(--sp-4);font-size:12px;color:var(--text-soft);padding:0 4px var(--sp-2);flex-wrap:wrap;}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block;}
+.legend i.dashed{background:repeating-linear-gradient(90deg, var(--error) 0 4px, transparent 4px 7px);}
+
+/* ===== SLIDER GROUPS ===== */
+.param-group{border-top:1px solid var(--border);padding-top:var(--sp-4);margin-top:var(--sp-4);}
+.param-group:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+.param-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;}
+.param-name{font-size:13px;font-weight:700;color:var(--text-soft);text-transform:uppercase;letter-spacing:.4px;}
+.param-value{font-size:20px;font-weight:800;color:var(--primary-hover);font-variant-numeric:tabular-nums;}
+input[type="range"]{-webkit-appearance:none;width:100%;height:6px;border-radius:999px;background:linear-gradient(90deg, var(--primary) 0%, var(--primary) var(--fill,50%), var(--border) var(--fill,50%), var(--border) 100%);outline:none;margin:6px 0;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--primary);box-shadow:0 2px 6px rgba(37,99,235,.35);cursor:pointer;}
+input[type="range"]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--primary);cursor:pointer;}
+.param-hint{font-size:12.5px;color:var(--text-soft);margin-top:4px;line-height:1.5;}
+
+.preset-row{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-5);}
+.preset-btn{border:1.5px solid var(--border);background:var(--card);color:var(--text);font-weight:600;font-size:13.5px;padding:8px 14px;border-radius:var(--radius-btn);cursor:pointer;min-height:40px;transition:all 180ms ease;}
+.preset-btn:hover{border-color:var(--primary);color:var(--primary-hover);background:var(--primary-light);}
+.preset-btn.reset{border-color:var(--text-soft);color:var(--text);}
+
+textarea{width:100%;min-height:100px;border:1.5px solid var(--border);border-radius:var(--radius-btn);padding:var(--sp-3);font-family:'Inter',sans-serif;font-size:14.5px;color:var(--text);resize:vertical;background:var(--bg);}
+textarea:focus{outline:none;border-color:var(--primary);background:var(--card);}
+.dugaan-note{font-size:12.5px;color:var(--text-soft);margin-top:var(--sp-2);}
+
+.next-card{background:linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);border-radius:var(--radius-card);padding:var(--sp-5);color:#fff;text-align:center;}
+.next-card p{margin:0 0 var(--sp-4);font-size:15px;line-height:1.6;opacity:.95;}
+.btn-modul{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--primary-hover);font-weight:700;font-size:15px;padding:12px 26px;border-radius:var(--radius-btn);text-decoration:none;min-height:44px;transition:transform 180ms ease, box-shadow 180ms ease;}
+.btn-modul:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,0,0,.15);}
+
+.site-footer{padding:var(--sp-5) 0 var(--sp-6);text-align:center;}
+.footer-divider{height:1px;background:var(--border);margin-bottom:var(--sp-4);}
+.footer-brand{font-size:13.5px;font-weight:700;color:var(--primary);margin:0 0 4px;}
+.footer-text{font-size:13px;color:var(--text-soft);margin:0 0 2px;}
+.footer-meta{font-size:12.5px;color:var(--text-soft);margin:0;opacity:.85;}
+
+@media (max-width:480px){
+  h1{font-size:22px;}
+  .info-strip{grid-template-columns:1fr;}
+  .param-value{font-size:17px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner"><strong>NUMERA</strong> · 🧪 Grafik Fungsi Tangen — Eksplorasi</div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="badge">🧪 Eksplorasi</span>
+    <h1>Grafik Fungsi Tangen</h1>
+    <p class="hero-meta">Bagian dari materi Grafik Fungsi Trigonometri · Kerjakan sebelum buka Modul</p>
+    <div class="hero-time">⏱ Sekitar 3–5 menit</div>
+    <p class="hero-invite">Yuk, coba geser parameternya dan amati grafik tangennya.</p>
+  </header>
+
+  <section id="misi">
+    <div class="section-eyebrow">🎯 Misi Eksplorasi</div>
+    <div class="card">
+      <p class="misi-text">
+        Geser slider di Laboratorium, lalu amati pola dan garis putus-putus pada grafik tangen.
+        <span class="q">Apa yang berulang, dan apa yang terjadi di garis putus-putus itu?</span>
+      </p>
+    </div>
+  </section>
+
+  <section id="lab">
+    <div class="section-eyebrow">🧪 Laboratorium Matematika</div>
+    <div class="card">
+
+      <div class="info-strip">
+        <div class="info-box wide">
+          <div class="info-label">Persamaan</div>
+          <div class="info-value eq" id="infoEq">y = tan(x)</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Periode</div>
+          <div class="info-value" id="infoPeriode">π</div>
+        </div>
+        <div class="info-box">
+          <div class="info-label">Asimtot Terdekat</div>
+          <div class="info-value asim" id="infoAsim">x ≈ −1.57, 1.57</div>
+        </div>
+      </div>
+
+      <div class="graph-box">
+        <div class="legend">
+          <span><i style="background:var(--primary)"></i>Grafik Tangen</span>
+          <span><i class="dashed"></i>Asimtot Vertikal</span>
+        </div>
+        <svg id="graph" viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg">
+          <g id="gridLayer"></g>
+          <line id="axisX" x1="20" y1="190" x2="680" y2="190" stroke="var(--text-soft)" stroke-width="1.3" opacity=".7"></line>
+          <line id="axisY" x1="350" y1="20" x2="350" y2="360" stroke="var(--text-soft)" stroke-width="1.3" opacity=".7"></line>
+          <g id="asymLayer"></g>
+          <path id="pathTan" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"></path>
+        </svg>
+      </div>
+
+      <div class="param-group">
+        <div class="param-head"><span class="param-name">B — Kerapatan Pola</span><span class="param-value" id="valB">1.0</span></div>
+        <input type="range" id="sliderB" min="0.5" max="3" step="0.1" value="1">
+        <p class="param-hint">Amati jarak antara dua garis putus-putus. Apa yang terjadi pada satu pola berulangnya?</p>
+      </div>
+
+      <div class="param-group">
+        <div class="param-head"><span class="param-name">C — Pergeseran Horizontal</span><span class="param-value" id="valC">0.0</span></div>
+        <input type="range" id="sliderC" min="-3.1" max="3.1" step="0.1" value="0">
+        <p class="param-hint">Perhatikan posisi garis putus-putusnya. Ke mana grafiknya bergeser?</p>
+      </div>
+
+      <div class="param-group">
+        <div class="param-head"><span class="param-name">A — Skala Vertikal</span><span class="param-value" id="valA">1.0</span></div>
+        <input type="range" id="sliderA" min="0.3" max="3" step="0.1" value="1">
+        <p class="param-hint">Apakah posisi garis putus-putus ikut berubah ketika A berubah?</p>
+      </div>
+
+      <div class="param-group">
+        <div class="param-head"><span class="param-name">D — Pergeseran Vertikal</span><span class="param-value" id="valD">0.0</span></div>
+        <input type="range" id="sliderD" min="-3" max="3" step="0.1" value="0">
+        <p class="param-hint">Apa yang berubah: posisi garis putus-putus, atau posisi keseluruhan grafik?</p>
+      </div>
+
+      <div class="preset-row">
+        <button class="preset-btn reset" id="btnReset">Dasar</button>
+        <button class="preset-btn" id="btnPeriodeKecil">Periode Lebih Kecil</button>
+        <button class="preset-btn" id="btnGeserKanan">Geser ke Kanan</button>
+        <button class="preset-btn" id="btnGeserAtas">Geser ke Atas</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="dugaan">
+    <div class="section-eyebrow">💭 Dugaan Saya</div>
+    <div class="card">
+      <textarea id="dugaanBox" placeholder="Tulis pola yang kamu lihat di sini..."></textarea>
+      <p class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <section id="lanjut">
+    <div class="section-eyebrow">🚀 Lanjut ke Modul</div>
+    <div class="next-card">
+      <p>Kamu sudah coba sendiri dan mungkin sudah punya dugaan. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GANTI href="#" di bawah ini dengan URL Modul pasangan -->
+      <a href="#" class="btn-modul">Lanjut ke Modul →</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-divider"></div>
+      <p class="footer-brand">Numera</p>
+      <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+      <p class="footer-meta">Versi 1.0 · © 2026</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var CX0=20, CX1=680, CY=190, PXPERUNIT=42, CLAMP=175;
+  var XMIN=-2*Math.PI, XMAX=2*Math.PI;
+
+  var sliderA=document.getElementById('sliderA');
+  var sliderB=document.getElementById('sliderB');
+  var sliderC=document.getElementById('sliderC');
+  var sliderD=document.getElementById('sliderD');
+  var valA=document.getElementById('valA');
+  var valB=document.getElementById('valB');
+  var valC=document.getElementById('valC');
+  var valD=document.getElementById('valD');
+  var pathTan=document.getElementById('pathTan');
+  var asymLayer=document.getElementById('asymLayer');
+  var gridLayer=document.getElementById('gridLayer');
+  var infoEq=document.getElementById('infoEq');
+  var infoPeriode=document.getElementById('infoPeriode');
+  var infoAsim=document.getElementById('infoAsim');
+
+  function thetaToPx(t){ return CX0 + (t-XMIN)/(XMAX-XMIN)*(CX1-CX0); }
+
+  function fmt(n){ return n.toFixed(1); }
+
+  function updateSliderFill(el){
+    var min=parseFloat(el.min), max=parseFloat(el.max), v=parseFloat(el.value);
+    el.style.setProperty('--fill', ((v-min)/(max-min)*100)+'%');
+  }
+
+  /* ---- static grid: pi-unit ticks & labels (fixed, tidak berubah oleh parameter) ---- */
+  function buildGrid(){
+    var html='';
+    var ticks=[-2,-1.5,-1,-0.5,0,0.5,1,1.5,2]; // dalam satuan pi
+    var labels={'-2':'−2π','-1.5':'−3π/2','-1':'−π','-0.5':'−π/2','0':'0','0.5':'π/2','1':'π','1.5':'3π/2','2':'2π'};
+    ticks.forEach(function(k){
+      var theta=k*Math.PI;
+      var x=thetaToPx(theta);
+      html+='<line x1="'+x+'" y1="'+(CY-4)+'" x2="'+x+'" y2="'+(CY+4)+'" stroke="var(--text-soft)" stroke-width="1.3"></line>';
+      html+='<text x="'+x+'" y="'+(CY+22)+'" font-family="Inter,sans-serif" font-size="12" fill="var(--text-soft)" text-anchor="middle">'+labels[k]+'</text>';
+    });
+    gridLayer.innerHTML=html;
+  }
+
+  function getAsymptotes(B,C){
+    var list=[];
+    var kMin=Math.floor(((XMIN-C)*B/Math.PI)-0.5)-2;
+    var kMax=Math.ceil(((XMAX-C)*B/Math.PI)-0.5)+2;
+    for(var k=kMin;k<=kMax;k++){
+      var theta=C+(Math.PI/2+k*Math.PI)/B;
+      if(theta>=XMIN-0.5 && theta<=XMAX+0.5) list.push(theta);
+    }
+    list.sort(function(a,b){return a-b;});
+    return list;
+  }
+
+  function buildTanPath(A,B,C,D){
+    var asym=getAsymptotes(B,C);
+    var bounds=[XMIN].concat(asym).concat([XMAX]);
+    var EPS=0.035;
+    var d='';
+    for(var i=0;i<bounds.length-1;i++){
+      var startT=bounds[i] + (i>0?EPS:0);
+      var endT=bounds[i+1] - (i+1<bounds.length-1?EPS:0);
+      if(endT<=startT) continue;
+      var steps=50;
+      for(var s=0;s<=steps;s++){
+        var theta=startT + (endT-startT)*(s/steps);
+        var val=A*Math.tan(B*(theta-C))+D;
+        var y=CY-(val*PXPERUNIT);
+        if(y<CY-CLAMP) y=CY-CLAMP;
+        if(y>CY+CLAMP) y=CY+CLAMP;
+        var x=thetaToPx(theta);
+        d+=(s===0?'M':'L')+x.toFixed(1)+' '+y.toFixed(1)+' ';
+      }
+    }
+    return d;
+  }
+
+  function drawAsymptotes(asym){
+    var html='';
+    asym.forEach(function(theta){
+      var x=thetaToPx(theta);
+      if(x<CX0-1 || x>CX1+1) return;
+      html+='<line x1="'+x.toFixed(1)+'" y1="20" x2="'+x.toFixed(1)+'" y2="360" stroke="var(--error)" stroke-width="1.6" stroke-dasharray="5 6" opacity=".55"></line>';
+    });
+    asymLayer.innerHTML=html;
+  }
+
+  function fracOfPi(value){
+    var candidates=[[1,1],[1,2],[1,3],[2,3],[1,4],[3,4],[3,2],[2,1],[3,1],[1,6],[5,6],[4,3],[5,4],[5,3]];
+    for(var i=0;i<candidates.length;i++){
+      var num=candidates[i][0], den=candidates[i][1];
+      if(Math.abs(value-(num/den))<0.02){
+        if(num===den) return 'π';
+        if(num===1) return 'π/'+den;
+        return num+'π/'+den;
+      }
+    }
+    return value.toFixed(2)+'π';
+  }
+
+  function buildEquation(A,B,C,D){
+    var inside='x'+(C!==0?(C>0?' − '+fmt(C):' + '+fmt(Math.abs(C))):'');
+    var insideFull=(B!==1?fmt(B)+'('+inside+')':inside);
+    var tanPart='tan('+insideFull+')';
+    var withA=(A!==1?fmt(A)+' ':'')+tanPart;
+    return 'y = '+withA+(D!==0?(D>0?' + '+fmt(D):' − '+fmt(Math.abs(D))):'');
+  }
+
+  function render(){
+    var A=parseFloat(sliderA.value);
+    var B=parseFloat(sliderB.value);
+    var C=parseFloat(sliderC.value);
+    var D=parseFloat(sliderD.value);
+
+    valA.textContent=fmt(A);
+    valB.textContent=fmt(B);
+    valC.textContent=fmt(C);
+    valD.textContent=fmt(D);
+    [sliderA,sliderB,sliderC,sliderD].forEach(updateSliderFill);
+
+    var asym=getAsymptotes(B,C);
+    drawAsymptotes(asym);
+    pathTan.setAttribute('d', buildTanPath(A,B,C,D));
+
+    infoEq.textContent=buildEquation(A,B,C,D);
+    infoPeriode.textContent=fracOfPi(1/B);
+
+    var nearest=asym.slice().sort(function(a,b){return Math.abs(a)-Math.abs(b);}).slice(0,3)
+      .sort(function(a,b){return a-b;})
+      .map(function(t){return t.toFixed(2);});
+    infoAsim.textContent='x ≈ '+nearest.join(', ');
+  }
+
+  [sliderA,sliderB,sliderC,sliderD].forEach(function(el){
+    el.addEventListener('input', render);
+  });
+
+  document.getElementById('btnReset').addEventListener('click', function(){
+    sliderA.value=1; sliderB.value=1; sliderC.value=0; sliderD.value=0; render();
+  });
+  document.getElementById('btnPeriodeKecil').addEventListener('click', function(){
+    sliderB.value=2.2; render();
+  });
+  document.getElementById('btnGeserKanan').addEventListener('click', function(){
+    sliderC.value=1.2; render();
+  });
+  document.getElementById('btnGeserAtas').addEventListener('click', function(){
+    sliderD.value=1.5; render();
+  });
+
+  buildGrid();
+  render();
+
+  var fill=document.getElementById('progressFill');
+  function updateProgress(){
+    var h=document.documentElement;
+    var scrolled=h.scrollTop;
+    var max=h.scrollHeight-h.clientHeight;
+    var pct=max>0?(scrolled/max*100):0;
+    fill.style.width=pct+'%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+})();
+</script>
+
+</body>
+</html>
