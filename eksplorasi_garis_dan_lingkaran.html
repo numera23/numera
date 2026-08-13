@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Eksplorasi: Garis dan Lingkaran — Cakrawala Matematika</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --success-light:#D1FAE5;
+    --warning:#F59E0B;
+    --warning-light:#FEF3C7;
+    --error:#EF4444;
+    --error-light:#FEE2E2;
+    --radius-card:18px;
+    --radius-btn:12px;
+    --shadow: 0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    -webkit-tap-highlight-color:transparent;
+    overflow-x:hidden;
+  }
+
+  #progressBar{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:var(--primary);
+    z-index:1000;
+    transition:width .1s linear;
+  }
+
+  .topbar{
+    position:sticky; top:0; z-index:900;
+    background:rgba(248,250,252,.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    padding:10px 20px;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.03em;
+    color:var(--text-secondary);
+    text-align:center;
+  }
+
+  .container{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 20px 60px;
+  }
+
+  section{
+    padding:28px 0;
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  section.visible{opacity:1; transform:translateY(0);}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-card);
+    box-shadow:var(--shadow);
+    padding:24px;
+  }
+
+  /* HEADER */
+  .hero{padding-top:32px;}
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--primary-light);
+    color:var(--primary-hover);
+    font-weight:700;
+    font-size:13px;
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  h1{
+    font-size:26px;
+    font-weight:800;
+    margin:0 0 10px;
+    letter-spacing:-.02em;
+  }
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    color:var(--text-secondary);
+    font-size:13.5px;
+    margin-bottom:14px;
+  }
+  .dot-sep{width:3px;height:3px;border-radius:50%;background:var(--text-secondary);}
+  .link-line{
+    font-size:14px;
+    color:var(--text-secondary);
+    margin-bottom:6px;
+  }
+  .cta-line{
+    font-size:16px;
+    font-weight:600;
+    color:var(--text);
+  }
+
+  /* MISI */
+  .misi-card{
+    background:var(--primary-light);
+    border:none;
+  }
+  .misi-card p{
+    margin:0;
+    font-size:16px;
+    line-height:1.6;
+    font-weight:500;
+    color:#1E3A8A;
+  }
+  .misi-card p.q{font-weight:700; margin-top:6px;}
+
+  h2.section-title{
+    font-size:15px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--text-secondary);
+    margin:0 0 14px;
+  }
+
+  /* LAB */
+  .lab-card{padding:20px 18px 26px;}
+  .lab-hint{
+    font-size:14.5px;
+    color:var(--text-secondary);
+    margin:0 0 14px;
+    line-height:1.5;
+  }
+  .lab-canvas-wrap{
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+    touch-action:none;
+  }
+  svg#canvas{
+    width:100%;
+    height:auto;
+    display:block;
+    touch-action:none;
+    border-radius:14px;
+    background:#FCFDFF;
+    overflow:hidden;
+  }
+  .handle{cursor:grab;}
+  .handle:active{cursor:grabbing;}
+
+  .status-badge{
+    margin-top:18px;
+    text-align:center;
+    display:flex;
+    justify-content:center;
+  }
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 20px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:15px;
+    transition:background .25s ease, color .25s ease;
+  }
+  .status-dot{
+    width:9px; height:9px; border-radius:50%;
+    background:currentColor;
+  }
+
+  .readout-row{
+    display:flex;
+    gap:12px;
+    margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .readout{
+    flex:1;
+    min-width:130px;
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px 14px;
+    text-align:center;
+  }
+  .readout .label{
+    font-size:11.5px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--text-secondary);
+    margin-bottom:6px;
+  }
+  .readout .value{
+    font-size:19px;
+    font-weight:700;
+    color:var(--primary);
+  }
+
+  .lab-actions{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  button{
+    font-family:inherit;
+    border:none;
+    cursor:pointer;
+    border-radius:var(--radius-btn);
+    min-height:42px;
+    padding:0 18px;
+    font-size:14px;
+    font-weight:600;
+    transition:background .2s ease, transform .15s ease, box-shadow .2s ease;
+  }
+  .btn-primary{
+    background:var(--primary);
+    color:#fff;
+  }
+  .btn-primary:hover{background:var(--primary-hover);}
+  .btn-primary:active{transform:scale(.97);}
+  .btn-secondary{
+    background:#fff;
+    color:var(--primary);
+    border:1px solid var(--border);
+  }
+  .btn-secondary:hover{background:var(--primary-light); border-color:var(--primary-light);}
+  .btn-secondary:active{transform:scale(.97);}
+
+  /* DUGAAN */
+  .dugaan-note{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin:0 0 12px;
+  }
+  textarea{
+    width:100%;
+    min-height:100px;
+    resize:vertical;
+    font-family:inherit;
+    font-size:15px;
+    padding:14px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    outline:none;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  textarea:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px var(--primary-light);
+  }
+  .lanjutan-row{
+    margin-top:16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .lanjutan-text{
+    font-size:14px;
+    color:var(--text-secondary);
+    flex:1;
+    min-width:180px;
+  }
+
+  /* LANJUT KE MODUL */
+  .modul-card{
+    text-align:center;
+    background:linear-gradient(180deg, #fff 0%, var(--primary-light) 220%);
+  }
+  .modul-card p{
+    font-size:15px;
+    color:var(--text-secondary);
+    line-height:1.6;
+    margin:0 0 18px;
+  }
+  a.btn-modul{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--primary);
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    font-size:15px;
+    padding:0 22px;
+    height:46px;
+    border-radius:var(--radius-btn);
+    transition:background .2s ease, transform .15s ease;
+  }
+  a.btn-modul:hover{background:var(--primary-hover);}
+  a.btn-modul:active{transform:scale(.97);}
+
+  footer.spacer{height:10px;}
+
+  @media (max-width:420px){
+    h1{font-size:22px;}
+    .card{padding:18px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progressBar"></div>
+<div class="topbar">CAKRAWALA MATEMATIKA · 🧪 PERSAMAAN LINGKARAN — EKSPLORASI</div>
+
+<main class="container">
+
+  <!-- HEADER -->
+  <section class="hero visible">
+    <span class="badge">🧪 Eksplorasi</span>
+    <h1>Garis dan Lingkaran</h1>
+    <div class="meta-row">
+      <span>⏱️ 3–5 menit</span>
+      <span class="dot-sep"></span>
+      <span>Belum perlu tahu rumus apa pun</span>
+    </div>
+    <p class="link-line">Bagian dari materi Persamaan Lingkaran · Kerjakan sebelum buka Modul</p>
+    <p class="cta-line">Yuk cari tahu sendiri apa yang terjadi kalau garisnya digeser-geser.</p>
+  </section>
+
+  <!-- MISI -->
+  <section>
+    <h2 class="section-title">🎯 Misi Eksplorasi</h2>
+    <div class="card misi-card">
+      <p>Geser kedua titik pegangan pada garis ini ke mana saja di sekitar lingkaran.</p>
+      <p class="q">Ada berapa titik pertemuan yang bisa kamu temukan?</p>
+    </div>
+  </section>
+
+  <!-- LABORATORIUM -->
+  <section>
+    <h2 class="section-title">🧪 Laboratorium Matematika</h2>
+    <div class="card lab-card">
+      <p class="lab-hint">Geser <strong>titik oranye</strong> di kedua ujung garis. Perhatikan berapa titik pertemuan garis dengan lingkaran.</p>
+
+      <div class="lab-canvas-wrap">
+        <svg id="canvas" viewBox="0 0 480 480" xmlns="http://www.w3.org/2000/svg">
+          <g id="grid"></g>
+          <circle id="fixedCircle" cx="240" cy="240" r="140" fill="var(--primary-light)" stroke="var(--primary)" stroke-width="2.5"></circle>
+          <circle id="centerDot" cx="240" cy="240" r="4" fill="var(--primary)"></circle>
+          <line id="theLine" x1="0" y1="0" x2="480" y2="480" stroke="#F97316" stroke-width="3"></line>
+          <g id="meetPoints"></g>
+          <circle id="handleA" class="handle" r="10" fill="#fff" stroke="#F97316" stroke-width="3"></circle>
+          <circle id="handleB" class="handle" r="10" fill="#fff" stroke="#F97316" stroke-width="3"></circle>
+        </svg>
+      </div>
+
+      <div class="status-badge">
+        <span class="status-pill" id="statusPill">
+          <span class="status-dot"></span>
+          <span id="statusText">2 titik pertemuan</span>
+        </span>
+      </div>
+
+      <div class="readout-row">
+        <div class="readout">
+          <div class="label">Jumlah titik pertemuan</div>
+          <div class="value" id="jumlahValue">2</div>
+        </div>
+      </div>
+
+      <div class="lab-actions">
+        <button class="btn-secondary" id="btnRandom">Acak posisi garis</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- DUGAAN SAYA -->
+  <section>
+    <h2 class="section-title">💭 Dugaan Saya</h2>
+    <div class="card">
+      <p class="dugaan-note">Dugaanmu nggak harus tepat, ini cuma catatan buat diri sendiri.</p>
+      <textarea id="dugaan" placeholder="Tuliskan apa yang kamu amati saat menggeser garisnya tadi..."></textarea>
+
+      <div class="lanjutan-row">
+        <span class="lanjutan-text">Coba geser garisnya ke posisi lain lagi. Masih sama nggak kondisi-kondisi yang kamu temukan?</span>
+        <button class="btn-primary" id="btnCobaLagi">Coba kondisi baru</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LANJUT KE MODUL -->
+  <section>
+    <h2 class="section-title">🚀 Lanjut ke Modul</h2>
+    <div class="card modul-card">
+      <p>Kamu sudah punya dugaan sendiri soal kondisi-kondisi garis terhadap lingkaran tadi. Sekarang buka Modul Persamaan Lingkaran untuk memahami apa yang kamu temukan dan mengapa itu bisa terjadi.</p>
+      <!-- Guru: isi href di bawah ini dengan link Modul Persamaan Lingkaran -->
+      <a class="btn-modul" href="#">Buka Modul Persamaan Lingkaran →</a>
+    </div>
+  </section>
+
+  <footer class="spacer"></footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- scroll progress + fade-up ----------
+  var progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrolled = h.scrollTop;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? (scrolled / max) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  var sections = document.querySelectorAll('section');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); }
+    });
+  }, {threshold:0.15});
+  sections.forEach(function(s){ io.observe(s); });
+
+  // ---------- math <-> svg coordinate mapping ----------
+  var SVG_SIZE = 480;
+  var RANGE = 9; // math coords from -9 to 9
+  var SCALE = SVG_SIZE / (RANGE * 2);
+  var ORIGIN = SVG_SIZE / 2;
+
+  function toSvgX(x){ return ORIGIN + x * SCALE; }
+  function toSvgY(y){ return ORIGIN - y * SCALE; }
+  function toMathX(sx){ return (sx - ORIGIN) / SCALE; }
+  function toMathY(sy){ return (ORIGIN - sy) / SCALE; }
+
+  // ---------- build grid ----------
+  var gridG = document.getElementById('grid');
+  var svgNS = "http://www.w3.org/2000/svg";
+  function makeLine(x1,y1,x2,y2,strokeColor,strokeWidth){
+    var l = document.createElementNS(svgNS,'line');
+    l.setAttribute('x1',x1); l.setAttribute('y1',y1);
+    l.setAttribute('x2',x2); l.setAttribute('y2',y2);
+    l.setAttribute('stroke',strokeColor);
+    l.setAttribute('stroke-width',strokeWidth);
+    return l;
+  }
+  for(var i=-8;i<=8;i++){
+    if(i===0) continue;
+    var sx = toSvgX(i);
+    var sy = toSvgY(i);
+    gridG.appendChild(makeLine(sx,0,sx,SVG_SIZE,'#EEF2F7',1));
+    gridG.appendChild(makeLine(0,sy,SVG_SIZE,sy,'#EEF2F7',1));
+  }
+  gridG.appendChild(makeLine(0,ORIGIN,SVG_SIZE,ORIGIN,'#CBD5E1',1.5));
+  gridG.appendChild(makeLine(ORIGIN,0,ORIGIN,SVG_SIZE,'#CBD5E1',1.5));
+
+  // ---------- fixed circle ----------
+  var CENTER = {x:0, y:0};
+  var RADIUS = 3.5; // fixed, in math units
+  var TOLERANCE = 0.12; // toleransi untuk kondisi "menyentuh"
+
+  var fixedCircle = document.getElementById('fixedCircle');
+  fixedCircle.setAttribute('cx', toSvgX(CENTER.x));
+  fixedCircle.setAttribute('cy', toSvgY(CENTER.y));
+  fixedCircle.setAttribute('r', RADIUS * SCALE);
+  document.getElementById('centerDot').setAttribute('cx', toSvgX(CENTER.x));
+  document.getElementById('centerDot').setAttribute('cy', toSvgY(CENTER.y));
+
+  // ---------- state: dua titik pegangan garis ----------
+  var state = { a:{x:-6, y:-2}, b:{x:6, y:2} };
+
+  var handleA = document.getElementById('handleA');
+  var handleB = document.getElementById('handleB');
+  var theLine = document.getElementById('theLine');
+  var meetPoints = document.getElementById('meetPoints');
+  var jumlahValue = document.getElementById('jumlahValue');
+  var statusPill = document.getElementById('statusPill');
+  var statusText = document.getElementById('statusText');
+  var canvas = document.getElementById('canvas');
+
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+  function round1(v){ return Math.round(v*10)/10; }
+
+  function clearMeetPoints(){
+    while(meetPoints.firstChild){ meetPoints.removeChild(meetPoints.firstChild); }
+  }
+  function addMeetPoint(mx,my){
+    var c = document.createElementNS(svgNS,'circle');
+    c.setAttribute('cx', toSvgX(mx));
+    c.setAttribute('cy', toSvgY(my));
+    c.setAttribute('r', 7);
+    c.setAttribute('fill', '#fff');
+    c.setAttribute('stroke', 'var(--primary)');
+    c.setAttribute('stroke-width', 3);
+    meetPoints.appendChild(c);
+  }
+
+  function render(){
+    var a = state.a, b = state.b;
+
+    // handles
+    handleA.setAttribute('cx', toSvgX(a.x));
+    handleA.setAttribute('cy', toSvgY(a.y));
+    handleB.setAttribute('cx', toSvgX(b.x));
+    handleB.setAttribute('cy', toSvgY(b.y));
+
+    // garis diperpanjang jauh melewati bidang, lalu dipotong otomatis oleh batas SVG
+    var dx = b.x - a.x, dy = b.y - a.y;
+    var len = Math.sqrt(dx*dx + dy*dy) || 0.0001;
+    var ux = dx/len, uy = dy/len;
+    var far = 40; // unit matematika, cukup jauh melewati tepi bidang
+    var farAx = a.x - ux*far, farAy = a.y - uy*far;
+    var farBx = b.x + ux*far, farBy = b.y + uy*far;
+    theLine.setAttribute('x1', toSvgX(farAx));
+    theLine.setAttribute('y1', toSvgY(farAy));
+    theLine.setAttribute('x2', toSvgX(farBx));
+    theLine.setAttribute('y2', toSvgY(farBy));
+
+    // hitung jarak tegak lurus pusat lingkaran ke garis
+    var fx = a.x - CENTER.x, fy = a.y - CENTER.y;
+    var cross = dx*fy - dy*fx;
+    var dist = Math.abs(cross) / len;
+
+    clearMeetPoints();
+    var count, label, pillBg, pillColor;
+    var diff = dist - RADIUS;
+
+    if(diff > TOLERANCE){
+      count = 0;
+      label = '0 titik pertemuan';
+      pillBg = 'var(--error-light)'; pillColor = '#991B1B';
+    } else if(Math.abs(diff) <= TOLERANCE){
+      count = 1;
+      label = '1 titik pertemuan';
+      pillBg = 'var(--warning-light)'; pillColor = '#92400E';
+      // titik singgung: proyeksi pusat ke garis
+      var t = ((CENTER.x - a.x)*dx + (CENTER.y - a.y)*dy) / (len*len);
+      var px = a.x + t*dx, py = a.y + t*dy;
+      addMeetPoint(px, py);
+    } else {
+      count = 2;
+      label = '2 titik pertemuan';
+      pillBg = 'var(--success-light)'; pillColor = '#065F46';
+      // dua titik potong lewat persamaan kuadrat
+      var A = dx*dx + dy*dy;
+      var B = 2*(dx*fx + dy*fy);
+      var C = fx*fx + fy*fy - RADIUS*RADIUS;
+      var disc = B*B - 4*A*C;
+      if(disc < 0) disc = 0;
+      var sq = Math.sqrt(disc);
+      var t1 = (-B - sq)/(2*A);
+      var t2 = (-B + sq)/(2*A);
+      addMeetPoint(a.x + t1*dx, a.y + t1*dy);
+      addMeetPoint(a.x + t2*dx, a.y + t2*dy);
+    }
+
+    jumlahValue.textContent = ''+count;
+    statusText.textContent = label;
+    statusPill.style.background = pillBg;
+    statusPill.style.color = pillColor;
+  }
+
+  // ---------- pointer helpers ----------
+  function getSvgPoint(evt){
+    var pt = canvas.createSVGPoint();
+    var touch = evt.touches ? evt.touches[0] : evt;
+    pt.x = touch.clientX;
+    pt.y = touch.clientY;
+    var ctm = canvas.getScreenCTM().inverse();
+    return pt.matrixTransform(ctm);
+  }
+
+  var dragging = null; // 'a' | 'b' | null
+
+  function onPointerDown(which){
+    return function(evt){
+      evt.preventDefault();
+      dragging = which;
+    };
+  }
+
+  function onPointerMove(evt){
+    if(!dragging) return;
+    evt.preventDefault();
+    var p = getSvgPoint(evt);
+    var mx = clamp(round1(toMathX(p.x)), -8.5, 8.5);
+    var my = clamp(round1(toMathY(p.y)), -8.5, 8.5);
+    if(dragging === 'a'){ state.a.x = mx; state.a.y = my; }
+    else { state.b.x = mx; state.b.y = my; }
+    render();
+  }
+
+  function onPointerUp(){ dragging = null; }
+
+  handleA.addEventListener('mousedown', onPointerDown('a'));
+  handleA.addEventListener('touchstart', onPointerDown('a'), {passive:false});
+  handleB.addEventListener('mousedown', onPointerDown('b'));
+  handleB.addEventListener('touchstart', onPointerDown('b'), {passive:false});
+
+  document.addEventListener('mousemove', onPointerMove, {passive:false});
+  document.addEventListener('touchmove', onPointerMove, {passive:false});
+  document.addEventListener('mouseup', onPointerUp);
+  document.addEventListener('touchend', onPointerUp);
+  document.addEventListener('touchcancel', onPointerUp);
+
+  // ---------- tombol acak ----------
+  function randomize(){
+    var mode = Math.floor(Math.random()*3); // 0: tidak bertemu, 1: menyentuh, 2: memotong
+    var theta = Math.random() * Math.PI;
+    var ux = Math.cos(theta), uy = Math.sin(theta);
+    var nx = -uy, ny = ux; // arah tegak lurus
+
+    var dist;
+    if(mode === 0){ dist = RADIUS + 1 + Math.random()*2.2; }
+    else if(mode === 1){ dist = RADIUS; }
+    else { dist = Math.random() * (RADIUS - 0.4); }
+
+    var side = Math.random() < 0.5 ? 1 : -1;
+    var cxLine = CENTER.x + nx*dist*side;
+    var cyLine = CENTER.y + ny*dist*side;
+
+    state.a.x = clamp(round1(cxLine - ux*3.5), -8.5, 8.5);
+    state.a.y = clamp(round1(cyLine - uy*3.5), -8.5, 8.5);
+    state.b.x = clamp(round1(cxLine + ux*3.5), -8.5, 8.5);
+    state.b.y = clamp(round1(cyLine + uy*3.5), -8.5, 8.5);
+    render();
+  }
+  document.getElementById('btnRandom').addEventListener('click', randomize);
+  document.getElementById('btnCobaLagi').addEventListener('click', randomize);
+
+  // ---------- init ----------
+  window.addEventListener('load', render);
+  render();
+})();
+</script>
+
+</body>
+</html>
