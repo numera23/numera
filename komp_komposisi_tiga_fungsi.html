@@ -1,0 +1,934 @@
+<!--
+  NUMERA
+  Judul: Komposisi Tiga Fungsi
+  Jenis Halaman: Modul Interaktif (pakai KaTeX)
+  Versi: 1.0
+  Dikembangkan oleh: Kiki Herdiansyah
+  Copyright: © 2026
+  Identitas Proyek: NUMERA — Portal Pembelajaran Matematika
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Komposisi Tiga Fungsi | NUMERA</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="NUMERA">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --success-text:#047857;
+
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --warning-text:#B45309;
+
+  --error:#EF4444;
+  --error-bg:#FEE2E2;
+  --error-border:#FECACA;
+  --error-text:#B91C1C;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:14px 20px;
+  font-weight:600;
+  font-size:14.5px;
+  color:var(--primary);
+  text-align:center;
+}
+.progress-wrap{
+  position:sticky;top:47px;z-index:99;
+  height:3px;background:var(--border);
+}
+#progressFill{
+  height:100%;width:0%;
+  background:var(--primary);
+  transition:width .1s linear;
+}
+
+.container{
+  max-width:900px;
+  margin:0 auto;
+  padding:20px 16px 60px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px 20px;
+  margin-bottom:20px;
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+.fade-up{
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+h1{font-size:24px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em;}
+h2{font-size:19px;font-weight:700;margin:0 0 14px;color:var(--text);}
+h3{font-size:16px;font-weight:700;margin:18px 0 8px;color:var(--text);}
+p{font-size:15px;color:var(--text);margin:0 0 12px;}
+.section-label{
+  display:inline-block;
+  font-size:12.5px;font-weight:700;
+  color:var(--primary);
+  background:var(--primary-light);
+  padding:4px 10px;border-radius:8px;
+  margin-bottom:10px;
+  letter-spacing:.02em;
+}
+
+.meta{
+  font-size:13.5px;color:var(--text-secondary);
+  margin-bottom:16px;
+}
+
+.goals ul{margin:0;padding-left:20px;}
+.goals li{font-size:14.5px;margin-bottom:6px;color:var(--text);}
+
+.identity-box{
+  margin-top:18px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+}
+.identity-box h3{margin-top:0;}
+.identity-box input{
+  width:100%;
+  padding:11px 13px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-size:14.5px;
+  font-family:'Inter',sans-serif;
+  margin-bottom:10px;
+  background:#fff;
+  color:var(--text);
+}
+.identity-box input:focus{outline:2px solid var(--primary);outline-offset:1px;}
+.identity-box .note{font-size:12.5px;color:var(--text-secondary);margin:6px 0 0;}
+
+.analogy-box{
+  background:var(--primary-light);
+  border-radius:14px;
+  padding:16px;
+  margin:14px 0;
+  font-size:14.5px;
+}
+
+mark{
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  padding:1px 4px;
+  border-radius:4px;
+  font-weight:600;
+}
+
+.formula-box{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  margin:12px 0;
+  overflow-x:auto;
+  text-align:center;
+}
+
+.check-question{
+  font-size:14px;
+  color:var(--primary);
+  font-weight:600;
+  margin:10px 0 4px;
+}
+
+/* Machine / conveyor visual */
+.machine-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin:18px 0;
+}
+.machine{
+  min-width:76px;
+  padding:14px 10px;
+  border-radius:14px;
+  border:2px solid var(--border);
+  background:#fff;
+  text-align:center;
+  font-weight:700;
+  font-size:14px;
+  color:var(--text-secondary);
+  transition:all .3s ease;
+}
+.machine.active{
+  border-color:var(--primary);
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  transform:scale(1.06);
+}
+.arrow{font-size:18px;color:var(--text-secondary);}
+
+.value-pill{
+  display:inline-block;
+  background:var(--primary);
+  color:#fff;
+  font-weight:700;
+  font-size:14px;
+  padding:6px 14px;
+  border-radius:999px;
+  margin:4px 0;
+}
+
+.step-desc{
+  background:var(--bg);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:14.5px;
+  min-height:52px;
+}
+
+.control-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+
+button{
+  font-family:'Inter',sans-serif;
+  cursor:pointer;
+  border:none;
+  border-radius:12px;
+  min-height:40px;
+  padding:0 18px;
+  font-size:14px;
+  font-weight:600;
+  transition:all .2s ease;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--primary-light);}
+.btn-primary:disabled,.btn-secondary:disabled{opacity:.45;cursor:not-allowed;}
+
+/* Coba Sendiri */
+.try-panel{
+  background:var(--bg);
+  border-radius:14px;
+  padding:16px;
+  margin-top:14px;
+}
+.slider-row{margin-bottom:16px;}
+.slider-row label{font-size:14px;font-weight:600;display:block;margin-bottom:6px;}
+input[type=range]{
+  width:100%;
+  accent-color:var(--primary);
+  height:6px;
+}
+.preset-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.chip{
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:#fff;
+  font-size:13.5px;
+  font-weight:600;
+  color:var(--text-secondary);
+  cursor:pointer;
+}
+.chip.active{
+  background:var(--primary);
+  color:#fff;
+  border-color:var(--primary);
+}
+.result-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.result-item{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14.5px;
+}
+.result-item .lab{color:var(--text-secondary);font-size:12.5px;font-weight:600;margin-bottom:2px;}
+
+.toggle-row{
+  display:flex;align-items:center;gap:10px;
+  margin-top:8px;font-size:14px;font-weight:600;
+}
+.switch{
+  position:relative;width:42px;height:24px;
+  background:var(--border);border-radius:999px;
+  cursor:pointer;transition:.2s;
+}
+.switch.on{background:var(--primary);}
+.switch::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:20px;height:20px;background:#fff;border-radius:50%;
+  transition:.2s;
+}
+.switch.on::after{left:20px;}
+
+.insight-box{
+  margin-top:14px;
+  background:var(--warning-bg);
+  border:1px solid #FDE68A;
+  color:var(--warning-text);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14px;
+  font-weight:600;
+  display:none;
+}
+.insight-box.show{display:block;}
+
+/* Challenge */
+.badge{
+  display:inline-block;
+  font-size:12px;font-weight:700;
+  padding:4px 10px;border-radius:8px;
+  margin-bottom:10px;
+}
+.badge-mudah{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);}
+.badge-sedang{background:var(--warning-bg);color:var(--warning-text);}
+.badge-sulit{background:var(--error-bg);color:var(--error-text);border:1px solid var(--error-border);}
+
+.challenge-card{border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px;}
+.challenge-card input[type=text],.challenge-card input[type=number]{
+  width:100%;
+  padding:11px 13px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-size:14.5px;
+  font-family:'Inter',sans-serif;
+  margin-bottom:10px;
+}
+.dual-input{display:flex;gap:10px;}
+.dual-input div{flex:1;}
+.dual-input label{font-size:13px;color:var(--text-secondary);font-weight:600;margin-bottom:4px;display:block;}
+
+.feedback-box{
+  margin-top:10px;
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14px;
+  display:none;
+}
+.feedback-box.show{display:block;}
+.feedback-correct{background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+.feedback-wrong{background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+
+.send-status{font-size:12.5px;color:var(--text-secondary);margin-top:8px;min-height:16px;}
+
+/* Kesalahan umum */
+.mistake-item{
+  border-left:3px solid var(--error);
+  background:var(--error-bg);
+  border-radius:0 12px 12px 0;
+  padding:12px 14px;
+  margin-bottom:12px;
+}
+.mistake-item h4{margin:0 0 6px;font-size:14.5px;color:var(--error-text);}
+.mistake-item p{margin-bottom:4px;font-size:14px;}
+.mistake-item .fix{color:var(--success-text);font-weight:600;}
+
+/* Ringkasan */
+.summary-list{list-style:none;padding:0;margin:0;}
+.summary-list li{
+  display:flex;gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+  font-size:14.5px;
+}
+.summary-list li:last-child{border-bottom:none;}
+.summary-num{
+  min-width:26px;height:26px;
+  background:var(--primary);color:#fff;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12.5px;font-weight:700;
+  flex-shrink:0;
+}
+
+/* Reflection */
+textarea{
+  width:100%;
+  min-height:90px;
+  padding:12px 13px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-family:'Inter',sans-serif;
+  font-size:14.5px;
+  resize:vertical;
+  margin-bottom:12px;
+}
+
+footer{
+  text-align:center;
+  padding:26px 16px;
+  font-size:12.5px;
+  color:var(--text-secondary);
+}
+footer .brand{font-weight:700;color:var(--primary);}
+
+.katex-display{margin:0.4em 0;}
+</style>
+</head>
+<body>
+
+<div class="topbar">NUMERA · Komposisi Tiga Fungsi</div>
+<div class="progress-wrap"><div id="progressFill"></div></div>
+
+<div class="container">
+
+  <!-- 1. HEADER -->
+  <section class="card fade-up">
+    <h1>Komposisi Tiga Fungsi</h1>
+    <div class="meta">⏱ Sekitar 15–20 menit</div>
+
+    <div class="goals">
+      <h3>Tujuan Belajar</h3>
+      <ul>
+        <li>Memahami apa itu komposisi tiga fungsi, $(f \circ g \circ h)(x)$</li>
+        <li>Bisa mengerjakan komposisi tiga fungsi dengan urutan yang benar</li>
+        <li>Memahami kenapa domainnya dibatasi oleh ketiga fungsi, bukan cuma satu</li>
+        <li>Bisa "kerja mundur": mencari fungsi yang belum diketahui dari hasil komposisinya</li>
+      </ul>
+    </div>
+
+    <div class="identity-box">
+      <h3>Sebelum Mulai, Isi Dulu Ya</h3>
+      <input type="text" id="namaSiswa" placeholder="Nama lengkap">
+      <input type="text" id="kelasSiswa" placeholder="Kelas (contoh: XI IPA 2)">
+      <p class="note">Nanti jawaban Challenge dan Refleksi kamu akan dikirim ke gurumu, jadi isi dengan benar ya.</p>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section class="card fade-up">
+    <span class="section-label">01 · Pemantik</span>
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <p>Coba bayangkan kamu lagi bikin jus di rumah.</p>
+    <p>Buah utuh dimasukkan ke <mark>mesin pemotong</mark> → jadi potongan kecil. Potongan kecil itu dimasukkan ke <mark>mesin blender</mark> → jadi jus cair. Jus cair itu dimasukkan lagi ke <mark>mesin penyaring</mark> → jadi jus bersih tanpa ampas.</p>
+    <div class="analogy-box">
+      🍹 Tiga mesin, tiga proses berbeda. Tapi yang penting: <b>hasil dari satu mesin selalu jadi bahan buat mesin berikutnya.</b> Kalau urutannya kamu balik — misalnya disaring dulu baru dipotong — hasilnya jelas beda, atau malah nggak masuk akal.
+    </div>
+    <p>Nah, di matematika, ada situasi yang mirip banget dengan ini: <b>kita punya tiga fungsi, dan hasil satu fungsi jadi masukan buat fungsi berikutnya.</b> Itu namanya <b>komposisi tiga fungsi</b>.</p>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="card fade-up">
+    <span class="section-label">02 · Konsep</span>
+    <h2>Penjelasan Sederhana</h2>
+
+    <h3>Mengingat Lagi: Komposisi Dua Fungsi</h3>
+    <p>Kamu mungkin sudah pernah belajar komposisi <b>dua</b> fungsi. Kalau ada fungsi $g$ dan $f$, komposisinya ditulis $(f \circ g)(x)$, artinya:</p>
+    <div class="formula-box">$$(f \circ g)(x) = f(g(x))$$</div>
+    <p>Cara bacanya: masukkan $x$ ke $g$ dulu, baru hasilnya dimasukkan ke $f$.</p>
+    <p class="check-question">Sampai sini masih masuk akal?</p>
+
+    <h3>Sekarang, Bagaimana Kalau Ada Tiga Fungsi?</h3>
+    <p>Bayangkan sekarang ada <b>tiga mesin</b> berurutan: $h$, lalu $g$, lalu $f$. Sama seperti mesin potong, blender, dan penyaring tadi.</p>
+    <p>Nilai $x$ masuk ke $h$ dulu. Hasilnya masuk ke $g$. Hasil dari $g$ itu baru masuk ke $f$. Hasil terakhir dari $f$ itulah jawaban akhirnya.</p>
+
+    <h3>Notasi $(f \circ g \circ h)(x)$</h3>
+    <p>Komposisi tiga fungsi ini ditulis seperti ini:</p>
+    <div class="formula-box">$$(f \circ g \circ h)(x) = f\big(g(h(x))\big)$$</div>
+    <p>Perhatikan baik-baik urutannya. Yang ditulis <b>paling kanan</b> ($h$) justru dikerjakan <b>paling dulu</b>, karena dia paling dekat dengan $x$. Yang ditulis <b>paling kiri</b> ($f$) dikerjakan <b>paling terakhir</b>.</p>
+    <div class="analogy-box">
+      Ini seperti pakai baju: kamu pakai kaus dalam dulu, baru kemeja, baru jaket. Tapi kalau ditulis "jaket ∘ kemeja ∘ kaus dalam", urutan bacanya dari kanan — yang paling dekat badan (kaus dalam) justru dipakai paling dulu.
+    </div>
+    <p class="check-question">Sampai sini masih masuk akal?</p>
+
+    <h3>Urutan Pengerjaan: Dari Dalam ke Luar</h3>
+    <p>Supaya lebih gampang diingat, pakai aturan ini:</p>
+    <div class="analogy-box">
+      <b>Kerjakan fungsi yang paling dekat dengan $x$ (paling dalam) dulu, baru bergerak keluar satu per satu.</b>
+    </div>
+    <p>Misalnya $h(x) = x + 2$, $g(x) = x^2$, dan $f(x) = 3x - 1$. Kalau kita mau cari $(f \circ g \circ h)(1)$:</p>
+    <div class="formula-box">
+      $$h(1) = 1+2 = 3 \quad \to \quad g(3) = 3^2 = 9 \quad \to \quad f(9) = 3(9)-1 = 26$$
+    </div>
+    <p>Jadi $(f \circ g \circ h)(1) = 26$. Nanti kamu bisa coba sendiri di bagian "Lihat Cara Kerjanya" dan "Coba Sendiri".</p>
+
+    <h3>Sifat Pengelompokan (Asosiatif)</h3>
+    <p>Ada satu sifat menarik. Kamu boleh mengelompokkan dua fungsi dulu, hasilnya tetap sama:</p>
+    <div class="formula-box">$$(f \circ g) \circ h = f \circ (g \circ h)$$</div>
+    <p>Artinya, mau kamu gabungkan $f$ dan $g$ dulu baru dikomposisikan dengan $h$, atau gabungkan $g$ dan $h$ dulu baru dikomposisikan dengan $f$ — hasil akhirnya <b>tetap sama</b>.</p>
+    <p><b>Tapi hati-hati</b>: yang boleh ditukar itu <i>cara mengelompokkannya</i>, bukan <i>urutan fungsinya</i>. $h$, $g$, $f$ tetap harus dikerjakan sesuai urutan aslinya, dari dalam ke luar.</p>
+
+    <h3>Domain Komposisi Tiga Fungsi</h3>
+    <p>Domain itu kumpulan nilai $x$ yang "boleh" dimasukkan. Untuk komposisi tiga fungsi, nilai $x$ harus lolos syarat di <b>setiap tahap</b>, bukan cuma di fungsi terakhir.</p>
+    <p>Jadi $x$ harus: (1) terdefinisi di $h$, (2) hasil $h(x)$ harus terdefinisi di $g$, dan (3) hasil $g(h(x))$ harus terdefinisi di $f$. Kalau salah satu tahap gagal — misalnya bikin akar negatif atau pembagi nol — nilai $x$ itu tidak boleh dipakai.</p>
+    <p class="check-question">Sampai sini masih masuk akal?</p>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="card fade-up">
+    <span class="section-label">03 · Visualisasi</span>
+    <h2>Lihat Cara Kerjanya</h2>
+    <p>Kita pakai contoh: $h(x)=x+2$, $g(x)=x^2$, $f(x)=3x-1$, dan kita cari $(f \circ g \circ h)(1)$. Perhatikan nilainya berjalan lewat tiga mesin ini.</p>
+
+    <div class="machine-row" id="machineRow">
+      <div class="machine" id="mIn">x = 1</div>
+      <span class="arrow">→</span>
+      <div class="machine" id="mH">h</div>
+      <span class="arrow">→</span>
+      <div class="machine" id="mG">g</div>
+      <span class="arrow">→</span>
+      <div class="machine" id="mF">f</div>
+      <span class="arrow">→</span>
+      <div class="machine" id="mOut">?</div>
+    </div>
+
+    <div class="step-desc" id="stepDesc">Tekan ▶ Play atau "Langkah Berikutnya" untuk mulai.</div>
+
+    <div class="control-row">
+      <button class="btn-secondary" id="btnPrev">⏮ Sebelumnya</button>
+      <button class="btn-primary" id="btnPlay">▶ Play</button>
+      <button class="btn-secondary" id="btnNext">Berikutnya ⏭</button>
+      <button class="btn-secondary" id="btnReset">↻ Reset</button>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="card fade-up">
+    <span class="section-label">04 · Interaktif</span>
+    <h2>Coba Sendiri</h2>
+    <p>Pilih kumpulan fungsi, geser nilai $x$, dan lihat bagaimana nilainya berubah tiap melewati satu mesin.</p>
+
+    <div class="try-panel">
+      <div class="preset-chips" id="presetChips">
+        <div class="chip active" data-preset="0">h=x+2, g=x², f=3x−1</div>
+        <div class="chip" data-preset="1">h=2x, g=x−1, f=x²</div>
+      </div>
+
+      <div class="slider-row">
+        <label>Nilai x = <span id="xVal">1</span></label>
+        <input type="range" id="xSlider" min="-5" max="5" step="1" value="1">
+      </div>
+
+      <div class="result-grid">
+        <div class="result-item"><div class="lab">Langkah 1 — masuk ke h (paling dalam)</div><div id="stepH"></div></div>
+        <div class="result-item"><div class="lab">Langkah 2 — hasilnya masuk ke g</div><div id="stepG"></div></div>
+        <div class="result-item"><div class="lab">Langkah 3 — hasilnya masuk ke f (paling luar)</div><div id="stepF"></div></div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="switch" id="orderSwitch"></div>
+        <span>Balik urutan jadi $(h \circ g \circ f)(x)$</span>
+      </div>
+
+      <div class="insight-box" id="insightBox"></div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="card fade-up">
+    <span class="section-label">05 · Latihan</span>
+    <h2>Challenge</h2>
+    <p>Untuk ketiga soal di bawah, gunakan: $f(x) = 2x+1$, $g(x) = x^2$, $h(x) = x-3$.</p>
+
+    <!-- Soal 1 -->
+    <div class="challenge-card">
+      <span class="badge badge-mudah">MUDAH</span>
+      <p><b>Soal 1.</b> Tentukan nilai $(f \circ g \circ h)(2)$.</p>
+      <input type="number" id="jawab1" placeholder="Masukkan jawabanmu">
+      <button class="btn-primary" onclick="cekSoal1()">Cek Jawaban</button>
+      <div class="feedback-box" id="fb1"></div>
+      <div class="send-status" id="status1"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="challenge-card">
+      <span class="badge badge-sedang">SEDANG</span>
+      <p><b>Soal 2.</b> Masih dengan $f$, $g$, $h$ yang sama, tentukan nilai $(h \circ g \circ f)(1)$.</p>
+      <input type="number" id="jawab2" placeholder="Masukkan jawabanmu">
+      <button class="btn-primary" onclick="cekSoal2()">Cek Jawaban</button>
+      <div class="feedback-box" id="fb2"></div>
+      <div class="send-status" id="status2"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="challenge-card">
+      <span class="badge badge-sulit">SULIT</span>
+      <p><b>Soal 3.</b> Diketahui $g(x) = x^2$ dan $h(x) = x-3$. Kalau ternyata $(f \circ g \circ h)(x) = 2x^2 - 12x + 19$, tentukan fungsi $f(x)$ dalam bentuk $f(x) = ax + b$.</p>
+      <p style="font-size:13px;color:var(--text-secondary);">Petunjuk: cari dulu bentuk $g(h(x))$, lalu bandingkan dengan hasil akhirnya.</p>
+      <div class="dual-input">
+        <div><label>Nilai a</label><input type="number" id="jawab3a" placeholder="a"></div>
+        <div><label>Nilai b</label><input type="number" id="jawab3b" placeholder="b"></div>
+      </div>
+      <button class="btn-primary" onclick="cekSoal3()">Cek Jawaban</button>
+      <div class="feedback-box" id="fb3"></div>
+      <div class="send-status" id="status3"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN UMUM -->
+  <section class="card fade-up">
+    <span class="section-label">06 · Peringatan</span>
+    <h2>Kesalahan yang Sering Terjadi</h2>
+
+    <div class="mistake-item">
+      <h4>1. Mengerjakan dari luar dulu</h4>
+      <p>Banyak siswa langsung menghitung $f$ dulu karena posisinya paling depan saat ditulis $(f \circ g \circ h)(x)$.</p>
+      <p><b>Kenapa salah:</b> fungsi yang ditulis paling kiri justru dikerjakan paling akhir, karena dia menerima hasil dari fungsi-fungsi di dalamnya.</p>
+      <p class="fix">Cara menghindari: selalu mulai dari fungsi yang paling dekat dengan $x$, yaitu yang ditulis paling kanan.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>2. Mengira $(f \circ g \circ h)(x)$ sama dengan $(h \circ g \circ f)(x)$</h4>
+      <p>Karena isinya fungsi yang sama, sering dikira hasilnya juga pasti sama.</p>
+      <p><b>Kenapa salah:</b> urutan pengerjaan berubah total kalau posisi fungsi ditukar, jadi hasil akhirnya biasanya berbeda.</p>
+      <p class="fix">Cara menghindari: selalu cek dulu fungsi mana yang paling kanan pada notasi yang diberikan, itulah yang dikerjakan lebih dulu.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>3. Lupa memeriksa domain di tiap tahap</h4>
+      <p>Siswa sering hanya mengecek syarat domain di fungsi terakhir saja.</p>
+      <p><b>Kenapa salah:</b> nilai $x$ bisa saja gagal di tahap tengah, misalnya bikin akar dari bilangan negatif di fungsi kedua, walau fungsi terakhir baik-baik saja.</p>
+      <p class="fix">Cara menghindari: cek syarat domain satu per satu, mulai dari fungsi paling dalam sampai paling luar.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>4. Tertukar arah substitusi saat "kerja mundur"</h4>
+      <p>Saat diminta mencari salah satu fungsi dari hasil komposisinya, siswa sering bingung mana yang harus disamakan dengan mana.</p>
+      <p><b>Kenapa salah:</b> kalau salah menempatkan hasil gabungan fungsi yang sudah diketahui, bentuk akhirnya jadi tidak bisa dicocokkan.</p>
+      <p class="fix">Cara menghindari: kerjakan dulu fungsi-fungsi yang sudah lengkap diketahui sampai jadi satu bentuk, baru bandingkan dengan hasil akhir yang diberikan soal.</p>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="card fade-up">
+    <span class="section-label">07 · Rangkuman</span>
+    <h2>Ringkasan</h2>
+    <ul class="summary-list">
+      <li><div class="summary-num">1</div><div>Komposisi tiga fungsi $(f \circ g \circ h)(x)$ berarti hasil satu fungsi dimasukkan ke fungsi berikutnya, sebanyak tiga kali berturut-turut.</div></li>
+      <li><div class="summary-num">2</div><div>Urutan pengerjaan selalu dari fungsi paling dekat dengan $x$ (paling dalam) menuju fungsi paling luar.</div></li>
+      <li><div class="summary-num">3</div><div>Boleh mengelompokkan dua fungsi dulu — $(f \circ g) \circ h = f \circ (g \circ h)$ — tapi urutan $h$, $g$, $f$ tidak boleh ditukar posisinya.</div></li>
+      <li><div class="summary-num">4</div><div>Domain komposisi tiga fungsi dibatasi oleh syarat di setiap tahap, bukan cuma fungsi yang terakhir dikerjakan.</div></li>
+      <li><div class="summary-num">5</div><div>Kalau hasil komposisi dan dua dari tiga fungsi sudah diketahui, kita bisa "kerja mundur" untuk menemukan fungsi yang belum diketahui.</div></li>
+    </ul>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section class="card fade-up">
+    <span class="section-label">08 · Refleksi</span>
+    <h2>Refleksi</h2>
+    <p>Tidak ada jawaban benar atau salah di bagian ini. Tulis saja dengan kata-katamu sendiri.</p>
+
+    <p><b>1. Dengan kata-katamu sendiri, jelaskan apa itu $(f \circ g \circ h)(x)$ dan kenapa urutan pengerjaannya penting.</b></p>
+    <textarea id="refleksi1" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+    <p><b>2. Bagian mana dari langkah mengerjakan komposisi tiga fungsi yang menurutmu paling gampang keliru? Kenapa?</b></p>
+    <textarea id="refleksi2" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+    <button class="btn-primary" onclick="kirimRefleksi()">Kirim Refleksi</button>
+    <div class="send-status" id="statusRefleksi"></div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="brand">NUMERA</div>
+  <div>Dikembangkan oleh Kiki Herdiansyah</div>
+  <div>Versi 1.0 · © 2026</div>
+</footer>
+
+<script>
+/* ================= IDENTITAS & PENGIRIMAN ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+const topik = 'Komposisi Tiga Fungsi';
+
+function getIdentitas(){
+  return {
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim()
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  if(!id.nama || !id.kelas){
+    alert('Isi dulu Nama dan Kelas kamu di bagian atas modul ya, sebelum mengecek jawaban.');
+    document.getElementById('namaSiswa').scrollIntoView({behavior:'smooth', block:'center'});
+    return false;
+  }
+  return true;
+}
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const statusEl = document.getElementById(statusElId);
+  if(statusEl) statusEl.textContent = 'Mengirim jawaban...';
+
+  const payload = {
+    topik: topik,
+    nama: id.nama,
+    kelas: id.kelas,
+    soal: nomorSoal,
+    jawaban1: jawaban1,
+    jawaban2: jawaban2 || '',
+    status: status,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  if(!SCRIPT_URL){
+    if(statusEl) statusEl.textContent = 'Belum terhubung ke sistem guru (SCRIPT_URL kosong).';
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(statusEl) statusEl.textContent = '✓ Jawaban terkirim ke guru.';
+  }).catch(()=>{
+    if(statusEl) statusEl.textContent = 'Gagal mengirim. Periksa koneksi internet.';
+  });
+}
+
+/* ================= FADE UP ================= */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+/* ================= PROGRESS BAR ================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressFill').style.width = scrolled + '%';
+});
+
+/* ================= KATEX RENDER ================= */
+function renderMath(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters:[
+        {left:'$$', right:'$$', display:true},
+        {left:'$', right:'$', display:false}
+      ]
+    });
+  }
+}
+window.addEventListener('load', renderMath);
+
+/* ================= SECTION 4: LIHAT CARA KERJANYA ================= */
+const demoSteps = [
+  {desc:'Kita mulai dengan x = 1.', active:null, out:null},
+  {desc:'Langkah 1: masukkan x ke mesin h dulu (paling dalam). h(1) = 1 + 2 = 3.', active:'mH', out:'3'},
+  {desc:'Langkah 2: hasil dari h (yaitu 3) masuk ke mesin g. g(3) = 3² = 9.', active:'mG', out:'9'},
+  {desc:'Langkah 3: hasil dari g (yaitu 9) masuk ke mesin f (paling luar). f(9) = 3(9) − 1 = 26.', active:'mF', out:'26'},
+  {desc:'Selesai! Jadi (f ∘ g ∘ h)(1) = 26.', active:null, out:'26'}
+];
+let demoIndex = 0;
+let demoTimer = null;
+
+function renderDemoStep(){
+  const step = demoSteps[demoIndex];
+  document.getElementById('stepDesc').textContent = step.desc;
+  ['mH','mG','mF'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  if(step.active) document.getElementById(step.active).classList.add('active');
+  document.getElementById('mOut').textContent = step.out ? ('= ' + step.out) : '?';
+  document.getElementById('btnPrev').disabled = demoIndex === 0;
+  document.getElementById('btnNext').disabled = demoIndex === demoSteps.length - 1;
+}
+renderDemoStep();
+
+document.getElementById('btnNext').addEventListener('click', ()=>{
+  if(demoIndex < demoSteps.length-1){ demoIndex++; renderDemoStep(); }
+});
+document.getElementById('btnPrev').addEventListener('click', ()=>{
+  if(demoIndex > 0){ demoIndex--; renderDemoStep(); }
+});
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  clearInterval(demoTimer); demoTimer=null;
+  document.getElementById('btnPlay').textContent = '▶ Play';
+  demoIndex = 0; renderDemoStep();
+});
+document.getElementById('btnPlay').addEventListener('click', (e)=>{
+  if(demoTimer){
+    clearInterval(demoTimer); demoTimer = null;
+    e.target.textContent = '▶ Play';
+    return;
+  }
+  e.target.textContent = '⏸ Pause';
+  demoTimer = setInterval(()=>{
+    if(demoIndex < demoSteps.length-1){
+      demoIndex++; renderDemoStep();
+    } else {
+      clearInterval(demoTimer); demoTimer = null;
+      e.target.textContent = '▶ Play';
+    }
+  }, 1400);
+});
+
+/* ================= SECTION 5: COBA SENDIRI ================= */
+const presets = [
+  { h:x=>x+2, g:x=>x*x, f:x=>3*x-1, hLabel:'x + 2', gLabel:'x²', fLabel:'3x − 1' },
+  { h:x=>2*x, g:x=>x-1, f:x=>x*x, hLabel:'2x', gLabel:'x − 1', fLabel:'x²' }
+];
+let currentPreset = 0;
+let reversedOrder = false;
+
+function updateTry(){
+  const p = presets[currentPreset];
+  const x = parseInt(document.getElementById('xSlider').value);
+  document.getElementById('xVal').textContent = x;
+
+  let order = reversedOrder ? ['f','g','h'] : ['h','g','f'];
+  const fnMap = {h:p.h, g:p.g, f:p.f};
+  const labelMap = {h:p.hLabel, g:p.gLabel, f:p.fLabel};
+
+  let val = x;
+  let texts = [];
+  order.forEach((key)=>{
+    const before = val;
+    val = fnMap[key](val);
+    texts.push(`${key}(${before}) = ${val}`);
+  });
+
+  document.getElementById('stepH').innerHTML = `<span style="color:var(--text-secondary)">${order[0]}(x) = ${labelMap[order[0]]}</span><br><span class="value-pill">${texts[0]}</span>`;
+  document.getElementById('stepG').innerHTML = `<span style="color:var(--text-secondary)">${order[1]}(x) = ${labelMap[order[1]]}</span><br><span class="value-pill">${texts[1]}</span>`;
+  document.getElementById('stepF').innerHTML = `<span style="color:var(--text-secondary)">${order[2]}(x) = ${labelMap[order[2]]}</span><br><span class="value-pill">${texts[2]}</span>`;
+
+  const insight = document.getElementById('insightBox');
+  if(reversedOrder){
+    insight.textContent = `Perhatikan! Sekarang urutannya (h ∘ g ∘ f)(x): f dikerjakan paling dulu, bukan h. Hasil akhirnya bisa jauh berbeda dari (f ∘ g ∘ h)(x).`;
+    insight.classList.add('show');
+  } else {
+    insight.classList.remove('show');
+  }
+}
+
+document.getElementById('xSlider').addEventListener('input', updateTry);
+document.getElementById('presetChips').addEventListener('click', (e)=>{
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  document.querySelectorAll('#presetChips .chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  currentPreset = parseInt(chip.dataset.preset);
+  updateTry();
+});
+document.getElementById('orderSwitch').addEventListener('click', (e)=>{
+  reversedOrder = !reversedOrder;
+  e.target.classList.toggle('on', reversedOrder);
+  updateTry();
+});
+updateTry();
+
+/* ================= SECTION 6: CHALLENGE ================= */
+function showFeedback(elId, correct, html){
+  const el = document.getElementById(elId);
+  el.className = 'feedback-box show ' + (correct ? 'feedback-correct' : 'feedback-wrong');
+  el.innerHTML = html;
+}
+
+// f(x)=2x+1, g(x)=x^2, h(x)=x-3
+function cekSoal1(){
+  if(!identitasLengkap()) return;
+  const jawaban = document.getElementById('jawab1').value;
+  const jawabanNum = parseFloat(jawaban);
+  // h(2)=-1, g(-1)=1, f(1)=3
+  const benar = 3;
+  const correct = jawabanNum === benar;
+  if(correct){
+    showFeedback('fb1', true, '<b>Benar!</b> h(2) = -1, lalu g(-1) = 1, lalu f(1) = 2(1)+1 = 3.');
+  } else {
+    showFeedback('fb1', false, `<b>Belum tepat.</b> Ingat, kerjakan dari yang paling dalam dulu: h(2) = 2-3 = -1. Lalu g(-1) = (-1)² = 1. Baru terakhir f(1) = 2(1)+1 = 3. Kesalahan yang sering terjadi: langsung menghitung f(2) duluan, padahal h yang paling dekat dengan x = 2.`);
+  }
+  kirimKeGuru(1, jawaban, '', correct ? 'Benar' : 'Salah', 'status1');
+}
+
+function cekSoal2(){
+  if(!identitasLengkap()) return;
+  const jawaban = document.getElementById('jawab2').value;
+  const jawabanNum = parseFloat(jawaban);
+  // (h∘g∘f)(1): f(1)=3, g(3)=9, h(9)=6
+  const benar = 6;
+  const correct = jawabanNum === benar;
+  if(correct){
+    showFeedback('fb2', true, '<b>Benar!</b> Di sini urutannya berbeda dari soal 1: f dikerjakan dulu. f(1)=3, lalu g(3)=9, lalu h(9)=9-3=6.');
+  } else {
+    showFeedback('fb2', false, `<b>Belum tepat.</b> Perhatikan notasinya: (h ∘ g ∘ f)(x), yang paling kanan sekarang f, bukan h. Jadi f(1) = 2(1)+1 = 3 dulu. Lalu g(3) = 9. Baru h(9) = 9-3 = 6. Kesalahan yang sering terjadi: tetap mengerjakan h dulu seperti soal 1, padahal urutan fungsinya sudah ditukar.`);
+  }
+  kirimKeGuru(2, jawaban, '', correct ? 'Benar' : 'Salah', 'status2');
+}
+
+function cekSoal3(){
+  if(!identitasLengkap()) return;
+  const a = document.getElementById('jawab3a').value;
+  const b = document.getElementById('jawab3b').value;
+  const aNum = parseFloat(a), bNum = parseFloat(b);
+  const correct = (aNum === 2 && bNum === 1);
+  if(correct){
+    showFeedback('fb3', true, '<b>Benar!</b> g(h(x)) = (x-3)² = x²-6x+9. Kalau f(u) = au+b dengan u = x²-6x+9, maka au+b = a(x²-6x+9)+b. Supaya sama dengan 2x²-12x+19, harus a=2 dan b=1, sehingga f(x) = 2x+1.');
+  } else {
+    showFeedback('fb3', false, `<b>Belum tepat.</b> Coba kerjakan dulu g(h(x)) = (x-3)² = x²-6x+9. Anggap ini "u". Kamu cari f(u) = au+b sehingga a(x²-6x+9)+b sama persis dengan 2x²-12x+19. Cocokkan koefisiennya satu per satu: koefisien x² beri nilai a, dan sisanya (konstanta setelah dikalikan) beri nilai b.`);
+  }
+  kirimKeGuru(3, `a=${a}, b=${b}`, '', correct ? 'Benar' : 'Salah', 'status3');
+}
+
+/* ================= SECTION 9: REFLEKSI ================= */
+function kirimRefleksi(){
+  if(!identitasLengkap()) return;
+  const r1 = document.getElementById('refleksi1').value.trim();
+  const r2 = document.getElementById('refleksi2').value.trim();
+  if(!r1 || !r2){
+    alert('Isi dulu kedua kolom refleksi sebelum mengirim ya.');
+    return;
+  }
+  kirimKeGuru('Refleksi', r1, r2, '-', 'statusRefleksi');
+}
+</script>
+
+</body>
+</html>

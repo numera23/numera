@@ -1,0 +1,1087 @@
+<!--
+NUMERA
+Judul: Syarat Fungsi Memiliki Invers
+Jenis: Modul Interaktif (pakai KaTeX)
+Versi: 1.0
+Dikembangkan oleh Kiki Herdiansyah
+Copyright © 2026 Numera
+Bagian dari proyek Numera — s.id/cakram
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Syarat Fungsi Memiliki Invers · Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="Copyright © 2026 Numera">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --border:#E2E8F0;
+
+    --success:#10B981;
+    --success-bg:#ECFDF5;
+    --success-border:#A7F3D0;
+    --success-text:#047857;
+
+    --warning:#F59E0B;
+    --warning-bg:#FEF3C7;
+    --warning-text:#B45309;
+
+    --error:#EF4444;
+    --error-bg:#FEE2E2;
+    --error-border:#FECACA;
+    --error-text:#B91C1C;
+
+    --radius-card:18px;
+    --radius-btn:12px;
+    --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-tap-highlight-color:transparent;
+    overflow-x:hidden;
+  }
+
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 60px;}
+
+  /* TOPBAR */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width:900px;margin:0 auto;padding:14px 18px;
+    font-weight:700;font-size:15px;color:var(--primary);
+    letter-spacing:.2px;
+  }
+  .progress-bar-track{height:3px;width:100%;background:var(--border);}
+  .progress-bar-fill{height:100%;width:0%;background:var(--primary);transition:width 80ms linear;}
+
+  section{margin-top:36px;}
+  section:first-of-type{margin-top:24px;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-card);
+    box-shadow:var(--shadow);
+    padding:24px 22px;
+  }
+
+  h1{font-size:26px;font-weight:800;margin:0 0 6px;line-height:1.3;}
+  h2{font-size:20px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:8px;}
+  h2 .num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:28px;height:28px;border-radius:8px;
+    background:var(--primary-light);color:var(--primary);
+    font-size:13px;font-weight:800;flex-shrink:0;
+  }
+  h3{font-size:16px;font-weight:700;margin:22px 0 8px;color:var(--text);}
+  h3:first-child{margin-top:0;}
+  p{margin:0 0 12px;font-size:15px;color:var(--text);}
+  p.secondary{color:var(--text-secondary);font-size:14px;}
+  ul,ol{margin:0 0 12px;padding-left:20px;}
+  li{margin-bottom:6px;font-size:15px;}
+  strong{font-weight:700;}
+  mark{
+    background:var(--primary-light);
+    color:var(--primary-hover);
+    padding:1px 5px;border-radius:5px;font-weight:600;
+  }
+
+  .badge{
+    display:inline-block;padding:4px 10px;border-radius:999px;
+    font-size:12px;font-weight:700;letter-spacing:.3px;
+  }
+  .badge-mudah{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);}
+  .badge-sedang{background:var(--warning-bg);color:var(--warning-text);border:1px solid #FDE68A;}
+  .badge-sulit{background:var(--error-bg);color:var(--error-text);border:1px solid var(--error-border);}
+
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 18px;}
+  .meta-pill{
+    background:var(--primary-light);color:var(--primary-hover);
+    font-size:13px;font-weight:600;padding:7px 13px;border-radius:999px;
+  }
+
+  .identitas-box{
+    margin-top:18px;padding:16px;border-radius:14px;
+    background:var(--bg);border:1px solid var(--border);
+  }
+  .identitas-box p{margin-bottom:10px;font-size:14px;color:var(--text-secondary);}
+  .field-row{display:flex;flex-direction:column;gap:12px;}
+  @media(min-width:520px){.field-row{flex-direction:row;}}
+  .field{flex:1;display:flex;flex-direction:column;gap:6px;}
+  label{font-size:13px;font-weight:600;color:var(--text-secondary);}
+  input[type="text"]{
+    border:1px solid var(--border);border-radius:var(--radius-btn);
+    padding:12px 14px;font-size:15px;font-family:inherit;
+    background:#fff;color:var(--text);min-height:44px;
+  }
+  input[type="text"]:focus{outline:2px solid var(--primary);outline-offset:1px;border-color:var(--primary);}
+  .identitas-warning{
+    display:none;margin-top:10px;padding:10px 12px;border-radius:10px;
+    background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);
+    font-size:13px;font-weight:600;
+  }
+
+  button{
+    font-family:inherit;font-weight:700;font-size:14.5px;
+    border:none;border-radius:var(--radius-btn);
+    min-height:44px;padding:0 20px;cursor:pointer;
+    transition:background 200ms, transform 120ms;
+  }
+  button.btn-primary{background:var(--primary);color:#fff;}
+  button.btn-primary:hover{background:var(--primary-hover);}
+  button.btn-primary:active{transform:scale(.98);}
+  button.btn-secondary{background:var(--primary-light);color:var(--primary-hover);}
+  button.btn-secondary:hover{background:#c8dcfb;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+
+  .hook-box{
+    background:linear-gradient(135deg,var(--primary) 0%,var(--primary-hover) 100%);
+    color:#fff;border-radius:var(--radius-card);padding:26px 22px;
+    box-shadow:var(--shadow);
+  }
+  .hook-box p{color:#fff;font-size:16px;}
+  .hook-box .hook-tag{
+    font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+    opacity:.85;margin-bottom:10px;
+  }
+
+  .canvas-wrap{
+    background:var(--bg);border:1px solid var(--border);border-radius:14px;
+    padding:10px;display:flex;justify-content:center;overflow:hidden;
+  }
+  canvas{max-width:100%;height:auto;display:block;}
+
+  .controls{margin-top:16px;display:flex;flex-direction:column;gap:14px;}
+  select{
+    width:100%;border:1px solid var(--border);border-radius:var(--radius-btn);
+    padding:12px 14px;font-size:14.5px;font-family:inherit;background:#fff;color:var(--text);
+    min-height:44px;
+  }
+  input[type="range"]{width:100%;height:36px;accent-color:var(--primary);}
+  .checkbox-row{display:flex;align-items:center;gap:10px;}
+  input[type="checkbox"]{width:20px;height:20px;accent-color:var(--primary);}
+  .checkbox-row label{font-size:14px;color:var(--text);font-weight:500;}
+
+  .insight-box{
+    margin-top:14px;padding:14px 16px;border-radius:12px;font-size:14px;font-weight:500;
+    border:1px solid var(--border);background:var(--bg);color:var(--text-secondary);
+    transition:background 200ms, color 200ms, border-color 200ms;
+  }
+  .insight-box.ok{background:var(--success-bg);border-color:var(--success-border);color:var(--success-text);}
+  .insight-box.warn{background:var(--error-bg);border-color:var(--error-border);color:var(--error-text);}
+
+  .verdict-box{
+    margin-top:14px;padding:14px 16px;border-radius:12px;font-size:14.5px;font-weight:600;
+  }
+  .verdict-box.success{background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+  .verdict-box.error{background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+
+  .step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:10px;}
+  .step-dots{display:flex;gap:6px;}
+  .step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
+  .step-dot.active{background:var(--primary);}
+  .step-caption{margin-top:14px;}
+
+  .soal-card{border:1px solid var(--border);border-radius:14px;padding:18px 16px;margin-bottom:20px;background:var(--bg);}
+  .soal-card:last-child{margin-bottom:0;}
+  .soal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px;}
+  .soal-head span.soal-title{font-weight:700;font-size:14.5px;}
+  .opsi-list{display:flex;flex-direction:column;gap:10px;margin:14px 0;}
+  .opsi{
+    display:flex;align-items:center;gap:10px;border:1px solid var(--border);
+    border-radius:12px;padding:12px 14px;background:#fff;cursor:pointer;
+  }
+  .opsi input{width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;}
+  .opsi span{font-size:14.5px;}
+  .jawaban-input{
+    width:100%;max-width:220px;border:1px solid var(--border);border-radius:var(--radius-btn);
+    padding:11px 14px;font-size:15px;font-family:inherit;min-height:44px;margin-top:6px;
+  }
+  .feedback{
+    display:none;margin-top:12px;padding:12px 14px;border-radius:12px;font-size:14px;
+  }
+  .feedback.benar{display:block;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+  .feedback.salah{display:block;background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+  .status-kirim{font-size:12.5px;color:var(--text-secondary);margin-top:8px;display:block;min-height:16px;}
+
+  .kesalahan-item{border-left:3px solid var(--error);padding:4px 0 4px 16px;margin-bottom:18px;}
+  .kesalahan-item:last-child{margin-bottom:0;}
+  .kesalahan-item h4{margin:0 0 6px;font-size:15px;font-weight:700;}
+  .kesalahan-item p{margin-bottom:4px;font-size:14px;}
+
+  .ringkasan-list{display:flex;flex-direction:column;gap:12px;}
+  .ringkasan-item{display:flex;gap:12px;align-items:flex-start;}
+  .ringkasan-num{
+    flex-shrink:0;width:26px;height:26px;border-radius:8px;background:var(--primary);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;
+  }
+
+  textarea{
+    width:100%;border:1px solid var(--border);border-radius:var(--radius-btn);
+    padding:12px 14px;font-size:14.5px;font-family:inherit;min-height:90px;resize:vertical;color:var(--text);
+  }
+  textarea:focus{outline:2px solid var(--primary);outline-offset:1px;border-color:var(--primary);}
+
+  footer{
+    max-width:900px;margin:44px auto 0;padding:22px 18px 30px;
+    text-align:center;color:var(--text-secondary);font-size:12.5px;
+    border-top:1px solid var(--border);
+  }
+  footer strong{color:var(--text-secondary);}
+
+  .fade-up{opacity:0;transform:translateY(16px);transition:opacity 500ms ease, transform 500ms ease;}
+  .fade-up.visible{opacity:1;transform:translateY(0);}
+
+  .katex{font-size:1.02em;}
+  .formula-scroll{overflow-x:auto;padding:4px 0;}
+
+  @media(max-width:400px){
+    h1{font-size:22px;}
+    .card{padding:18px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Syarat Fungsi Memiliki Invers</div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressBar"></div></div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section id="header">
+    <div class="card">
+      <h1>Syarat Fungsi Memiliki Invers</h1>
+      <p class="secondary">Yuk cari tahu, fungsi kayak apa sih yang "bisa dibalik" jadi fungsi invers — dan kenapa ada fungsi yang enggak bisa.</p>
+
+      <div class="meta-row">
+        <span class="meta-pill">⏱ Sekitar 20 menit</span>
+        <span class="meta-pill">📘 Modul Interaktif</span>
+      </div>
+
+      <h3 style="margin-top:18px;">Setelah belajar ini, kamu bisa:</h3>
+      <ul>
+        <li>Menjelaskan kenapa suatu fungsi bisa "dibalik" (dan kenapa ada yang enggak bisa).</li>
+        <li>Menggunakan uji garis horizontal untuk mengecek dari grafik.</li>
+        <li>Mengecek dari rumusnya langsung, tanpa harus gambar grafik dulu.</li>
+        <li>Membatasi domain fungsi kuadrat supaya fungsinya jadi punya invers.</li>
+        <li>Menjelaskan hubungan antara grafik fungsi dan grafik inversnya.</li>
+      </ul>
+
+      <div class="identitas-box">
+        <p>Isi dulu identitasmu ya, biar jawaban Challenge dan Refleksimu bisa dicek oleh gurumu.</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="inputNama">Nama Lengkap</label>
+            <input type="text" id="inputNama" placeholder="Tulis nama lengkapmu">
+          </div>
+          <div class="field">
+            <label for="inputKelas">Kelas</label>
+            <input type="text" id="inputKelas" placeholder="Contoh: XI IPA 2">
+          </div>
+        </div>
+        <div class="identitas-warning" id="identitasWarning">⚠️ Isi dulu Nama dan Kelas sebelum mengerjakan soal.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR? -->
+  <section id="hook" class="fade-up">
+    <div class="hook-box">
+      <div class="hook-tag">Pernahkah Kamu Berpikir?</div>
+      <p>Coba bayangkan kamu lagi pegang kalkulator. Kamu ketik angka 3, terus kamu kuadratkan. Hasilnya 9.</p>
+      <p>Sekarang giliran mau "dibalik". Dari hasil 9 tadi, kamu coba tebak: "angka aslinya berapa ya?"</p>
+      <p>Kamu jawab 3. Tapi... −3 juga kalau dikuadratkan hasilnya 9 lho. Jadi, hasil 9 itu aslinya dari angka 3 atau −3?</p>
+      <p><strong>Nah, di sinilah masalahnya.</strong> Enggak semua "proses" di matematika bisa dibalik dengan aman ke asalnya. Ada yang bisa, ada yang bikin bingung karena satu hasil bisa berasal dari lebih dari satu awal.</p>
+      <p>Fungsi juga begitu. Sebagian fungsi bisa "dibalik" jadi fungsi invers, sebagian lagi enggak bisa — kecuali kita akalin dulu. Nah, modul ini bakal jelasin syaratnya.</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section id="penjelasan" class="fade-up">
+    <div class="card">
+      <h2><span class="num">3</span>Penjelasan Sederhana</h2>
+
+      <h3>Fungsi itu Kayak Mesin</h3>
+      <p>Bayangin fungsi itu kayak mesin. Kamu masukin sesuatu (input), mesinnya proses, terus keluar hasil (output).</p>
+      <p>Fungsi invers itu artinya kita bikin "mesin kebalikannya" — mesin yang kalau dikasih hasil tadi, bisa balikin lagi ke input aslinya.</p>
+      <p>Pertanyaannya: <mark>mesin kayak apa yang bisa dibikin kebalikannya dengan aman?</mark></p>
+
+      <h3>Kenapa Ada Fungsi yang Enggak Bisa "Dibalik"?</h3>
+      <p>Inget contoh kalkulator tadi? Masalahnya muncul kalau <strong>dua input yang beda, ternyata menghasilkan output yang sama persis.</strong></p>
+      <p>Kalau itu terjadi, mesin kebalikannya jadi bingung. Dikasih satu output, dia enggak tahu harus balikin ke input yang mana — soalnya ada dua kemungkinan.</p>
+      <p>Jadi, syarat paling dasar biar fungsi bisa dibalik adalah: <strong>setiap output harus berasal dari cuma satu input.</strong> Enggak boleh ada dua input beda yang "berebutan" hasil yang sama.</p>
+
+      <h3>Fungsi Satu-Satu (Injektif)</h3>
+      <p>Fungsi yang tiap outputnya cuma berasal dari satu input punya nama khusus: <strong>fungsi injektif</strong>, atau biasa disebut <strong>fungsi satu-satu</strong>.</p>
+      <p>Sampai sini masih masuk akal? Intinya gini: kalau <span class="katex-formula">\(x_1 \neq x_2\)</span> tapi <span class="katex-formula">\(f(x_1) = f(x_2)\)</span>, berarti fungsi itu <strong>bukan</strong> fungsi satu-satu — dan otomatis enggak punya invers (untuk domain itu).</p>
+
+      <h3>Uji Garis Horizontal</h3>
+      <p>Enggak perlu ribet ngitung satu-satu, kita bisa cek dari grafiknya aja. Caranya gampang:</p>
+      <p>Coba tarik garis mendatar (horizontal) di ketinggian berapa aja, terus lihat: garis itu motong grafik fungsinya berapa kali?</p>
+      <ul>
+        <li>Kalau di <strong>semua</strong> ketinggian, garis mendatar selalu motong grafik <strong>maksimal satu kali</strong> → fungsi itu satu-satu, jadi <strong>punya invers</strong>.</li>
+        <li>Kalau ada <strong>satu saja</strong> ketinggian di mana garis mendatar motong grafik <strong>dua kali atau lebih</strong> → fungsi itu <strong>tidak punya invers</strong>.</li>
+      </ul>
+      <p>Ini yang disebut <strong>uji garis horizontal</strong>. Nanti kita coba langsung di bagian "Coba Sendiri", ya.</p>
+
+      <h3>Korespondensi Satu-Satu (Bijektif)</h3>
+      <p>Supaya fungsi benar-benar punya invers yang juga fungsi (bukan cuma relasi), fungsinya harus <strong>satu-satu</strong> DAN setiap anggota daerah hasilnya harus "kena", enggak ada yang tersisa. Gabungan dua syarat ini disebut <strong>korespondensi satu-satu</strong> atau <strong>fungsi bijektif</strong>.</p>
+      <p>Buat level SMA, biasanya kodomain yang dipakai memang sama persis dengan daerah hasil (range) fungsinya. Jadi syarat yang paling sering jadi fokus kita adalah: <strong>fungsinya satu-satu (injektif).</strong> Itu kunci utamanya.</p>
+
+      <h3>Cara Cepat Cek dari Rumus: Fungsi Monoton</h3>
+      <p>Enggak selalu praktis gambar grafik dulu. Ada cara lebih cepat: cek apakah fungsinya <strong>monoton</strong>.</p>
+      <p>Fungsi monoton artinya fungsi itu <strong>selalu naik</strong> terus dari kiri ke kanan, ATAU <strong>selalu turun</strong> terus dari kiri ke kanan — enggak pernah gonta-ganti arah.</p>
+      <p>Kalau fungsi monoton di seluruh domainnya, dijamin dia satu-satu. Kenapa? Karena kalau selalu naik (atau selalu turun), enggak mungkin ada dua input beda yang hasilnya kebetulan sama.</p>
+      <p>Contoh gampang: fungsi linear <span class="katex-formula">\(f(x) = ax + b\)</span> dengan <span class="katex-formula">\(a \neq 0\)</span> selalu monoton (kalau <span class="katex-formula">\(a > 0\)</span> selalu naik, kalau <span class="katex-formula">\(a < 0\)</span> selalu turun). Makanya fungsi linear (yang bukan garis datar) selalu punya invers.</p>
+
+      <h3>Trik untuk Fungsi Kuadrat: Batasi Domainnya</h3>
+      <p>Nah, fungsi kuadrat kayak <span class="katex-formula">\(f(x) = x^2\)</span> itu masalahnya apa? Grafiknya parabola — ada bagian yang turun (di kiri titik puncak) dan ada bagian yang naik (di kanan titik puncak). Jadi dia enggak monoton, dan otomatis enggak satu-satu kalau domainnya dibiarkan semua bilangan real.</p>
+      <p>Tapi tenang, ini bisa diakalin. Kalau domainnya kita <strong>batasi</strong> supaya cuma ambil satu sisi aja (misalnya cuma bagian yang naik saja), fungsinya jadi monoton di domain baru itu — dan jadi punya invers!</p>
+      <p>Titik puncak parabola <span class="katex-formula">\(f(x) = ax^2+bx+c\)</span> berada di:</p>
+      <div class="formula-scroll">
+        <p class="katex-formula" style="text-align:center;">\[x = -\dfrac{b}{2a}\]</p>
+      </div>
+      <p>Titik puncak inilah batas antara bagian turun dan bagian naik. Kalau kamu batasi domainnya jadi mulai dari titik puncak ke satu arah aja (misalnya <span class="katex-formula">\(x \geq -\dfrac{b}{2a}\)</span>), fungsinya jadi monoton naik di domain itu, dan langsung punya invers.</p>
+
+      <h3>Hubungan Grafik Fungsi dan Inversnya</h3>
+      <p>Satu hal menarik: kalau fungsi <span class="katex-formula">\(f\)</span> punya invers <span class="katex-formula">\(f^{-1}\)</span>, grafik keduanya itu saling <strong>bercerminan</strong> terhadap garis <span class="katex-formula">\(y = x\)</span>.</p>
+      <p>Kenapa bisa gitu? Soalnya kalau titik <span class="katex-formula">\((a,b)\)</span> ada di grafik <span class="katex-formula">\(f\)</span>, otomatis titik <span class="katex-formula">\((b,a)\)</span> ada di grafik <span class="katex-formula">\(f^{-1}\)</span> — posisi x dan y-nya ketuker. Dan pertukaran x-y seperti itu, secara geometri, sama saja dengan pencerminan terhadap garis <span class="katex-formula">\(y=x\)</span>.</p>
+      <p>Ini juga sekaligus membuktikan kenapa syaratnya harus satu-satu: kalau grafik aslinya enggak satu-satu, pencerminannya bakal jadi bentuk yang bukan fungsi lagi (ada satu x dengan dua y).</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section id="cara-kerja" class="fade-up">
+    <div class="card">
+      <h2><span class="num">4</span>Lihat Cara Kerjanya</h2>
+      <p class="secondary">Kita lihat langkah demi langkah, kenapa <span class="katex-formula">\(f(x)=x^2\)</span> awalnya enggak punya invers, dan gimana caranya jadi punya invers.</p>
+
+      <div class="canvas-wrap">
+        <canvas id="stepCanvas" width="600" height="420"></canvas>
+      </div>
+
+      <div class="step-caption">
+        <p id="stepText" style="font-weight:500;"></p>
+      </div>
+
+      <div class="step-nav">
+        <button class="btn-secondary" id="btnPrevStep" onclick="gantiStep(-1)">← Sebelumnya</button>
+        <div class="step-dots" id="stepDots"></div>
+        <button class="btn-primary" id="btnNextStep" onclick="gantiStep(1)">Selanjutnya →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section id="coba-sendiri" class="fade-up">
+    <div class="card">
+      <h2><span class="num">5</span>Coba Sendiri</h2>
+      <p class="secondary">Pilih fungsinya, terus geser garis mendatar naik-turun. Perhatikan berapa kali garis itu motong grafiknya.</p>
+
+      <div class="canvas-wrap">
+        <canvas id="tryCanvas" width="600" height="420"></canvas>
+      </div>
+
+      <div class="controls">
+        <div class="field">
+          <label for="fnSelect">Pilih fungsi</label>
+          <select id="fnSelect" onchange="ubahFungsi()">
+            <option value="naik">f(x) = 1,2x + 1 &nbsp;(garis, selalu naik)</option>
+            <option value="turun">f(x) = −1,2x + 1 &nbsp;(garis, selalu turun)</option>
+            <option value="kuadrat">f(x) = 0,5x² − 3 &nbsp;(parabola)</option>
+            <option value="kubik">f(x) = 0,06x³ &nbsp;(kubik)</option>
+            <option value="absolut">f(x) = |x| − 2 &nbsp;(nilai mutlak)</option>
+          </select>
+        </div>
+
+        <div class="checkbox-row" id="domainRow" style="display:none;">
+          <input type="checkbox" id="domainRestrict" onchange="gambarUlangTry()">
+          <label for="domainRestrict">Batasi domain jadi x ≥ 0</label>
+        </div>
+
+        <div class="field">
+          <label for="ySlider">Geser garis mendatar (ketinggian y)</label>
+          <input type="range" id="ySlider" min="-6" max="8" step="0.1" value="1" oninput="gambarUlangTry()">
+        </div>
+      </div>
+
+      <div class="insight-box" id="tryInsight">Geser slider untuk mulai menguji garis horizontal.</div>
+      <div class="verdict-box" id="tryVerdict"></div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section id="challenge" class="fade-up">
+    <div class="card">
+      <h2><span class="num">6</span>Challenge</h2>
+      <p class="secondary">Yuk uji pemahamanmu. Ada 3 soal, makin ke bawah makin menantang.</p>
+
+      <!-- SOAL 1 -->
+      <div class="soal-card">
+        <div class="soal-head">
+          <span class="soal-title">Soal 1</span>
+          <span class="badge badge-mudah">MUDAH</span>
+        </div>
+        <p>Diberikan fungsi <span class="katex-formula">\(f(x) = 4x - 7\)</span> dengan domain semua bilangan real.</p>
+        <p>Apakah fungsi ini memiliki invers?</p>
+        <div class="opsi-list">
+          <label class="opsi"><input type="radio" name="soal1" value="ya"><span>Ya, karena fungsinya selalu naik (monoton), jadi pasti satu-satu.</span></label>
+          <label class="opsi"><input type="radio" name="soal1" value="tidak_bentuk"><span>Tidak, karena bentuknya bukan fungsi kuadrat.</span></label>
+          <label class="opsi"><input type="radio" name="soal1" value="tidak_domain"><span>Tidak, karena domainnya harus dibatasi dulu seperti fungsi kuadrat.</span></label>
+        </div>
+        <button class="btn-primary" onclick="cekSoal1()">Cek Jawaban</button>
+        <div class="feedback" id="feedback1"></div>
+        <span class="status-kirim" id="statusSoal1"></span>
+      </div>
+
+      <!-- SOAL 2 -->
+      <div class="soal-card">
+        <div class="soal-head">
+          <span class="soal-title">Soal 2</span>
+          <span class="badge badge-sedang">SEDANG</span>
+        </div>
+        <p>Diberikan fungsi <span class="katex-formula">\(f(x) = x^2 - 4x + 3\)</span> dengan domain semua bilangan real.</p>
+        <p><strong>Bagian A.</strong> Apakah fungsi ini memiliki invers pada domain tersebut?</p>
+        <div class="opsi-list">
+          <label class="opsi"><input type="radio" name="soal2a" value="ya"><span>Ya, semua fungsi kuadrat punya invers.</span></label>
+          <label class="opsi"><input type="radio" name="soal2a" value="tidak"><span>Tidak, karena grafiknya punya bagian turun dan bagian naik sekaligus.</span></label>
+        </div>
+        <p style="margin-top:14px;"><strong>Bagian B.</strong> Supaya fungsi ini punya invers, domainnya dibatasi menjadi <span class="katex-formula">\(x \geq p\)</span>. Berapa nilai <span class="katex-formula">\(p\)</span> yang paling kecil (minimum) agar syarat ini terpenuhi?</p>
+        <input type="text" class="jawaban-input" id="jawaban2b" placeholder="Nilai p = ...">
+        <div style="margin-top:14px;">
+          <button class="btn-primary" onclick="cekSoal2()">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="feedback2"></div>
+        <span class="status-kirim" id="statusSoal2"></span>
+      </div>
+
+      <!-- SOAL 3 -->
+      <div class="soal-card">
+        <div class="soal-head">
+          <span class="soal-title">Soal 3</span>
+          <span class="badge badge-sulit">SULIT</span>
+        </div>
+        <p>Diberikan fungsi <span class="katex-formula">\(f(x) = x^2 - 6x + 5\)</span>.</p>
+        <p>Agar fungsi ini memiliki invers, domainnya harus dibatasi menjadi <span class="katex-formula">\(x \geq p\)</span>.</p>
+        <p>Berapa nilai <span class="katex-formula">\(p\)</span> yang <strong>paling kecil (minimum)</strong> supaya fungsinya tetap monoton naik di seluruh domain barunya?</p>
+        <input type="text" class="jawaban-input" id="jawaban3" placeholder="Nilai p = ...">
+        <div style="margin-top:14px;">
+          <button class="btn-primary" onclick="cekSoal3()">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="feedback3"></div>
+        <span class="status-kirim" id="statusSoal3"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section id="kesalahan" class="fade-up">
+    <div class="card">
+      <h2><span class="num">7</span>Kesalahan yang Sering Terjadi</h2>
+
+      <div class="kesalahan-item">
+        <h4>1. Menganggap semua fungsi pasti punya invers</h4>
+        <p><strong>Yang sering terjadi:</strong> siswa langsung mencari rumus invers tanpa mengecek dulu apakah fungsinya satu-satu.</p>
+        <p><strong>Kenapa salah:</strong> kalau fungsinya tidak satu-satu, "invers" yang dihasilkan sebenarnya bukan fungsi lagi — bisa jadi satu x menghasilkan dua y.</p>
+        <p><strong>Cara menghindari:</strong> selalu cek dulu pakai uji garis horizontal atau cek apakah fungsinya monoton, sebelum lanjut mencari rumus inversnya.</p>
+      </div>
+
+      <div class="kesalahan-item">
+        <h4>2. Lupa membatasi domain fungsi kuadrat</h4>
+        <p><strong>Yang sering terjadi:</strong> siswa langsung menganggap fungsi kuadrat "otomatis" punya invers tanpa menyebutkan syarat domainnya.</p>
+        <p><strong>Kenapa salah:</strong> fungsi kuadrat pada domain semua bilangan real tidak satu-satu, jadi inversnya tidak ada kecuali domainnya dibatasi.</p>
+        <p><strong>Cara menghindari:</strong> selalu sebutkan domain pembatasnya, misalnya <span class="katex-formula">\(x \geq -\dfrac{b}{2a}\)</span>, saat menyatakan fungsi kuadrat punya invers.</p>
+      </div>
+
+      <div class="kesalahan-item">
+        <h4>3. Bingung membatasi domain di sisi yang salah</h4>
+        <p><strong>Yang sering terjadi:</strong> siswa membatasi domain sembarangan, tanpa memperhatikan bagian mana dari grafik yang sebenarnya monoton.</p>
+        <p><strong>Kenapa salah:</strong> kalau domain yang dipilih masih mencakup bagian turun sekaligus bagian naik, fungsinya tetap tidak satu-satu.</p>
+        <p><strong>Cara menghindari:</strong> cari dulu titik puncaknya, baru tentukan domain hanya di satu sisi titik puncak (kiri saja atau kanan saja).</p>
+      </div>
+
+      <div class="kesalahan-item">
+        <h4>4. Lupa mengecek dulu apakah relasinya memang fungsi</h4>
+        <p><strong>Yang sering terjadi:</strong> siswa langsung mengecek syarat invers tanpa memastikan bahwa yang diperiksa memang sebuah fungsi.</p>
+        <p><strong>Kenapa salah:</strong> uji garis horizontal itu untuk mengecek apakah fungsi punya invers — bukan untuk mengecek apakah sesuatu itu fungsi (itu tugas uji garis vertikal).</p>
+        <p><strong>Cara menghindari:</strong> pastikan dulu relasinya adalah fungsi (uji garis vertikal), baru lanjut cek syarat inversnya (uji garis horizontal).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section id="ringkasan" class="fade-up">
+    <div class="card">
+      <h2><span class="num">8</span>Ringkasan</h2>
+      <div class="ringkasan-list">
+        <div class="ringkasan-item">
+          <div class="ringkasan-num">1</div>
+          <p style="margin:0;">Fungsi punya invers hanya kalau fungsi itu <strong>satu-satu (injektif)</strong> — tiap output cuma berasal dari satu input.</p>
+        </div>
+        <div class="ringkasan-item">
+          <div class="ringkasan-num">2</div>
+          <p style="margin:0;">Cara cek dari grafik: pakai <strong>uji garis horizontal</strong>. Kalau ada garis mendatar yang motong grafik lebih dari satu titik, fungsi itu tidak punya invers.</p>
+        </div>
+        <div class="ringkasan-item">
+          <div class="ringkasan-num">3</div>
+          <p style="margin:0;">Cara cek dari rumus: kalau fungsinya <strong>monoton</strong> (selalu naik atau selalu turun) di seluruh domainnya, fungsi itu pasti punya invers.</p>
+        </div>
+        <div class="ringkasan-item">
+          <div class="ringkasan-num">4</div>
+          <p style="margin:0;">Fungsi yang aslinya tidak satu-satu (seperti fungsi kuadrat) masih bisa punya invers, asalkan <strong>domainnya dibatasi</strong> supaya jadi monoton.</p>
+        </div>
+        <div class="ringkasan-item">
+          <div class="ringkasan-num">5</div>
+          <p style="margin:0;">Grafik fungsi dan grafik inversnya saling <strong>bercerminan terhadap garis</strong> <span class="katex-formula">\(y=x\)</span>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section id="refleksi" class="fade-up">
+    <div class="card">
+      <h2><span class="num">9</span>Refleksi</h2>
+      <p class="secondary">Enggak ada jawaban benar/salah di bagian ini. Coba jelaskan dengan kata-katamu sendiri, ya.</p>
+
+      <div class="field" style="margin-bottom:16px;">
+        <label for="refleksi1">1. Dengan kata-katamu sendiri, apa yang membuat suatu fungsi "boleh" dibalik jadi fungsi invers, dan apa yang membuatnya "tidak boleh"?</label>
+        <textarea id="refleksi1" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <div class="field" style="margin-bottom:16px;">
+        <label for="refleksi2">2. Menurutmu, kenapa membatasi domain bisa mengubah fungsi yang tadinya tidak punya invers jadi punya invers?</label>
+        <textarea id="refleksi2" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <div class="identitas-warning" id="refleksiWarning">⚠️ Isi dulu kedua kolom refleksi sebelum mengirim.</div>
+
+      <button class="btn-primary" onclick="kirimRefleksi()">Kirim Refleksi</button>
+      <span class="status-kirim" id="statusRefleksi"></span>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <strong>NUMERA</strong> · Modul Interaktif · Versi 1.0<br>
+  Dikembangkan oleh Kiki Herdiansyah · Copyright © 2026
+</footer>
+
+<script>
+/* =========================================================
+   IDENTITAS SISWA & PENGIRIMAN JAWABAN
+========================================================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+const TOPIK = 'Syarat Fungsi Memiliki Invers';
+
+function getIdentitas(){
+  return {
+    nama: document.getElementById('inputNama').value.trim(),
+    kelas: document.getElementById('inputKelas').value.trim()
+  };
+}
+
+function identitasLengkap(){
+  const id = getIdentitas();
+  const warn = document.getElementById('identitasWarning');
+  if(!id.nama || !id.kelas){
+    warn.style.display = 'block';
+    document.getElementById('header').scrollIntoView({behavior:'smooth', block:'center'});
+    return false;
+  }
+  warn.style.display = 'none';
+  return true;
+}
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const data = {
+    topik: TOPIK,
+    nama: id.nama,
+    kelas: id.kelas,
+    nomorSoal: nomorSoal,
+    jawaban1: jawaban1,
+    jawaban2: jawaban2 || '',
+    status: status,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  const statusEl = document.getElementById(statusElId);
+
+  if(!SCRIPT_URL){
+    if(statusEl) statusEl.textContent = '(mode latihan — belum terhubung ke guru)';
+    return;
+  }
+
+  if(statusEl) statusEl.textContent = 'Mengirim...';
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'text/plain'},
+    body: JSON.stringify(data)
+  }).then(()=>{
+    if(statusEl) statusEl.textContent = 'Terkirim ke guru ✓';
+  }).catch(()=>{
+    if(statusEl) statusEl.textContent = 'Gagal mengirim, coba lagi.';
+  });
+}
+
+/* =========================================================
+   CHALLENGE
+========================================================= */
+function cekSoal1(){
+  if(!identitasLengkap()) return;
+  const pilihan = document.querySelector('input[name="soal1"]:checked');
+  const fb = document.getElementById('feedback1');
+  if(!pilihan){
+    fb.className = 'feedback salah';
+    fb.textContent = 'Pilih salah satu jawaban dulu, ya.';
+    return;
+  }
+  let benar = pilihan.value === 'ya';
+  fb.className = 'feedback ' + (benar ? 'benar' : 'salah');
+  if(benar){
+    fb.textContent = 'Benar! f(x) = 4x − 7 punya gradien 4 (tidak nol), jadi fungsinya selalu naik dari kiri ke kanan alias monoton. Fungsi monoton pasti satu-satu, jadi pasti punya invers.';
+  } else if(pilihan.value === 'tidak_bentuk'){
+    fb.textContent = 'Belum tepat. Fungsi kuadrat memang sering butuh pembatasan domain, tapi fungsi linear seperti ini beda kasus — gradiennya tidak nol, jadi selalu naik terus dan pasti punya invers tanpa perlu dibatasi.';
+  } else {
+    fb.textContent = 'Belum tepat. Pembatasan domain diperlukan untuk fungsi yang grafiknya naik-turun seperti parabola. Fungsi linear dengan gradien tidak nol selalu monoton, jadi tidak perlu dibatasi.';
+  }
+  kirimKeGuru(1, pilihan.value, '', benar ? 'Benar' : 'Salah', 'statusSoal1');
+}
+
+function cekSoal2(){
+  if(!identitasLengkap()) return;
+  const pilihanA = document.querySelector('input[name="soal2a"]:checked');
+  const pInput = document.getElementById('jawaban2b').value.trim();
+  const fb = document.getElementById('feedback2');
+
+  if(!pilihanA || pInput === ''){
+    fb.className = 'feedback salah';
+    fb.textContent = 'Jawab dulu Bagian A dan Bagian B sebelum dicek.';
+    return;
+  }
+
+  const benarA = pilihanA.value === 'tidak';
+  const pNum = parseFloat(pInput.replace(',', '.'));
+  const benarB = !isNaN(pNum) && Math.abs(pNum - 2) < 0.01;
+  const semuaBenar = benarA && benarB;
+
+  fb.className = 'feedback ' + (semuaBenar ? 'benar' : 'salah');
+  if(semuaBenar){
+    fb.textContent = 'Benar semua! Pada domain semua bilangan real, f(x) = x² − 4x + 3 tidak satu-satu karena punya bagian turun dan naik. Titik puncaknya di x = −(−4)/(2·1) = 2, jadi domain minimum yang membuatnya punya invers adalah x ≥ 2.';
+  } else {
+    let pesan = '';
+    if(!benarA) pesan += 'Bagian A belum tepat — coba pikirkan lagi, fungsi kuadrat pada domain penuh itu grafiknya seperti apa (naik terus, turun terus, atau naik-turun)? ';
+    if(!benarB) pesan += 'Bagian B belum tepat — coba cari dulu titik puncaknya dengan rumus x = −b/(2a), lalu itulah nilai p minimum.';
+    fb.textContent = pesan;
+  }
+  kirimKeGuru(2, pilihanA.value, pInput, semuaBenar ? 'Benar' : 'Salah', 'statusSoal2');
+}
+
+function cekSoal3(){
+  if(!identitasLengkap()) return;
+  const pInput = document.getElementById('jawaban3').value.trim();
+  const fb = document.getElementById('feedback3');
+
+  if(pInput === ''){
+    fb.className = 'feedback salah';
+    fb.textContent = 'Tulis dulu nilai p sebelum dicek.';
+    return;
+  }
+
+  const pNum = parseFloat(pInput.replace(',', '.'));
+  const benar = !isNaN(pNum) && Math.abs(pNum - 3) < 0.01;
+
+  fb.className = 'feedback ' + (benar ? 'benar' : 'salah');
+  if(benar){
+    fb.textContent = 'Tepat! Titik puncak f(x) = x² − 6x + 5 ada di x = −(−6)/(2·1) = 3. Untuk x ≥ 3, fungsinya selalu naik (monoton), jadi p minimum adalah 3. Kalau p kurang dari 3, sebagian domainnya masih mencakup bagian yang turun.';
+  } else {
+    fb.textContent = 'Belum tepat. Coba cari dulu titik puncak parabolanya pakai rumus x = −b/(2a) dengan a = 1 dan b = −6. Titik itulah batas p paling kecil, karena di titik itu fungsinya baru mulai naik terus.';
+  }
+  kirimKeGuru(3, pInput, '', benar ? 'Benar' : 'Salah', 'statusSoal3');
+}
+
+/* =========================================================
+   REFLEKSI
+========================================================= */
+function kirimRefleksi(){
+  if(!identitasLengkap()) return;
+  const j1 = document.getElementById('refleksi1').value.trim();
+  const j2 = document.getElementById('refleksi2').value.trim();
+  const warn = document.getElementById('refleksiWarning');
+
+  if(!j1 || !j2){
+    warn.style.display = 'block';
+    return;
+  }
+  warn.style.display = 'none';
+  kirimKeGuru('Refleksi', j1, j2, '-', 'statusRefleksi');
+}
+
+/* =========================================================
+   FUNGSI MATEMATIKA UNTUK GRAFIK
+========================================================= */
+function fLinNaik(x){ return 1.2*x + 1; }
+function fLinTurun(x){ return -1.2*x + 1; }
+function fKuadrat(x){ return 0.5*x*x - 3; }
+function fKubik(x){ return 0.06*x*x*x; }
+function fAbsolut(x){ return Math.abs(x) - 2; }
+function fXKuadratPolos(x){ return x*x; } // untuk section "Lihat Cara Kerjanya"
+
+/* =========================================================
+   ENGINE GAMBAR GRAFIK (CANVAS)
+========================================================= */
+function buatMapper(canvas, xmin, xmax, ymin, ymax, pad){
+  const w = canvas.width, h = canvas.height;
+  const plotW = w - pad*2, plotH = h - pad*2;
+  return {
+    px: x => pad + (x - xmin) / (xmax - xmin) * plotW,
+    py: y => pad + (ymax - y) / (ymax - ymin) * plotH,
+    plotW, plotH, pad
+  };
+}
+
+function gambarGrid(ctx, canvas, m, xmin, xmax, ymin, ymax){
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1;
+  for(let gx = Math.ceil(xmin); gx <= xmax; gx++){
+    ctx.beginPath();
+    ctx.moveTo(m.px(gx), m.pad);
+    ctx.lineTo(m.px(gx), h - m.pad);
+    ctx.stroke();
+  }
+  for(let gy = Math.ceil(ymin); gy <= ymax; gy++){
+    ctx.beginPath();
+    ctx.moveTo(m.pad, m.py(gy));
+    ctx.lineTo(w - m.pad, m.py(gy));
+    ctx.stroke();
+  }
+  // sumbu
+  ctx.strokeStyle = '#94A3B8';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(m.pad, m.py(0)); ctx.lineTo(w - m.pad, m.py(0));
+  ctx.moveTo(m.px(0), m.pad); ctx.lineTo(m.px(0), h - m.pad);
+  ctx.stroke();
+}
+
+function gambarKurva(ctx, m, fn, xa, xb, color){
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  const steps = 200;
+  let mulai = true;
+  for(let i=0;i<=steps;i++){
+    const x = xa + (xb - xa) * i / steps;
+    const y = fn(x);
+    const px = m.px(x), py = m.py(y);
+    if(py < -20 || py > (m.plotH + m.pad*2 + 20)) { mulai = true; continue; }
+    if(mulai){ ctx.moveTo(px,py); mulai = false; } else { ctx.lineTo(px,py); }
+  }
+  ctx.stroke();
+}
+
+function gambarGarisPutus(ctx, m, y, canvas, color){
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([6,6]);
+  ctx.beginPath();
+  ctx.moveTo(m.pad, m.py(y));
+  ctx.lineTo(canvas.width - m.pad, m.py(y));
+  ctx.stroke();
+  ctx.restore();
+}
+
+function gambarTitik(ctx, m, x, y, color){
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(m.px(x), m.py(y), 6, 0, Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function cariPerpotongan(fn, xa, xb, yLine){
+  const steps = 800;
+  const hasil = [];
+  let prevX = xa, prevVal = fn(xa) - yLine;
+  for(let i=1;i<=steps;i++){
+    const x = xa + (xb - xa) * i / steps;
+    const val = fn(x) - yLine;
+    if(prevVal === 0){ hasil.push(prevX); }
+    else if(prevVal * val < 0){
+      const t = prevVal / (prevVal - val);
+      hasil.push(prevX + t * (x - prevX));
+    }
+    prevX = x; prevVal = val;
+  }
+  return hasil;
+}
+
+/* =========================================================
+   SECTION 4 — LIHAT CARA KERJANYA
+========================================================= */
+const stepCanvas = document.getElementById('stepCanvas');
+const stepCtx = stepCanvas.getContext('2d');
+let stepIdx = 0;
+
+const langkah = [
+  {
+    teks: 'Perhatikan grafik f(x) = x². Titik x = −3 dan x = 3 sama-sama menghasilkan f(x) = 9 — dua input beda, satu output sama.',
+    draw: function(){
+      const m = buatMapper(stepCanvas, -4.5, 4.5, -2, 11, 40);
+      gambarGrid(stepCtx, stepCanvas, m, -4.5, 4.5, -2, 11);
+      gambarKurva(stepCtx, m, fXKuadratPolos, -4, 4, '#2563EB');
+      gambarTitik(stepCtx, m, -3, 9, '#EF4444');
+      gambarTitik(stepCtx, m, 3, 9, '#EF4444');
+      gambarGarisPutus(stepCtx, m, 9, stepCanvas, '#94A3B8');
+    }
+  },
+  {
+    teks: 'Ini namanya uji garis horizontal: garis mendatar di y = 9 motong grafik di DUA titik. Artinya f(x) = x² pada domain penuh TIDAK satu-satu, jadi tidak punya invers.',
+    draw: function(){
+      const m = buatMapper(stepCanvas, -4.5, 4.5, -2, 11, 40);
+      gambarGrid(stepCtx, stepCanvas, m, -4.5, 4.5, -2, 11);
+      gambarKurva(stepCtx, m, fXKuadratPolos, -4, 4, '#2563EB');
+      gambarGarisPutus(stepCtx, m, 9, stepCanvas, '#EF4444');
+      gambarTitik(stepCtx, m, -3, 9, '#EF4444');
+      gambarTitik(stepCtx, m, 3, 9, '#EF4444');
+    }
+  },
+  {
+    teks: 'Sekarang kita batasi domainnya, cuma ambil x ≥ 0 saja. Grafiknya jadi cuma separuh kanan.',
+    draw: function(){
+      const m = buatMapper(stepCanvas, -4.5, 4.5, -2, 11, 40);
+      gambarGrid(stepCtx, stepCanvas, m, -4.5, 4.5, -2, 11);
+      gambarKurva(stepCtx, m, fXKuadratPolos, 0, 4, '#2563EB');
+    }
+  },
+  {
+    teks: 'Uji garis horizontal lagi: sekarang garis mendatar di ketinggian manapun cuma motong grafik SATU kali. Fungsi ini sekarang satu-satu, alias PUNYA invers untuk x ≥ 0.',
+    draw: function(){
+      const m = buatMapper(stepCanvas, -4.5, 4.5, -2, 11, 40);
+      gambarGrid(stepCtx, stepCanvas, m, -4.5, 4.5, -2, 11);
+      gambarKurva(stepCtx, m, fXKuadratPolos, 0, 4, '#2563EB');
+      gambarGarisPutus(stepCtx, m, 9, stepCanvas, '#10B981');
+      gambarTitik(stepCtx, m, 3, 9, '#10B981');
+    }
+  },
+  {
+    teks: 'Karena f(x) = x² (untuk x ≥ 0) punya invers, grafik inversnya adalah pencerminan grafik asal terhadap garis y = x (garis putus-putus abu-abu).',
+    draw: function(){
+      const m = buatMapper(stepCanvas, -2, 11, -2, 11, 40);
+      gambarGrid(stepCtx, stepCanvas, m, -2, 11, -2, 11);
+      // garis y = x
+      stepCtx.save();
+      stepCtx.strokeStyle = '#94A3B8';
+      stepCtx.lineWidth = 1.5;
+      stepCtx.setLineDash([5,5]);
+      stepCtx.beginPath();
+      stepCtx.moveTo(m.px(-2), m.py(-2));
+      stepCtx.lineTo(m.px(11), m.py(11));
+      stepCtx.stroke();
+      stepCtx.restore();
+      gambarKurva(stepCtx, m, x => x*x, 0, 3.3, '#2563EB');
+      gambarKurva(stepCtx, m, x => Math.sqrt(Math.max(x,0)), 0, 11, '#10B981');
+    }
+  }
+];
+
+function renderStep(){
+  const s = langkah[stepIdx];
+  s.draw();
+  document.getElementById('stepText').textContent = s.teks;
+  document.getElementById('btnPrevStep').disabled = stepIdx === 0;
+  document.getElementById('btnNextStep').disabled = stepIdx === langkah.length - 1;
+  const dotsWrap = document.getElementById('stepDots');
+  dotsWrap.innerHTML = '';
+  langkah.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i === stepIdx ? ' active' : '');
+    dotsWrap.appendChild(d);
+  });
+}
+
+function gantiStep(dir){
+  stepIdx = Math.min(Math.max(stepIdx + dir, 0), langkah.length - 1);
+  renderStep();
+}
+
+renderStep();
+
+/* =========================================================
+   SECTION 5 — COBA SENDIRI
+========================================================= */
+const tryCanvas = document.getElementById('tryCanvas');
+const tryCtx = tryCanvas.getContext('2d');
+let percobaanTidakSatuSatu = {};
+
+const fnMap = {
+  naik:     { fn: fLinNaik,   label: 'f(x) = 1,2x + 1', restrictable:false },
+  turun:    { fn: fLinTurun,  label: 'f(x) = −1,2x + 1', restrictable:false },
+  kuadrat:  { fn: fKuadrat,   label: 'f(x) = 0,5x² − 3', restrictable:true },
+  kubik:    { fn: fKubik,     label: 'f(x) = 0,06x³', restrictable:false },
+  absolut:  { fn: fAbsolut,   label: 'f(x) = |x| − 2', restrictable:false }
+};
+
+function ubahFungsi(){
+  const key = document.getElementById('fnSelect').value;
+  document.getElementById('domainRow').style.display = fnMap[key].restrictable ? 'flex' : 'none';
+  if(!fnMap[key].restrictable) document.getElementById('domainRestrict').checked = false;
+  gambarUlangTry();
+}
+
+function domainAktif(key){
+  const restrict = document.getElementById('domainRestrict').checked && fnMap[key].restrictable;
+  return restrict ? [0, 5] : [-5, 5];
+}
+
+function verdictStatis(key, restricted){
+  const el = document.getElementById('tryVerdict');
+  let punyaInvers, teks;
+  switch(key){
+    case 'naik':
+    case 'turun':
+      punyaInvers = true;
+      teks = 'Fungsi ini selalu ' + (key==='naik' ? 'naik' : 'turun') + ' untuk semua x (monoton). Garis horizontal manapun cuma motong grafik ini tepat satu kali. Fungsi ini PUNYA invers.';
+      break;
+    case 'kubik':
+      punyaInvers = true;
+      teks = 'Fungsi ini selalu naik dari kiri ke kanan (monoton), walau bentuknya melengkung. Karena itu, fungsi ini PUNYA invers.';
+      break;
+    case 'kuadrat':
+      if(restricted){
+        punyaInvers = true;
+        teks = 'Sekarang grafiknya cuma separuh kanan (x ≥ 0), dan bagian ini selalu naik. Fungsi ini sekarang PUNYA invers.';
+      } else {
+        punyaInvers = false;
+        teks = 'Grafiknya punya bagian turun (kiri) dan bagian naik (kanan) sekaligus, jadi banyak pasangan x berbeda dengan hasil yang sama. Fungsi ini TIDAK punya invers kalau domainnya dibiarkan penuh.';
+      }
+      break;
+    case 'absolut':
+      punyaInvers = false;
+      teks = 'Grafik nilai mutlak berbentuk V — ada bagian turun dan bagian naik. Fungsi ini TIDAK punya invers kalau domainnya semua bilangan real.';
+      break;
+  }
+  el.className = 'verdict-box ' + (punyaInvers ? 'success' : 'error');
+  el.textContent = (punyaInvers ? '✓ PUNYA INVERS — ' : '✕ TIDAK PUNYA INVERS — ') + teks;
+}
+
+function gambarUlangTry(){
+  const key = document.getElementById('fnSelect').value;
+  const info = fnMap[key];
+  const [xa, xb] = domainAktif(key);
+  const yLine = parseFloat(document.getElementById('ySlider').value);
+
+  const m = buatMapper(tryCanvas, -5.5, 5.5, -6.5, 8.5, 40);
+  gambarGrid(tryCtx, tryCanvas, m, -5.5, 5.5, -6.5, 8.5);
+  gambarKurva(tryCtx, m, info.fn, xa, xb, '#2563EB');
+  gambarGarisPutus(tryCtx, m, yLine, tryCanvas, '#F59E0B');
+
+  const titik = cariPerpotongan(info.fn, xa, xb, yLine);
+  titik.forEach(x => gambarTitik(tryCtx, m, x, yLine, titik.length > 1 ? '#EF4444' : '#10B981'));
+
+  const insight = document.getElementById('tryInsight');
+  if(titik.length >= 2){
+    insight.className = 'insight-box warn';
+    insight.textContent = '⚠️ Di ketinggian y = ' + yLine.toFixed(1) + ', garis horizontal memotong grafik ' + titik.length + ' kali! Ada lebih dari satu x dengan hasil yang sama.';
+    percobaanTidakSatuSatu[key + (document.getElementById('domainRestrict').checked ? '_r' : '')] = true;
+  } else if(titik.length === 1){
+    insight.className = 'insight-box ok';
+    insight.textContent = '✓ Di ketinggian y = ' + yLine.toFixed(1) + ', garis horizontal cuma motong grafik 1 kali. Coba geser ke ketinggian lain juga.';
+  } else {
+    insight.className = 'insight-box';
+    insight.textContent = 'Di ketinggian y = ' + yLine.toFixed(1) + ', garis horizontal tidak menyentuh grafik sama sekali. Coba geser ke ketinggian lain.';
+  }
+
+  verdictStatis(key, document.getElementById('domainRestrict').checked);
+}
+
+ubahFungsi();
+
+/* =========================================================
+   KATEX RENDER
+========================================================= */
+document.addEventListener('DOMContentLoaded', function(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left:'\\(', right:'\\)', display:false},
+        {left:'\\[', right:'\\]', display:true}
+      ]
+    });
+  }
+});
+window.addEventListener('load', function(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left:'\\(', right:'\\)', display:false},
+        {left:'\\[', right:'\\]', display:true}
+      ]
+    });
+  }
+});
+
+/* =========================================================
+   FADE-UP ON SCROLL
+========================================================= */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, {threshold:0.12});
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+/* =========================================================
+   PROGRESS BAR
+========================================================= */
+function updateProgressBar(){
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgressBar);
+updateProgressBar();
+</script>
+</body>
+</html>

@@ -1,0 +1,939 @@
+<!--
+  NUMERA
+  Judul: Menentukan Fungsi Invers
+  Jenis: Modul Interaktif (pakai KaTeX)
+  Versi: 1.4
+  Dikembangkan oleh Kiki Herdiansyah
+  Copyright © 2026
+  Identitas Proyek: Numera — s.id/cakram
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Numera · Menentukan Fungsi Invers</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah — Numera">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --border:#E2E8F0;
+
+    --success:#10B981;
+    --success-bg:#ECFDF5;
+    --success-border:#A7F3D0;
+    --success-text:#047857;
+
+    --warning:#F59E0B;
+    --warning-bg:#FEF3C7;
+    --warning-text:#B45309;
+
+    --error:#EF4444;
+    --error-bg:#FEE2E2;
+    --error-border:#FECACA;
+    --error-text:#B91C1C;
+
+    --radius-card:18px;
+    --radius-btn:12px;
+    --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 60px;}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    padding:14px 18px;
+    font-weight:600;
+    font-size:14px;
+    color:var(--primary);
+    letter-spacing:.2px;
+  }
+  .progress-bar{
+    position:sticky;top:45px;z-index:49;
+    height:3px;background:transparent;
+  }
+  .progress-bar-fill{
+    height:100%;background:var(--primary);width:0%;
+    transition:width 80ms linear;
+  }
+
+  section{margin-top:34px;}
+  section:first-of-type{margin-top:26px;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-card);
+    box-shadow:var(--shadow-card);
+    padding:24px;
+  }
+
+  h1{font-size:24px;font-weight:800;margin:0 0 6px;letter-spacing:-.3px;}
+  h2{font-size:19px;font-weight:750;margin:0 0 14px;letter-spacing:-.2px;}
+  h3{font-size:16px;font-weight:700;margin:22px 0 8px;color:var(--text);}
+  h3:first-child{margin-top:0;}
+  p{margin:0 0 12px;font-size:15px;color:var(--text);}
+  p.secondary{color:var(--text-secondary);}
+  .section-tag{
+    display:inline-block;font-size:12px;font-weight:700;color:var(--primary);
+    background:var(--primary-light);padding:4px 10px;border-radius:999px;
+    margin-bottom:10px;letter-spacing:.3px;
+  }
+
+  ul,ol{margin:0 0 12px;padding-left:20px;}
+  li{margin-bottom:6px;font-size:15px;}
+
+  mark{background:var(--primary-light);color:var(--primary-hover);padding:1px 4px;border-radius:5px;}
+
+  .formula-box{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 16px;
+    margin:12px 0;
+    overflow-x:auto;
+    font-size:15px;
+  }
+
+  .header-card{background:linear-gradient(180deg,var(--card) 0%, var(--card) 100%);}
+  .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;}
+  .meta-chip{
+    font-size:13px;font-weight:600;color:var(--primary-hover);
+    background:var(--primary-light);padding:6px 12px;border-radius:999px;
+  }
+  .goal-list li{font-size:14.5px;}
+
+  .id-box{
+    margin-top:18px;padding:16px;border-radius:14px;
+    background:var(--bg);border:1px solid var(--border);
+  }
+  .id-box label{display:block;font-size:12.5px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+  .id-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .id-field{flex:1;min-width:140px;}
+  input[type="text"], input[type="number"], select, textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;
+    font-family:inherit;font-size:14.5px;background:#fff;color:var(--text);
+  }
+  input:focus, select:focus, textarea:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+  .id-note{font-size:12.5px;color:var(--text-secondary);margin-top:10px;}
+
+  button{
+    font-family:inherit;font-weight:650;font-size:14.5px;
+    border:none;border-radius:var(--radius-btn);
+    min-height:40px;padding:0 18px;cursor:pointer;
+    transition:all 200ms ease;
+  }
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);}
+  .btn-secondary{background:var(--primary-light);color:var(--primary-hover);}
+  .btn-secondary:hover{background:#c7ddfd;}
+  .btn-outline{background:#fff;border:1px solid var(--border);color:var(--text);}
+  .btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+  .btn-tab{background:#fff;border:1px solid var(--border);color:var(--text-secondary);}
+  .btn-tab.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+  button:disabled{opacity:.45;cursor:not-allowed;}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+
+  .fade-up{opacity:0;transform:translateY(16px);transition:opacity 560ms ease, transform 560ms ease;}
+  .fade-up.visible{opacity:1;transform:translateY(0);}
+
+  .hook-question{font-size:17px;font-weight:650;margin-bottom:10px;}
+
+  .slider-group{margin:16px 0;}
+  .slider-label{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px;}
+  .slider-label span.val{color:var(--primary);font-weight:700;}
+  input[type="range"]{
+    width:100%;height:6px;border-radius:999px;background:var(--border);
+    -webkit-appearance:none;appearance:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+    background:var(--primary);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(15,23,42,.25);
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:20px;height:20px;border-radius:50%;background:var(--primary);
+    cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(15,23,42,.25);
+  }
+
+  .insight-box{
+    margin-top:14px;padding:12px 14px;border-radius:12px;
+    background:var(--primary-light);border:1px solid #bfd7fb;
+    color:var(--primary-hover);font-size:14px;font-weight:600;
+    display:none;
+  }
+  .insight-box.show{display:block;}
+
+  .warn-box{
+    margin-top:14px;padding:12px 14px;border-radius:12px;
+    background:var(--warning-bg);border:1px solid #fde49b;color:var(--warning-text);
+    font-size:14px;font-weight:600;display:none;
+  }
+  .warn-box.show{display:block;}
+
+  .verify-box{
+    margin-top:16px;padding:14px 16px;border-radius:12px;
+    background:var(--bg);border:1px solid var(--border);
+  }
+  .verify-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px;}
+  .verify-row input{max-width:110px;}
+  .verify-result{margin-top:10px;font-size:14px;}
+
+  .step-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:12px;}
+  .step-dots{display:flex;gap:6px;justify-content:center;margin-top:14px;}
+  .step-dot{width:7px;height:7px;border-radius:50%;background:var(--border);}
+  .step-dot.active{background:var(--primary);width:18px;border-radius:4px;transition:all 200ms ease;}
+  .step-counter{font-size:12.5px;color:var(--text-secondary);text-align:center;margin-top:8px;}
+
+  .badge{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.3px;}
+  .badge-mudah{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);}
+  .badge-sedang{background:var(--warning-bg);color:var(--warning-text);}
+  .badge-sulit{background:var(--error-bg);color:var(--error-text);border:1px solid var(--error-border);}
+
+  .soal-card{margin-bottom:22px;padding-bottom:20px;border-bottom:1px dashed var(--border);}
+  .soal-card:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .soal-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .soal-head b{font-size:15px;}
+
+  .answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+  .answer-row input{max-width:160px;}
+
+  .feedback{
+    margin-top:12px;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:600;display:none;
+  }
+  .feedback.benar{display:block;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+  .feedback.salah{display:block;background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+
+  .kirim-status{font-size:12px;color:var(--text-secondary);margin-top:8px;min-height:16px;}
+
+  .mistake-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;}
+  .mistake-card:last-child{margin-bottom:0;}
+  .mistake-title{font-weight:700;font-size:14.5px;margin-bottom:6px;color:var(--error-text);}
+  .mistake-title::before{content:"✕ ";}
+  .mistake-fix{font-weight:700;font-size:14px;margin-top:8px;color:var(--success-text);}
+  .mistake-fix::before{content:"✓ ";}
+
+  .ring-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .ring-num{
+    flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--primary);
+    color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;
+  }
+  .ring-item:last-child{margin-bottom:0;}
+
+  textarea{min-height:90px;resize:vertical;}
+  .refleksi-item{margin-bottom:18px;}
+  .refleksi-item:last-child{margin-bottom:0;}
+  .refleksi-q{font-weight:650;font-size:14.5px;margin-bottom:8px;}
+
+  footer{
+    margin-top:44px;text-align:center;padding:22px 10px;
+    color:var(--text-secondary);font-size:12.5px;border-top:1px solid var(--border);
+  }
+  footer b{color:var(--text);}
+
+  @media (max-width:480px){
+    h1{font-size:21px;}
+    .card{padding:18px;}
+    .id-row{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">NUMERA · Menentukan Fungsi Invers</div>
+<div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section id="header">
+    <div class="card header-card">
+      <h1>Menentukan Fungsi Invers</h1>
+      <p class="secondary">Belajar langkah demi langkah cara menemukan rumus fungsi invers — mulai dari fungsi linier, fungsi pecahan, sampai fungsi komposisi.</p>
+
+      <div class="meta-row">
+        <span class="meta-chip">⏱ Sekitar 18–20 menit</span>
+        <span class="meta-chip">📘 Modul Mandiri</span>
+      </div>
+
+      <h3 style="margin-top:18px;">Setelah belajar ini, kamu akan bisa:</h3>
+      <ul class="goal-list">
+        <li>Menggunakan langkah umum (tukar x dan y) untuk menentukan rumus invers</li>
+        <li>Menentukan rumus invers dari fungsi linier</li>
+        <li>Menentukan rumus invers dari fungsi pecahan (rasional) tanpa salah tanda</li>
+        <li>Menentukan rumus invers dari fungsi komposisi, termasuk urutannya</li>
+        <li>Mengecek sendiri apakah hasil inversmu sudah benar</li>
+      </ul>
+
+      <div class="id-box">
+        <div class="id-row">
+          <div class="id-field">
+            <label for="namaSiswa">Nama Lengkap</label>
+            <input type="text" id="namaSiswa" placeholder="Tulis namamu di sini">
+          </div>
+          <div class="id-field">
+            <label for="kelasSiswa">Kelas</label>
+            <input type="text" id="kelasSiswa" placeholder="Contoh: XI IPA 2">
+          </div>
+        </div>
+        <p class="id-note">Isi nama dan kelas dulu, ya — bagian ini dipakai supaya jawaban Challenge dan Refleksi kamu di bawah bisa terkirim ke gurumu.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section id="hook">
+    <div class="card fade-up">
+      <span class="section-tag">Pernahkah Kamu Berpikir?</span>
+      <p class="hook-question">Pernah kepikiran tidak, gimana caranya kamu bisa pulang ke rumah tanpa nyasar, padahal enggak pakai GPS?</p>
+      <p>Kalau kamu ingat urutan arah dari rumah ke sekolah — "belok kanan di pertigaan, lurus terus, belok kiri di masjid" — kamu bisa pulang dengan cara <mark>membalik urutannya</mark>: mulai dari langkah terakhir, dan setiap belokan dibalik arahnya.</p>
+      <p>Menentukan fungsi invers itu persis seperti ini. Kita tidak menebak-nebak. Ada <b>langkah pasti</b> yang selalu bisa dipakai untuk "membalik" sebuah fungsi, apa pun bentuknya.</p>
+      <p class="secondary">Di modul ini kita akan latihan langkah itu untuk beberapa bentuk fungsi yang paling sering muncul di soal: fungsi linier, fungsi pecahan, dan fungsi komposisi.</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section id="penjelasan">
+    <div class="card fade-up">
+      <span class="section-tag">Penjelasan Sederhana</span>
+      <h2>Langkah demi Langkah Menentukan Invers</h2>
+
+      <h3>1. Sebelum mulai — sedikit mengingat kembali</h3>
+      <p>Fungsi invers, ditulis <span id="ktx-notasi"></span>, adalah "proses kebalikan" dari suatu fungsi. Kalau <span id="ktx-fungsi-ab"></span> mengubah <span id="ktx-a1"></span> menjadi <span id="ktx-b1"></span>, maka <span id="ktx-notasi2"></span> mengubah <span id="ktx-b2"></span> kembali menjadi <span id="ktx-a2"></span>.</p>
+      <p>Bukan semua fungsi punya invers — hanya fungsi yang korespondensi satu-satu. Di modul ini kita anggap syarat itu sudah terpenuhi, dan kita fokus ke cara <b>menemukan rumusnya</b>.</p>
+
+      <h3>2. Tiga langkah yang selalu sama</h3>
+      <p>Berapa pun rumit bentuk fungsinya, cara menentukan inversnya selalu memakai tiga langkah yang sama:</p>
+      <ol>
+        <li>Tulis fungsi sebagai <span id="ktx-l1"></span></li>
+        <li>Tukar posisi <span id="ktx-x1"></span> dan <span id="ktx-y1"></span></li>
+        <li>Selesaikan persamaan itu untuk <span id="ktx-y2b"></span>, lalu ganti <span id="ktx-y2c"></span> menjadi <span id="ktx-finv1"></span></li>
+      </ol>
+      <p>Sampai sini masih masuk akal? Tiga langkah ini adalah "peta" yang akan terus kita pakai berulang-ulang di bawah, untuk bentuk fungsi apa pun.</p>
+
+      <h3>3. Fungsi linier — bentuk paling sederhana</h3>
+      <p>Untuk fungsi linier seperti <span id="ktx-lin1"></span>, tiga langkah tadi berjalan mulus tanpa banyak jebakan:</p>
+      <div class="formula-box" id="ktx-lin-proses"></div>
+      <p>Perhatikan, satu-satunya yang perlu hati-hati adalah tanda saat memindahkan <span id="ktx-lin-b"></span> ke ruas lain dan saat membagi dengan <span id="ktx-lin-a"></span>.</p>
+
+      <h3>4. Fungsi pecahan — di sinilah jebakan paling sering muncul</h3>
+      <p>Untuk fungsi pecahan seperti <span id="ktx-pec1"></span>, langkahnya sama, tapi ada tambahan: kita harus <mark>mengalikan silang</mark> dulu untuk menghilangkan bentuk pecahannya sebelum bisa menukar x dan y dengan nyaman.</p>
+      <div class="formula-box" id="ktx-pec-proses"></div>
+      <p>Kenapa ini penting? Karena begitu ada tanda kurung dan perkalian silang, peluang salah tanda jadi jauh lebih besar. Nanti di bagian <b>Kesalahan yang Sering Terjadi</b>, kita bahas jebakan ini lebih dalam.</p>
+      <p>Satu hal lagi: fungsi pecahan seperti ini punya nilai <span id="ktx-x2b"></span> yang harus dihindari (penyebut tidak boleh nol) — baik pada fungsi asal maupun pada fungsi inversnya, dan kedua nilai itu biasanya berbeda.</p>
+
+      <h3>5. Fungsi komposisi — urutannya harus dibalik juga</h3>
+      <p>Bagaimana kalau yang mau kita cari inversnya adalah <span id="ktx-komp1"></span>, hasil gabungan dua fungsi?</p>
+      <p>Ada dua cara, dan keduanya menghasilkan jawaban yang sama:</p>
+      <ol>
+        <li><b>Cara langsung:</b> cari dulu rumus <span id="ktx-komp2"></span>, baru diinvers pakai tiga langkah biasa.</li>
+        <li><b>Cara sifat:</b> pakai rumus <span id="ktx-komp3"></span>.</li>
+      </ol>
+      <p>Perhatikan baik-baik urutan pada cara kedua: <mark>urutannya tertukar</mark> dari urutan komposisi asalnya! Kenapa begitu?</p>
+      <p>Coba bayangkan kamu pakai kaus kaki dulu, baru sepatu. Untuk membalik prosesnya (melepas), kamu harus lepas <b>sepatu dulu, baru kaus kaki</b> — urutannya kebalik. Fungsi komposisi bekerja dengan logika yang sama persis.</p>
+      <p>Kedua cara ini akan kita coba langsung di bagian <b>Lihat Cara Kerjanya</b>, supaya kamu lihat sendiri bahwa hasilnya memang sama.</p>
+
+      <h3>6. Cara mengecek hasil invers yang kamu temukan</h3>
+      <p>Setelah dapat rumus <span id="ktx-finv2"></span>, jangan langsung percaya begitu saja. Ada cara mudah mengecek kebenarannya:</p>
+      <div class="formula-box" id="ktx-cek"></div>
+      <p>Ambil rumus <span id="ktx-finv3"></span> yang kamu temukan, masukkan ke dalam <span id="ktx-f1"></span>, lalu sederhanakan. Kalau hasil akhirnya <span id="ktx-x3"></span> lagi, berarti rumus inversmu sudah benar.</p>
+      <p>Ternyata — cara mengecek ini sama pentingnya dengan cara mencarinya. Banyak kesalahan aljabar bisa ketahuan lewat langkah ini.</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section id="carakerja">
+    <div class="card fade-up">
+      <span class="section-tag">Lihat Cara Kerjanya</span>
+      <h2>Contoh: Invers dari Fungsi Komposisi</h2>
+      <p>Diketahui <span id="ktx-contoh-f"></span> dan <span id="ktx-contoh-g"></span>. Kita akan cari <span id="ktx-contoh-target"></span> dengan dua cara, supaya kamu lihat sendiri hasilnya sama. Klik <b>Berikutnya</b> untuk mengikuti setiap langkahnya.</p>
+
+      <div class="step-card">
+        <div id="stepContent"></div>
+        <div class="step-dots" id="stepDots"></div>
+        <div class="step-counter" id="stepCounter"></div>
+        <div class="btn-row">
+          <button class="btn-outline" id="btnPrevStep">← Sebelumnya</button>
+          <button class="btn-primary" id="btnNextStep">Berikutnya →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section id="coba">
+    <div class="card fade-up">
+      <span class="section-tag">Coba Sendiri</span>
+      <h2>Bagian 1 — Ubah Koefisien, Lihat Inversnya Berubah</h2>
+      <p>Pilih bentuk fungsi, lalu geser slider koefisiennya. Rumus invers akan langsung diperbarui.</p>
+
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn-tab active" id="tabLinier">Fungsi Linier</button>
+        <button class="btn-tab" id="tabPecahan">Fungsi Pecahan</button>
+      </div>
+
+      <div id="panelLinier">
+        <div class="slider-group">
+          <div class="slider-label">Nilai a <span class="val" id="valA">2</span></div>
+          <input type="range" id="sliderA" min="-4" max="4" step="1" value="2">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">Nilai b <span class="val" id="valB">3</span></div>
+          <input type="range" id="sliderB" min="-6" max="6" step="1" value="3">
+        </div>
+        <div class="formula-box">
+          <div id="ktx-fungsi-live"></div>
+          <div id="ktx-invers-live" style="margin-top:6px;"></div>
+        </div>
+        <div class="warn-box" id="warnLinier">⚠ Saat a = 0, f(x) menjadi konstan dan tidak punya invers. Slider a sengaja tidak menyertakan 0 untuk menghindari kondisi ini.</div>
+      </div>
+
+      <div id="panelPecahan" style="display:none;">
+        <div class="slider-group">
+          <div class="slider-label">Nilai a <span class="val" id="valPA">2</span></div>
+          <input type="range" id="sliderPA" min="-4" max="4" step="1" value="2">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">Nilai b <span class="val" id="valPB">1</span></div>
+          <input type="range" id="sliderPB" min="-5" max="5" step="1" value="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">Nilai c <span class="val" id="valPC">1</span></div>
+          <input type="range" id="sliderPC" min="-4" max="4" step="1" value="1">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label">Nilai d <span class="val" id="valPD">-2</span></div>
+          <input type="range" id="sliderPD" min="-5" max="5" step="1" value="-2">
+        </div>
+        <div class="formula-box">
+          <div id="ktx-pfungsi-live"></div>
+          <div id="ktx-pinvers-live" style="margin-top:6px;"></div>
+        </div>
+        <div class="warn-box" id="warnPecahan">⚠ Nilai c = 0 membuat bentuk ini bukan fungsi pecahan lagi. Slider c sengaja tidak menyertakan 0.</div>
+        <div class="insight-box" id="insightPecahan"></div>
+      </div>
+
+      <h2 style="margin-top:30px;">Bagian 2 — Buktikan Sendiri Hasilnya Benar</h2>
+      <p>Pakai fungsi linier dari Bagian 1 di atas. Masukkan sembarang angka untuk x, lalu lihat apakah f⁻¹(f(x)) kembali menjadi x.</p>
+
+      <div class="verify-box">
+        <div id="ktx-verify-formula"></div>
+        <div class="verify-row">
+          <label for="verifyX" style="font-size:14px;font-weight:600;">x =</label>
+          <input type="number" id="verifyX" value="4" step="1">
+        </div>
+        <div class="verify-result" id="verifyResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section id="challenge">
+    <div class="card fade-up">
+      <span class="section-tag">Challenge</span>
+      <h2>Yuk, Uji Pemahamanmu</h2>
+      <p class="secondary">Kerjakan tiga soal berikut. Jawabanmu akan langsung diperiksa dan dikirim ke gurumu.</p>
+
+      <!-- Soal 1 -->
+      <div class="soal-card">
+        <div class="soal-head"><span class="badge badge-mudah">MUDAH</span><b>Soal 1</b></div>
+        <p>Diketahui <span id="ktx-s1"></span>. Tentukan nilai <span id="ktx-s1b"></span>.</p>
+        <div class="answer-row">
+          <input type="number" id="jawab1" placeholder="Jawaban" step="any">
+          <button class="btn-primary" id="cek1">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb1"></div>
+        <div class="kirim-status" id="status1"></div>
+      </div>
+
+      <!-- Soal 2 -->
+      <div class="soal-card">
+        <div class="soal-head"><span class="badge badge-sedang">SEDANG</span><b>Soal 2</b></div>
+        <p>Diketahui <span id="ktx-s2"></span>. Tentukan nilai <span id="ktx-s2b"></span>.</p>
+        <p class="secondary" style="font-size:13px;">Ingat: kalikan silang dulu, lalu hati-hati dengan tanda saat memindahkan suku.</p>
+        <div class="answer-row">
+          <input type="number" id="jawab2" placeholder="Jawaban" step="any">
+          <button class="btn-primary" id="cek2">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb2"></div>
+        <div class="kirim-status" id="status2"></div>
+      </div>
+
+      <!-- Soal 3 -->
+      <div class="soal-card">
+        <div class="soal-head"><span class="badge badge-sulit">SULIT</span><b>Soal 3</b></div>
+        <p>Diketahui <span id="ktx-s3"></span> dan <span id="ktx-s3b"></span>. Jika <span id="ktx-s3c"></span>, tentukan nilai <span id="ktx-s3d"></span>.</p>
+        <p class="secondary" style="font-size:13px;">Petunjuk: kamu tidak perlu mencari rumus (f∘g)⁻¹(x) secara penuh. Gunakan sifat pengecekan hasil yang sudah kita bahas.</p>
+        <div class="answer-row">
+          <input type="number" id="jawab3" placeholder="Jawaban" step="any">
+          <button class="btn-primary" id="cek3">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb3"></div>
+        <div class="kirim-status" id="status3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section id="kesalahan">
+    <div class="card fade-up">
+      <span class="section-tag">Kesalahan yang Sering Terjadi</span>
+      <h2>Hati-Hati dengan Jebakan Ini</h2>
+
+      <div class="mistake-card">
+        <div class="mistake-title">Salah tanda saat mengalikan silang pada fungsi pecahan</div>
+        <p style="margin-bottom:0;">Saat menghilangkan bentuk pecahan dengan mengalikan silang, siswa sering lupa mengalikan setiap suku di dalam kurung, atau salah tanda saat kurung dikalikan dengan bilangan negatif.</p>
+        <div class="mistake-fix">Tulis ulang hasil perkalian selengkap-lengkapnya sebelum menyederhanakan, jangan langsung dilompat.</div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-title">Menukar urutan pada invers fungsi komposisi</div>
+        <p style="margin-bottom:0;">Banyak yang menulis (f∘g)⁻¹(x) = f⁻¹(g⁻¹(x)), padahal urutan yang benar adalah g⁻¹(f⁻¹(x)) — dibalik dari urutan komposisi asalnya.</p>
+        <div class="mistake-fix">Ingat analogi kaus kaki dan sepatu: proses yang dilakukan terakhir harus "dilepas" duluan.</div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-title">Lupa mengecek hasil akhir</div>
+        <p style="margin-bottom:0;">Setelah dapat rumus invers, banyak siswa langsung menganggap jawabannya benar tanpa mengeceknya lagi, padahal kesalahan aljabar kecil bisa lolos begitu saja.</p>
+        <div class="mistake-fix">Biasakan selalu mengecek dengan memasukkan f⁻¹(x) ke f(x) dan lihat apakah hasilnya kembali menjadi x.</div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-title">Berhenti di tengah langkah karena tergesa-gesa</div>
+        <p style="margin-bottom:0;">Karena ingin cepat selesai, siswa kadang langsung menebak bentuk akhir tanpa menuntaskan langkah "tukar x dan y, lalu selesaikan untuk y" secara utuh.</p>
+        <div class="mistake-fix">Selesaikan ketiga langkah satu per satu, jangan meloncat ke bentuk akhir sebelum langkah sebelumnya benar-benar tuntas.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section id="ringkasan">
+    <div class="card fade-up">
+      <span class="section-tag">Ringkasan</span>
+      <h2>5 Hal Penting untuk Diingat</h2>
+
+      <div class="ring-item">
+        <div class="ring-num">1</div>
+        <p style="margin:0;">Cara menentukan rumus invers selalu memakai tiga langkah yang sama: tulis y = f(x), tukar x dan y, lalu selesaikan untuk y.</p>
+      </div>
+      <div class="ring-item">
+        <div class="ring-num">2</div>
+        <p style="margin:0;">Untuk fungsi linier, ketiga langkah ini berjalan mulus asal hati-hati dengan tanda.</p>
+      </div>
+      <div class="ring-item">
+        <div class="ring-num">3</div>
+        <p style="margin:0;">Untuk fungsi pecahan, kalikan silang dulu sebelum menukar x dan y, dan cek nilai yang membuat penyebut nol.</p>
+      </div>
+      <div class="ring-item">
+        <div class="ring-num">4</div>
+        <p style="margin:0;">Untuk fungsi komposisi, (f∘g)⁻¹(x) = g⁻¹(f⁻¹(x)) — urutannya dibalik dari komposisi asalnya.</p>
+      </div>
+      <div class="ring-item">
+        <div class="ring-num">5</div>
+        <p style="margin:0;">Selalu cek hasil inversmu dengan memasukkannya kembali ke fungsi asal: f(f⁻¹(x)) harus sama dengan x.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section id="refleksi">
+    <div class="card fade-up">
+      <span class="section-tag">Refleksi</span>
+      <h2>Coba Jelaskan dengan Kata-Katamu Sendiri</h2>
+      <p class="secondary">Tidak ada jawaban benar atau salah di bagian ini. Tulis saja apa yang benar-benar kamu pikirkan.</p>
+
+      <div class="refleksi-item">
+        <div class="refleksi-q">1. Kapan sebaiknya kamu langsung mencari rumus (f∘g)(x) dulu baru diinvers, dibanding langsung memakai g⁻¹(f⁻¹(x))?</div>
+        <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+      <div class="refleksi-item">
+        <div class="refleksi-q">2. Dari semua langkah menentukan rumus fungsi invers tadi, bagian mana yang menurutmu paling gampang keliru? Kenapa?</div>
+        <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <button class="btn-primary" id="kirimRefleksi">Kirim Refleksi</button>
+      <div class="kirim-status" id="statusRefleksi"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <b>NUMERA</b><br>
+  Dikembangkan oleh Kiki Herdiansyah<br>
+  Versi 1.4 · © 2026
+</footer>
+
+<script>
+/* ================= KONFIGURASI ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec'; // TODO: guru isi URL Google Apps Script di sini sebelum publish
+const TOPIK = 'Menentukan Fungsi Invers';
+
+/* ================= KATEX RENDER ================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const put = (id, tex, displayMode=false) => {
+    const el = document.getElementById(id);
+    if(el) katex.render(tex, el, {throwOnError:false, displayMode});
+  };
+  put('ktx-notasi','f^{-1}(x)');
+  put('ktx-fungsi-ab','f(x)');
+  put('ktx-a1','a');
+  put('ktx-b1','b');
+  put('ktx-notasi2','f^{-1}(x)');
+  put('ktx-b2','b');
+  put('ktx-a2','a');
+  put('ktx-l1','y=f(x)');
+  put('ktx-x1','x');
+  put('ktx-y1','y');
+  put('ktx-y2b','y');
+  put('ktx-y2c','y');
+  put('ktx-finv1','f^{-1}(x)');
+  put('ktx-lin1','f(x)=ax+b');
+  put('ktx-lin-proses','y=ax+b \\;\\to\\; x=ay+b \\;\\to\\; y=\\dfrac{x-b}{a} \\;\\to\\; f^{-1}(x)=\\dfrac{x-b}{a}', true);
+  put('ktx-lin-b','b');
+  put('ktx-lin-a','a');
+  put('ktx-pec1','f(x)=\\dfrac{ax+b}{cx+d}');
+  put('ktx-pec-proses','y=\\dfrac{ax+b}{cx+d} \\;\\to\\; x=\\dfrac{ay+b}{cy+d} \\;\\to\\; x(cy+d)=ay+b \\;\\to\\; y=\\dfrac{b-dx}{cx-a}', true);
+  put('ktx-x2b','x');
+  put('ktx-komp1','(f\\circ g)^{-1}(x)');
+  put('ktx-komp2','(f\\circ g)(x)');
+  put('ktx-komp3','(f\\circ g)^{-1}(x) = g^{-1}\\big(f^{-1}(x)\\big)');
+  put('ktx-finv2','f^{-1}(x)');
+  put('ktx-cek','f\\big(f^{-1}(x)\\big)=x', true);
+  put('ktx-finv3','f^{-1}(x)');
+  put('ktx-f1','f(x)');
+  put('ktx-x3','x');
+  put('ktx-contoh-f','f(x)=2x+1');
+  put('ktx-contoh-g','g(x)=x-3');
+  put('ktx-contoh-target','(f\\circ g)^{-1}(x)');
+  put('ktx-s1','f(x)=4x-7');
+  put('ktx-s1b','f^{-1}(5)');
+  put('ktx-s2','f(x)=\\dfrac{2x-3}{x+4}');
+  put('ktx-s2b','f^{-1}(1)');
+  put('ktx-s3','f(x)=2x+a');
+  put('ktx-s3b','g(x)=x-1');
+  put('ktx-s3c','(f\\circ g)^{-1}(5)=3');
+  put('ktx-s3d','a');
+  put('ktx-verify-formula','f(x)=ax+b \\qquad f^{-1}(x)=\\dfrac{x-b}{a}');
+
+  renderSteps();
+  updateLinier();
+  updatePecahan();
+  updateVerify();
+});
+
+/* ================= FADE UP ================= */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.12});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+/* ================= PROGRESS BAR ================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressFill').style.width = Math.min(100, Math.max(0,scrolled)) + '%';
+});
+
+/* ================= IDENTITAS SISWA ================= */
+function getIdentitas(){
+  return {
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim()
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  if(!id.nama || !id.kelas){
+    alert('Isi dulu Nama dan Kelas kamu di bagian atas modul sebelum mengecek jawaban ya.');
+    return false;
+  }
+  return true;
+}
+
+/* ================= KIRIM KE GURU ================= */
+function kirimKeGuru(soalNo, jawaban1, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const statusEl = document.getElementById(statusElId);
+  if(statusEl) statusEl.textContent = 'Mengirim jawaban...';
+
+  const payload = {
+    topik: TOPIK,
+    nama: id.nama,
+    kelas: id.kelas,
+    soal: soalNo,
+    jawaban1: jawaban1,
+    jawaban2: jawaban2 || '',
+    status: status,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  if(!SCRIPT_URL){
+    if(statusEl) statusEl.textContent = '⚠ SCRIPT_URL belum diisi guru — jawaban belum benar-benar terkirim.';
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(statusEl) statusEl.textContent = '✓ Jawaban terkirim ke guru.';
+  }).catch(()=>{
+    if(statusEl) statusEl.textContent = '⚠ Gagal mengirim, periksa koneksi internetmu.';
+  });
+}
+
+/* ================= LIHAT CARA KERJANYA — STEPPER ================= */
+const steps = [
+  {
+    title:'Langkah 1 — Cara langsung: cari dulu (f∘g)(x)',
+    html:`<p>Kita substitusikan g(x) ke dalam f(x):</p>
+          <div class="formula-box"><span class="ktx-inline" data-tex="(f\\circ g)(x) = f\\big(g(x)\\big) = 2(x-3)+1 = 2x-5"></span></div>
+          <p>Jadi <mark>(f∘g)(x) = 2x − 5</mark>. Sekarang tinggal cari inversnya seperti fungsi linier biasa.</p>`
+  },
+  {
+    title:'Langkah 2 — Invers dari (f∘g)(x) dengan tiga langkah biasa',
+    html:`<div class="formula-box"><span class="ktx-inline" data-tex="y=2x-5 \\;\\to\\; x=2y-5 \\;\\to\\; y=\\dfrac{x+5}{2}"></span></div>
+          <p>Jadi dengan <b>cara langsung</b>, kita dapat:</p>
+          <div class="formula-box"><span class="ktx-inline" data-tex="(f\\circ g)^{-1}(x) = \\dfrac{x+5}{2}"></span></div>`
+  },
+  {
+    title:'Langkah 3 — Cara sifat: cari f⁻¹(x) dan g⁻¹(x) dulu',
+    html:`<p>Cari invers masing-masing fungsi secara terpisah:</p>
+          <div class="formula-box"><span class="ktx-inline" data-tex="f(x)=2x+1 \\;\\to\\; f^{-1}(x)=\\dfrac{x-1}{2}"></span></div>
+          <div class="formula-box"><span class="ktx-inline" data-tex="g(x)=x-3 \\;\\to\\; g^{-1}(x)=x+3"></span></div>
+          <p>Sampai sini masih masuk akal? Kita baru menyiapkan bahan, belum menggabungkannya.</p>`
+  },
+  {
+    title:'Langkah 4 — Gabungkan dengan urutan yang dibalik',
+    html:`<p>Ingat, urutannya harus dibalik: <mark>g⁻¹(f⁻¹(x))</mark>, bukan f⁻¹(g⁻¹(x)):</p>
+          <div class="formula-box"><span class="ktx-inline" data-tex="g^{-1}\\big(f^{-1}(x)\\big) = g^{-1}\\left(\\dfrac{x-1}{2}\\right) = \\dfrac{x-1}{2}+3 = \\dfrac{x+5}{2}"></span></div>
+          <p><b>Ternyata</b> — hasilnya persis sama dengan cara langsung tadi: <mark>(x+5)/2</mark>. Dua cara, satu jawaban.</p>
+          <p>Kalau tadi urutannya kamu balik jadi f⁻¹(g⁻¹(x)), coba hitung sendiri — hasilnya akan berbeda. Itulah kenapa urutan ini penting sekali untuk diingat.</p>`
+  }
+];
+let currentStep = 0;
+function renderSteps(){
+  const content = document.getElementById('stepContent');
+  const dotsWrap = document.getElementById('stepDots');
+  const counter = document.getElementById('stepCounter');
+
+  content.innerHTML = `<h3 style="margin-top:0;">${steps[currentStep].title}</h3>${steps[currentStep].html}`;
+  content.querySelectorAll('.ktx-inline').forEach(el=>{
+    katex.render(el.getAttribute('data-tex'), el, {throwOnError:false});
+  });
+
+  dotsWrap.innerHTML = steps.map((_,i)=>`<div class="step-dot ${i===currentStep?'active':''}"></div>`).join('');
+  counter.textContent = `Langkah ${currentStep+1} dari ${steps.length}`;
+
+  document.getElementById('btnPrevStep').disabled = currentStep===0;
+  document.getElementById('btnNextStep').disabled = currentStep===steps.length-1;
+}
+document.getElementById('btnNextStep').addEventListener('click', ()=>{
+  if(currentStep < steps.length-1){ currentStep++; renderSteps(); }
+});
+document.getElementById('btnPrevStep').addEventListener('click', ()=>{
+  if(currentStep > 0){ currentStep--; renderSteps(); }
+});
+
+/* ================= COBA SENDIRI — TAB ================= */
+const tabLinier = document.getElementById('tabLinier');
+const tabPecahan = document.getElementById('tabPecahan');
+const panelLinier = document.getElementById('panelLinier');
+const panelPecahan = document.getElementById('panelPecahan');
+tabLinier.addEventListener('click', ()=>{
+  tabLinier.classList.add('active'); tabPecahan.classList.remove('active');
+  panelLinier.style.display='block'; panelPecahan.style.display='none';
+});
+tabPecahan.addEventListener('click', ()=>{
+  tabPecahan.classList.add('active'); tabLinier.classList.remove('active');
+  panelPecahan.style.display='block'; panelLinier.style.display='none';
+});
+
+function roundClean(v){ return Math.round(v*100)/100; }
+
+/* ---- Panel Linier ---- */
+const sliderA = document.getElementById('sliderA');
+const sliderB = document.getElementById('sliderB');
+function updateLinier(){
+  let a = parseInt(sliderA.value);
+  const b = parseInt(sliderB.value);
+  if(a === 0){ a = 1; sliderA.value = 1; } // hindari a=0 di slider linier interaktif
+  document.getElementById('valA').textContent = a;
+  document.getElementById('valB').textContent = b;
+
+  katex.render(`f(x)=${a}x${b>=0?'+':''}${b}`, document.getElementById('ktx-fungsi-live'), {throwOnError:false});
+  const invA = 1/a, invB = -b/a;
+  katex.render(`f^{-1}(x)=\\dfrac{x${b>=0?'-'+b:'+'+(-b)}}{${a}}`, document.getElementById('ktx-invers-live'), {throwOnError:false});
+
+  updateVerify();
+}
+sliderA.addEventListener('input', updateLinier);
+sliderB.addEventListener('input', updateLinier);
+
+/* ---- Panel Pecahan ---- */
+const sliderPA = document.getElementById('sliderPA');
+const sliderPB = document.getElementById('sliderPB');
+const sliderPC = document.getElementById('sliderPC');
+const sliderPD = document.getElementById('sliderPD');
+function updatePecahan(){
+  let a = parseInt(sliderPA.value);
+  const b = parseInt(sliderPB.value);
+  let c = parseInt(sliderPC.value);
+  const d = parseInt(sliderPD.value);
+  if(c === 0){ c = 1; sliderPC.value = 1; }
+
+  document.getElementById('valPA').textContent = a;
+  document.getElementById('valPB').textContent = b;
+  document.getElementById('valPC').textContent = c;
+  document.getElementById('valPD').textContent = d;
+
+  katex.render(`f(x)=\\dfrac{${a}x${b>=0?'+':''}${b}}{${c}x${d>=0?'+':''}${d}}`, document.getElementById('ktx-pfungsi-live'), {throwOnError:false});
+
+  const insight = document.getElementById('insightPecahan');
+  if(a*d - b*c === 0){
+    katex.render(`f^{-1}(x) \\text{ tidak ada (fungsi ini konstan)}`, document.getElementById('ktx-pinvers-live'), {throwOnError:false});
+    insight.classList.remove('show');
+  } else {
+    // y=(ay+b)/(cy+d) with x -> invers: y = (b - d x)/(c x - a)
+    katex.render(`f^{-1}(x)=\\dfrac{${b}-${d}x}{${c}x-${a}}`, document.getElementById('ktx-pinvers-live'), {throwOnError:false});
+    insight.textContent = `💡 Perhatikan! Batas domain fungsi asal adalah x ≠ ${roundClean(-d/c)} (supaya penyebut cx+d tidak nol), sedangkan batas domain f⁻¹(x) adalah x ≠ ${roundClean(a/c)} — dua nilai ini biasanya berbeda.`;
+    insight.classList.add('show');
+  }
+}
+[sliderPA,sliderPB,sliderPC,sliderPD].forEach(s=>s.addEventListener('input', updatePecahan));
+
+/* ---- Verifikasi f(f^-1(x)) = x ---- */
+const verifyX = document.getElementById('verifyX');
+function updateVerify(){
+  const a = parseInt(sliderA.value) || 1;
+  const b = parseInt(sliderB.value) || 0;
+  const x0 = parseFloat(verifyX.value);
+  if(isNaN(x0)){ document.getElementById('verifyResult').innerHTML=''; return; }
+
+  const fx = a*x0 + b;
+  const finvFx = (fx - b)/a;
+
+  document.getElementById('verifyResult').innerHTML =
+    `f(${x0}) = ${a}(${x0})${b>=0?'+':''}${b} = <b>${roundClean(fx)}</b><br>`+
+    `f⁻¹(${roundClean(fx)}) = (${roundClean(fx)}${b>=0?'-'+b:'+'+(-b)})/${a} = <b>${roundClean(finvFx)}</b><br>`+
+    (Math.abs(finvFx - x0) < 1e-9
+      ? `✓ Kembali menjadi ${x0} — rumus inversnya benar!`
+      : `Terjadi selisih pembulatan kecil karena desimal, tapi secara konsep tetap kembali ke nilai awal.`);
+}
+verifyX.addEventListener('input', updateVerify);
+
+/* ================= CHALLENGE — LOGIKA JAWABAN ================= */
+// Soal 1: f(x)=4x-7 -> f^-1(x) = (x+7)/4, f^-1(5) = 12/4 = 3
+document.getElementById('cek1').addEventListener('click', ()=>{
+  if(!identitasLengkap()) return;
+  const jawab = parseFloat(document.getElementById('jawab1').value);
+  const fb = document.getElementById('fb1');
+  const benar = 3;
+  let statusKirim;
+  if(jawab === benar){
+    fb.textContent = '✓ Benar! f⁻¹(x) = (x+7)/4, sehingga f⁻¹(5) = (5+7)/4 = 3.';
+    fb.className = 'feedback benar';
+    statusKirim = 'Benar';
+  } else if(jawab === 13){
+    fb.textContent = '✕ Belum tepat. Sepertinya kamu menghitung f(5), bukan f⁻¹(5). Cari dulu rumus f⁻¹(x) = (x+7)/4, baru substitusikan x = 5.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  } else {
+    fb.textContent = '✕ Belum tepat. Tulis y = 4x − 7, tukar x dan y, lalu selesaikan untuk y agar dapat f⁻¹(x), baru masukkan x = 5.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  }
+  kirimKeGuru('1', document.getElementById('jawab1').value, '', statusKirim, 'status1');
+});
+
+// Soal 2: f(x)=(2x-3)/(x+4) -> f^-1(x) = -(4x+3)/(x-2), f^-1(1) = -(7)/(-1) = 7
+document.getElementById('cek2').addEventListener('click', ()=>{
+  if(!identitasLengkap()) return;
+  const jawab = parseFloat(document.getElementById('jawab2').value);
+  const fb = document.getElementById('fb2');
+  const benar = 7;
+  let statusKirim;
+  if(jawab === benar){
+    fb.textContent = '✓ Benar! f⁻¹(x) = −(4x+3)/(x−2), sehingga f⁻¹(1) = −(7)/(−1) = 7.';
+    fb.className = 'feedback benar';
+    statusKirim = 'Benar';
+  } else if(jawab === -7){
+    fb.textContent = '✕ Belum tepat. Sepertinya ada salah tanda di langkah terakhir saat membagi. Coba tulis ulang y(x−2) = −4x−3, lalu bagi kedua ruas dengan (x−2), perhatikan tandanya.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  } else {
+    fb.textContent = '✕ Belum tepat. Tulis y = (2x−3)/(x+4), tukar x dan y, kalikan silang: x(y+4) = 2y−3, kumpulkan suku y, lalu selesaikan untuk y sebelum memasukkan x = 1.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  }
+  kirimKeGuru('2', document.getElementById('jawab2').value, '', statusKirim, 'status2');
+});
+
+// Soal 3: f(x)=2x+a, g(x)=x-1, (f∘g)^-1(5)=3 artinya (f∘g)(3)=5
+// f(g(3)) = f(2) = 4+a = 5 -> a = 1
+document.getElementById('cek3').addEventListener('click', ()=>{
+  if(!identitasLengkap()) return;
+  const jawab = parseFloat(document.getElementById('jawab3').value);
+  const fb = document.getElementById('fb3');
+  const benar = 1;
+  let statusKirim;
+  if(jawab === benar){
+    fb.textContent = '✓ Benar! Karena (f∘g)⁻¹(5) = 3, berarti (f∘g)(3) = 5. g(3) = 2, lalu f(2) = 4+a = 5, sehingga a = 1.';
+    fb.className = 'feedback benar';
+    statusKirim = 'Benar';
+  } else if(jawab === 5){
+    fb.textContent = '✕ Belum tepat. Sepertinya kamu langsung memakai angka 5 sebagai pengganti x pada f(x) = 2x+a. Padahal yang perlu disubstitusikan adalah hasil (f∘g)(3), bukan langsung x = 5.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  } else {
+    fb.textContent = '✕ Belum tepat. Ingat sifat (f∘g)((f∘g)⁻¹(x)) = x. Karena (f∘g)⁻¹(5) = 3, artinya (f∘g)(3) harus sama dengan 5. Hitung dulu g(3), lalu masukkan hasilnya ke f(x), samakan dengan 5, dan selesaikan untuk a.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  }
+  kirimKeGuru('3', document.getElementById('jawab3').value, '', statusKirim, 'status3');
+});
+
+/* ================= REFLEKSI ================= */
+document.getElementById('kirimRefleksi').addEventListener('click', ()=>{
+  if(!identitasLengkap()) return;
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  const statusEl = document.getElementById('statusRefleksi');
+  if(!r1 || !r2){
+    statusEl.textContent = 'Isi kedua pertanyaan refleksi dulu sebelum dikirim ya.';
+    statusEl.style.color = 'var(--error-text)';
+    return;
+  }
+  statusEl.style.color = 'var(--text-secondary)';
+  kirimKeGuru('Refleksi', r1, r2, '-', 'statusRefleksi');
+});
+</script>
+</body>
+</html>

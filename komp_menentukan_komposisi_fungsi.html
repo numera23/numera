@@ -1,0 +1,925 @@
+<!--
+  NUMERA
+  Judul: Menentukan Komposisi Fungsi
+  Jenis: Modul Interaktif (pakai KaTeX)
+  Versi: 1.4
+  Dikembangkan oleh Kiki Herdiansyah
+  Copyright © 2026 Numera
+  Identitas proyek: Numera - Media Pembelajaran Matematika Interaktif
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Menentukan Komposisi Fungsi · Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Numera. Dikembangkan oleh Kiki Herdiansyah.">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 18px;}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;margin:0 auto;padding:14px 18px;
+  font-weight:600;font-size:14.5px;color:var(--primary);
+  letter-spacing:.2px;
+}
+.progress-track{height:3px;background:var(--border);width:100%;}
+.progress-bar{height:3px;background:var(--primary);width:0%;transition:width 80ms linear;}
+
+section{padding:44px 0;}
+h2{font-size:21px;margin:0 0 6px;letter-spacing:-.2px;}
+h3{font-size:17px;margin:22px 0 8px;color:var(--text);}
+p{margin:0 0 12px;color:var(--text);}
+.muted{color:var(--text-secondary);}
+.eyebrow{
+  font-size:12.5px;font-weight:700;color:var(--primary);
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow);
+  padding:24px;
+  margin-bottom:18px;
+}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--primary);color:#fff;border:none;
+  border-radius:var(--radius-btn);
+  min-height:42px;padding:0 20px;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;
+  cursor:pointer;transition:background 200ms ease, transform 200ms ease;
+}
+.btn:hover{background:var(--primary-hover);}
+.btn:active{transform:scale(.98);}
+.btn.secondary{
+  background:var(--primary-light);color:var(--primary-hover);
+}
+.btn.secondary:hover{background:#c7dcfb;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+
+.fade-up{opacity:0;transform:translateY(18px);transition:opacity 600ms ease, transform 600ms ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* Header */
+.header-card{
+  background:linear-gradient(180deg,#fff, #fbfdff);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow);
+  padding:28px 24px;
+  margin-top:26px;
+}
+.header-title{font-size:26px;font-weight:800;letter-spacing:-.4px;margin:0 0 10px;}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.chip{
+  background:var(--primary-light);color:var(--primary-hover);
+  font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;
+}
+.tujuan-list{margin:0;padding-left:18px;color:var(--text);}
+.tujuan-list li{margin-bottom:6px;}
+
+.identitas-box{
+  margin-top:18px;padding-top:18px;border-top:1px dashed var(--border);
+}
+.identitas-box label{
+  display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;
+}
+.identitas-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.identitas-grid input{
+  width:100%;border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;
+  background:#fff;color:var(--text);
+}
+.identitas-grid input:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+.identitas-note{font-size:12.5px;color:var(--text-secondary);margin-top:10px;}
+@media (max-width:520px){.identitas-grid{grid-template-columns:1fr;}}
+
+/* Formula box */
+.formula-box{
+  background:var(--primary-light);
+  border-radius:14px;
+  padding:16px 18px;
+  margin:14px 0;
+  overflow-x:auto;
+  text-align:center;
+}
+.formula-scroll{overflow-x:auto;}
+
+mark{background:#FEF3C7;color:var(--text);padding:0 4px;border-radius:4px;}
+
+.analogi-box{
+  background:#F0F9FF;border:1px solid #BAE6FD;border-radius:14px;
+  padding:16px 18px;margin:14px 0;
+}
+.analogi-box .eyebrow{color:#0284C7;}
+
+/* Step viewer */
+.step-panel{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:18px;min-height:130px;
+}
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+.step-dots{display:flex;gap:6px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);}
+.dot.active{background:var(--primary);}
+
+/* Sliders */
+.control-group{margin-bottom:18px;}
+.control-label{
+  display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:8px;
+}
+.control-label span.value{color:var(--primary);font-weight:700;}
+input[type=range]{
+  width:100%;height:6px;border-radius:999px;background:var(--border);
+  -webkit-appearance:none;appearance:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--primary);cursor:pointer;border:3px solid #fff;box-shadow:var(--shadow);
+}
+input[type=range]::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;background:var(--primary);
+  cursor:pointer;border:3px solid #fff;box-shadow:var(--shadow);
+}
+.toggle-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.toggle-btn{
+  flex:1;min-width:120px;border:1px solid var(--border);background:#fff;
+  border-radius:var(--radius-btn);padding:10px 14px;font-weight:600;font-size:14px;
+  cursor:pointer;transition:all 200ms ease;color:var(--text-secondary);
+}
+.toggle-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.result-box{
+  background:var(--text);color:#fff;border-radius:14px;padding:18px;text-align:center;margin-top:6px;
+}
+.result-box .r-label{font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+.result-box .r-value{font-size:22px;font-weight:800;margin-top:6px;}
+
+.insight-box{
+  background:#ECFDF5;border:1px solid #A7F3D0;border-radius:12px;
+  padding:12px 14px;margin-top:14px;font-size:14px;color:#065F46;
+  display:none;align-items:flex-start;gap:8px;
+}
+.insight-box.show{display:flex;}
+.insight-box .icon{font-size:16px;}
+
+.substitusi-text{
+  font-size:13.5px;color:var(--text-secondary);margin-top:12px;
+  background:#F8FAFC;border:1px dashed var(--border);border-radius:10px;padding:10px 12px;
+}
+
+/* Challenge */
+.badge{
+  display:inline-block;font-size:11.5px;font-weight:700;padding:4px 10px;
+  border-radius:999px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;
+}
+.badge.mudah{background:#D1FAE5;color:#065F46;}
+.badge.sedang{background:#FEF3C7;color:#92400E;}
+.badge.sulit{background:#FEE2E2;color:#991B1B;}
+.soal-text{font-size:15.5px;margin-bottom:14px;}
+.jawab-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.jawab-row input[type=number],.jawab-row input[type=text]{
+  flex:1;min-width:100px;border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;
+}
+.jawab-row .mini-label{font-size:13px;color:var(--text-secondary);font-weight:600;}
+.feedback{
+  border-radius:12px;padding:12px 14px;margin-top:10px;font-size:14px;display:none;
+}
+.feedback.benar{background:#D1FAE5;color:#065F46;display:block;}
+.feedback.salah{background:#FEE2E2;color:#991B1B;display:block;}
+.kirim-status{font-size:12.5px;color:var(--text-secondary);margin-top:8px;min-height:16px;}
+
+/* Kesalahan umum */
+.kesalahan-item{border-left:3px solid var(--error);padding:4px 0 4px 14px;margin-bottom:16px;}
+.kesalahan-item h4{margin:0 0 4px;font-size:15px;}
+.kesalahan-item p{margin:0 0 4px;font-size:14px;}
+.kesalahan-item .label-k{font-weight:700;color:var(--error);font-size:12.5px;text-transform:uppercase;letter-spacing:.3px;}
+.kesalahan-item .label-benar{font-weight:700;color:var(--success);font-size:12.5px;text-transform:uppercase;letter-spacing:.3px;}
+
+/* Ringkasan */
+.ringkasan-list{list-style:none;margin:0;padding:0;}
+.ringkasan-list li{
+  display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);
+}
+.ringkasan-list li:last-child{border-bottom:none;}
+.ringkasan-num{
+  flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--primary-light);
+  color:var(--primary-hover);font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Reflection */
+textarea{
+  width:100%;border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;font-family:'Inter',sans-serif;font-size:14.5px;
+  min-height:90px;resize:vertical;
+}
+textarea:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+
+/* Footer */
+footer{
+  padding:30px 18px 40px;text-align:center;color:var(--text-secondary);font-size:12.5px;
+  border-top:1px solid var(--border);margin-top:20px;
+}
+footer .brand{font-weight:700;color:var(--text);font-size:13.5px;}
+
+.warn-text{color:var(--error);font-size:13px;margin-top:6px;display:none;}
+.warn-text.show{display:block;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Menentukan Komposisi Fungsi</div>
+</div>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <div class="header-card">
+    <h1 class="header-title">Menentukan Komposisi Fungsi</h1>
+    <div class="meta-row">
+      <span class="chip">⏱ 15–20 menit</span>
+      <span class="chip">Materi mandiri</span>
+    </div>
+    <p class="muted" style="font-size:14.5px;margin-bottom:10px;">Setelah belajar dengan modul ini, kamu diharapkan bisa:</p>
+    <ul class="tujuan-list">
+      <li>Mengikuti langkah-langkah menentukan <span id="tujuanFmlFG"></span> dan <span id="tujuanFmlGF"></span>.</li>
+      <li>Menentukan fungsi komposisi untuk fungsi linear dan fungsi kuadrat.</li>
+      <li>Menentukan fungsi komposisi untuk fungsi pecahan, termasuk syarat domainnya.</li>
+      <li>Menentukan salah satu fungsi pembentuk kalau fungsi komposisi dan fungsi lainnya sudah diketahui.</li>
+    </ul>
+
+    <div class="identitas-box">
+      <div class="identitas-grid">
+        <div>
+          <label for="inpNama">Nama Lengkap</label>
+          <input type="text" id="inpNama" placeholder="Tulis namamu">
+        </div>
+        <div>
+          <label for="inpKelas">Kelas</label>
+          <input type="text" id="inpKelas" placeholder="Contoh: XI IPA 2">
+        </div>
+      </div>
+      <p class="identitas-note">Isi dulu namamu supaya jawaban Challenge dan Refleksi kamu bisa dikirim ke gurumu.</p>
+    </div>
+  </div>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR? -->
+  <section class="fade-up">
+    <div class="eyebrow">Pemanasan</div>
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <div class="card">
+      <p>Bayangkan kamu jualan online. Ada dua aturan tetap yang selalu kamu pakai:</p>
+      <p>Aturan pertama, harga setelah diskon: <strong>harga dikurangi diskon tetap Rp2.000</strong>. Aturan kedua, harga setelah kena ongkos kirim: <strong>hasil sebelumnya ditambah Rp5.000</strong>.</p>
+      <p>Kalau setiap kali ada pembeli kamu harus menghitung dua langkah itu satu-satu, lama-lama capek juga, kan?</p>
+      <p>Nah, bagaimana kalau kita gabungkan dua aturan itu jadi <strong>satu aturan saja</strong>, sekali jalan, dari harga awal langsung ke harga akhir?</p>
+      <p>Itulah yang sedang kita pelajari sekarang: bukan cuma tahu <em>konsep</em> komposisi fungsi, tapi benar-benar bisa <strong>menentukan bentuk aljabarnya</strong>, langkah demi langkah, untuk berbagai jenis fungsi.</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="fade-up">
+    <div class="eyebrow">Konsep</div>
+    <h2>Penjelasan Sederhana</h2>
+
+    <div class="card">
+      <h3>Langkah Umum Menentukan (f∘g)(x)</h3>
+      <p>Ingat lagi, <span id="fmlUmum1"></span> artinya g dikerjakan dulu, baru masuk ke f. Nah, kalau kita mau menentukan <strong>bentuk aljabarnya</strong> (bukan cuma nilai untuk satu x tertentu), caranya seperti ini:</p>
+      <p><strong>Langkah 1</strong> — Tulis ulang rumus f(x), tapi setiap "x" di dalamnya diganti dengan seluruh bentuk g(x).</p>
+      <p><strong>Langkah 2</strong> — Sederhanakan hasilnya sampai bentuk paling ringkas.</p>
+      <p>Yang paling penting: g(x) harus dianggap sebagai <mark>satu blok utuh</mark> yang menggantikan x, bukan cuma sebagian sukunya saja.</p>
+      <h3 style="margin-top:18px;">Contoh Fungsi Linear</h3>
+      <p>Misalkan <span id="fmlLin1"></span> dan <span id="fmlLin2"></span>. Kita tentukan <span id="fmlLin3"></span>.</p>
+      <p>Ganti x pada f(x) dengan g(x): <span id="fmlLin4"></span></p>
+      <p>Substitusikan bentuk g(x): <span id="fmlLin5"></span></p>
+      <p>Sederhanakan: <span id="fmlLin6"></span></p>
+      <p>Jadi <span id="fmlLin7"></span>. Sampai sini masih masuk akal?</p>
+    </div>
+
+    <div class="card">
+      <h3>Menentukan Komposisi untuk Fungsi Kuadrat</h3>
+      <p>Caranya sama persis, cuma perlu lebih hati-hati saat menyederhanakan karena ada perkalian dua suku.</p>
+      <p>Misalkan <span id="fmlKuad1"></span> dan <span id="fmlKuad2"></span>. Kita tentukan <span id="fmlKuad3"></span>.</p>
+      <p>Ganti x pada f(x) dengan g(x): <span id="fmlKuad4"></span></p>
+      <p>Substitusikan bentuk g(x): <span id="fmlKuad5"></span></p>
+      <p>Nah, di sinilah bagian yang sering dilewatkan: <span id="fmlKuad6"></span> itu artinya <mark>(3x+2) dikali (3x+2)</mark>, bukan cuma 3x²+2² saja. Kalau dikembangkan penuh:</p>
+      <div class="formula-box"><span id="fmlKuad7"></span></div>
+      <p>Jadi <span id="fmlKuad8"></span>.</p>
+    </div>
+
+    <div class="card">
+      <h3>Menentukan Komposisi untuk Fungsi Pecahan</h3>
+      <p>Untuk fungsi pecahan, langkahnya tetap sama: substitusi lalu sederhanakan. Bedanya, kamu wajib mengecek satu hal tambahan di akhir: <strong>penyebutnya tidak boleh nol</strong>.</p>
+      <p>Misalkan <span id="fmlPec1"></span> dan <span id="fmlPec2"></span>. Kita tentukan <span id="fmlPec3"></span>.</p>
+      <p>Substitusi: <span id="fmlPec4"></span></p>
+      <p>Supaya hasil ini terdefinisi, penyebutnya tidak boleh nol: <span id="fmlPec5"></span>, yang berarti <span id="fmlPec6"></span>.</p>
+      <p>Jadi selain menentukan bentuk aljabarnya, kita juga perlu menuliskan syarat: <span id="fmlPec7"></span>.</p>
+    </div>
+
+    <div class="card">
+      <h3>Menentukan Fungsi Pembentuk (Kerja Mundur)</h3>
+      <p>Kadang soal membalik keadaan: fungsi komposisinya sudah diketahui, dan salah satu fungsi pembentuknya juga sudah diketahui. Tugas kamu mencari fungsi yang satu lagi.</p>
+      <p>Trik yang paling ampuh: <strong>misalkan bentuk yang diketahui sebagai u</strong>, lalu ubah semuanya ke dalam u.</p>
+      <p>Misalnya diketahui <span id="fmlMundur1"></span> dan <span id="fmlMundur2"></span>, diminta mencari f(x).</p>
+      <p>Misalkan <span id="fmlMundur3"></span>, artinya <span id="fmlMundur4"></span>. Substitusikan x ini ke bentuk <span id="fmlMundur5"></span>, lalu sederhanakan sampai semuanya dalam bentuk u. Hasil akhirnya, ganti u dengan x kembali, dan itulah f(x).</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="fade-up">
+    <div class="eyebrow">Visualisasi</div>
+    <h2>Lihat Cara Kerjanya</h2>
+    <div class="card">
+      <p class="muted" style="font-size:14px;">Kita lihat langkah demi langkah bagaimana <span id="fmlStepJudul"></span> ditentukan, kalau <span id="fmlStepFG"></span>.</p>
+      <div class="step-panel" id="stepPanel"></div>
+      <div class="step-nav">
+        <button class="btn secondary" id="btnPrev" onclick="stepGeser(-1)">‹ Sebelumnya</button>
+        <div class="step-dots" id="stepDots"></div>
+        <button class="btn secondary" id="btnNext" onclick="stepGeser(1)">Selanjutnya ›</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="fade-up">
+    <div class="eyebrow">Interaktif</div>
+    <h2>Coba Sendiri</h2>
+    <div class="card">
+      <p class="muted" style="font-size:14px;">Atur bentuk f(x), lalu ubah koefisiennya. Lihat bagaimana bentuk aljabar hasil komposisinya berubah secara langsung.</p>
+
+      <div class="toggle-row">
+        <button class="toggle-btn active" id="toggleLinear" onclick="pilihTipe('linear')">f Linear (ax + b)</button>
+        <button class="toggle-btn" id="toggleKuadrat" onclick="pilihTipe('kuadrat')">f Kuadrat (ax² + b)</button>
+      </div>
+      <div class="toggle-row">
+        <button class="toggle-btn active" id="toggleFG" onclick="pilihUrutan('fg')">Tentukan (f ∘ g)(x)</button>
+        <button class="toggle-btn" id="toggleGF" onclick="pilihUrutan('gf')">Tentukan (g ∘ f)(x)</button>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">a (koefisien pada f) <span class="value" id="valA">2</span></div>
+        <input type="range" id="sliderA" min="-4" max="4" step="1" value="2" oninput="updateKomposisi()">
+      </div>
+      <div class="control-group">
+        <div class="control-label">b (konstanta pada f) <span class="value" id="valB">1</span></div>
+        <input type="range" id="sliderB" min="-5" max="5" step="1" value="1" oninput="updateKomposisi()">
+      </div>
+      <div class="control-group">
+        <div class="control-label">c (koefisien x pada g) <span class="value" id="valC">2</span></div>
+        <input type="range" id="sliderC" min="-4" max="4" step="1" value="2" oninput="updateKomposisi()">
+      </div>
+      <div class="control-group">
+        <div class="control-label">d (konstanta pada g) <span class="value" id="valD">-1</span></div>
+        <input type="range" id="sliderD" min="-5" max="5" step="1" value="-1" oninput="updateKomposisi()">
+      </div>
+
+      <p class="muted" style="font-size:13.5px;">g(x) selalu dibuat linear (cx + d) supaya kamu bisa fokus melihat efek bentuk f.</p>
+
+      <div class="substitusi-text" id="substitusiText"></div>
+      <div class="formula-box"><span id="fmlCsHasilFormula"></span></div>
+
+      <div class="insight-box" id="insightBox">
+        <span class="icon">💡</span>
+        <span id="insightText"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="fade-up">
+    <div class="eyebrow">Uji Pemahaman</div>
+    <h2>Challenge</h2>
+
+    <!-- Soal 1 -->
+    <div class="card">
+      <span class="badge mudah">Mudah</span>
+      <p class="soal-text">Diketahui <span id="fmlS1a"></span> dan <span id="fmlS1b"></span>. Tentukan <span id="fmlS1c"></span> dalam bentuk <span id="fmlS1d"></span>. Tuliskan nilai p dan q.</p>
+      <div class="jawab-row">
+        <span class="mini-label">p =</span>
+        <input type="number" id="jwbS1p" placeholder="p">
+        <span class="mini-label">q =</span>
+        <input type="number" id="jwbS1q" placeholder="q">
+        <button class="btn" onclick="cekSoal1()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fbS1"></div>
+      <div class="kirim-status" id="statusS1"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="card">
+      <span class="badge sedang">Sedang</span>
+      <p class="soal-text">Diketahui <span id="fmlS2a"></span> dan <span id="fmlS2b"></span>. Tentukan <span id="fmlS2c"></span> dalam bentuk <span id="fmlS2d"></span> — perhatikan baik-baik urutannya. Tuliskan nilai p dan q.</p>
+      <div class="jawab-row">
+        <span class="mini-label">p =</span>
+        <input type="number" id="jwbS2p" placeholder="p">
+        <span class="mini-label">q =</span>
+        <input type="number" id="jwbS2q" placeholder="q">
+        <button class="btn" onclick="cekSoal2()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fbS2"></div>
+      <div class="kirim-status" id="statusS2"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="card">
+      <span class="badge sulit">Sulit</span>
+      <p class="soal-text">Diketahui <span id="fmlS3a"></span> dan <span id="fmlS3b"></span>. Tentukan f(x) dengan kerja mundur, lalu hitung nilai f(0).</p>
+      <div class="jawab-row">
+        <input type="number" id="jwbS3" placeholder="Jawaban f(0)">
+        <button class="btn" onclick="cekSoal3()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fbS3"></div>
+      <div class="kirim-status" id="statusS3"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="fade-up">
+    <div class="eyebrow">Waspada</div>
+    <h2>Kesalahan yang Sering Terjadi</h2>
+    <div class="card">
+      <div class="kesalahan-item">
+        <h4>Hanya mensubstitusi sebagian bentuk g(x)</h4>
+        <p><span class="label-k">Yang sering dilakukan:</span> Saat mengganti x pada f(x) dengan g(x), yang disubstitusikan cuma sebagian suku g(x), bukan seluruhnya.</p>
+        <p><span class="label-benar">Kenapa salah:</span> g(x) itu satu blok utuh. Kalau f(x) = x² + 1 dan g(x) = 3x + 2, maka x² harus jadi (3x+2)² secara utuh, bukan 3x² + 2.</p>
+        <p style="margin-bottom:0;"><span class="label-benar">Cara menghindarinya:</span> Selalu tulis g(x) dalam tanda kurung dulu setiap kali menggantikan x, baru dikembangkan pada langkah berikutnya.</p>
+      </div>
+      <div class="kesalahan-item">
+        <h4>Lupa mengembangkan bentuk kuadrat secara penuh</h4>
+        <p><span class="label-k">Yang sering dilakukan:</span> Menulis (3x+2)² langsung jadi 9x²+4, padahal ada suku tengahnya.</p>
+        <p><span class="label-benar">Kenapa salah:</span> (3x+2)² artinya (3x+2) dikali (3x+2), yang hasilnya punya tiga suku: 9x² + 12x + 4, bukan cuma dua suku.</p>
+        <p style="margin-bottom:0;"><span class="label-benar">Cara menghindarinya:</span> Selalu kembangkan perkalian dua kurung satu-satu, jangan langsung mengkuadratkan tiap suku secara terpisah.</p>
+      </div>
+      <div class="kesalahan-item" style="margin-bottom:0;">
+        <h4>Lupa menentukan syarat domain pada fungsi pecahan</h4>
+        <p><span class="label-k">Yang sering dilakukan:</span> Setelah dapat bentuk hasil komposisi fungsi pecahan, langsung berhenti tanpa mengecek syarat penyebutnya.</p>
+        <p><span class="label-benar">Kenapa salah:</span> Kalau penyebut hasil komposisi bisa jadi nol untuk suatu x, maka x itu harus dikeluarkan dari domain, dan itu bagian dari jawaban yang lengkap.</p>
+        <p style="margin-bottom:0;"><span class="label-benar">Cara menghindarinya:</span> Setiap selesai menentukan komposisi fungsi pecahan, selalu tanya: "penyebutnya nol kalau x berapa?" lalu tuliskan syaratnya.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="fade-up">
+    <div class="eyebrow">Rangkuman</div>
+    <h2>Ringkasan</h2>
+    <div class="card">
+      <ul class="ringkasan-list">
+        <li><span class="ringkasan-num">1</span><span>Menentukan (f∘g)(x) berarti mengganti setiap x pada f(x) dengan seluruh bentuk g(x), lalu menyederhanakannya.</span></li>
+        <li><span class="ringkasan-num">2</span><span>Untuk fungsi kuadrat, bentuk (g(x))² harus dikembangkan penuh — jangan mengkuadratkan suku per suku secara terpisah.</span></li>
+        <li><span class="ringkasan-num">3</span><span>Urutan menentukan siapa yang disubstitusi ke mana; bentuk aljabar (f∘g)(x) umumnya berbeda dari (g∘f)(x).</span></li>
+        <li><span class="ringkasan-num">4</span><span>Untuk fungsi pecahan, hasil komposisi perlu dilengkapi syarat domain supaya penyebutnya tidak nol.</span></li>
+        <li><span class="ringkasan-num">5</span><span>Untuk mencari fungsi pembentuk dari hasil komposisinya, gunakan permisalan u = g(x), lalu nyatakan semuanya dalam bentuk u.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section class="fade-up">
+    <div class="eyebrow">Refleksi</div>
+    <h2>Refleksi</h2>
+    <div class="card">
+      <p class="muted" style="font-size:14px;">Tidak ada jawaban benar atau salah di bagian ini. Tulis saja dengan kata-katamu sendiri.</p>
+      <h3 style="margin-top:6px;">1. Bagian mana dari langkah-langkah menentukan komposisi fungsi tadi yang menurutmu paling gampang keliru? Kenapa?</h3>
+      <textarea id="refleksi1" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+      <h3>2. Kapan sebaiknya kamu memisalkan u = g(x) dibanding langsung mensubstitusikan bentuk g(x) apa adanya?</h3>
+      <textarea id="refleksi2" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+      <div class="warn-text" id="warnRefleksi">Isi dulu kedua kolom refleksi sebelum dikirim ya.</div>
+      <div style="margin-top:14px;">
+        <button class="btn" onclick="kirimRefleksi()">Kirim Refleksi</button>
+      </div>
+      <div class="kirim-status" id="statusRefleksi"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="brand">NUMERA</div>
+  <div>Dikembangkan oleh Kiki Herdiansyah</div>
+  <div>Versi 1.4 · © 2026</div>
+</footer>
+
+<script>
+/* ================= KaTeX render helper ================= */
+function K(id, tex, display){
+  var el = document.getElementById(id);
+  if(!el) return;
+  try{
+    katex.render(tex, el, {throwOnError:false, displayMode: !!display});
+  }catch(e){ el.textContent = tex; }
+}
+
+function renderStaticFormulas(){
+  K('tujuanFmlFG','(f\\circ g)(x)');
+  K('tujuanFmlGF','(g\\circ f)(x)');
+  K('fmlUmum1','(f\\circ g)(x)');
+
+  K('fmlLin1','f(x) = 2x + 5');
+  K('fmlLin2','g(x) = x - 4');
+  K('fmlLin3','(f\\circ g)(x)');
+  K('fmlLin4','f(g(x)) = 2(g(x)) + 5');
+  K('fmlLin5','2(x-4) + 5');
+  K('fmlLin6','2x - 8 + 5 = 2x - 3');
+  K('fmlLin7','(f\\circ g)(x) = 2x - 3');
+
+  K('fmlKuad1','f(x) = x^2 + 1');
+  K('fmlKuad2','g(x) = 3x + 2');
+  K('fmlKuad3','(f\\circ g)(x)');
+  K('fmlKuad4','f(g(x)) = (g(x))^2 + 1');
+  K('fmlKuad5','(3x+2)^2 + 1');
+  K('fmlKuad6','(3x+2)^2');
+  K('fmlKuad7','(3x+2)^2 = 9x^2 + 12x + 4', true);
+  K('fmlKuad8','(f\\circ g)(x) = 9x^2 + 12x + 5');
+
+  K('fmlPec1','f(x) = \\dfrac{1}{x-2}');
+  K('fmlPec2','g(x) = x + 5');
+  K('fmlPec3','(f\\circ g)(x)');
+  K('fmlPec4','(f\\circ g)(x) = \\dfrac{1}{(x+5)-2} = \\dfrac{1}{x+3}', true);
+  K('fmlPec5','x + 3 \\ne 0');
+  K('fmlPec6','x \\ne -3');
+  K('fmlPec7','(f\\circ g)(x) = \\dfrac{1}{x+3},\\ x \\ne -3');
+
+  K('fmlMundur1','(f\\circ g)(x) = 4x^2 + 4x + 2');
+  K('fmlMundur2','g(x) = 2x + 1');
+  K('fmlMundur3','u = 2x+1');
+  K('fmlMundur4','x = \\dfrac{u-1}{2}');
+  K('fmlMundur5','4x^2+4x+2');
+
+  K('fmlStepJudul','(f\\circ g)(x)');
+  K('fmlStepFG','f(x) = x^2 - 1,\\ g(x) = 3x + 2');
+
+  // Challenge
+  K('fmlS1a','f(x) = x + 4');
+  K('fmlS1b','g(x) = 3x');
+  K('fmlS1c','(f\\circ g)(x)');
+  K('fmlS1d','px + q');
+
+  K('fmlS2a','f(x) = 2x - 1');
+  K('fmlS2b','g(x) = x + 3');
+  K('fmlS2c','(g\\circ f)(x)');
+  K('fmlS2d','px + q');
+
+  K('fmlS3a','(f\\circ g)(x) = 2x^2 - 4x + 3');
+  K('fmlS3b','g(x) = x - 1');
+}
+renderStaticFormulas();
+
+/* ================= Fade-up on scroll ================= */
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.fade-up').forEach(function(el){ observer.observe(el); });
+
+/* ================= Progress bar ================= */
+window.addEventListener('scroll', function(){
+  var h = document.documentElement;
+  var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressBar').style.width = (scrolled||0) + '%';
+});
+
+/* ================= Identitas siswa ================= */
+function getIdentitas(){
+  return {
+    nama: document.getElementById('inpNama').value.trim(),
+    kelas: document.getElementById('inpKelas').value.trim()
+  };
+}
+function identitasLengkap(){
+  var id = getIdentitas();
+  return id.nama.length > 0 && id.kelas.length > 0;
+}
+function scrollKeIdentitas(){
+  document.getElementById('inpNama').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('inpNama').style.borderColor = 'var(--error)';
+  setTimeout(function(){ document.getElementById('inpNama').style.borderColor=''; }, 1500);
+}
+
+/* ================= Pengiriman ke guru ================= */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+var topik = 'Menentukan Komposisi Fungsi';
+
+function kirimKeGuru(nomorSoal, jawaban, jawaban2, statusEl){
+  if(!identitasLengkap()){ scrollKeIdentitas(); return; }
+  var id = getIdentitas();
+  var payload = {
+    nama: id.nama,
+    kelas: id.kelas,
+    topik: topik,
+    nomorSoal: nomorSoal,
+    jawaban1: jawaban,
+    jawaban2: jawaban2 || '',
+    status: arguments.length > 4 ? arguments[4] : '-',
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  if(statusEl){ statusEl.textContent = 'Mengirim ke guru...'; }
+
+  if(!SCRIPT_URL){
+    if(statusEl){ statusEl.textContent = 'Tersimpan (SCRIPT_URL belum diatur guru).'; }
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(){
+    if(statusEl){ statusEl.textContent = 'Terkirim ke guru ✓'; }
+  }).catch(function(){
+    if(statusEl){ statusEl.textContent = 'Gagal mengirim. Coba lagi.'; }
+  });
+}
+
+/* ================= Lihat Cara Kerjanya (step viewer) ================= */
+var steps = [
+  {t:'Soal', c:'Diketahui <b>f(x) = x² - 1</b> dan <b>g(x) = 3x + 2</b>. Kita tentukan bentuk aljabar dari <b>(f∘g)(x)</b>.'},
+  {t:'Langkah 1 — ganti x pada f(x) dengan g(x)', c:'f(x) = x² - 1, jadi f(g(x)) = <mark>(g(x))² - 1</mark>. Ingat, seluruh g(x) masuk ke posisi x, termasuk dikuadratkan utuh.'},
+  {t:'Langkah 2 — substitusikan bentuk g(x)', c:'Ganti g(x) dengan 3x+2: f(g(x)) = <mark>(3x+2)² - 1</mark>.'},
+  {t:'Langkah 3 — kembangkan bentuk kuadrat', c:'(3x+2)² = (3x+2)(3x+2) = 9x² + 12x + 4. Jangan lupa suku tengahnya!'},
+  {t:'Hasil Akhir', c:'(f∘g)(x) = 9x² + 12x + 4 - 1 = <b>9x² + 12x + 3</b>. Itulah bentuk aljabar fungsi komposisinya.'}
+];
+var stepIdx = 0;
+function renderStep(){
+  var s = steps[stepIdx];
+  document.getElementById('stepPanel').innerHTML = '<h3 style="margin-top:0;">'+s.t+'</h3><p style="margin-bottom:0;">'+s.c+'</p>';
+  var dots = '';
+  for(var i=0;i<steps.length;i++){
+    dots += '<span class="dot'+(i===stepIdx?' active':'')+'"></span>';
+  }
+  document.getElementById('stepDots').innerHTML = dots;
+  document.getElementById('btnPrev').disabled = stepIdx===0;
+  document.getElementById('btnNext').disabled = stepIdx===steps.length-1;
+}
+function stepGeser(dir){
+  stepIdx = Math.max(0, Math.min(steps.length-1, stepIdx+dir));
+  renderStep();
+}
+renderStep();
+
+/* ================= Coba Sendiri ================= */
+var fType = 'linear'; // 'linear' or 'kuadrat'
+var urutan = 'fg'; // 'fg' or 'gf'
+
+function pilihTipe(t){
+  fType = t;
+  document.getElementById('toggleLinear').classList.toggle('active', t==='linear');
+  document.getElementById('toggleKuadrat').classList.toggle('active', t==='kuadrat');
+  updateKomposisi();
+}
+function pilihUrutan(u){
+  urutan = u;
+  document.getElementById('toggleFG').classList.toggle('active', u==='fg');
+  document.getElementById('toggleGF').classList.toggle('active', u==='gf');
+  updateKomposisi();
+}
+
+function bentukTerm(koef, variabel){
+  if(koef === 0) return '';
+  var v = variabel;
+  if(koef === 1) return v;
+  if(koef === -1) return '-'+v;
+  return koef + v;
+}
+function gabungSuku(parts){
+  // parts: array of numbers/strings representing terms already formatted like "9x^2","12x","3"
+  var hasil = '';
+  for(var i=0;i<parts.length;i++){
+    var p = parts[i];
+    if(p === '' || p === null) continue;
+    if(hasil === ''){
+      hasil = p;
+    } else {
+      if(p.charAt(0) === '-'){ hasil += ' - ' + p.slice(1); }
+      else { hasil += ' + ' + p; }
+    }
+  }
+  return hasil === '' ? '0' : hasil;
+}
+
+function updateKomposisi(){
+  var a = parseInt(document.getElementById('sliderA').value);
+  var b = parseInt(document.getElementById('sliderB').value);
+  var c = parseInt(document.getElementById('sliderC').value);
+  var d = parseInt(document.getElementById('sliderD').value);
+
+  document.getElementById('valA').textContent = a;
+  document.getElementById('valB').textContent = b;
+  document.getElementById('valC').textContent = c;
+  document.getElementById('valD').textContent = d;
+
+  var subsText = '';
+  var hasilTex = '';
+
+  if(urutan === 'fg'){
+    // (f∘g)(x) = f(g(x)), g(x) = cx+d
+    if(fType === 'linear'){
+      // f(u) = a*u + b, u = cx+d
+      var koefX = a*c, konst = a*d + b;
+      var t1 = bentukTerm(koefX,'x');
+      var t2 = konst !== 0 ? String(konst) : '';
+      hasilTex = '(f\\circ g)(x) = ' + gabungSuku([t1, konst!==0? (konst>0? String(konst):('-'+Math.abs(konst))) : '']);
+      subsText = 'Substitusi: f(g(x)) = a(cx+d) + b = ' + a + '(' + c + 'x' + (d>=0?'+':'') + d + ') + ' + b;
+    } else {
+      // f(u) = a*u^2 + b, u = cx+d -> a*c^2 x^2 + 2acd x + (a d^2 + b)
+      var koefX2 = a*c*c, koefX1 = 2*a*c*d, konst2 = a*d*d + b;
+      var terms = [];
+      terms.push(bentukTerm(koefX2,'x^2'));
+      terms.push(bentukTerm(koefX1,'x'));
+      terms.push(konst2!==0 ? (konst2>0? String(konst2):('-'+Math.abs(konst2))) : '');
+      hasilTex = '(f\\circ g)(x) = ' + gabungSuku(terms);
+      subsText = 'Substitusi: f(g(x)) = a(cx+d)² + b = ' + a + '(' + c + 'x' + (d>=0?'+':'') + d + ')² + ' + b;
+    }
+  } else {
+    // (g∘f)(x) = g(f(x)), g selalu linear: g(v) = c*v + d
+    if(fType === 'linear'){
+      // f(x) = ax+b -> g(f(x)) = c(ax+b)+d = ac x + (cb+d)
+      var gkoefX = c*a, gkonst = c*b + d;
+      var gt1 = bentukTerm(gkoefX,'x');
+      hasilTex = '(g\\circ f)(x) = ' + gabungSuku([gt1, gkonst!==0? (gkonst>0? String(gkonst):('-'+Math.abs(gkonst))) : '']);
+      subsText = 'Substitusi: g(f(x)) = c(ax+b) + d = ' + c + '(' + a + 'x' + (b>=0?'+':'') + b + ') + ' + d;
+    } else {
+      // f(x) = ax^2+b -> g(f(x)) = c(ax^2+b)+d = ac x^2 + (cb+d)
+      var gkoefX2 = c*a, gkonst2 = c*b + d;
+      var gterms = [];
+      gterms.push(bentukTerm(gkoefX2,'x^2'));
+      gterms.push(gkonst2!==0 ? (gkonst2>0? String(gkonst2):('-'+Math.abs(gkonst2))) : '');
+      hasilTex = '(g\\circ f)(x) = ' + gabungSuku(gterms);
+      subsText = 'Substitusi: g(f(x)) = c(ax²+b) + d = ' + c + '(' + a + 'x²' + (b>=0?'+':'') + b + ') + ' + d;
+    }
+  }
+
+  document.getElementById('substitusiText').textContent = subsText;
+  K('fmlCsHasilFormula', hasilTex, true);
+
+  // Insight
+  var insightBox = document.getElementById('insightBox');
+  var insightText = document.getElementById('insightText');
+  insightBox.classList.add('show');
+
+  if(urutan === 'fg'){
+    if(fType === 'kuadrat'){
+      var tengah = 2*a*c*d;
+      insightText.textContent = 'Perhatikan! Karena g(x) dikuadratkan secara utuh, muncul suku tengah ('+ tengah +'x) hasil perkalian silang. Ini bagian yang paling sering terlewat kalau buru-buru menyederhanakan.';
+    } else {
+      var fgConst = a*d+b, gfConst = c*b+d;
+      insightText.textContent = 'Coba bandingkan dengan (g∘f)(x): konstanta pada (f∘g)(x) adalah '+fgConst+', sedangkan pada (g∘f)(x) adalah '+gfConst+'. Beda, kan? Itu sebabnya urutan menentukan bentuk akhirnya.';
+    }
+  } else {
+    if(fType === 'kuadrat'){
+      insightText.textContent = 'Di sini f dikerjakan dulu (menghasilkan bentuk kuadrat), baru dimasukkan ke g yang linear. Karena g cuma mengalikan dan menambah konstanta, bentuk x² dari f tetap ada, dan tidak muncul suku tengah baru.';
+    } else {
+      var fgConst2 = a*d+b, gfConst2 = c*b+d;
+      insightText.textContent = 'Coba bandingkan dengan (f∘g)(x): konstantanya '+fgConst2+', sedangkan (g∘f)(x) konstantanya '+gfConst2+'. Ini menunjukkan bentuk aljabar komposisi fungsi umumnya berubah kalau urutannya ditukar.';
+    }
+  }
+}
+updateKomposisi();
+
+/* ================= Challenge ================= */
+// Soal 1: f(x)=x+4, g(x)=3x -> (f∘g)(x) = 3x+4 -> p=3, q=4
+function cekSoal1(){
+  if(!identitasLengkap()){ scrollKeIdentitas(); return; }
+  var p = parseFloat(document.getElementById('jwbS1p').value);
+  var q = parseFloat(document.getElementById('jwbS1q').value);
+  var benarP = 3, benarQ = 4;
+  var fb = document.getElementById('fbS1');
+  if(isNaN(p) || isNaN(q)){
+    fb.className = 'feedback salah';
+    fb.textContent = 'Isi dulu nilai p dan q ya.';
+    fb.style.display = 'block';
+    return;
+  }
+  var status = (p === benarP && q === benarQ);
+  if(status){
+    fb.className = 'feedback benar';
+    fb.textContent = 'Tepat! f(g(x)) = g(x) + 4 = 3x + 4. Jadi p = 3 dan q = 4.';
+  } else {
+    fb.className = 'feedback salah';
+    fb.textContent = 'Belum tepat. Ganti x pada f(x)=x+4 dengan g(x)=3x, jadi f(g(x)) = 3x + 4. Coba cek lagi bagian mana yang tertukar.';
+  }
+  kirimKeGuru(1, 'p='+p+', q='+q, '', document.getElementById('statusS1'), status ? 'Benar' : 'Salah');
+}
+
+// Soal 2: f(x)=2x-1, g(x)=x+3, (g∘f)(x): g(f(x)) = f(x)+3 = 2x-1+3 = 2x+2 -> p=2, q=2
+// Jebakan: (f∘g)(x) = 2(x+3)-1 = 2x+5 -> p=2,q=5
+function cekSoal2(){
+  if(!identitasLengkap()){ scrollKeIdentitas(); return; }
+  var p = parseFloat(document.getElementById('jwbS2p').value);
+  var q = parseFloat(document.getElementById('jwbS2q').value);
+  var benarP = 2, benarQ = 2;
+  var jebakanP = 2, jebakanQ = 5;
+  var fb = document.getElementById('fbS2');
+  if(isNaN(p) || isNaN(q)){
+    fb.className = 'feedback salah';
+    fb.textContent = 'Isi dulu nilai p dan q ya.';
+    fb.style.display = 'block';
+    return;
+  }
+  var status = (p === benarP && q === benarQ);
+  if(status){
+    fb.className = 'feedback benar';
+    fb.textContent = 'Tepat! g(f(x)) = f(x) + 3 = (2x-1) + 3 = 2x + 2. Jadi p = 2 dan q = 2.';
+  } else if(p === jebakanP && q === jebakanQ){
+    fb.className = 'feedback salah';
+    fb.textContent = 'Hampir! Sepertinya kamu menentukan (f∘g)(x), bukan (g∘f)(x). Ingat, yang diminta adalah g setelah f: tentukan f(x) dulu, baru masukkan ke g.';
+  } else {
+    fb.className = 'feedback salah';
+    fb.textContent = 'Belum tepat. Ganti x pada g(x)=x+3 dengan f(x)=2x-1, jadi g(f(x)) = (2x-1)+3.';
+  }
+  kirimKeGuru(2, 'p='+p+', q='+q, '', document.getElementById('statusS2'), status ? 'Benar' : 'Salah');
+}
+
+// Soal 3: (f∘g)(x)=2x²-4x+3, g(x)=x-1 -> f(x)=2x²+1 -> f(0)=1
+function cekSoal3(){
+  if(!identitasLengkap()){ scrollKeIdentitas(); return; }
+  var jwb = parseFloat(document.getElementById('jwbS3').value);
+  var benar = 1;
+  var fb = document.getElementById('fbS3');
+  if(isNaN(jwb)){
+    fb.className = 'feedback salah';
+    fb.textContent = 'Isi dulu jawabannya ya.';
+    fb.style.display = 'block';
+    return;
+  }
+  var status = jwb === benar;
+  if(status){
+    fb.className = 'feedback benar';
+    fb.textContent = 'Betul! Misalkan u = g(x) = x-1, artinya x = u+1. Substitusikan ke 2x²-4x+3: 2(u+1)²-4(u+1)+3 = 2u²+1. Jadi f(x) = 2x²+1, dan f(0) = 1.';
+  } else {
+    fb.className = 'feedback salah';
+    fb.textContent = 'Belum tepat. Coba misalkan u = g(x) = x-1, artinya x = u+1. Substitusikan x = u+1 ke bentuk 2x²-4x+3, sederhanakan sampai dalam bentuk u, baru ganti u dengan x untuk mendapatkan f(x). Setelah itu hitung f(0).';
+  }
+  kirimKeGuru(3, jwb, '', document.getElementById('statusS3'), status ? 'Benar' : 'Salah');
+}
+
+/* ================= Refleksi ================= */
+function kirimRefleksi(){
+  if(!identitasLengkap()){ scrollKeIdentitas(); return; }
+  var j1 = document.getElementById('refleksi1').value.trim();
+  var j2 = document.getElementById('refleksi2').value.trim();
+  var warn = document.getElementById('warnRefleksi');
+  if(j1.length === 0 || j2.length === 0){
+    warn.classList.add('show');
+    return;
+  }
+  warn.classList.remove('show');
+  kirimKeGuru('Refleksi', j1, j2, document.getElementById('statusRefleksi'), '-');
+}
+</script>
+
+</body>
+</html>

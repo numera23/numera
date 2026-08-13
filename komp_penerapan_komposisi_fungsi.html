@@ -1,0 +1,910 @@
+<!--
+  NUMERA
+  Judul: Penerapan Komposisi Fungsi
+  Jenis Halaman: Modul Interaktif (pakai KaTeX)
+  Versi: 1.0
+  Dikembangkan oleh: Kiki Herdiansyah
+  Copyright: © 2026
+  Identitas Proyek: NUMERA — Portal Pembelajaran Matematika
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Penerapan Komposisi Fungsi | NUMERA</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="NUMERA">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --success-text:#047857;
+
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --warning-text:#B45309;
+
+  --error:#EF4444;
+  --error-bg:#FEE2E2;
+  --error-border:#FECACA;
+  --error-text:#B91C1C;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:14px 20px;
+  font-weight:600;
+  font-size:14.5px;
+  color:var(--primary);
+  text-align:center;
+}
+.progress-wrap{
+  position:sticky;top:47px;z-index:99;
+  height:3px;background:var(--border);
+}
+#progressFill{
+  height:100%;width:0%;
+  background:var(--primary);
+  transition:width .1s linear;
+}
+
+.container{
+  max-width:900px;
+  margin:0 auto;
+  padding:20px 16px 60px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px 20px;
+  margin-bottom:20px;
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+.fade-up{
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+h1{font-size:24px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em;}
+h2{font-size:19px;font-weight:700;margin:0 0 14px;color:var(--text);}
+h3{font-size:16px;font-weight:700;margin:18px 0 8px;color:var(--text);}
+p{font-size:15px;color:var(--text);margin:0 0 12px;}
+.section-label{
+  display:inline-block;
+  font-size:12.5px;font-weight:700;
+  color:var(--primary);
+  background:var(--primary-light);
+  padding:4px 10px;border-radius:8px;
+  margin-bottom:10px;
+  letter-spacing:.02em;
+}
+
+.meta{
+  font-size:13.5px;color:var(--text-secondary);
+  margin-bottom:16px;
+}
+
+.goals ul{margin:0;padding-left:20px;}
+.goals li{font-size:14.5px;margin-bottom:6px;color:var(--text);}
+
+.identity-box{
+  margin-top:18px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+}
+.identity-box h3{margin-top:0;}
+.identity-box input{
+  width:100%;
+  padding:11px 13px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-size:14.5px;
+  font-family:'Inter',sans-serif;
+  margin-bottom:10px;
+  background:#fff;
+  color:var(--text);
+}
+.identity-box input:focus{outline:2px solid var(--primary);outline-offset:1px;}
+.identity-box .note{font-size:12.5px;color:var(--text-secondary);margin:6px 0 0;}
+
+.analogy-box{
+  background:var(--primary-light);
+  border-radius:14px;
+  padding:16px;
+  margin:14px 0;
+  font-size:14.5px;
+}
+
+mark{
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  padding:1px 4px;
+  border-radius:4px;
+  font-weight:600;
+}
+
+.formula-box{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  margin:12px 0;
+  overflow-x:auto;
+  text-align:center;
+}
+
+.check-question{
+  font-size:14px;
+  color:var(--primary);
+  font-weight:600;
+  margin:10px 0 4px;
+}
+
+/* Machine / conveyor visual */
+.machine-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  flex-wrap:wrap;
+  margin:18px 0;
+}
+.machine{
+  min-width:86px;
+  padding:14px 8px;
+  border-radius:14px;
+  border:2px solid var(--border);
+  background:#fff;
+  text-align:center;
+  font-weight:700;
+  font-size:12.5px;
+  color:var(--text-secondary);
+  transition:all .3s ease;
+}
+.machine.active{
+  border-color:var(--primary);
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  transform:scale(1.06);
+}
+.arrow{font-size:18px;color:var(--text-secondary);}
+
+.value-pill{
+  display:inline-block;
+  background:var(--primary);
+  color:#fff;
+  font-weight:700;
+  font-size:14px;
+  padding:6px 14px;
+  border-radius:999px;
+  margin:4px 0;
+}
+
+.step-desc{
+  background:var(--bg);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:14.5px;
+  min-height:52px;
+}
+
+.control-row{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+
+button{
+  font-family:'Inter',sans-serif;
+  cursor:pointer;
+  border:none;
+  border-radius:12px;
+  min-height:40px;
+  padding:0 18px;
+  font-size:14px;
+  font-weight:600;
+  transition:all .2s ease;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--primary-light);}
+.btn-primary:disabled,.btn-secondary:disabled{opacity:.45;cursor:not-allowed;}
+
+/* Coba Sendiri */
+.try-panel{
+  background:var(--bg);
+  border-radius:14px;
+  padding:16px;
+  margin-top:14px;
+}
+.slider-row{margin-bottom:16px;}
+.slider-row label{font-size:14px;font-weight:600;display:block;margin-bottom:6px;}
+input[type=range]{
+  width:100%;
+  accent-color:var(--primary);
+  height:6px;
+}
+.result-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.result-item{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14.5px;
+}
+.result-item .lab{color:var(--text-secondary);font-size:12.5px;font-weight:600;margin-bottom:2px;}
+
+.toggle-row{
+  display:flex;align-items:center;gap:10px;
+  margin-top:8px;font-size:14px;font-weight:600;
+}
+.switch{
+  position:relative;width:42px;height:24px;
+  background:var(--border);border-radius:999px;
+  cursor:pointer;transition:.2s;
+  flex-shrink:0;
+}
+.switch.on{background:var(--primary);}
+.switch::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:20px;height:20px;background:#fff;border-radius:50%;
+  transition:.2s;
+}
+.switch.on::after{left:20px;}
+
+.insight-box{
+  margin-top:14px;
+  background:var(--warning-bg);
+  border:1px solid #FDE68A;
+  color:var(--warning-text);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14px;
+  font-weight:600;
+  display:none;
+}
+.insight-box.show{display:block;}
+
+/* Challenge */
+.badge{
+  display:inline-block;
+  font-size:12px;font-weight:700;
+  padding:4px 10px;border-radius:8px;
+  margin-bottom:10px;
+}
+.badge-mudah{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);}
+.badge-sedang{background:var(--warning-bg);color:var(--warning-text);}
+.badge-sulit{background:var(--error-bg);color:var(--error-text);border:1px solid var(--error-border);}
+
+.challenge-card{border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px;}
+.challenge-card input[type=text],.challenge-card input[type=number]{
+  width:100%;
+  padding:11px 13px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-size:14.5px;
+  font-family:'Inter',sans-serif;
+  margin-bottom:10px;
+}
+
+.feedback-box{
+  margin-top:10px;
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14px;
+  display:none;
+}
+.feedback-box.show{display:block;}
+.feedback-correct{background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+.feedback-wrong{background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+
+.send-status{font-size:12.5px;color:var(--text-secondary);margin-top:8px;min-height:16px;}
+
+/* Kesalahan umum */
+.mistake-item{
+  border-left:3px solid var(--error);
+  background:var(--error-bg);
+  border-radius:0 12px 12px 0;
+  padding:12px 14px;
+  margin-bottom:12px;
+}
+.mistake-item h4{margin:0 0 6px;font-size:14.5px;color:var(--error-text);}
+.mistake-item p{margin-bottom:4px;font-size:14px;}
+.mistake-item .fix{color:var(--success-text);font-weight:600;}
+
+/* Ringkasan */
+.summary-list{list-style:none;padding:0;margin:0;}
+.summary-list li{
+  display:flex;gap:10px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+  font-size:14.5px;
+}
+.summary-list li:last-child{border-bottom:none;}
+.summary-num{
+  min-width:26px;height:26px;
+  background:var(--primary);color:#fff;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12.5px;font-weight:700;
+  flex-shrink:0;
+}
+
+/* Reflection */
+textarea{
+  width:100%;
+  min-height:90px;
+  padding:12px 13px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  font-family:'Inter',sans-serif;
+  font-size:14.5px;
+  resize:vertical;
+  margin-bottom:12px;
+}
+
+footer{
+  text-align:center;
+  padding:26px 16px;
+  font-size:12.5px;
+  color:var(--text-secondary);
+}
+footer .brand{font-weight:700;color:var(--primary);}
+
+.katex-display{margin:0.4em 0;}
+</style>
+</head>
+<body>
+
+<div class="topbar">NUMERA · Penerapan Komposisi Fungsi</div>
+<div class="progress-wrap"><div id="progressFill"></div></div>
+
+<div class="container">
+
+  <!-- 1. HEADER -->
+  <section class="card fade-up">
+    <h1>Penerapan Komposisi Fungsi</h1>
+    <div class="meta">⏱ Sekitar 15–20 menit</div>
+
+    <div class="goals">
+      <h3>Tujuan Belajar</h3>
+      <ul>
+        <li>Memahami kenapa masalah sehari-hari sering butuh beberapa fungsi berurutan</li>
+        <li>Bisa menerjemahkan soal cerita menjadi fungsi-fungsi komposisi</li>
+        <li>Bisa menghitung dan membaca arti hasil komposisi dalam konteks nyata</li>
+        <li>Memahami domain dalam konteks nyata dan tahu kapan urutan proses tidak boleh ditukar</li>
+        <li>Bisa "kerja mundur" mencari nilai yang belum diketahui dari target hasil akhir</li>
+      </ul>
+    </div>
+
+    <div class="identity-box">
+      <h3>Sebelum Mulai, Isi Dulu Ya</h3>
+      <input type="text" id="namaSiswa" placeholder="Nama lengkap">
+      <input type="text" id="kelasSiswa" placeholder="Kelas (contoh: XI IPA 2)">
+      <p class="note">Nanti jawaban Challenge dan Refleksi kamu akan dikirim ke gurumu, jadi isi dengan benar ya.</p>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section class="card fade-up">
+    <span class="section-label">01 · Pemantik</span>
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <p>Pernah kepikiran tidak, kenapa harga kaos yang kamu beli di toko online bisa Rp120.000, padahal ongkos bikinnya jauh lebih murah?</p>
+    <p>Ternyata harga itu enggak muncul begitu saja. Ada beberapa proses yang dilewati satu per satu:</p>
+    <div class="analogy-box">
+      👕 <b>Jumlah kaos yang dipesan</b> → dihitung <b>biaya produksinya</b> → dari biaya itu toko menentukan <b>harga jual</b> (biar untung) → lalu toko kasih <b>potongan promo</b> supaya menarik pembeli.
+    </div>
+    <p>Coba perhatikan: hasil dari satu proses selalu jadi bahan buat proses berikutnya. Persis seperti komposisi fungsi yang sudah kamu pelajari, tapi sekarang dipakai untuk <b>masalah nyata</b>.</p>
+    <p>Di modul ini, kita akan pakai komposisi fungsi untuk melacak bagaimana harga sebuah kaos terbentuk, dari jumlah pesanan sampai harga akhir yang dibayar pembeli.</p>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="card fade-up">
+    <span class="section-label">02 · Konsep</span>
+    <h2>Penjelasan Sederhana</h2>
+
+    <h3>Kenapa Masalah Nyata Sering Butuh Beberapa Fungsi Berurutan</h3>
+    <p>Banyak proses di dunia nyata itu <b>berurutan</b>. Satu tahap selesai, hasilnya jadi bahan buat tahap berikutnya, begitu seterusnya.</p>
+    <p>Kalau setiap tahap itu bisa ditulis sebagai fungsi, maka seluruh prosesnya bisa ditulis sebagai <b>komposisi fungsi</b>. Ini yang membuat komposisi fungsi jadi sangat berguna, bukan cuma teori di buku.</p>
+
+    <h3>Menyusun Fungsi dari Cerita</h3>
+    <p>Kita akan pakai contoh konveksi kaos bernama <mark>Numi Wear</mark>. Ada 3 tahap yang dilewati sebelum harga akhir terbentuk:</p>
+    <div class="analogy-box">
+      <b>Tahap 1 ($h$):</b> dari jumlah kaos ($x$) dihitung biaya produksi. Misalnya $h(x) = 20x + 500$ (dalam ribuan rupiah). Angka 500 itu ongkos tetap seperti sewa alat, dan 20 ribu per kaos untuk bahan.<br><br>
+      <b>Tahap 2 ($g$):</b> dari biaya produksi, toko menentukan harga jual dengan markup 50%. Ditulis $g(b) = 1{,}5b$.<br><br>
+      <b>Tahap 3 ($f$):</b> dari harga jual, toko memberi potongan promo tetap Rp100.000. Ditulis $f(h_{jual}) = h_{jual} - 100$.
+    </div>
+    <p>Perhatikan: setiap "fungsi" di sini sebenarnya cuma cara matematika menuliskan satu proses nyata. Bagian tersulit justru bukan hitungannya, tapi <b>menerjemahkan cerita jadi fungsi</b> seperti ini.</p>
+    <p class="check-question">Sampai sini masih masuk akal?</p>
+
+    <h3>Menghitung Nilai Komposisi dalam Konteks Nyata</h3>
+    <p>Kalau ketiga fungsi tadi digabung, harga akhir yang dibayar pembeli adalah:</p>
+    <div class="formula-box">$$\text{Harga Akhir} = (f \circ g \circ h)(x) = f\big(g(h(x))\big)$$</div>
+    <p>Cara menghitungnya sama seperti komposisi fungsi biasa: masukkan $x$ ke $h$ dulu (paling dekat dengan jumlah kaos), hasilnya masuk ke $g$, baru hasil terakhir masuk ke $f$.</p>
+
+    <h3>Membaca Arti Hasil Komposisi</h3>
+    <p>Di soal cerita, angka hasil komposisi <b>selalu punya arti</b>. Kalau $(f \circ g \circ h)(20) = 1250$, itu bukan cuma "seribu dua ratus lima puluh" — artinya <b>harga akhir untuk 20 kaos adalah Rp1.250.000</b>.</p>
+    <p>Lupa membaca satuan dan konteks adalah kesalahan yang sangat sering terjadi, jadi biasakan selalu bertanya: "Angka ini artinya apa dalam cerita soal?"</p>
+    <p class="check-question">Sampai sini masih masuk akal?</p>
+
+    <h3>Domain dalam Konteks Nyata</h3>
+    <p>Secara matematika murni, $x$ pada $h(x) = 20x+500$ boleh berupa bilangan apa saja. Tapi dalam konteks nyata, $x$ itu <b>jumlah kaos</b>, jadi ada batasan yang masuk akal:</p>
+    <div class="analogy-box">
+      🚫 $x$ tidak boleh negatif (mana ada pesan −5 kaos).<br>
+      🚫 $x$ harus bilangan bulat (tidak ada 3,5 kaos).<br>
+      ✅ Biasanya juga ada batas minimum pemesanan, misalnya toko hanya menerima pesanan mulai dari 1 kaos.
+    </div>
+    <p>Jadi, domain dalam konteks nyata itu <b>domain matematis yang sudah disaring lagi</b> oleh logika situasinya.</p>
+
+    <h3>Kerja Mundur: Mencari Nilai yang Belum Diketahui</h3>
+    <p>Kadang soal memberi tahu hasil akhirnya duluan, lalu kita diminta mencari salah satu bagian yang belum diketahui — misalnya berapa besar potongan promo yang diberikan toko.</p>
+    <p>Caranya: kerjakan dulu bagian yang sudah lengkap diketahui, lalu samakan dengan hasil akhir yang diberikan soal untuk mencari bagian yang hilang.</p>
+    <p class="check-question">Sampai sini masih masuk akal?</p>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="card fade-up">
+    <span class="section-label">03 · Visualisasi</span>
+    <h2>Lihat Cara Kerjanya</h2>
+    <p>Kita telusuri bagaimana harga akhir terbentuk untuk pesanan <b>15 kaos</b>.</p>
+
+    <div class="machine-row" id="machineRow">
+      <div class="machine" id="mIn">x = 15 kaos</div>
+      <span class="arrow">→</span>
+      <div class="machine" id="mH">h · Biaya</div>
+      <span class="arrow">→</span>
+      <div class="machine" id="mG">g · Markup</div>
+      <span class="arrow">→</span>
+      <div class="machine" id="mF">f · Promo</div>
+      <span class="arrow">→</span>
+      <div class="machine" id="mOut">?</div>
+    </div>
+
+    <div class="step-desc" id="stepDesc">Tekan ▶ Play atau "Langkah Berikutnya" untuk mulai.</div>
+
+    <div class="control-row">
+      <button class="btn-secondary" id="btnPrev">⏮ Sebelumnya</button>
+      <button class="btn-primary" id="btnPlay">▶ Play</button>
+      <button class="btn-secondary" id="btnNext">Berikutnya ⏭</button>
+      <button class="btn-secondary" id="btnReset">↻ Reset</button>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="card fade-up">
+    <span class="section-label">04 · Interaktif</span>
+    <h2>Coba Sendiri</h2>
+    <p>Geser jumlah kaos yang dipesan, dan lihat bagaimana harga berubah di setiap tahap.</p>
+
+    <div class="try-panel">
+      <div class="slider-row">
+        <label>Jumlah kaos (x) = <span id="xVal">20</span> kaos</label>
+        <input type="range" id="xSlider" min="0" max="50" step="5" value="20">
+      </div>
+
+      <div class="result-grid">
+        <div class="result-item"><div class="lab">Tahap 1 — Biaya Produksi (h)</div><div id="stepH"></div></div>
+        <div class="result-item"><div class="lab">Tahap 2 — Harga Jual Sebelum Promo (g)</div><div id="stepG"></div></div>
+        <div class="result-item"><div class="lab">Tahap 3 — Harga Akhir Setelah Promo (f)</div><div id="stepF"></div></div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="switch" id="orderSwitch"></div>
+        <span>Toko menerapkan promo LEBIH DULU, baru markup</span>
+      </div>
+
+      <div class="insight-box" id="insightBox"></div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="card fade-up">
+    <span class="section-label">05 · Latihan</span>
+    <h2>Challenge</h2>
+    <p>Gunakan: $h(x) = 20x+500$ (biaya produksi), $g(b) = 1{,}5b$ (markup 50%), $f(h_{jual}) = h_{jual} - 100$ (potongan promo tetap Rp100.000). Semua nilai dalam ribuan rupiah.</p>
+
+    <!-- Soal 1 -->
+    <div class="challenge-card">
+      <span class="badge badge-mudah">MUDAH</span>
+      <p><b>Soal 1.</b> Toko menerima pesanan 20 kaos. Berapa harga akhir yang harus dibayar pembeli? (Jawab dalam ribuan rupiah)</p>
+      <input type="number" id="jawab1" placeholder="Masukkan jawabanmu (ribu rupiah)">
+      <button class="btn-primary" onclick="cekSoal1()">Cek Jawaban</button>
+      <div class="feedback-box" id="fb1"></div>
+      <div class="send-status" id="status1"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="challenge-card">
+      <span class="badge badge-sedang">SEDANG</span>
+      <p><b>Soal 2.</b> Toko sebelah, Toko Rian, menerapkan promo <b>lebih dulu</b> sebelum menghitung markup — jadi urutannya jadi $g\big(f(h(x))\big)$, bukan $f\big(g(h(x))\big)$. Untuk pesanan 10 kaos, berapa harga akhirnya sekarang? (ribu rupiah)</p>
+      <input type="number" id="jawab2" placeholder="Masukkan jawabanmu (ribu rupiah)">
+      <button class="btn-primary" onclick="cekSoal2()">Cek Jawaban</button>
+      <div class="feedback-box" id="fb2"></div>
+      <div class="send-status" id="status2"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="challenge-card">
+      <span class="badge badge-sulit">SULIT</span>
+      <p><b>Soal 3.</b> Toko Numi Wear mengubah besar potongan promonya jadi $p$ ribu rupiah (belum diketahui), jadi $f(h_{jual}) = h_{jual} - p$. Untuk pesanan 30 kaos, ternyata harga akhirnya adalah Rp1.550.000 (1550 ribu). Berapa besar potongan promo $p$ (dalam ribu rupiah)?</p>
+      <p style="font-size:13px;color:var(--text-secondary);">Petunjuk: hitung dulu biaya produksi dan harga jual sebelum promo untuk 30 kaos, baru bandingkan dengan harga akhirnya.</p>
+      <input type="number" id="jawab3" placeholder="Masukkan nilai p (ribu rupiah)">
+      <button class="btn-primary" onclick="cekSoal3()">Cek Jawaban</button>
+      <div class="feedback-box" id="fb3"></div>
+      <div class="send-status" id="status3"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN UMUM -->
+  <section class="card fade-up">
+    <span class="section-label">06 · Peringatan</span>
+    <h2>Kesalahan yang Sering Terjadi</h2>
+
+    <div class="mistake-item">
+      <h4>1. Mengira urutan proses boleh ditukar bebas</h4>
+      <p>Siswa sering mengira menghitung markup dulu baru diskon itu sama saja hasilnya dengan diskon dulu baru markup.</p>
+      <p><b>Kenapa salah:</b> karena ada potongan tetap (bukan persentase) di dalam prosesnya, urutan pengerjaan mempengaruhi hasil akhir, persis seperti komposisi fungsi biasa.</p>
+      <p class="fix">Cara menghindari: selalu ikuti urutan proses persis seperti yang diceritakan soal, jangan diubah sendiri.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>2. Salah menerjemahkan cerita menjadi fungsi</h4>
+      <p>Siswa sering tertukar, mana yang jadi masukan dan mana yang jadi hasil dari satu proses.</p>
+      <p><b>Kenapa salah:</b> kalau input dan outputnya tertukar, seluruh rangkaian komposisi jadi salah dari awal.</p>
+      <p class="fix">Cara menghindari: baca cerita pelan-pelan, tandai dulu "apa yang masuk" dan "apa yang keluar" di setiap tahap sebelum menulis fungsinya.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>3. Lupa memeriksa domain dalam konteks nyata</h4>
+      <p>Siswa kadang memasukkan nilai $x$ negatif atau pecahan tanpa sadar itu tidak masuk akal untuk jumlah barang.</p>
+      <p><b>Kenapa salah:</b> domain matematis $h(x)=20x+500$ memang menerima semua bilangan real, tapi dalam cerita, $x$ mewakili jumlah kaos yang harus bulat dan tidak negatif.</p>
+      <p class="fix">Cara menghindari: setelah dapat jawaban, cek lagi apakah nilainya masuk akal untuk situasi ceritanya.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>4. Menjawab angka tanpa memahami artinya</h4>
+      <p>Siswa menuliskan hasil akhir sebagai angka polos tanpa menyebutkan itu artinya apa (harga, biaya, atau yang lain).</p>
+      <p><b>Kenapa salah:</b> dalam soal cerita, angka tanpa makna bisa membingungkan dan menunjukkan siswa belum benar-benar paham apa yang sedang dihitung.</p>
+      <p class="fix">Cara menghindari: biasakan menulis satuan dan konteksnya, misalnya "1250 ribu rupiah, yaitu harga akhir untuk 20 kaos".</p>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="card fade-up">
+    <span class="section-label">07 · Rangkuman</span>
+    <h2>Ringkasan</h2>
+    <ul class="summary-list">
+      <li><div class="summary-num">1</div><div>Banyak masalah nyata terdiri dari beberapa proses berurutan, dan itu bisa dimodelkan sebagai komposisi fungsi.</div></li>
+      <li><div class="summary-num">2</div><div>Untuk memakainya di soal cerita, kita harus dulu menerjemahkan setiap proses menjadi sebuah fungsi matematika.</div></li>
+      <li><div class="summary-num">3</div><div>Menghitung nilai komposisi berarti mengalirkan satu nilai dari fungsi pertama ke fungsi berikutnya, sama seperti komposisi fungsi biasa.</div></li>
+      <li><div class="summary-num">4</div><div>Hasil komposisi dalam konteks nyata harus dibaca maknanya — termasuk satuan dan konteks ceritanya — bukan sekadar angka.</div></li>
+      <li><div class="summary-num">5</div><div>Domain dalam konteks nyata biasanya lebih sempit dari domain matematis biasa, dan urutan proses tidak boleh ditukar sembarangan.</div></li>
+    </ul>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section class="card fade-up">
+    <span class="section-label">08 · Refleksi</span>
+    <h2>Refleksi</h2>
+    <p>Tidak ada jawaban benar atau salah di bagian ini. Tulis saja dengan kata-katamu sendiri.</p>
+
+    <p><b>1. Dengan kata-katamu sendiri, jelaskan kenapa proses harga kaos tadi (biaya produksi → markup → promo) bisa dianggap sebagai komposisi fungsi.</b></p>
+    <textarea id="refleksi1" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+    <p><b>2. Menurutmu, kenapa penting memeriksa domain dalam konteks nyata (misalnya jumlah kaos tidak boleh negatif atau pecahan), bukan cuma domain matematis biasa?</b></p>
+    <textarea id="refleksi2" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+    <button class="btn-primary" onclick="kirimRefleksi()">Kirim Refleksi</button>
+    <div class="send-status" id="statusRefleksi"></div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="brand">NUMERA</div>
+  <div>Dikembangkan oleh Kiki Herdiansyah</div>
+  <div>Versi 1.0 · © 2026</div>
+</footer>
+
+<script>
+/* ================= IDENTITAS & PENGIRIMAN ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+const topik = 'Penerapan Komposisi Fungsi';
+
+function getIdentitas(){
+  return {
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim()
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  if(!id.nama || !id.kelas){
+    alert('Isi dulu Nama dan Kelas kamu di bagian atas modul ya, sebelum mengecek jawaban.');
+    document.getElementById('namaSiswa').scrollIntoView({behavior:'smooth', block:'center'});
+    return false;
+  }
+  return true;
+}
+
+function kirimKeGuru(nomorSoal, jawaban1, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const statusEl = document.getElementById(statusElId);
+  if(statusEl) statusEl.textContent = 'Mengirim jawaban...';
+
+  const payload = {
+    topik: topik,
+    nama: id.nama,
+    kelas: id.kelas,
+    soal: nomorSoal,
+    jawaban1: jawaban1,
+    jawaban2: jawaban2 || '',
+    status: status,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  if(!SCRIPT_URL){
+    if(statusEl) statusEl.textContent = 'Belum terhubung ke sistem guru (SCRIPT_URL kosong).';
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(statusEl) statusEl.textContent = '✓ Jawaban terkirim ke guru.';
+  }).catch(()=>{
+    if(statusEl) statusEl.textContent = 'Gagal mengirim. Periksa koneksi internet.';
+  });
+}
+
+/* ================= FADE UP ================= */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+/* ================= PROGRESS BAR ================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressFill').style.width = scrolled + '%';
+});
+
+/* ================= KATEX RENDER ================= */
+function renderMath(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters:[
+        {left:'$$', right:'$$', display:true},
+        {left:'$', right:'$', display:false}
+      ]
+    });
+  }
+}
+window.addEventListener('load', renderMath);
+
+/* ================= FORMAT RUPIAH (ribuan) ================= */
+function formatRibu(n){
+  return n.toLocaleString('id-ID');
+}
+
+/* ================= SECTION 4: LIHAT CARA KERJANYA ================= */
+// x = 15: h=800, g=1200, f=1100
+const demoSteps = [
+  {desc:'Ada pesanan 15 kaos yang masuk ke Numi Wear.', active:null, out:null},
+  {desc:'Tahap 1: hitung biaya produksi. h(15) = 20(15) + 500 = 800 ribu rupiah.', active:'mH', out:'800'},
+  {desc:'Tahap 2: dari biaya produksi, tentukan harga jual dengan markup 50%. g(800) = 1,5 × 800 = 1200 ribu rupiah.', active:'mG', out:'1200'},
+  {desc:'Tahap 3: kurangi dengan potongan promo tetap Rp100.000. f(1200) = 1200 − 100 = 1100 ribu rupiah.', active:'mF', out:'1100'},
+  {desc:'Selesai! Harga akhir yang dibayar pembeli untuk 15 kaos adalah Rp1.100.000.', active:null, out:'1100'}
+];
+let demoIndex = 0;
+let demoTimer = null;
+
+function renderDemoStep(){
+  const step = demoSteps[demoIndex];
+  document.getElementById('stepDesc').textContent = step.desc;
+  ['mH','mG','mF'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  if(step.active) document.getElementById(step.active).classList.add('active');
+  document.getElementById('mOut').textContent = step.out ? ('Rp ' + formatRibu(step.out*1000)) : '?';
+  document.getElementById('btnPrev').disabled = demoIndex === 0;
+  document.getElementById('btnNext').disabled = demoIndex === demoSteps.length - 1;
+}
+renderDemoStep();
+
+document.getElementById('btnNext').addEventListener('click', ()=>{
+  if(demoIndex < demoSteps.length-1){ demoIndex++; renderDemoStep(); }
+});
+document.getElementById('btnPrev').addEventListener('click', ()=>{
+  if(demoIndex > 0){ demoIndex--; renderDemoStep(); }
+});
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  clearInterval(demoTimer); demoTimer=null;
+  document.getElementById('btnPlay').textContent = '▶ Play';
+  demoIndex = 0; renderDemoStep();
+});
+document.getElementById('btnPlay').addEventListener('click', (e)=>{
+  if(demoTimer){
+    clearInterval(demoTimer); demoTimer = null;
+    e.target.textContent = '▶ Play';
+    return;
+  }
+  e.target.textContent = '⏸ Pause';
+  demoTimer = setInterval(()=>{
+    if(demoIndex < demoSteps.length-1){
+      demoIndex++; renderDemoStep();
+    } else {
+      clearInterval(demoTimer); demoTimer = null;
+      e.target.textContent = '▶ Play';
+    }
+  }, 1500);
+});
+
+/* ================= SECTION 5: COBA SENDIRI ================= */
+let reversedOrder = false;
+
+function hFn(x){ return 20*x + 500; }
+function gFn(b){ return 1.5*b; }
+function fFn(h_){ return h_ - 100; }
+
+function updateTry(){
+  const x = parseInt(document.getElementById('xSlider').value);
+  document.getElementById('xVal').textContent = x;
+
+  const biaya = hFn(x);
+  let tahap2, tahap3, labelTahap2, labelTahap3;
+
+  if(!reversedOrder){
+    tahap2 = gFn(biaya);       // markup dulu
+    tahap3 = fFn(tahap2);      // promo terakhir
+    labelTahap2 = 'Markup 50% dari biaya';
+    labelTahap3 = 'Dikurangi promo Rp100.000';
+  } else {
+    tahap2 = fFn(biaya);       // promo dulu (diterapkan ke biaya)
+    tahap3 = gFn(tahap2);      // markup terakhir
+    labelTahap2 = 'Dikurangi promo Rp100.000 dulu';
+    labelTahap3 = 'Baru markup 50%';
+  }
+
+  document.getElementById('stepH').innerHTML = `<span style="color:var(--text-secondary)">Biaya produksi h(${x}) = 20(${x})+500</span><br><span class="value-pill">Rp ${formatRibu(biaya*1000)}</span>`;
+  document.getElementById('stepG').innerHTML = `<span style="color:var(--text-secondary)">${labelTahap2}</span><br><span class="value-pill">Rp ${formatRibu(tahap2*1000)}</span>`;
+  document.getElementById('stepF').innerHTML = `<span style="color:var(--text-secondary)">${labelTahap3}</span><br><span class="value-pill">Rp ${formatRibu(tahap3*1000)}</span>`;
+
+  const insight = document.getElementById('insightBox');
+  if(reversedOrder){
+    const normalG = gFn(biaya);
+    const normalF = fFn(normalG);
+    const selisih = Math.abs(normalF - tahap3);
+    insight.textContent = `Perhatikan! Kalau urutannya ditukar, harga akhir untuk ${x} kaos jadi Rp${formatRibu(tahap3*1000)}, padahal urutan normal menghasilkan Rp${formatRibu(normalF*1000)}. Selisihnya Rp${formatRibu(selisih*1000)} — urutan proses ternyata memengaruhi hasil akhir!`;
+    insight.classList.add('show');
+  } else {
+    insight.classList.remove('show');
+  }
+}
+
+document.getElementById('xSlider').addEventListener('input', updateTry);
+document.getElementById('orderSwitch').addEventListener('click', (e)=>{
+  reversedOrder = !reversedOrder;
+  e.target.classList.toggle('on', reversedOrder);
+  updateTry();
+});
+updateTry();
+
+/* ================= SECTION 6: CHALLENGE ================= */
+function showFeedback(elId, correct, html){
+  const el = document.getElementById(elId);
+  el.className = 'feedback-box show ' + (correct ? 'feedback-correct' : 'feedback-wrong');
+  el.innerHTML = html;
+}
+
+// h(x)=20x+500, g(b)=1.5b, f(h_)=h_-100
+function cekSoal1(){
+  if(!identitasLengkap()) return;
+  const jawaban = document.getElementById('jawab1').value;
+  const jawabanNum = parseFloat(jawaban);
+  // x=20: h=900, g=1350, f=1250
+  const benar = 1250;
+  const correct = jawabanNum === benar;
+  if(correct){
+    showFeedback('fb1', true, '<b>Benar!</b> h(20) = 20(20)+500 = 900. Lalu g(900) = 1,5 × 900 = 1350. Terakhir f(1350) = 1350 − 100 = 1250 ribu rupiah, yaitu Rp1.250.000.');
+  } else {
+    showFeedback('fb1', false, `<b>Belum tepat.</b> Kerjakan dari tahap paling dekat dengan x dulu: h(20) = 20(20)+500 = 900 (biaya produksi). Lalu g(900) = 1,5 × 900 = 1350 (harga jual sebelum promo). Terakhir f(1350) = 1350 − 100 = 1250 ribu rupiah. Kesalahan yang sering terjadi: lupa mengurangi potongan promo di tahap terakhir.`);
+  }
+  kirimKeGuru(1, jawaban, '', correct ? 'Benar' : 'Salah', 'status1');
+}
+
+function cekSoal2(){
+  if(!identitasLengkap()) return;
+  const jawaban = document.getElementById('jawab2').value;
+  const jawabanNum = parseFloat(jawaban);
+  // x=10: h=700, f(h)=600 (promo dulu), g(600)=900
+  const benar = 900;
+  const correct = jawabanNum === benar;
+  if(correct){
+    showFeedback('fb2', true, '<b>Benar!</b> h(10) = 20(10)+500 = 700. Karena promo diterapkan dulu, f(700) = 700 − 100 = 600. Baru markup: g(600) = 1,5 × 600 = 900 ribu rupiah.');
+  } else {
+    showFeedback('fb2', false, `<b>Belum tepat.</b> Karena urutannya ditukar, kerjakan promo dulu: h(10) = 20(10)+500 = 700, lalu f(700) = 700−100 = 600. Baru markup terakhir: g(600) = 1,5 × 600 = 900. Kesalahan yang sering terjadi: tetap memakai urutan normal (markup dulu baru promo), padahal soal minta urutan yang ditukar, sehingga hasilnya berbeda.`);
+  }
+  kirimKeGuru(2, jawaban, '', correct ? 'Benar' : 'Salah', 'status2');
+}
+
+function cekSoal3(){
+  if(!identitasLengkap()) return;
+  const jawaban = document.getElementById('jawab3').value;
+  const jawabanNum = parseFloat(jawaban);
+  // x=30: h=1100, g=1650, target f=1550 -> p = 1650-1550 = 100
+  const benar = 100;
+  const correct = jawabanNum === benar;
+  if(correct){
+    showFeedback('fb3', true, '<b>Benar!</b> h(30) = 20(30)+500 = 1100. g(1100) = 1,5 × 1100 = 1650 (harga jual sebelum promo). Karena harga akhirnya 1550, maka p = 1650 − 1550 = 100 ribu rupiah, alias potongan Rp100.000.');
+  } else {
+    showFeedback('fb3', false, `<b>Belum tepat.</b> Kerjakan dulu bagian yang sudah lengkap diketahui: h(30) = 20(30)+500 = 1100, lalu g(1100) = 1,5 × 1100 = 1650. Ini adalah harga jual sebelum promo. Karena harga akhirnya (setelah dipotong p) adalah 1550, maka p = 1650 − 1550 = 100. Kesalahan yang sering terjadi: langsung menebak p tanpa menghitung dulu harga jual sebelum promo.`);
+  }
+  kirimKeGuru(3, jawaban, '', correct ? 'Benar' : 'Salah', 'status3');
+}
+
+/* ================= SECTION 9: REFLEKSI ================= */
+function kirimRefleksi(){
+  if(!identitasLengkap()) return;
+  const r1 = document.getElementById('refleksi1').value.trim();
+  const r2 = document.getElementById('refleksi2').value.trim();
+  if(!r1 || !r2){
+    alert('Isi dulu kedua kolom refleksi sebelum mengirim ya.');
+    return;
+  }
+  kirimKeGuru('Refleksi', r1, r2, '-', 'statusRefleksi');
+}
+</script>
+
+</body>
+</html>
