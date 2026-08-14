@@ -1,0 +1,489 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Fungsi sebagai Proses Berantai
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Fungsi sebagai Proses Berantai · Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+  --sp-1:4px;
+  --sp-2:8px;
+  --sp-3:12px;
+  --sp-4:16px;
+  --sp-5:24px;
+  --sp-6:32px;
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 var(--sp-4);}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;margin:0 auto;padding:var(--sp-3) var(--sp-4);
+  font-weight:600;font-size:14.5px;color:var(--primary);
+  letter-spacing:.2px;
+}
+.progress-track{height:3px;background:var(--border);width:100%;}
+.progress-bar{height:3px;background:var(--primary);width:0%;transition:width 80ms linear;}
+
+section{padding:var(--sp-6) 0;}
+h2{font-size:20px;margin:0 0 var(--sp-2);letter-spacing:-.2px;}
+p{margin:0 0 var(--sp-3);color:var(--text);}
+.muted{color:var(--text-secondary);}
+.eyebrow{
+  font-size:12.5px;font-weight:700;color:var(--primary);
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:var(--sp-2);
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow);
+  padding:var(--sp-5);
+  margin-bottom:var(--sp-4);
+}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--primary);color:#fff;border:none;
+  border-radius:var(--radius-btn);
+  min-height:42px;padding:0 20px;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;
+  cursor:pointer;transition:background 200ms ease, transform 200ms ease;
+}
+.btn:hover{background:var(--primary-hover);}
+.btn:active{transform:scale(.98);}
+.btn.secondary{
+  background:var(--primary-light);color:var(--primary-hover);
+}
+.btn.secondary:hover{background:#c7dcfb;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+
+.fade-up{opacity:0;transform:translateY(18px);transition:opacity 600ms ease, transform 600ms ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* Header */
+.header-card{
+  background:linear-gradient(180deg,#fff, #fbfdff);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow);
+  padding:var(--sp-5);
+  margin-top:var(--sp-5);
+}
+.header-title{font-size:25px;font-weight:800;letter-spacing:-.4px;margin:0 0 var(--sp-3);}
+.meta-row{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-bottom:var(--sp-3);}
+.chip{
+  background:var(--primary-light);color:var(--primary-hover);
+  font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;
+}
+.chip.lab{background:#FEF3C7;color:#92400E;}
+.link-line{
+  font-size:13.5px;color:var(--text-secondary);
+  border-top:1px dashed var(--border);padding-top:var(--sp-3);margin-top:var(--sp-2);
+}
+.ajakan{font-size:15px;font-weight:600;color:var(--primary);margin-top:var(--sp-2);}
+
+/* Misi */
+.misi-box{
+  background:#F0F9FF;border:1px solid #BAE6FD;border-radius:var(--radius-card);
+  padding:var(--sp-5);
+}
+.misi-box .eyebrow{color:#0284C7;}
+.misi-aksi{font-size:16px;font-weight:600;margin:0 0 var(--sp-2);}
+.misi-tanya{font-size:15px;color:var(--text-secondary);margin:0;}
+
+/* Chain / Lab */
+.lab-controls{margin-bottom:var(--sp-5);}
+.control-label{
+  display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:var(--sp-2);
+}
+.control-label span.value{color:var(--primary);font-weight:700;}
+input[type=range]{
+  width:100%;height:6px;border-radius:999px;background:var(--border);
+  -webkit-appearance:none;appearance:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:24px;height:24px;border-radius:50%;
+  background:var(--primary);cursor:pointer;border:3px solid #fff;box-shadow:var(--shadow);
+}
+input[type=range]::-moz-range-thumb{
+  width:24px;height:24px;border-radius:50%;background:var(--primary);
+  cursor:pointer;border:3px solid #fff;box-shadow:var(--shadow);
+}
+
+.chain{display:flex;flex-direction:column;align-items:center;gap:0;}
+.chain-item{
+  width:100%;max-width:380px;
+  background:#fff;border:2px solid var(--border);border-radius:16px;
+  padding:var(--sp-4);text-align:center;
+  transition:border-color 250ms ease, box-shadow 250ms ease, transform 250ms ease;
+}
+.chain-item.start{border-color:var(--text-secondary);}
+.chain-item.result{border-color:var(--success);}
+.chain-item.active{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px var(--primary-light);
+  transform:scale(1.03);
+}
+.chain-label{
+  font-size:11.5px;font-weight:700;color:var(--text-secondary);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:var(--sp-2);
+}
+.chain-value{font-size:26px;font-weight:800;color:var(--text);margin-bottom:var(--sp-2);}
+.chain-item.result .chain-value{color:var(--success);}
+.op-btn{
+  background:var(--primary-light);color:var(--primary-hover);border:none;
+  border-radius:10px;padding:8px 16px;font-weight:700;font-size:15px;
+  cursor:pointer;transition:background 200ms ease;min-height:38px;
+}
+.op-btn:hover{background:#c7dcfb;}
+.chain-arrow{font-size:20px;color:var(--text-secondary);padding:var(--sp-2) 0;}
+
+.lab-actions{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-top:var(--sp-5);justify-content:center;}
+
+.hint-text{
+  text-align:center;font-size:13px;color:var(--text-secondary);
+  margin-top:var(--sp-3);
+}
+
+/* Dugaan */
+textarea{
+  width:100%;border:1px solid var(--border);border-radius:12px;
+  padding:var(--sp-3) var(--sp-4);font-family:'Inter',sans-serif;font-size:14.5px;
+  min-height:100px;resize:vertical;
+}
+textarea:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+.dugaan-note{font-size:12.5px;color:var(--text-secondary);margin-top:var(--sp-2);margin-bottom:0;}
+
+/* Lanjut ke Modul */
+.modul-card{
+  background:linear-gradient(180deg,#fff,#fbfdff);
+  border:1px solid var(--border);border-radius:var(--radius-card);
+  box-shadow:var(--shadow);padding:var(--sp-5);text-align:center;
+}
+.modul-card p{margin-bottom:var(--sp-4);}
+.modul-link{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--primary);color:#fff;text-decoration:none;
+  border-radius:var(--radius-btn);min-height:44px;padding:0 24px;
+  font-weight:700;font-size:15px;transition:background 200ms ease;
+}
+.modul-link:hover{background:var(--primary-hover);}
+
+/* Footer */
+.site-footer{
+  padding:var(--sp-5) 0 var(--sp-6);
+  text-align:center;
+}
+.footer-divider{
+  height:1px;
+  background:var(--border);
+  margin-bottom:var(--sp-4);
+}
+.footer-brand{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--primary);
+  margin:0 0 4px;
+}
+.footer-text{
+  font-size:13px;
+  color:var(--text-secondary);
+  margin:0 0 2px;
+}
+.footer-meta{
+  font-size:12.5px;
+  color:var(--text-secondary);
+  margin:0;
+  opacity:.85;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · 🧪 Fungsi sebagai Proses Berantai — Eksplorasi</div>
+</div>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <div class="header-card">
+    <div class="meta-row">
+      <span class="chip lab">🧪 Eksplorasi</span>
+      <span class="chip">⏱ 3–5 menit</span>
+    </div>
+    <h1 class="header-title">Fungsi sebagai Proses Berantai</h1>
+    <p class="link-line">Bagian dari materi Komposisi Fungsi · Kerjakan sebelum buka Modul</p>
+    <p class="ajakan">Yuk cari tahu sendiri polanya.</p>
+  </div>
+
+  <!-- 2. MISI EKSPLORASI -->
+  <section class="fade-up">
+    <div class="eyebrow">Misi</div>
+    <h2>🎯 Misi Eksplorasi</h2>
+    <div class="misi-box">
+      <p class="misi-aksi">Geser angka awalnya, lalu ganti aturan salah satu mesin.</p>
+      <p class="misi-tanya">Apa yang terjadi pada angka-angka di sepanjang rangkaian?</p>
+    </div>
+  </section>
+
+  <!-- 3. LABORATORIUM MATEMATIKA -->
+  <section class="fade-up">
+    <div class="eyebrow">Laboratorium</div>
+    <h2>🧪 Laboratorium Matematika</h2>
+    <div class="card">
+      <div class="lab-controls">
+        <div class="control-label">Angka Awal <span class="value" id="valAwal">2</span></div>
+        <input type="range" id="sliderAwal" min="-5" max="5" step="1" value="2" oninput="hitungRangkaian()">
+      </div>
+
+      <div class="chain" id="chainWrap">
+        <div class="chain-item start" id="stage0">
+          <div class="chain-label">Angka Awal</div>
+          <div class="chain-value" id="valStage0">2</div>
+        </div>
+
+        <div class="chain-arrow">↓</div>
+
+        <div class="chain-item" id="stage1">
+          <div class="chain-label">Mesin 1</div>
+          <button class="op-btn" id="opBtn0" onclick="gantiAturan(0)">×2</button>
+          <div class="chain-value" id="valStage1">–</div>
+        </div>
+
+        <div class="chain-arrow">↓</div>
+
+        <div class="chain-item" id="stage2">
+          <div class="chain-label">Mesin 2</div>
+          <button class="op-btn" id="opBtn1" onclick="gantiAturan(1)">+4</button>
+          <div class="chain-value" id="valStage2">–</div>
+        </div>
+
+        <div class="chain-arrow">↓</div>
+
+        <div class="chain-item" id="stage3">
+          <div class="chain-label">Mesin 3</div>
+          <button class="op-btn" id="opBtn2" onclick="gantiAturan(2)">−3</button>
+          <div class="chain-value" id="valStage3">–</div>
+        </div>
+
+        <div class="chain-arrow">↓</div>
+
+        <div class="chain-item result" id="stage4">
+          <div class="chain-label">Hasil Akhir</div>
+          <div class="chain-value" id="valStage4">–</div>
+        </div>
+      </div>
+
+      <div class="lab-actions">
+        <button class="btn" id="btnPlay" onclick="mainkanAnimasi()">▶ Play</button>
+        <button class="btn secondary" id="btnPause" onclick="jedaAnimasi()">⏸ Pause</button>
+        <button class="btn secondary" onclick="resetAnimasi()">↻ Reset</button>
+        <button class="btn secondary" onclick="acakSemua()">🎲 Coba Kondisi Baru</button>
+      </div>
+      <p class="hint-text">Coba ganti nilainya lagi. Masih terlihat pola yang sama?</p>
+    </div>
+  </section>
+
+  <!-- 4. DUGAAN SAYA -->
+  <section class="fade-up">
+    <div class="eyebrow">Catatan</div>
+    <h2>💭 Dugaan Saya</h2>
+    <div class="card">
+      <p class="muted" style="font-size:14px;">Tulis apa pun yang kamu perhatikan dari rangkaian mesin tadi.</p>
+      <textarea id="dugaan" placeholder="Menurutku, yang terjadi adalah..."></textarea>
+      <p class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <!-- 5. LANJUT KE MODUL -->
+  <section class="fade-up">
+    <div class="eyebrow">Selanjutnya</div>
+    <h2>🚀 Lanjut ke Modul</h2>
+    <div class="modul-card">
+      <p>Kamu sudah punya dugaan sendiri. Sekarang buka Modul untuk melihat kenapa pola itu bisa terjadi.</p>
+      <!-- GANTI href="#" DENGAN URL MODUL "Konsep Komposisi Fungsi" SEBELUM PUBLISH -->
+      <a href="#" class="modul-link">Buka Modul Komposisi Fungsi →</a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ================= Fade-up on scroll ================= */
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.fade-up').forEach(function(el){ observer.observe(el); });
+
+/* ================= Progress bar ================= */
+window.addEventListener('scroll', function(){
+  var h = document.documentElement;
+  var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressBar').style.width = (scrolled||0) + '%';
+});
+
+/* ================= Rangkaian Mesin ================= */
+var OPS = [
+  {label:'×2', fn:function(x){return x*2;}},
+  {label:'×3', fn:function(x){return x*3;}},
+  {label:'+4', fn:function(x){return x+4;}},
+  {label:'+5', fn:function(x){return x+5;}},
+  {label:'−3', fn:function(x){return x-3;}},
+  {label:'−2', fn:function(x){return x-2;}},
+  {label:'×(−1)', fn:function(x){return -x;}}
+];
+
+var opIndex = [0, 2, 4]; // default: ×2, +4, −3
+
+function gantiAturan(mesinKe){
+  opIndex[mesinKe] = (opIndex[mesinKe] + 1) % OPS.length;
+  document.getElementById('opBtn'+mesinKe).textContent = OPS[opIndex[mesinKe]].label;
+  hitungRangkaian();
+}
+
+function hitungRangkaian(){
+  var x = parseInt(document.getElementById('sliderAwal').value);
+  document.getElementById('valAwal').textContent = x;
+  document.getElementById('valStage0').textContent = x;
+
+  var v1 = OPS[opIndex[0]].fn(x);
+  var v2 = OPS[opIndex[1]].fn(v1);
+  var v3 = OPS[opIndex[2]].fn(v2);
+
+  document.getElementById('valStage1').textContent = v1;
+  document.getElementById('valStage2').textContent = v2;
+  document.getElementById('valStage3').textContent = v3;
+  document.getElementById('valStage4').textContent = v3;
+}
+hitungRangkaian();
+
+function acakSemua(){
+  var xBaru = Math.floor(Math.random()*11)-5;
+  document.getElementById('sliderAwal').value = xBaru;
+  opIndex = [
+    Math.floor(Math.random()*OPS.length),
+    Math.floor(Math.random()*OPS.length),
+    Math.floor(Math.random()*OPS.length)
+  ];
+  document.getElementById('opBtn0').textContent = OPS[opIndex[0]].label;
+  document.getElementById('opBtn1').textContent = OPS[opIndex[1]].label;
+  document.getElementById('opBtn2').textContent = OPS[opIndex[2]].label;
+  hitungRangkaian();
+  resetAnimasi();
+}
+
+/* ================= Animasi Play / Pause / Reset ================= */
+var stageIds = ['stage0','stage1','stage2','stage3','stage4'];
+var animIdx = 0;
+var animTimer = null;
+
+function bersihkanHighlight(){
+  stageIds.forEach(function(id){
+    document.getElementById(id).classList.remove('active');
+  });
+}
+
+function mainkanAnimasi(){
+  if(animTimer) return;
+  document.getElementById('btnPlay').disabled = true;
+  animTimer = setInterval(function(){
+    bersihkanHighlight();
+    document.getElementById(stageIds[animIdx]).classList.add('active');
+    animIdx++;
+    if(animIdx >= stageIds.length){
+      clearInterval(animTimer);
+      animTimer = null;
+      document.getElementById('btnPlay').disabled = false;
+      animIdx = 0;
+    }
+  }, 700);
+}
+
+function jedaAnimasi(){
+  if(animTimer){
+    clearInterval(animTimer);
+    animTimer = null;
+    document.getElementById('btnPlay').disabled = false;
+  }
+}
+
+function resetAnimasi(){
+  jedaAnimasi();
+  animIdx = 0;
+  bersihkanHighlight();
+}
+</script>
+
+</body>
+</html>

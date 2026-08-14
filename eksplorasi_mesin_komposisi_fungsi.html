@@ -1,0 +1,649 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Mesin Komposisi Fungsi
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Mesin Komposisi Fungsi | Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Laboratorium interaktif Numera — coba-coba mesin fungsi dan amati apa yang terjadi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --success-light:#D1FAE5;
+    --warning:#F59E0B;
+    --warning-light:#FEF3C7;
+    --error:#EF4444;
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-tap-highlight-color:transparent;
+    overflow-x:hidden;
+  }
+
+  .container{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 20px 48px;
+  }
+
+  /* ============ TOPBAR & PROGRESS ============ */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(248,250,252,0.92);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:12px 20px;
+    text-align:center;
+  }
+  .topbar span{
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    color:var(--primary);
+  }
+  .progress-track{
+    position:sticky;
+    top:41px;
+    z-index:50;
+    height:3px;
+    background:var(--border);
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:var(--primary);
+    transition:width .1s linear;
+  }
+
+  h1,h2,h3{margin:0; letter-spacing:-0.015em;}
+  p{margin:0 0 var(--sp-3);}
+
+  .section{padding:var(--sp-6) 0;}
+  .section:not(:last-of-type){border-bottom:1px solid var(--border);}
+
+  .section-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--primary);
+    background:var(--primary-light);
+    padding:4px 11px;
+    border-radius:999px;
+    margin-bottom:var(--sp-3);
+  }
+  .section-title{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:var(--sp-2);
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    padding:var(--sp-5);
+    margin-bottom:var(--sp-4);
+  }
+
+  /* ============ HEADER ============ */
+  .header-card{
+    background:linear-gradient(135deg, var(--primary-light), #EFF6FF);
+    border-radius:18px;
+    padding:var(--sp-5);
+    border:1px solid var(--primary-light);
+  }
+  .badge-eksplorasi{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--primary);
+    background:#fff;
+    padding:5px 12px;
+    border-radius:999px;
+    margin-bottom:var(--sp-3);
+  }
+  .header-title{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:var(--sp-2);
+    color:var(--text);
+  }
+  .header-meta{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-bottom:var(--sp-2);
+  }
+  .header-connect{
+    font-size:13px;
+    color:#1E3A8A;
+    margin-bottom:var(--sp-1);
+  }
+  .header-invite{
+    font-size:15px;
+    font-weight:600;
+    color:var(--text);
+    margin:0;
+  }
+
+  /* ============ MISI ============ */
+  .misi-card{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+  }
+  .misi-icon{
+    flex-shrink:0;
+    width:38px; height:38px;
+    border-radius:11px;
+    background:var(--primary-light);
+    color:var(--primary);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+  }
+  .misi-card p{font-size:15px; margin-bottom:6px;}
+  .misi-card p:last-child{margin-bottom:0; color:var(--text-secondary); font-size:13.5px;}
+
+  /* ============ LABORATORIUM ============ */
+  .lab-sub{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-bottom:var(--sp-4);
+  }
+
+  .machine-picker{margin-bottom:var(--sp-4);}
+  .machine-picker-label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .machine-dot{width:10px; height:10px; border-radius:50%;}
+  .machine-dot.a{background:var(--primary);}
+  .machine-dot.b{background:#8B5CF6;}
+
+  .chip-row{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    padding:7px 13px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:var(--card);
+    font-family:inherit;
+    font-size:13px;
+    font-weight:700;
+    color:var(--text-secondary);
+    cursor:pointer;
+    transition:all .15s ease;
+    min-height:36px;
+  }
+  .chip.active-a{background:var(--primary); color:#fff; border-color:var(--primary);}
+  .chip.active-b{background:#8B5CF6; color:#fff; border-color:#8B5CF6;}
+
+  .slider-block{margin:var(--sp-5) 0;}
+  .slider-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .slider-label span.val{
+    color:var(--primary);
+    font-weight:800;
+    font-size:15px;
+  }
+  input[type="range"]{
+    width:100%;
+    height:6px;
+    border-radius:999px;
+    background:var(--border);
+    outline:none;
+    -webkit-appearance:none;
+    accent-color:var(--primary);
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:22px; height:22px;
+    border-radius:50%;
+    background:var(--primary);
+    cursor:pointer;
+    border:3px solid #fff;
+    box-shadow:0 1px 4px rgba(0,0,0,0.25);
+  }
+
+  /* ============ PIPELINE VISUAL ============ */
+  .pipeline-wrap{
+    background:#F8FAFF;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 10px;
+    margin-bottom:12px;
+    overflow-x:auto;
+  }
+  .pipeline-title{
+    font-size:12px;
+    font-weight:700;
+    color:var(--text-secondary);
+    margin-bottom:10px;
+    padding-left:2px;
+  }
+  .pipeline-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    min-width:max-content;
+    justify-content:center;
+  }
+  .p-bubble{
+    flex-shrink:0;
+    width:40px; height:40px;
+    border-radius:50%;
+    background:#fff;
+    border:2px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+    font-weight:800;
+    color:var(--text);
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .p-bubble.out{
+    border-color:var(--primary);
+    color:var(--primary);
+  }
+  .p-machine{
+    flex-shrink:0;
+    min-width:52px;
+    padding:8px 10px;
+    border-radius:12px;
+    color:#fff;
+    font-size:12.5px;
+    font-weight:800;
+    text-align:center;
+  }
+  .p-machine.a{background:var(--primary);}
+  .p-machine.b{background:#8B5CF6;}
+  .p-arrow{
+    flex-shrink:0;
+    font-size:15px;
+    color:var(--text-secondary);
+  }
+  .pulse{animation:pulseVal .35s ease;}
+  @keyframes pulseVal{
+    0%{transform:scale(1.18);}
+    100%{transform:scale(1);}
+  }
+
+  .compare-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    font-weight:800;
+    padding:7px 14px;
+    border-radius:999px;
+    margin-top:6px;
+  }
+  .compare-badge.sama{background:var(--success-light); color:#065F46;}
+  .compare-badge.beda{background:var(--warning-light); color:#92400E;}
+
+  /* ============ DUGAAN SAYA ============ */
+  textarea{
+    width:100%;
+    min-height:90px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px 14px;
+    font-family:inherit;
+    font-size:14px;
+    color:var(--text);
+    background:var(--bg);
+    outline:none;
+    resize:vertical;
+    transition:border-color .15s ease;
+  }
+  textarea:focus{border-color:var(--primary); background:#fff;}
+  .dugaan-note{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin-top:8px;
+    margin-bottom:0;
+  }
+  .dugaan-lanjut{
+    font-size:13.5px;
+    color:var(--text-secondary);
+    margin-top:var(--sp-4);
+    padding-top:var(--sp-4);
+    border-top:1px dashed var(--border);
+  }
+
+  /* ============ LANJUT KE MODUL ============ */
+  .modul-card{
+    text-align:center;
+    background:linear-gradient(135deg, #EFF6FF, var(--primary-light));
+    border:1px solid var(--primary-light);
+  }
+  .modul-card p{color:#1E3A8A; font-size:14.5px;}
+  .btn-modul{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-height:44px;
+    padding:0 26px;
+    border-radius:12px;
+    background:var(--primary);
+    color:#fff;
+    text-decoration:none;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:700;
+    margin-top:8px;
+    transition:background .2s ease, transform .15s ease;
+  }
+  .btn-modul:hover{background:var(--primary-hover);}
+  .btn-modul:active{transform:scale(0.97);}
+
+  /* ============ FOOTER ============ */
+  .site-footer{
+    padding:var(--sp-5) 0 var(--sp-6);
+    text-align:center;
+  }
+  .footer-divider{
+    height:1px;
+    background:var(--border);
+    margin-bottom:var(--sp-4);
+  }
+  .footer-brand{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--primary);
+    margin:0 0 4px;
+  }
+  .footer-text{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin:0 0 2px;
+  }
+  .footer-meta{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin:0;
+    opacity:.85;
+  }
+
+  @media(max-width:480px){
+    .container{padding:0 16px 40px;}
+    .header-title{font-size:21px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><span>NUMERA · 🧪 Mesin Komposisi Fungsi — Eksplorasi</span></div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="container">
+
+  <!-- ================= HEADER ================= -->
+  <section class="section" id="header">
+    <div class="header-card">
+      <span class="badge-eksplorasi">🧪 Eksplorasi</span>
+      <h1 class="header-title">Mesin Komposisi Fungsi</h1>
+      <p class="header-meta">⏱ Sekitar 3–5 menit</p>
+      <p class="header-connect">Bagian dari materi Komposisi Fungsi · Kerjakan sebelum buka Modul</p>
+      <p class="header-invite">Yuk cari tahu sendiri polanya. 🔍</p>
+    </div>
+  </section>
+
+  <!-- ================= MISI ================= -->
+  <section class="section" id="misi">
+    <div class="section-eyebrow">🎯 Misi Eksplorasi</div>
+    <div class="card misi-card">
+      <div class="misi-icon">🎯</div>
+      <div>
+        <p>Atur Mesin A dan Mesin B, geser angka masuknya, lalu bandingkan hasil dari dua urutan pemrosesan di bawah.</p>
+        <p>Apakah hasilnya selalu sama, atau kadang berbeda?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LABORATORIUM ================= -->
+  <section class="section" id="lab">
+    <div class="section-eyebrow">🧪 Laboratorium Matematika</div>
+    <h2 class="section-title">Dua Mesin, Dua Urutan</h2>
+    <p class="lab-sub">Angka masuk ke dua mesin secara berurutan. Coba tukar-tukar mesinnya dan lihat apa yang terjadi pada hasil akhirnya.</p>
+
+    <div class="card">
+      <div class="machine-picker">
+        <div class="machine-picker-label"><span class="machine-dot a"></span> Mesin A</div>
+        <div class="chip-row" id="chipsA"></div>
+      </div>
+      <div class="machine-picker">
+        <div class="machine-picker-label"><span class="machine-dot b"></span> Mesin B</div>
+        <div class="chip-row" id="chipsB"></div>
+      </div>
+
+      <div class="slider-block">
+        <div class="slider-label">Angka masuk (x) <span class="val" id="xVal">2</span></div>
+        <input type="range" id="xSlider" min="-5" max="8" step="1" value="2">
+      </div>
+    </div>
+
+    <div class="pipeline-wrap">
+      <div class="pipeline-title">Urutan 1 — Mesin A dulu, baru Mesin B</div>
+      <div class="pipeline-row" id="rowAB"></div>
+    </div>
+
+    <div class="pipeline-wrap">
+      <div class="pipeline-title">Urutan 2 — Mesin B dulu, baru Mesin A</div>
+      <div class="pipeline-row" id="rowBA"></div>
+    </div>
+
+    <div id="compareBadge"></div>
+  </section>
+
+  <!-- ================= DUGAAN SAYA ================= -->
+  <section class="section" id="dugaan">
+    <div class="section-eyebrow">💭 Dugaan Saya</div>
+    <h2 class="section-title">Menurutmu, kenapa bisa begitu?</h2>
+    <div class="card">
+      <textarea id="dugaanBox" placeholder="Tulis pola yang kamu lihat di sini..."></textarea>
+      <p class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+      <p class="dugaan-lanjut">Coba ubah mesin atau angkanya sekali lagi. Masih terlihat pola yang sama?</p>
+    </div>
+  </section>
+
+  <!-- ================= LANJUT KE MODUL ================= -->
+  <section class="section" id="lanjut">
+    <div class="section-eyebrow">🚀 Lanjut ke Modul</div>
+    <div class="card modul-card">
+      <p>Kamu sudah punya dugaan sendiri soal mesin-mesin tadi.</p>
+      <p>Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GURU: ganti href="#" di bawah ini dengan URL Modul "Komposisi Fungsi" -->
+      <a href="#" class="btn-modul">Buka Modul →</a>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= FOOTER IDENTITAS PROYEK ================= -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+window.addEventListener('scroll', function(){
+  const h = document.documentElement;
+  const scrolled = h.scrollTop;
+  const max = h.scrollHeight - h.clientHeight;
+  const pct = max > 0 ? (scrolled / max) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+/* =========================================================
+   MESIN — DAFTAR OPERASI
+   ========================================================= */
+const OPS = [
+  { id:'x2', label:'×2', fn:function(v){ return v*2; } },
+  { id:'x3', label:'×3', fn:function(v){ return v*3; } },
+  { id:'p3', label:'+3', fn:function(v){ return v+3; } },
+  { id:'p5', label:'+5', fn:function(v){ return v+5; } },
+  { id:'m2', label:'−2', fn:function(v){ return v-2; } },
+  { id:'d2', label:'÷2', fn:function(v){ return v/2; } }
+];
+
+let selectedA = 'x2';
+let selectedB = 'p3';
+
+function getOp(id){
+  for(let i=0;i<OPS.length;i++){ if(OPS[i].id===id) return OPS[i]; }
+  return OPS[0];
+}
+
+function fmt(n){
+  const r = Math.round(n*100)/100;
+  return (r % 1 === 0) ? String(r) : String(r);
+}
+
+/* =========================================================
+   RENDER CHIP PICKER
+   ========================================================= */
+function renderChips(){
+  const wrapA = document.getElementById('chipsA');
+  const wrapB = document.getElementById('chipsB');
+  wrapA.innerHTML = '';
+  wrapB.innerHTML = '';
+
+  OPS.forEach(function(op){
+    const btnA = document.createElement('button');
+    btnA.className = 'chip' + (op.id===selectedA ? ' active-a' : '');
+    btnA.textContent = op.label;
+    btnA.onclick = function(){ selectedA = op.id; renderChips(); update(); };
+    wrapA.appendChild(btnA);
+
+    const btnB = document.createElement('button');
+    btnB.className = 'chip' + (op.id===selectedB ? ' active-b' : '');
+    btnB.textContent = op.label;
+    btnB.onclick = function(){ selectedB = op.id; renderChips(); update(); };
+    wrapB.appendChild(btnB);
+  });
+}
+
+/* =========================================================
+   RENDER PIPELINE (SATU BARIS)
+   ========================================================= */
+function renderRow(containerId, x, opFirst, opSecond, firstClass, secondClass){
+  const el = document.getElementById(containerId);
+  const step = opFirst.fn(x);
+  const final = opSecond.fn(step);
+
+  el.innerHTML =
+    '<div class="p-bubble">' + fmt(x) + '</div>' +
+    '<div class="p-arrow">→</div>' +
+    '<div class="p-machine ' + firstClass + '">' + opFirst.label + '</div>' +
+    '<div class="p-arrow">→</div>' +
+    '<div class="p-bubble">' + fmt(step) + '</div>' +
+    '<div class="p-arrow">→</div>' +
+    '<div class="p-machine ' + secondClass + '">' + opSecond.label + '</div>' +
+    '<div class="p-arrow">→</div>' +
+    '<div class="p-bubble out pulse">' + fmt(final) + '</div>';
+
+  return final;
+}
+
+/* =========================================================
+   UPDATE UTAMA
+   ========================================================= */
+function update(){
+  const x = parseFloat(document.getElementById('xSlider').value);
+  document.getElementById('xVal').textContent = fmt(x);
+
+  const opA = getOp(selectedA);
+  const opB = getOp(selectedB);
+
+  const finalAB = renderRow('rowAB', x, opA, opB, 'a', 'b');
+  const finalBA = renderRow('rowBA', x, opB, opA, 'b', 'a');
+
+  const badge = document.getElementById('compareBadge');
+  const sama = Math.abs(finalAB - finalBA) < 0.0001;
+  if(sama){
+    badge.innerHTML = '<span class="compare-badge sama">🟰 Hasil kedua urutan: SAMA</span>';
+  } else {
+    badge.innerHTML = '<span class="compare-badge beda">↔ Hasil kedua urutan: BEDA</span>';
+  }
+}
+
+/* =========================================================
+   INISIALISASI
+   ========================================================= */
+document.getElementById('xSlider').addEventListener('input', update);
+renderChips();
+update();
+</script>
+</body>
+</html>

@@ -1,0 +1,671 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Membalik Fungsi
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Membalik Fungsi — Numera</title>
+
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif: masukkan angka ke mesin maju, lalu amati apa yang terjadi pada mesin mundur.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    width:100%;
+  }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 var(--sp-4);
+  }
+
+  /* ===== Progress bar ===== */
+  .progress-bar{
+    position:fixed;
+    top:0; left:0;
+    height:3px;
+    width:0%;
+    background:var(--primary);
+    z-index:1001;
+    transition:width 80ms linear;
+  }
+
+  /* ===== Topbar ===== */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(248,250,252,.85);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar .wrap{
+    padding:var(--sp-3) var(--sp-4);
+    display:flex;
+    align-items:center;
+    gap:var(--sp-2);
+  }
+  .topbar-label{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.02em;
+    color:var(--text-secondary);
+  }
+  .topbar-label b{color:var(--primary);}
+
+  /* ===== Sections ===== */
+  section{
+    padding:var(--sp-6) 0;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  section.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ===== Header ===== */
+  .header{
+    padding-top:var(--sp-6);
+    text-align:center;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--primary-light);
+    color:var(--primary);
+    font-size:13px;
+    font-weight:700;
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:var(--sp-4);
+  }
+  .header h1{
+    font-size:clamp(24px,5vw,34px);
+    font-weight:800;
+    margin:0 0 var(--sp-3);
+    letter-spacing:-.02em;
+  }
+  .header-meta{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:var(--sp-3);
+    font-size:13.5px;
+    color:var(--text-secondary);
+    margin-bottom:var(--sp-4);
+  }
+  .header-meta span{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+  }
+  .header-link{
+    font-size:14px;
+    color:var(--text-secondary);
+    margin-bottom:var(--sp-2);
+  }
+  .header-cta{
+    font-size:16px;
+    font-weight:600;
+    color:var(--primary);
+  }
+
+  /* ===== Card ===== */
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    padding:var(--sp-5);
+  }
+
+  .section-title{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--text-secondary);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin:0 0 var(--sp-2);
+  }
+
+  /* ===== Misi ===== */
+  .misi-card{ text-align:left; }
+  .misi-card p{ margin:0 0 var(--sp-2); font-size:16px; line-height:1.55; }
+  .misi-card p:last-child{margin-bottom:0;}
+  .misi-question{ color:var(--primary); font-weight:600; }
+
+  /* ===== Lab ===== */
+  .lab-card{padding:var(--sp-4);}
+  @media (min-width:640px){ .lab-card{padding:var(--sp-5);} }
+
+  .machine-card{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:var(--sp-4);
+    margin-bottom:var(--sp-4);
+  }
+  .machine-title{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--text-secondary);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    margin:0 0 var(--sp-3);
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .machine-dot{
+    width:9px; height:9px; border-radius:50%;
+    display:inline-block;
+  }
+  .dot-maju{background:var(--primary);}
+  .dot-mundur{background:var(--success);}
+
+  .machine-pipe{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:4px;
+    overflow-x:auto;
+    padding:6px 2px 10px;
+    -webkit-overflow-scrolling:touch;
+  }
+  .pipe-end{
+    flex:0 0 auto;
+    min-width:64px;
+    text-align:center;
+  }
+  .pipe-end .end-label{
+    font-size:10.5px;
+    color:var(--text-secondary);
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .pipe-end .end-value{
+    font-size:21px;
+    font-weight:800;
+    color:var(--text);
+    margin-top:3px;
+    font-variant-numeric:tabular-nums;
+    transition:transform .25s ease;
+  }
+  .pipe-end .end-value.pulse{
+    transform:scale(1.18);
+  }
+  .pipe-arrow{
+    flex:0 0 auto;
+    font-size:18px;
+    color:var(--text-secondary);
+    opacity:.6;
+  }
+  .pipe-box{
+    flex:0 0 auto;
+    background:var(--card);
+    border:2px solid var(--primary);
+    border-radius:12px;
+    padding:9px 13px;
+    text-align:center;
+    min-width:56px;
+  }
+  .machine-mundur .pipe-box{ border-color:var(--success); }
+  .pipe-box .box-label{
+    font-size:15px;
+    font-weight:800;
+    color:var(--primary);
+    font-variant-numeric:tabular-nums;
+  }
+  .machine-mundur .pipe-box .box-label{ color:var(--success); }
+
+  .lab-controls{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:var(--sp-2);
+    flex-wrap:wrap;
+    margin-top:var(--sp-2);
+  }
+  .stepper{
+    display:flex;
+    align-items:center;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:12px;
+    overflow:hidden;
+    background:var(--card);
+  }
+  .stepper button{
+    border:none;
+    background:transparent;
+    color:var(--primary);
+    font-family:inherit;
+    font-size:18px;
+    font-weight:700;
+    width:42px;
+    height:40px;
+    cursor:pointer;
+  }
+  .stepper button:hover{ background:var(--primary-light); }
+  .stepper button:active{ transform:scale(.96); }
+  .stepper input{
+    width:56px;
+    height:40px;
+    text-align:center;
+    border:none;
+    border-left:1px solid var(--border);
+    border-right:1px solid var(--border);
+    font-family:inherit;
+    font-size:16px;
+    font-weight:700;
+    color:var(--text);
+    background:var(--card);
+  }
+  .stepper input:focus{ outline:none; }
+
+  .ctrl-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    padding:10px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    min-height:40px;
+    transition:background .2s ease, border-color .2s ease, transform .1s ease;
+  }
+  .ctrl-btn:hover{ background:var(--primary-light); border-color:var(--primary-light); }
+  .ctrl-btn:active{ transform:scale(.97); }
+
+  .lab-hint{
+    text-align:center;
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-top:var(--sp-4);
+  }
+
+  /* ===== Dugaan ===== */
+  .dugaan-card textarea{
+    width:100%;
+    min-height:110px;
+    resize:vertical;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:var(--sp-3) var(--sp-4);
+    font-family:inherit;
+    font-size:15px;
+    color:var(--text);
+    background:var(--bg);
+    line-height:1.5;
+  }
+  .dugaan-card textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+    background:var(--card);
+  }
+  .dugaan-note{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-top:var(--sp-2);
+  }
+
+  /* ===== Lanjut ke Modul ===== */
+  .modul-card{
+    text-align:center;
+    background:linear-gradient(180deg,var(--card) 0%,var(--primary-light) 220%);
+  }
+  .modul-card p{
+    font-size:15.5px;
+    color:var(--text-secondary);
+    margin:0 0 var(--sp-4);
+    line-height:1.55;
+  }
+  .modul-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--primary);
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    font-size:15px;
+    padding:13px 26px;
+    border-radius:12px;
+    transition:background .2s ease, transform .1s ease;
+  }
+  .modul-btn:hover{ background:var(--primary-hover); }
+  .modul-btn:active{ transform:scale(.98); }
+
+  /* ===== Footer ===== */
+  .site-footer{
+    padding:var(--sp-5) 0 var(--sp-6);
+    text-align:center;
+  }
+  .footer-divider{
+    height:1px;
+    background:var(--border);
+    margin-bottom:var(--sp-4);
+  }
+  .footer-brand{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--primary);
+    margin:0 0 4px;
+  }
+  .footer-text{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin:0 0 2px;
+  }
+  .footer-meta{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin:0;
+    opacity:.85;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="topbar-label">NUMERA · 🧪 Membalik Fungsi — <b>Eksplorasi</b></span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section class="header visible">
+    <div class="badge">🧪 Eksplorasi</div>
+    <h1>Membalik Fungsi</h1>
+    <div class="header-meta">
+      <span>⏱️ 3–5 menit</span>
+      <span>🔬 Laboratorium interaktif</span>
+    </div>
+    <p class="header-link">Bagian dari materi Fungsi Invers · Kerjakan sebelum buka Modul</p>
+    <p class="header-cta">Yuk cari tahu sendiri polanya.</p>
+  </section>
+
+  <!-- 2. MISI EKSPLORASI -->
+  <section id="misi">
+    <p class="section-title">🎯 Misi Eksplorasi</p>
+    <div class="card misi-card">
+      <p>Masukkan sebuah angka ke Mesin Maju, lalu amati apa yang keluar dari Mesin Mundur.</p>
+      <p class="misi-question">Menurutmu, kenapa angkanya bisa jadi begitu?</p>
+    </div>
+  </section>
+
+  <!-- 3. LABORATORIUM MATEMATIKA -->
+  <section id="lab">
+    <p class="section-title">🧪 Laboratorium Matematika</p>
+    <div class="card lab-card">
+
+      <!-- Mesin Maju -->
+      <div class="machine-card machine-maju">
+        <p class="machine-title"><span class="machine-dot dot-maju"></span>Mesin Maju</p>
+        <div class="machine-pipe">
+          <div class="pipe-end">
+            <div class="end-label">Pangkal</div>
+            <div class="end-value" id="majuIn">0</div>
+          </div>
+          <div class="pipe-arrow">➜</div>
+          <div class="pipe-box"><div class="box-label" id="boxA-maju">×2</div></div>
+          <div class="pipe-arrow">➜</div>
+          <div class="pipe-box"><div class="box-label" id="boxB-maju">+3</div></div>
+          <div class="pipe-arrow">➜</div>
+          <div class="pipe-end">
+            <div class="end-label">Ujung</div>
+            <div class="end-value" id="majuOut">3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mesin Mundur -->
+      <div class="machine-card machine-mundur">
+        <p class="machine-title"><span class="machine-dot dot-mundur"></span>Mesin Mundur</p>
+        <div class="machine-pipe">
+          <div class="pipe-end">
+            <div class="end-label">Pangkal</div>
+            <div class="end-value" id="mundurOut">0</div>
+          </div>
+          <div class="pipe-arrow">⟵</div>
+          <div class="pipe-box"><div class="box-label" id="boxA-mundur">÷2</div></div>
+          <div class="pipe-arrow">⟵</div>
+          <div class="pipe-box"><div class="box-label" id="boxB-mundur">−3</div></div>
+          <div class="pipe-arrow">⟵</div>
+          <div class="pipe-end">
+            <div class="end-label">Ujung</div>
+            <div class="end-value" id="mundurIn">3</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lab-controls">
+        <div class="stepper">
+          <button type="button" id="btnMinus" aria-label="Kurangi angka">−</button>
+          <input type="number" id="numInput" value="0" inputmode="numeric">
+          <button type="button" id="btnPlus" aria-label="Tambah angka">+</button>
+        </div>
+        <button type="button" class="ctrl-btn" id="btnAcak">🎲 Acak angka</button>
+      </div>
+
+      <p class="lab-hint">Angka yang kamu masukkan ke Mesin Maju, otomatis jadi angka masuk untuk Mesin Mundur. Coba beberapa angka berbeda.</p>
+    </div>
+  </section>
+
+  <!-- 4. DUGAAN SAYA -->
+  <section id="dugaan">
+    <p class="section-title">💭 Dugaan Saya</p>
+    <div class="card dugaan-card">
+      <p style="margin:0 0 12px;font-size:15px;color:var(--text-secondary);">Tulis dugaanmu tentang hubungan Mesin Maju dan Mesin Mundur.</p>
+      <textarea id="dugaanBox" placeholder="Tulis dugaanmu di sini..."></textarea>
+      <p class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <!-- 5. LANJUT KE MODUL -->
+  <section id="lanjut">
+    <p class="section-title">🚀 Lanjut ke Modul</p>
+    <div class="card modul-card">
+      <p>Kamu sudah punya dugaan sendiri. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GURU: ganti href="#" di bawah ini dengan URL Modul yang sesuai -->
+      <a href="#" class="modul-btn">Buka Modul →</a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Progress bar ---------- */
+  var progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrollTop = h.scrollTop || document.body.scrollTop;
+    var scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  /* ---------- Fade-up on scroll ---------- */
+  var sections = document.querySelectorAll('section');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, {threshold:.12});
+    sections.forEach(function(s){ io.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('visible'); });
+  }
+
+  /* ---------- Laboratorium: mesin maju & mundur ---------- */
+  var MIN_X = -8, MAX_X = 8;
+
+  // opA: kali 2 (posisi dekat pangkal)
+  // opB: tambah 3 (posisi dekat ujung)
+  function opA_forward(x){ return x * 2; }
+  function opA_inverse(x){ return x / 2; }
+  function opB_forward(x){ return x + 3; }
+  function opB_inverse(x){ return x - 3; }
+
+  function fmt(n){
+    var r = Math.round(n * 100) / 100;
+    return (r === 0) ? '0' : r.toString();
+  }
+
+  var numInput = document.getElementById('numInput');
+  var btnMinus = document.getElementById('btnMinus');
+  var btnPlus = document.getElementById('btnPlus');
+  var btnAcak = document.getElementById('btnAcak');
+
+  var majuIn = document.getElementById('majuIn');
+  var majuOut = document.getElementById('majuOut');
+  var mundurIn = document.getElementById('mundurIn');
+  var mundurOut = document.getElementById('mundurOut');
+
+  function pulse(el){
+    el.classList.remove('pulse');
+    void el.offsetWidth; // restart animation
+    el.classList.add('pulse');
+    setTimeout(function(){ el.classList.remove('pulse'); }, 260);
+  }
+
+  function render(){
+    var x = parseFloat(numInput.value);
+    if(isNaN(x)) x = 0;
+    x = Math.max(MIN_X, Math.min(MAX_X, x));
+
+    // Mesin Maju: pangkal -> ×2 -> +3 -> ujung
+    var afterA = opA_forward(x);
+    var afterB = opB_forward(afterA);
+
+    majuIn.textContent = fmt(x);
+    majuOut.textContent = fmt(afterB);
+
+    // Mesin Mundur: ujung (= hasil maju) -> −3 -> ÷2 -> pangkal
+    var y = afterB;
+    var afterInvB = opB_inverse(y);
+    var afterInvA = opA_inverse(afterInvB);
+
+    mundurIn.textContent = fmt(y);
+    mundurOut.textContent = fmt(afterInvA);
+
+    pulse(majuOut);
+    pulse(mundurIn);
+    pulse(mundurOut);
+  }
+
+  function setValue(v){
+    v = Math.max(MIN_X, Math.min(MAX_X, v));
+    numInput.value = v;
+    render();
+  }
+
+  numInput.addEventListener('input', function(){
+    render();
+  });
+  numInput.addEventListener('blur', function(){
+    var v = parseFloat(numInput.value);
+    if(isNaN(v)) v = 0;
+    setValue(v);
+  });
+
+  btnMinus.addEventListener('click', function(){
+    var v = parseFloat(numInput.value); if(isNaN(v)) v = 0;
+    setValue(v - 1);
+  });
+  btnPlus.addEventListener('click', function(){
+    var v = parseFloat(numInput.value); if(isNaN(v)) v = 0;
+    setValue(v + 1);
+  });
+  btnAcak.addEventListener('click', function(){
+    var v = Math.floor(Math.random() * (MAX_X - MIN_X + 1)) + MIN_X;
+    setValue(v);
+  });
+
+  render();
+
+})();
+</script>
+
+</body>
+</html>

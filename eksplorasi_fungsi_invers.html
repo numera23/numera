@@ -1,0 +1,783 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Fungsi dan Invers pada Grafik
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Fungsi dan Invers pada Grafik — Numera</title>
+
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif: geser titik pada grafik fungsi dan amati pasangannya pada grafik invers.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    width:100%;
+  }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 var(--sp-4);
+  }
+
+  /* ===== Progress bar ===== */
+  .progress-bar{
+    position:fixed;
+    top:0; left:0;
+    height:3px;
+    width:0%;
+    background:var(--primary);
+    z-index:1001;
+    transition:width 80ms linear;
+  }
+
+  /* ===== Topbar ===== */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(248,250,252,.85);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar .wrap{
+    padding:var(--sp-3) var(--sp-4);
+    display:flex;
+    align-items:center;
+    gap:var(--sp-2);
+  }
+  .topbar-label{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.02em;
+    color:var(--text-secondary);
+  }
+  .topbar-label b{color:var(--primary);}
+
+  /* ===== Sections ===== */
+  section{
+    padding:var(--sp-6) 0;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  section.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* ===== Header ===== */
+  .header{
+    padding-top:var(--sp-6);
+    text-align:center;
+  }
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--primary-light);
+    color:var(--primary);
+    font-size:13px;
+    font-weight:700;
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:var(--sp-4);
+  }
+  .header h1{
+    font-size:clamp(24px,5vw,34px);
+    font-weight:800;
+    margin:0 0 var(--sp-3);
+    letter-spacing:-.02em;
+  }
+  .header-meta{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:var(--sp-3);
+    font-size:13.5px;
+    color:var(--text-secondary);
+    margin-bottom:var(--sp-4);
+  }
+  .header-meta span{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+  }
+  .header-link{
+    font-size:14px;
+    color:var(--text-secondary);
+    margin-bottom:var(--sp-2);
+  }
+  .header-cta{
+    font-size:16px;
+    font-weight:600;
+    color:var(--primary);
+  }
+
+  /* ===== Card ===== */
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    padding:var(--sp-5);
+  }
+
+  .section-title{
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--text-secondary);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin:0 0 var(--sp-2);
+  }
+  .section-heading{
+    font-size:21px;
+    font-weight:800;
+    margin:0 0 var(--sp-4);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  /* ===== Misi ===== */
+  .misi-card{
+    text-align:left;
+  }
+  .misi-card p{
+    margin:0 0 var(--sp-2);
+    font-size:16px;
+    line-height:1.55;
+  }
+  .misi-card p:last-child{margin-bottom:0;}
+  .misi-question{
+    color:var(--primary);
+    font-weight:600;
+  }
+
+  /* ===== Lab ===== */
+  .lab-card{padding:var(--sp-4);}
+  @media (min-width:640px){ .lab-card{padding:var(--sp-5);} }
+
+  .func-switch{
+    display:flex;
+    gap:var(--sp-2);
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:4px;
+    margin-bottom:var(--sp-4);
+  }
+  .func-switch button{
+    flex:1;
+    border:none;
+    background:transparent;
+    color:var(--text-secondary);
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    padding:10px 8px;
+    border-radius:9px;
+    cursor:pointer;
+    transition:background .2s ease, color .2s ease;
+  }
+  .func-switch button.active{
+    background:var(--primary);
+    color:#fff;
+  }
+
+  .canvas-wrap{
+    position:relative;
+    width:100%;
+    max-width:460px;
+    aspect-ratio:1/1;
+    margin:0 auto var(--sp-4);
+    border-radius:14px;
+    background:var(--bg);
+    border:1px solid var(--border);
+    overflow:hidden;
+    touch-action:none;
+  }
+  canvas{
+    display:block;
+    width:100%;
+    height:100%;
+  }
+
+  .lab-controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:var(--sp-2);
+    justify-content:center;
+    margin-bottom:var(--sp-4);
+  }
+  .ctrl-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    padding:10px 16px;
+    border-radius:12px;
+    cursor:pointer;
+    min-height:40px;
+    transition:background .2s ease, border-color .2s ease, transform .1s ease;
+  }
+  .ctrl-btn:hover{
+    background:var(--primary-light);
+    border-color:var(--primary-light);
+  }
+  .ctrl-btn:active{transform:scale(.97);}
+  .ctrl-btn.toggle-on{
+    background:var(--primary);
+    border-color:var(--primary);
+    color:#fff;
+  }
+
+  .readout{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:var(--sp-3);
+  }
+  @media (max-width:420px){
+    .readout{grid-template-columns:1fr;}
+  }
+  .readout-item{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:var(--sp-3) var(--sp-4);
+    text-align:center;
+  }
+  .readout-item .dot{
+    display:inline-block;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    margin-right:6px;
+  }
+  .dot-primary{background:var(--primary);}
+  .dot-success{background:var(--success);}
+  .readout-item .label{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    font-weight:600;
+  }
+  .readout-item .value{
+    font-size:17px;
+    font-weight:700;
+    margin-top:4px;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .lab-hint{
+    text-align:center;
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-top:var(--sp-3);
+  }
+
+  /* ===== Dugaan ===== */
+  .dugaan-card textarea{
+    width:100%;
+    min-height:110px;
+    resize:vertical;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:var(--sp-3) var(--sp-4);
+    font-family:inherit;
+    font-size:15px;
+    color:var(--text);
+    background:var(--bg);
+    line-height:1.5;
+  }
+  .dugaan-card textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+    background:var(--card);
+  }
+  .dugaan-note{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-top:var(--sp-2);
+  }
+
+  /* ===== Lanjut ke Modul ===== */
+  .modul-card{
+    text-align:center;
+    background:linear-gradient(180deg,var(--card) 0%,var(--primary-light) 220%);
+  }
+  .modul-card p{
+    font-size:15.5px;
+    color:var(--text-secondary);
+    margin:0 0 var(--sp-4);
+    line-height:1.55;
+  }
+  .modul-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--primary);
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    font-size:15px;
+    padding:13px 26px;
+    border-radius:12px;
+    transition:background .2s ease, transform .1s ease;
+  }
+  .modul-btn:hover{background:var(--primary-hover);}
+  .modul-btn:active{transform:scale(.98);}
+
+  /* ===== Footer ===== */
+  .site-footer{
+    padding:var(--sp-5) 0 var(--sp-6);
+    text-align:center;
+  }
+  .footer-divider{
+    height:1px;
+    background:var(--border);
+    margin-bottom:var(--sp-4);
+  }
+  .footer-brand{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--primary);
+    margin:0 0 4px;
+  }
+  .footer-text{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin:0 0 2px;
+  }
+  .footer-meta{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin:0;
+    opacity:.85;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="topbar-label">NUMERA · 🧪 Fungsi dan Invers — <b>Eksplorasi</b></span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section class="header visible">
+    <div class="badge">🧪 Eksplorasi</div>
+    <h1>Fungsi dan Invers pada Grafik</h1>
+    <div class="header-meta">
+      <span>⏱️ 3–5 menit</span>
+      <span>🔬 Laboratorium interaktif</span>
+    </div>
+    <p class="header-link">Bagian dari materi Fungsi Invers · Kerjakan sebelum buka Modul</p>
+    <p class="header-cta">Yuk cari tahu sendiri polanya.</p>
+  </section>
+
+  <!-- 2. MISI EKSPLORASI -->
+  <section id="misi">
+    <p class="section-title">🎯 Misi Eksplorasi</p>
+    <div class="card misi-card">
+      <p>Geser titik biru pada grafik fungsi, lalu perhatikan titik hijau di sebelahnya.</p>
+      <p class="misi-question">Apa yang kamu perhatikan dari posisi kedua titik itu?</p>
+    </div>
+  </section>
+
+  <!-- 3. LABORATORIUM MATEMATIKA -->
+  <section id="lab">
+    <p class="section-title">🧪 Laboratorium Matematika</p>
+    <div class="card lab-card">
+
+      <div class="func-switch" role="group" aria-label="Pilih bentuk grafik">
+        <button type="button" id="btnLinear" class="active">Grafik 1</button>
+        <button type="button" id="btnQuad">Grafik 2</button>
+      </div>
+
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="labCanvas"></canvas>
+      </div>
+
+      <div class="lab-controls">
+        <button type="button" class="ctrl-btn" id="btnRandom">🎲 Acak titik</button>
+        <button type="button" class="ctrl-btn" id="btnHelper">〰️ Tampilkan garis bantu</button>
+      </div>
+
+      <div class="readout">
+        <div class="readout-item">
+          <div class="label"><span class="dot dot-primary"></span>Titik pada f(x)</div>
+          <div class="value" id="valA">(0, 0)</div>
+        </div>
+        <div class="readout-item">
+          <div class="label"><span class="dot dot-success"></span>Titik pada f⁻¹(x)</div>
+          <div class="value" id="valB">(0, 0)</div>
+        </div>
+      </div>
+
+      <p class="lab-hint">Coba geser titiknya ke beberapa posisi berbeda, lalu bandingkan.</p>
+    </div>
+  </section>
+
+  <!-- 4. DUGAAN SAYA -->
+  <section id="dugaan">
+    <p class="section-title">💭 Dugaan Saya</p>
+    <div class="card dugaan-card">
+      <p style="margin:0 0 12px;font-size:15px;color:var(--text-secondary);">Menurutmu, ada hubungan apa antara posisi kedua titik tadi?</p>
+      <textarea id="dugaanBox" placeholder="Tulis dugaanmu di sini..."></textarea>
+      <p class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <!-- 5. LANJUT KE MODUL -->
+  <section id="lanjut">
+    <p class="section-title">🚀 Lanjut ke Modul</p>
+    <div class="card modul-card">
+      <p>Kamu sudah punya dugaan sendiri. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GURU: ganti href="#" di bawah ini dengan URL Modul yang sesuai -->
+      <a href="#" class="modul-btn">Buka Modul →</a>
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Progress bar ---------- */
+  var progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrollTop = h.scrollTop || document.body.scrollTop;
+    var scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  /* ---------- Fade-up on scroll ---------- */
+  var sections = document.querySelectorAll('section');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, {threshold:.12});
+    sections.forEach(function(s){ io.observe(s); });
+  } else {
+    sections.forEach(function(s){ s.classList.add('visible'); });
+  }
+
+  /* ---------- Laboratorium: fungsi & invers ---------- */
+  var canvas = document.getElementById('labCanvas');
+  var ctx = canvas.getContext('2d');
+  var wrapEl = document.getElementById('canvasWrap');
+
+  var WORLD_MIN = -2, WORLD_MAX = 10;
+
+  var state = {
+    funcType: 'linear',
+    x: 6,
+    showHelper: false,
+    dragging: false
+  };
+
+  var css = getComputedStyle(document.documentElement);
+  var COLOR_PRIMARY = css.getPropertyValue('--primary').trim();
+  var COLOR_SUCCESS = css.getPropertyValue('--success').trim();
+  var COLOR_BORDER = css.getPropertyValue('--border').trim();
+  var COLOR_TEXT_SEC = css.getPropertyValue('--text-secondary').trim();
+  var COLOR_TEXT = css.getPropertyValue('--text').trim();
+
+  function domain(type){
+    return type === 'quad' ? [0, 10] : [-2, 10];
+  }
+
+  function f(x, type){
+    if(type === 'quad'){ return 0.08 * x * x; }
+    return 0.6 * x + 3;
+  }
+
+  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+  /* ---------- Canvas sizing ---------- */
+  var cw = 0, ch = 0, dpr = 1;
+
+  function resizeCanvas(){
+    var rect = wrapEl.getBoundingClientRect();
+    dpr = window.devicePixelRatio || 1;
+    cw = rect.width;
+    ch = rect.height;
+    canvas.width = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw();
+  }
+
+  function toPx(xw, yw){
+    var px = (xw - WORLD_MIN) / (WORLD_MAX - WORLD_MIN) * cw;
+    var py = ch - (yw - WORLD_MIN) / (WORLD_MAX - WORLD_MIN) * ch;
+    return [px, py];
+  }
+
+  function toWorldX(px){
+    return WORLD_MIN + (px / cw) * (WORLD_MAX - WORLD_MIN);
+  }
+
+  /* ---------- Drawing ---------- */
+  function draw(){
+    ctx.clearRect(0, 0, cw, ch);
+
+    // grid
+    ctx.strokeStyle = COLOR_BORDER;
+    ctx.lineWidth = 1;
+    for(var g = Math.ceil(WORLD_MIN); g <= WORLD_MAX; g += 2){
+      var p1 = toPx(g, WORLD_MIN), p2 = toPx(g, WORLD_MAX);
+      ctx.beginPath(); ctx.moveTo(p1[0], p1[1]); ctx.lineTo(p2[0], p2[1]); ctx.stroke();
+      var q1 = toPx(WORLD_MIN, g), q2 = toPx(WORLD_MAX, g);
+      ctx.beginPath(); ctx.moveTo(q1[0], q1[1]); ctx.lineTo(q2[0], q2[1]); ctx.stroke();
+    }
+
+    // axes
+    ctx.strokeStyle = COLOR_TEXT_SEC;
+    ctx.lineWidth = 1.4;
+    var ax1 = toPx(WORLD_MIN, 0), ax2 = toPx(WORLD_MAX, 0);
+    ctx.beginPath(); ctx.moveTo(ax1[0], ax1[1]); ctx.lineTo(ax2[0], ax2[1]); ctx.stroke();
+    var ay1 = toPx(0, WORLD_MIN), ay2 = toPx(0, WORLD_MAX);
+    ctx.beginPath(); ctx.moveTo(ay1[0], ay1[1]); ctx.lineTo(ay2[0], ay2[1]); ctx.stroke();
+
+    // y = x line
+    ctx.save();
+    ctx.setLineDash([5, 5]);
+    ctx.strokeStyle = COLOR_TEXT_SEC;
+    ctx.lineWidth = 1.4;
+    var l1 = toPx(WORLD_MIN, WORLD_MIN), l2 = toPx(WORLD_MAX, WORLD_MAX);
+    ctx.beginPath(); ctx.moveTo(l1[0], l1[1]); ctx.lineTo(l2[0], l2[1]); ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = COLOR_TEXT_SEC;
+    ctx.font = '600 11px Inter, sans-serif';
+    var lbl = toPx(WORLD_MAX - 0.6, WORLD_MAX - 1.3);
+    ctx.fillText('y = x', lbl[0], lbl[1]);
+
+    var dom = domain(state.funcType);
+    var steps = 140;
+
+    // curve f(x)
+    ctx.strokeStyle = COLOR_PRIMARY;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    for(var i = 0; i <= steps; i++){
+      var xw = dom[0] + (dom[1] - dom[0]) * (i / steps);
+      var yw = f(xw, state.funcType);
+      var pt = toPx(xw, yw);
+      if(i === 0) ctx.moveTo(pt[0], pt[1]); else ctx.lineTo(pt[0], pt[1]);
+    }
+    ctx.stroke();
+
+    // curve f^-1(x)  (mirror of f)
+    ctx.strokeStyle = COLOR_SUCCESS;
+    ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    for(var j = 0; j <= steps; j++){
+      var xw2 = dom[0] + (dom[1] - dom[0]) * (j / steps);
+      var yw2 = f(xw2, state.funcType);
+      var pt2 = toPx(yw2, xw2);
+      if(j === 0) ctx.moveTo(pt2[0], pt2[1]); else ctx.lineTo(pt2[0], pt2[1]);
+    }
+    ctx.stroke();
+
+    // points
+    var x = state.x;
+    var y = f(x, state.funcType);
+    var A = toPx(x, y);
+    var B = toPx(y, x);
+
+    if(state.showHelper){
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = COLOR_TEXT_SEC;
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(A[0], A[1]);
+      ctx.lineTo(B[0], B[1]);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // point A
+    ctx.beginPath();
+    ctx.fillStyle = COLOR_PRIMARY;
+    ctx.arc(A[0], A[1], 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#fff';
+    ctx.stroke();
+
+    // point B
+    ctx.beginPath();
+    ctx.fillStyle = COLOR_SUCCESS;
+    ctx.arc(B[0], B[1], 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#fff';
+    ctx.stroke();
+
+    // readouts
+    document.getElementById('valA').textContent =
+      '(' + x.toFixed(1) + ', ' + y.toFixed(1) + ')';
+    document.getElementById('valB').textContent =
+      '(' + y.toFixed(1) + ', ' + x.toFixed(1) + ')';
+  }
+
+  /* ---------- Drag handling (pointer events) ---------- */
+  function setXFromPointer(clientX){
+    var rect = canvas.getBoundingClientRect();
+    var px = clientX - rect.left;
+    var dom = domain(state.funcType);
+    var xw = clamp(toWorldX(px), dom[0], dom[1]);
+    state.x = xw;
+    draw();
+  }
+
+  function nearPoint(clientX, clientY){
+    var rect = canvas.getBoundingClientRect();
+    var px = clientX - rect.left, py = clientY - rect.top;
+    var y = f(state.x, state.funcType);
+    var A = toPx(state.x, y);
+    var d = Math.hypot(px - A[0], py - A[1]);
+    return d < 34;
+  }
+
+  canvas.addEventListener('pointerdown', function(e){
+    if(nearPoint(e.clientX, e.clientY)){
+      state.dragging = true;
+      canvas.setPointerCapture(e.pointerId);
+      setXFromPointer(e.clientX);
+    }
+  });
+  canvas.addEventListener('pointermove', function(e){
+    if(state.dragging){ setXFromPointer(e.clientX); }
+  });
+  canvas.addEventListener('pointerup', function(e){
+    state.dragging = false;
+  });
+  canvas.addEventListener('pointercancel', function(){ state.dragging = false; });
+
+  /* ---------- Controls ---------- */
+  var btnLinear = document.getElementById('btnLinear');
+  var btnQuad = document.getElementById('btnQuad');
+  var btnRandom = document.getElementById('btnRandom');
+  var btnHelper = document.getElementById('btnHelper');
+
+  btnLinear.addEventListener('click', function(){
+    state.funcType = 'linear';
+    btnLinear.classList.add('active');
+    btnQuad.classList.remove('active');
+    var dom = domain(state.funcType);
+    state.x = clamp(state.x, dom[0], dom[1]);
+    draw();
+  });
+
+  btnQuad.addEventListener('click', function(){
+    state.funcType = 'quad';
+    btnQuad.classList.add('active');
+    btnLinear.classList.remove('active');
+    var dom = domain(state.funcType);
+    state.x = clamp(state.x, dom[0], dom[1]);
+    draw();
+  });
+
+  btnRandom.addEventListener('click', function(){
+    var dom = domain(state.funcType);
+    state.x = dom[0] + Math.random() * (dom[1] - dom[0]);
+    draw();
+  });
+
+  btnHelper.addEventListener('click', function(){
+    state.showHelper = !state.showHelper;
+    btnHelper.classList.toggle('toggle-on', state.showHelper);
+    draw();
+  });
+
+  /* ---------- Init ---------- */
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('orientationchange', resizeCanvas);
+  resizeCanvas();
+
+})();
+</script>
+
+</body>
+</html>
