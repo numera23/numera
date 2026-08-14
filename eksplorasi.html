@@ -596,7 +596,7 @@
 const EXPLORATION_DATA = [
   {
     id: "lingkaran",
-    filterKey: "lingkaran",
+    filterKey: "geometri",
     name: "Persamaan Lingkaran",
     description: "Temukan sifat-sifat lingkaran melalui manipulasi visual.",
     color: "#2563EB",
@@ -612,7 +612,7 @@ const EXPLORATION_DATA = [
       },
       {
         name: "Garis & Lingkaran",
-        description: "Geser garis dan amati posisinya terhadap lingkaran.",
+        description: "Geser garis & amati posisinya terhadap lingkaran.",
         href: "eksplorasi_garis_dan_lingkaran.html",
         thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><circle cx="30" cy="32" r="14" fill="none" stroke="#10B981" stroke-width="2"/><circle cx="30" cy="32" r="1.8" fill="#10B981"/><circle cx="30" cy="24" r="2.4" fill="#10B981"/><circle cx="42" cy="20" r="2.4" fill="#2563EB"/><circle cx="46" cy="42" r="2.4" fill="#EF4444"/></svg>`
       },
@@ -626,7 +626,7 @@ const EXPLORATION_DATA = [
   },
   {
     id: "komposisi_invers",
-    filterKey: "komposisi_invers",
+    filterKey: "aljabar",
     name: "Komposisi Fungsi & Invers",
     description: "Jalankan mesinnya, lalu lihat apa yang berbeda.",
     color: "#10B981",
@@ -635,13 +635,13 @@ const EXPLORATION_DATA = [
     items: [
       {
         name: "Mesin Komposisi Fungsi",
-        description: "Masukkan nilai ke mesin f dan g.",
+        description: "Masukkan nilai ke mesin f & g.",
         href: "eksplorasi_mesin_komposisi_fungsi.html",
         thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><path d="M8 40c6-14 12 10 18-2s10-16 16 4" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/><circle cx="18" cy="34" r="2" fill="#10B981"/><circle cx="34" cy="30" r="2" fill="#10B981"/></svg>`
       },
       {
         name: "Fungsi & Invers pada Grafik",
-        description: "Ubah grafik dan lihat inversnya.",
+        description: "Ubah grafik & lihat inversnya.",
         href: "eksplorasi_fungsi_invers.html",
         thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#FEF2F2"/><path d="M10 24c8 0 8 18 22 18s14-18 22-18" fill="none" stroke="#EF4444" stroke-width="2.2" stroke-linecap="round" transform="scale(1,-1) translate(0,-56)"/><circle cx="22" cy="42" r="2.2" fill="#EF4444"/><circle cx="42" cy="42" r="2.2" fill="#EF4444"/><line x1="8" y1="42" x2="56" y2="42" stroke="#FCA5A5" stroke-width="1.4"/></svg>`
       },
@@ -660,30 +660,42 @@ const EXPLORATION_DATA = [
     ]
   },
   {
-    id: "kuadrat",
-    filterKey: "kuadrat",
-    name: "Fungsi Kuadrat",
-    description: "Kenali sifat-sifat parabola.",
+    id: "fungsitrigonometri",
+    filterKey: "trigonometri",
+    name: "Fungsi Trigonometri",
+    description: "Kenali karakteristik grafik trigonometri.",
     color: "#7C3AED",
     colorLight: "#EDE9FE",
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c4 0 4 12 8 12s4-12 8-12"/></svg>`,
     items: [
       {
-        name: "Vertex Parabola",
-        description: "Geser parabola dan amati posisi titik puncaknya.",
-        href: "#",
+        name: "Pengaruh Amplitudo",
+        description: "Apa yang tetap sama? Apa yang berubah.",
+        href: "eksplorasi_amplitudo.html",
         thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#F5F3FF"/><path d="M12 20c6 0 8 24 20 24s14-24 20-24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round"/><circle cx="32" cy="44" r="2.2" fill="#7C3AED"/></svg>`
       },
       {
-        name: "Nilai a, b, c",
-        description: "Ubah nilai a, b, dan c pada fungsi kuadrat.",
-        href: "#",
+        name: "Pergeseran Horizontal",
+        description: "Geser & bandingkan dengan grafik awal.",
+        href: "eksplorasi_geser_horizontal.html",
         thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#EFF6FF"/><path d="M10 46c8-2 10-30 22-30s14 28 22 30" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"/></svg>`
       },
       {
-        name: "Sumbu Simetri",
-        description: "Temukan sumbu simetri dari berbagai parabola.",
-        href: "#",
+        name: "Pergeseran Vertikal",
+        description: "Geser & bandingkan dengan grafik awal.",
+        href: "eksplorasi_geser_vertikal.html",
+        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><path d="M10 44c8-2 10-26 22-26s14 24 22 26" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/><line x1="32" y1="12" x2="32" y2="50" stroke="#6EE7B7" stroke-width="1.4" stroke-dasharray="3 3"/></svg>`
+      },
+      {
+        name: "Pengaruh Periode",
+        description: "TApa yang berubah pada bentuk gelombangnya?",
+        href: "eksplorasi_periode_sincos.html",
+        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><path d="M10 44c8-2 10-26 22-26s14 24 22 26" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/><line x1="32" y1="12" x2="32" y2="50" stroke="#6EE7B7" stroke-width="1.4" stroke-dasharray="3 3"/></svg>`
+      },
+      {
+        name: "Grafik Tangen",
+        description: "Apa yang terjadi di garis putus-putus itu?",
+        href: "eksplorasi_tangen.html",
         thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><path d="M10 44c8-2 10-26 22-26s14 24 22 26" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/><line x1="32" y1="12" x2="32" y2="50" stroke="#6EE7B7" stroke-width="1.4" stroke-dasharray="3 3"/></svg>`
       }
     ]
