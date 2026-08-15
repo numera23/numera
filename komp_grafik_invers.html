@@ -1,0 +1,1042 @@
+<!--
+  NUMERA
+  Judul: Grafik Fungsi dan Fungsi Invers
+  Jenis: Modul Interaktif (pakai KaTeX)
+  Versi: 1.4
+  Dikembangkan oleh Kiki Herdiansyah
+  Copyright © 2026
+  Identitas Proyek: Numera — s.id/cakram
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Numera · Grafik Fungsi dan Fungsi Invers</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah — Numera">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --border:#E2E8F0;
+
+    --success:#10B981;
+    --success-bg:#ECFDF5;
+    --success-border:#A7F3D0;
+    --success-text:#047857;
+
+    --warning:#F59E0B;
+    --warning-bg:#FEF3C7;
+    --warning-text:#B45309;
+
+    --error:#EF4444;
+    --error-bg:#FEE2E2;
+    --error-border:#FECACA;
+    --error-text:#B91C1C;
+
+    --radius-card:18px;
+    --radius-btn:12px;
+    --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px 60px;}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    padding:14px 18px;
+    font-weight:600;
+    font-size:14px;
+    color:var(--primary);
+    letter-spacing:.2px;
+  }
+  .progress-bar{
+    position:sticky;top:45px;z-index:49;
+    height:3px;background:transparent;
+  }
+  .progress-bar-fill{
+    height:100%;background:var(--primary);width:0%;
+    transition:width 80ms linear;
+  }
+
+  section{margin-top:34px;}
+  section:first-of-type{margin-top:26px;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius-card);
+    box-shadow:var(--shadow-card);
+    padding:24px;
+  }
+
+  h1{font-size:24px;font-weight:800;margin:0 0 6px;letter-spacing:-.3px;}
+  h2{font-size:19px;font-weight:750;margin:0 0 14px;letter-spacing:-.2px;}
+  h3{font-size:16px;font-weight:700;margin:22px 0 8px;color:var(--text);}
+  h3:first-child{margin-top:0;}
+  p{margin:0 0 12px;font-size:15px;color:var(--text);}
+  p.secondary{color:var(--text-secondary);}
+  .section-tag{
+    display:inline-block;font-size:12px;font-weight:700;color:var(--primary);
+    background:var(--primary-light);padding:4px 10px;border-radius:999px;
+    margin-bottom:10px;letter-spacing:.3px;
+  }
+
+  ul,ol{margin:0 0 12px;padding-left:20px;}
+  li{margin-bottom:6px;font-size:15px;}
+
+  mark{background:var(--primary-light);color:var(--primary-hover);padding:1px 4px;border-radius:5px;}
+
+  .formula-box{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px 16px;
+    margin:12px 0;
+    overflow-x:auto;
+    font-size:15px;
+  }
+
+  .header-card{background:linear-gradient(180deg,var(--card) 0%, var(--card) 100%);}
+  .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;}
+  .meta-chip{
+    font-size:13px;font-weight:600;color:var(--primary-hover);
+    background:var(--primary-light);padding:6px 12px;border-radius:999px;
+  }
+  .goal-list li{font-size:14.5px;}
+
+  .id-box{
+    margin-top:18px;padding:16px;border-radius:14px;
+    background:var(--bg);border:1px solid var(--border);
+  }
+  .id-box label{display:block;font-size:12.5px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;}
+  .id-row{display:flex;gap:12px;flex-wrap:wrap;}
+  .id-field{flex:1;min-width:140px;}
+  input[type="text"], input[type="number"], select, textarea{
+    width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;
+    font-family:inherit;font-size:14.5px;background:#fff;color:var(--text);
+  }
+  input:focus, select:focus, textarea:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+  .id-note{font-size:12.5px;color:var(--text-secondary);margin-top:10px;}
+
+  button{
+    font-family:inherit;font-weight:650;font-size:14.5px;
+    border:none;border-radius:var(--radius-btn);
+    min-height:40px;padding:0 18px;cursor:pointer;
+    transition:all 200ms ease;
+  }
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--primary-hover);}
+  .btn-secondary{background:var(--primary-light);color:var(--primary-hover);}
+  .btn-secondary:hover{background:#c7ddfd;}
+  .btn-outline{background:#fff;border:1px solid var(--border);color:var(--text);}
+  .btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+  .btn-tab{background:#fff;border:1px solid var(--border);color:var(--text-secondary);}
+  .btn-tab.active{background:var(--primary);border-color:var(--primary);color:#fff;}
+  button:disabled{opacity:.45;cursor:not-allowed;}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+
+  .fade-up{opacity:0;transform:translateY(16px);transition:opacity 560ms ease, transform 560ms ease;}
+  .fade-up.visible{opacity:1;transform:translateY(0);}
+
+  .hook-question{font-size:17px;font-weight:650;margin-bottom:10px;}
+
+  .slider-group{margin:16px 0;}
+  .slider-label{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px;}
+  .slider-label span.val{color:var(--primary);font-weight:700;}
+  input[type="range"]{
+    width:100%;height:6px;border-radius:999px;background:var(--border);
+    -webkit-appearance:none;appearance:none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+    background:var(--primary);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(15,23,42,.25);
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:20px;height:20px;border-radius:50%;background:var(--primary);
+    cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(15,23,42,.25);
+  }
+
+  .graph-wrap{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:10px;margin:14px 0;}
+  svg{width:100%;height:auto;display:block;}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--text-secondary);margin-top:8px;}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block;}
+
+  .insight-box{
+    margin-top:14px;padding:12px 14px;border-radius:12px;
+    background:var(--primary-light);border:1px solid #bfd7fb;
+    color:var(--primary-hover);font-size:14px;font-weight:600;
+    display:none;
+  }
+  .insight-box.show{display:block;}
+
+  .warn-box{
+    margin-top:14px;padding:12px 14px;border-radius:12px;
+    background:var(--warning-bg);border:1px solid #fde49b;color:var(--warning-text);
+    font-size:14px;font-weight:600;display:none;
+  }
+  .warn-box.show{display:block;}
+
+  .step-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:12px;}
+  .anim-caption{font-size:13.5px;color:var(--text-secondary);text-align:center;margin-top:8px;min-height:18px;}
+
+  .badge{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.3px;}
+  .badge-mudah{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);}
+  .badge-sedang{background:var(--warning-bg);color:var(--warning-text);}
+  .badge-sulit{background:var(--error-bg);color:var(--error-text);border:1px solid var(--error-border);}
+
+  .soal-card{margin-bottom:22px;padding-bottom:20px;border-bottom:1px dashed var(--border);}
+  .soal-card:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+  .soal-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .soal-head b{font-size:15px;}
+
+  .mini-graph{max-width:260px;margin:10px 0;}
+
+  .answer-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;}
+  .answer-row input{max-width:160px;}
+
+  .feedback{
+    margin-top:12px;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:600;display:none;
+  }
+  .feedback.benar{display:block;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+  .feedback.salah{display:block;background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+
+  .kirim-status{font-size:12px;color:var(--text-secondary);margin-top:8px;min-height:16px;}
+
+  .mistake-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px;}
+  .mistake-card:last-child{margin-bottom:0;}
+  .mistake-title{font-weight:700;font-size:14.5px;margin-bottom:6px;color:var(--error-text);}
+  .mistake-title::before{content:"✕ ";}
+  .mistake-fix{font-weight:700;font-size:14px;margin-top:8px;color:var(--success-text);}
+  .mistake-fix::before{content:"✓ ";}
+
+  .ring-item{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;}
+  .ring-num{
+    flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--primary);
+    color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;
+  }
+  .ring-item:last-child{margin-bottom:0;}
+
+  textarea{min-height:90px;resize:vertical;}
+  .refleksi-item{margin-bottom:18px;}
+  .refleksi-item:last-child{margin-bottom:0;}
+  .refleksi-q{font-weight:650;font-size:14.5px;margin-bottom:8px;}
+
+  footer{
+    margin-top:44px;text-align:center;padding:22px 10px;
+    color:var(--text-secondary);font-size:12.5px;border-top:1px solid var(--border);
+  }
+  footer b{color:var(--text);}
+
+  @media (max-width:480px){
+    h1{font-size:21px;}
+    .card{padding:18px;}
+    .id-row{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">NUMERA · Grafik Fungsi dan Fungsi Invers</div>
+<div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section id="header">
+    <div class="card header-card">
+      <h1>Grafik Fungsi dan Fungsi Invers</h1>
+      <p class="secondary">Belajar membaca dan menggambar hubungan antara grafik sebuah fungsi dengan grafik inversnya — tanpa perlu menghafal rumus dulu.</p>
+
+      <div class="meta-row">
+        <span class="meta-chip">⏱ Sekitar 18–20 menit</span>
+        <span class="meta-chip">📘 Modul Mandiri</span>
+      </div>
+
+      <h3 style="margin-top:18px;">Setelah belajar ini, kamu akan bisa:</h3>
+      <ul class="goal-list">
+        <li>Menggunakan uji garis vertikal untuk mengecek apakah suatu grafik adalah fungsi</li>
+        <li>Menggunakan uji garis horizontal untuk mengecek apakah fungsi punya invers</li>
+        <li>Menjelaskan kenapa grafik f⁻¹(x) selalu cerminan grafik f(x) terhadap garis y = x</li>
+        <li>Membaca nilai f(x) dan f⁻¹(x) langsung dari grafik tanpa rumus</li>
+        <li>Menentukan titik potong grafik f dan f⁻¹ pada garis y = x</li>
+      </ul>
+
+      <div class="id-box">
+        <div class="id-row">
+          <div class="id-field">
+            <label for="namaSiswa">Nama Lengkap</label>
+            <input type="text" id="namaSiswa" placeholder="Tulis namamu di sini">
+          </div>
+          <div class="id-field">
+            <label for="kelasSiswa">Kelas</label>
+            <input type="text" id="kelasSiswa" placeholder="Contoh: XI IPA 2">
+          </div>
+        </div>
+        <p class="id-note">Isi nama dan kelas dulu, ya — bagian ini dipakai supaya jawaban Challenge dan Refleksi kamu di bawah bisa terkirim ke gurumu.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section id="hook">
+    <div class="card fade-up">
+      <span class="section-tag">Pernahkah Kamu Berpikir?</span>
+      <p class="hook-question">Pernah kepikiran tidak, kenapa bayanganmu di cermin itu "kamu juga", tapi kok kebalik?</p>
+      <p>Kalau kamu angkat tangan kanan, bayanganmu di cermin justru mengangkat tangan yang <mark>posisinya kebalik</mark>. Jarak kamu ke cermin, sama persis dengan jarak bayanganmu ke cermin — cuma di sisi seberang.</p>
+      <p>Grafik fungsi invers punya hubungan yang mirip banget dengan grafik fungsi asalnya. Bedanya, "cermin" yang dipakai bukan kaca, tapi sebuah garis lurus: <mark>garis y = x</mark>.</p>
+      <p class="secondary">Di modul ini kita akan lihat kenapa hubungan cermin ini terjadi, dan bagaimana memanfaatkannya untuk membaca serta menggambar grafik fungsi invers dengan cepat.</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section id="penjelasan">
+    <div class="card fade-up">
+      <span class="section-tag">Penjelasan Sederhana</span>
+      <h2>Membaca Hubungan Dua Grafik</h2>
+
+      <h3>1. Uji garis vertikal — apakah ini grafik fungsi?</h3>
+      <p>Sebelum bicara invers, kita harus yakin dulu bahwa yang kita punya benar-benar sebuah <b>fungsi</b>.</p>
+      <p>Caranya gampang: tarik garis <b>tegak (vertikal)</b> di sembarang titik pada grafik. Kalau garis itu <mark>selalu memotong grafik paling banyak satu kali</mark>, maka itu grafik fungsi. Kalau ada garis vertikal yang memotong dua kali atau lebih, itu bukan fungsi.</p>
+      <p>Masuk akal, kan? Fungsi artinya satu masukan x cuma boleh punya satu keluaran y. Kalau garis vertikal (yang mewakili satu nilai x) memotong dua kali, berarti satu x punya dua y — itu melanggar definisi fungsi.</p>
+
+      <h3>2. Uji garis horizontal — apakah fungsi ini punya invers?</h3>
+      <p>Setelah yakin itu fungsi, sekarang cek apakah dia punya invers. Caranya mirip, tapi garisnya <b>mendatar (horizontal)</b>.</p>
+      <p>Tarik garis mendatar di sembarang titik. Kalau garis itu <mark>selalu memotong grafik paling banyak satu kali</mark>, fungsi tersebut punya invers. Kalau ada yang memotong lebih dari satu kali, fungsi itu tidak punya invers (kecuali domainnya dibatasi).</p>
+      <p>Sampai sini masih masuk akal? Uji vertikal menjawab "ini fungsi atau bukan", uji horizontal menjawab "fungsi ini punya invers atau tidak".</p>
+
+      <h3>3. Titik pada grafik f, titik pada grafik f⁻¹</h3>
+      <p>Sekarang bagian intinya. Kalau grafik f(x) melewati titik <span id="ktx-titik1"></span>, maka grafik f⁻¹(x) pasti melewati titik <span id="ktx-titik2"></span> — koordinatnya tertukar.</p>
+      <p>Kenapa begitu? Ingat lagi cara mencari rumus invers: kita menukar x dan y. Nah, menukar x dan y pada persamaan itu sama saja dengan menukar posisi koordinat setiap titik pada grafiknya.</p>
+      <p><b>Ternyata</b> — kita bisa menggambar grafik invers tanpa harus mencari rumusnya dulu. Cukup tukar koordinat setiap titik yang kita tahu dari grafik asal.</p>
+
+      <h3>4. Kenapa hasilnya selalu cerminan terhadap y = x?</h3>
+      <p>Titik <span id="ktx-titik3"></span> dan titik <span id="ktx-titik4"></span> itu selalu berjarak sama terhadap garis <span id="ktx-yx1"></span>, tapi di sisi yang berlawanan — persis seperti kamu dan bayanganmu di cermin.</p>
+      <p>Karena <b>setiap</b> titik pada f(x) punya pasangan seperti ini di f⁻¹(x), keseluruhan grafiknya jadi terlihat seperti dicerminkan terhadap garis y = x.</p>
+
+      <h3>5. Membaca nilai f(x) dan f⁻¹(x) langsung dari grafik</h3>
+      <p>Karena hubungan titiknya sudah jelas, kita bisa membaca nilai fungsi maupun inversnya <b>tanpa rumus sama sekali</b>.</p>
+      <p>Mau cari f(3)? Cari titik pada grafik f yang x-nya 3, lihat y-nya. Mau cari f⁻¹(3)? Cari titik pada grafik f yang <b>y-nya</b> 3, lihat x-nya — atau langsung cari titik pada grafik f⁻¹ yang x-nya 3.</p>
+      <p>Coba perhatikan baik-baik bedanya: untuk f⁻¹(3), kita justru mencari 3 di posisi <b>y</b> pada grafik f, bukan di posisi x. Ini sering jadi sumber salah baca.</p>
+
+      <h3>6. Titik potong grafik f dan f⁻¹ pada garis y = x</h3>
+      <p>Kadang grafik f(x) dan f⁻¹(x) saling berpotongan. Di mana perpotongan itu bisa terjadi?</p>
+      <p>Karena f⁻¹ adalah cerminan f terhadap y = x, kalau grafik f sendiri <b>menyentuh</b> garis y = x di suatu titik, cerminannya (yaitu f⁻¹) juga akan menyentuh titik yang sama persis di sana.</p>
+      <p>Jadi, titik potong f dan f⁻¹ pada garis y = x terjadi tepat ketika <span id="ktx-fx-x"></span> — yaitu ketika nilai keluaran fungsi sama dengan nilai masukannya.</p>
+      <p>Perlu diingat: perpotongan f dan f⁻¹ <b>tidak selalu</b> harus berada di garis y = x — untuk fungsi tertentu, keduanya bisa juga berpotongan di titik lain. Tapi titik potong <i>di atas garis y = x</i> selalu berasal dari kondisi ini.</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section id="carakerja">
+    <div class="card fade-up">
+      <span class="section-tag">Lihat Cara Kerjanya</span>
+      <h2>Animasi: Membentuk Grafik Invers dari Grafik Asal</h2>
+      <p>Grafik biru adalah <span id="ktx-anim-f"></span> untuk <span id="ktx-anim-domain"></span> (dibatasi supaya punya invers). Tekan <b>Putar</b> untuk melihat titik-titiknya dicerminkan satu per satu membentuk grafik f⁻¹(x) berwarna merah.</p>
+
+      <div class="step-card">
+        <div class="graph-wrap">
+          <svg id="graphAnim" viewBox="0 0 320 320"></svg>
+        </div>
+        <div class="legend">
+          <span><i class="dot" style="background:#2563EB;"></i> f(x)</span>
+          <span><i class="dot" style="background:#EF4444;"></i> f⁻¹(x) (terbentuk)</span>
+          <span><i class="dot" style="background:#94A3B8;"></i> garis y = x</span>
+        </div>
+        <div class="anim-caption" id="animCaption">Tekan Putar untuk mulai.</div>
+        <div class="btn-row">
+          <button class="btn-primary" id="btnPlay">▶ Putar</button>
+          <button class="btn-outline" id="btnPause">⏸ Jeda</button>
+          <button class="btn-outline" id="btnReset">↻ Ulangi</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section id="coba">
+    <div class="card fade-up">
+      <span class="section-tag">Coba Sendiri</span>
+      <h2>Bagian 1 — Uji Vertikal & Horizontal</h2>
+      <p>Pilih sebuah grafik, pilih jenis uji, lalu geser posisi garis ujinya.</p>
+
+      <div class="slider-group">
+        <label for="pilihRelasi" style="font-size:14px;font-weight:600;">Pilih grafik</label>
+        <select id="pilihRelasi">
+          <option value="garis">Garis lurus: y = 2x − 1</option>
+          <option value="parabola">Parabola tegak: y = x²</option>
+          <option value="sideways">Parabola miring: x = y²</option>
+          <option value="lingkaran">Lingkaran: x² + y² = 9</option>
+        </select>
+      </div>
+
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn-tab active" id="tabVertikal">Uji Garis Vertikal</button>
+        <button class="btn-tab" id="tabHorizontal">Uji Garis Horizontal</button>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-label">Posisi garis uji (k) <span class="val" id="valK">1</span></div>
+        <input type="range" id="sliderK" min="-6" max="6" step="0.5" value="1">
+      </div>
+
+      <div class="graph-wrap">
+        <svg id="graphTest" viewBox="0 0 320 320"></svg>
+      </div>
+
+      <div class="insight-box show" id="insightTest"></div>
+
+      <h2 style="margin-top:30px;">Bagian 2 — Titik Cermin di Grafik</h2>
+      <p>Grafik <span id="ktx-mirror-f"></span>. Geser slider untuk memindahkan titik A pada grafik f, dan lihat titik cerminnya A′ pada grafik f⁻¹.</p>
+
+      <div class="slider-group">
+        <div class="slider-label">Posisi x pada titik A <span class="val" id="valMX">0</span></div>
+        <input type="range" id="sliderMX" min="-6" max="8" step="0.5" value="0">
+      </div>
+
+      <div class="graph-wrap">
+        <svg id="graphMirror" viewBox="0 0 320 320"></svg>
+      </div>
+      <div class="legend">
+        <span><i class="dot" style="background:#2563EB;"></i> f(x), titik A</span>
+        <span><i class="dot" style="background:#EF4444;"></i> f⁻¹(x), titik A′</span>
+        <span><i class="dot" style="background:#94A3B8;"></i> garis y = x</span>
+      </div>
+
+      <div class="insight-box" id="insightMirror"></div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section id="challenge">
+    <div class="card fade-up">
+      <span class="section-tag">Challenge</span>
+      <h2>Yuk, Uji Pemahamanmu</h2>
+      <p class="secondary">Kerjakan tiga soal berikut. Jawabanmu akan langsung diperiksa dan dikirim ke gurumu.</p>
+
+      <!-- Soal 1 -->
+      <div class="soal-card">
+        <div class="soal-head"><span class="badge badge-mudah">MUDAH</span><b>Soal 1</b></div>
+        <p>Grafik fungsi f melewati titik berikut:</p>
+        <div class="graph-wrap mini-graph">
+          <svg id="svgSoal1" viewBox="0 0 220 220"></svg>
+        </div>
+        <p>Berdasarkan grafik di atas, tentukan nilai <span id="ktx-s1"></span>.</p>
+        <div class="answer-row">
+          <input type="number" id="jawab1" placeholder="Jawaban" step="any">
+          <button class="btn-primary" id="cek1">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb1"></div>
+        <div class="kirim-status" id="status1"></div>
+      </div>
+
+      <!-- Soal 2 -->
+      <div class="soal-card">
+        <div class="soal-head"><span class="badge badge-sedang">SEDANG</span><b>Soal 2</b></div>
+        <p>Grafik garis lurus f melewati dua titik berikut:</p>
+        <div class="graph-wrap mini-graph">
+          <svg id="svgSoal2" viewBox="0 0 220 220"></svg>
+        </div>
+        <p>Dari grafik tersebut, <span id="ktx-s2"></span>. Tentukan nilai <span id="ktx-s2b"></span>.</p>
+        <p class="secondary" style="font-size:13px;">Ingat: cari dulu rumus f⁻¹(x) dari rumus f(x), baru substitusikan.</p>
+        <div class="answer-row">
+          <input type="number" id="jawab2" placeholder="Jawaban" step="any">
+          <button class="btn-primary" id="cek2">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb2"></div>
+        <div class="kirim-status" id="status2"></div>
+      </div>
+
+      <!-- Soal 3 -->
+      <div class="soal-card">
+        <div class="soal-head"><span class="badge badge-sulit">SULIT</span><b>Soal 3</b></div>
+        <p>Fungsi <span id="ktx-s3"></span> dibatasi pada domain <span id="ktx-s3b"></span> supaya punya invers. Grafik g dan g⁻¹ berpotongan pada garis y = x tepat di titik <span id="ktx-s3c"></span>. Tentukan nilai <span id="ktx-s3d"></span>.</p>
+        <p class="secondary" style="font-size:13px;">Petunjuk: ingat kondisi khusus perpotongan grafik f dan f⁻¹ di garis y = x yang sudah kita bahas.</p>
+        <div class="answer-row">
+          <input type="number" id="jawab3" placeholder="Jawaban" step="any">
+          <button class="btn-primary" id="cek3">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb3"></div>
+        <div class="kirim-status" id="status3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section id="kesalahan">
+    <div class="card fade-up">
+      <span class="section-tag">Kesalahan yang Sering Terjadi</span>
+      <h2>Hati-Hati dengan Jebakan Ini</h2>
+
+      <div class="mistake-card">
+        <div class="mistake-title">Mengira semua kurva yang terlihat rapi pasti fungsi</div>
+        <p style="margin-bottom:0;">Kurva seperti lingkaran atau parabola miring terlihat "biasa saja", padahal keduanya bukan fungsi karena gagal uji garis vertikal.</p>
+        <div class="mistake-fix">Selalu cek dengan uji garis vertikal dulu sebelum membicarakan invers sama sekali.</div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-title">Langsung mengira setiap fungsi pasti punya invers</div>
+        <p style="margin-bottom:0;">Fungsi seperti y = x² memang lolos uji garis vertikal (dia fungsi), tapi gagal uji garis horizontal, jadi tidak punya invers pada seluruh daerah asalnya.</p>
+        <div class="mistake-fix">Cek juga dengan uji garis horizontal, jangan berhenti di uji vertikal saja.</div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-title">Salah menukar koordinat saat menggambar grafik invers</div>
+        <p style="margin-bottom:0;">Titik (a, b) pada f(x) sering salah digambar jadi (−a, b) atau (a, −b) pada f⁻¹(x), padahal yang benar adalah (b, a) — koordinatnya tertukar, bukan diberi tanda minus.</p>
+        <div class="mistake-fix">Ucapkan dalam hati "x jadi y, y jadi x" setiap kali menukar koordinat sebuah titik.</div>
+      </div>
+
+      <div class="mistake-card">
+        <div class="mistake-title">Salah arah saat membaca f⁻¹(k) dari grafik f</div>
+        <p style="margin-bottom:0;">Untuk mencari f⁻¹(k) dari grafik f, siswa sering keliru mencari k pada posisi x, padahal seharusnya dicari pada posisi y.</p>
+        <div class="mistake-fix">Ingat: f⁻¹(k) artinya kita mencari x yang menghasilkan y = k, jadi carilah k dulu di sumbu y.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section id="ringkasan">
+    <div class="card fade-up">
+      <span class="section-tag">Ringkasan</span>
+      <h2>5 Hal Penting untuk Diingat</h2>
+
+      <div class="ring-item">
+        <div class="ring-num">1</div>
+        <p style="margin:0;">Uji garis vertikal mengecek apakah suatu grafik adalah fungsi; uji garis horizontal mengecek apakah fungsi itu punya invers.</p>
+      </div>
+      <div class="ring-item">
+        <div class="ring-num">2</div>
+        <p style="margin:0;">Titik (a, b) pada grafik f(x) selalu menjadi titik (b, a) pada grafik f⁻¹(x).</p>
+      </div>
+      <div class="ring-item">
+        <div class="ring-num">3</div>
+        <p style="margin:0;">Karena itu, grafik f⁻¹(x) selalu berupa cerminan grafik f(x) terhadap garis y = x.</p>
+      </div>
+      <div class="ring-item">
+        <div class="ring-num">4</div>
+        <p style="margin:0;">Nilai f(x) dan f⁻¹(x) bisa dibaca langsung dari grafik tanpa rumus, asal tahu cara membaca sumbunya.</p>
+      </div>
+      <div class="ring-item">
+        <div class="ring-num">5</div>
+        <p style="margin:0;">Grafik f dan f⁻¹ berpotongan di garis y = x tepat ketika f(x) = x.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section id="refleksi">
+    <div class="card fade-up">
+      <span class="section-tag">Refleksi</span>
+      <h2>Coba Jelaskan dengan Kata-Katamu Sendiri</h2>
+      <p class="secondary">Tidak ada jawaban benar atau salah di bagian ini. Tulis saja apa yang benar-benar kamu pikirkan.</p>
+
+      <div class="refleksi-item">
+        <div class="refleksi-q">1. Dengan kata-katamu sendiri, kenapa grafik fungsi invers selalu berupa cerminan terhadap garis y = x?</div>
+        <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+      <div class="refleksi-item">
+        <div class="refleksi-q">2. Menurutmu, kenapa uji garis horizontal penting dilakukan sebelum kita yakin sebuah fungsi punya invers?</div>
+        <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <button class="btn-primary" id="kirimRefleksi">Kirim Refleksi</button>
+      <div class="kirim-status" id="statusRefleksi"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <b>NUMERA</b><br>
+  Dikembangkan oleh Kiki Herdiansyah<br>
+  Versi 1.4 · © 2026
+</footer>
+
+<script>
+/* ================= KONFIGURASI ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec'; // TODO: guru isi URL Google Apps Script di sini sebelum publish
+const TOPIK = 'Grafik Fungsi dan Fungsi Invers';
+
+/* ================= UTIL GRAFIK ================= */
+function mapPoint(x,y){
+  const scale = 13;
+  return { sx: 160 + x*scale, sy: 160 - y*scale };
+}
+function clip(v){ return Math.max(-14, Math.min(14, v)); }
+function roundClean(v){ return Math.round(v*100)/100; }
+function buildGrid(){
+  let s = '';
+  for(let i=-12;i<=12;i+=2){
+    const p1 = mapPoint(i,-12), p2 = mapPoint(i,12);
+    const p3 = mapPoint(-12,i), p4 = mapPoint(12,i);
+    s += `<line x1="${p1.sx}" y1="${p1.sy}" x2="${p2.sx}" y2="${p2.sy}" stroke="#E2E8F0" stroke-width="1"/>`;
+    s += `<line x1="${p3.sx}" y1="${p3.sy}" x2="${p4.sx}" y2="${p4.sy}" stroke="#E2E8F0" stroke-width="1"/>`;
+  }
+  const ax1 = mapPoint(-12,0), ax2 = mapPoint(12,0);
+  const ay1 = mapPoint(0,-12), ay2 = mapPoint(0,12);
+  s += `<line x1="${ax1.sx}" y1="${ax1.sy}" x2="${ax2.sx}" y2="${ax2.sy}" stroke="#94A3B8" stroke-width="1.4"/>`;
+  s += `<line x1="${ay1.sx}" y1="${ay1.sy}" x2="${ay2.sx}" y2="${ay2.sy}" stroke="#94A3B8" stroke-width="1.4"/>`;
+  return s;
+}
+function buildGridMini(){
+  const mp = (x,y)=>({sx:110+x*10, sy:110-y*10});
+  let s = '';
+  for(let i=-10;i<=10;i+=2){
+    const p1 = mp(i,-10), p2 = mp(i,10);
+    const p3 = mp(-10,i), p4 = mp(10,i);
+    s += `<line x1="${p1.sx}" y1="${p1.sy}" x2="${p2.sx}" y2="${p2.sy}" stroke="#E2E8F0" stroke-width="1"/>`;
+    s += `<line x1="${p3.sx}" y1="${p3.sy}" x2="${p4.sx}" y2="${p4.sy}" stroke="#E2E8F0" stroke-width="1"/>`;
+  }
+  const ax1 = mp(-10,0), ax2 = mp(10,0);
+  const ay1 = mp(0,-10), ay2 = mp(0,10);
+  s += `<line x1="${ax1.sx}" y1="${ax1.sy}" x2="${ax2.sx}" y2="${ax2.sy}" stroke="#94A3B8" stroke-width="1.2"/>`;
+  s += `<line x1="${ay1.sx}" y1="${ay1.sy}" x2="${ay2.sx}" y2="${ay2.sy}" stroke="#94A3B8" stroke-width="1.2"/>`;
+  return s;
+}
+
+/* ================= KATEX RENDER ================= */
+document.addEventListener('DOMContentLoaded', () => {
+  const put = (id, tex, displayMode=false) => {
+    const el = document.getElementById(id);
+    if(el) katex.render(tex, el, {throwOnError:false, displayMode});
+  };
+  put('ktx-titik1','(a,\\,b)');
+  put('ktx-titik2','(b,\\,a)');
+  put('ktx-titik3','(a,\\,b)');
+  put('ktx-titik4','(b,\\,a)');
+  put('ktx-yx1','y=x');
+  put('ktx-fx-x','f(x)=x');
+  put('ktx-anim-f','f(x)=0.4x^2');
+  put('ktx-anim-domain','x \\ge 0');
+  put('ktx-mirror-f','f(x)=0.5x+2');
+  put('ktx-s1','f^{-1}(5)');
+  put('ktx-s2','f(x)=2x-1');
+  put('ktx-s2b','f^{-1}(7)');
+  put('ktx-s3','g(x)=x^2+a');
+  put('ktx-s3b','x \\ge 0');
+  put('ktx-s3c','(2,\\,2)');
+  put('ktx-s3d','a');
+
+  buildSoal1();
+  buildSoal2();
+  updateAnimGraph();
+  updateTest();
+  updateMirror();
+});
+
+/* ================= FADE UP ================= */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.12});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+/* ================= PROGRESS BAR ================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressFill').style.width = Math.min(100, Math.max(0,scrolled)) + '%';
+});
+
+/* ================= IDENTITAS SISWA ================= */
+function getIdentitas(){
+  return {
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim()
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  if(!id.nama || !id.kelas){
+    alert('Isi dulu Nama dan Kelas kamu di bagian atas modul sebelum mengecek jawaban ya.');
+    return false;
+  }
+  return true;
+}
+
+/* ================= KIRIM KE GURU ================= */
+function kirimKeGuru(soalNo, jawaban1, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const statusEl = document.getElementById(statusElId);
+  if(statusEl) statusEl.textContent = 'Mengirim jawaban...';
+
+  const payload = {
+    topik: TOPIK,
+    nama: id.nama,
+    kelas: id.kelas,
+    soal: soalNo,
+    jawaban1: jawaban1,
+    jawaban2: jawaban2 || '',
+    status: status,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  if(!SCRIPT_URL){
+    if(statusEl) statusEl.textContent = '⚠ SCRIPT_URL belum diisi guru — jawaban belum benar-benar terkirim.';
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(statusEl) statusEl.textContent = '✓ Jawaban terkirim ke guru.';
+  }).catch(()=>{
+    if(statusEl) statusEl.textContent = '⚠ Gagal mengirim, periksa koneksi internetmu.';
+  });
+}
+
+/* ================= LIHAT CARA KERJANYA — ANIMASI REFLEKSI ================= */
+const animPoints = [0,0.5,1,1.5,2,2.5,3,3.5,4].map(x => ({x, y: 0.4*x*x}));
+let animIndex = 0;
+let animT = 0;
+let animRunning = false;
+let animTrail = [];
+let animTimer = null;
+
+function drawFCurve(){
+  let path = 'M ';
+  for(let x=0;x<=4;x+=0.1){
+    const p = mapPoint(x, 0.4*x*x);
+    path += `${p.sx},${p.sy} `;
+  }
+  return `<path d="${path}" fill="none" stroke="#2563EB" stroke-width="2.5"/>`;
+}
+function drawTrailCurve(){
+  if(animTrail.length < 2) return '';
+  let path = 'M ';
+  animTrail.forEach(pt=>{
+    const p = mapPoint(pt.x, pt.y);
+    path += `${p.sx},${p.sy} `;
+  });
+  return `<path d="${path}" fill="none" stroke="#EF4444" stroke-width="2.5"/>`;
+}
+function renderAnimFrame(){
+  const svg = document.getElementById('graphAnim');
+  let content = buildGrid();
+
+  const yx1 = mapPoint(-2,-2), yx2 = mapPoint(8,8);
+  content += `<line x1="${yx1.sx}" y1="${yx1.sy}" x2="${yx2.sx}" y2="${yx2.sy}" stroke="#94A3B8" stroke-width="1.6" stroke-dasharray="5,4"/>`;
+
+  content += drawFCurve();
+  content += drawTrailCurve();
+
+  animTrail.forEach(pt=>{
+    const p = mapPoint(pt.x, pt.y);
+    content += `<circle cx="${p.sx}" cy="${p.sy}" r="3" fill="#EF4444"/>`;
+  });
+
+  if(animIndex < animPoints.length){
+    const src = animPoints[animIndex];
+    const dst = {x: src.y, y: src.x};
+    const cx = src.x + (dst.x - src.x)*animT;
+    const cy = src.y + (dst.y - src.y)*animT;
+    const ps = mapPoint(src.x, src.y);
+    const pc = mapPoint(cx, cy);
+    content += `<circle cx="${ps.sx}" cy="${ps.sy}" r="4" fill="#2563EB"/>`;
+    content += `<circle cx="${pc.sx}" cy="${pc.sy}" r="5" fill="#F59E0B" stroke="#fff" stroke-width="1.5"/>`;
+  }
+
+  svg.innerHTML = content;
+
+  const caption = document.getElementById('animCaption');
+  if(animIndex >= animPoints.length){
+    caption.textContent = 'Selesai! Grafik f⁻¹(x) sudah terbentuk dari hasil refleksi setiap titik.';
+  } else {
+    caption.textContent = `Merefleksikan titik ${animIndex+1} dari ${animPoints.length}...`;
+  }
+}
+function updateAnimGraph(){ renderAnimFrame(); }
+
+function animTick(){
+  if(!animRunning) return;
+  animT += 0.06;
+  if(animT >= 1){
+    animT = 0;
+    animTrail.push({x: animPoints[animIndex].y, y: animPoints[animIndex].x});
+    animIndex++;
+    if(animIndex >= animPoints.length){
+      animRunning = false;
+      renderAnimFrame();
+      clearInterval(animTimer);
+      return;
+    }
+  }
+  renderAnimFrame();
+}
+document.getElementById('btnPlay').addEventListener('click', ()=>{
+  if(animIndex >= animPoints.length) return;
+  if(animRunning) return;
+  animRunning = true;
+  clearInterval(animTimer);
+  animTimer = setInterval(animTick, 40);
+});
+document.getElementById('btnPause').addEventListener('click', ()=>{
+  animRunning = false;
+  clearInterval(animTimer);
+});
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  animRunning = false;
+  clearInterval(animTimer);
+  animIndex = 0; animT = 0; animTrail = [];
+  renderAnimFrame();
+  document.getElementById('animCaption').textContent = 'Tekan Putar untuk mulai.';
+});
+
+/* ================= COBA SENDIRI — BAGIAN 1: UJI VERTIKAL/HORIZONTAL ================= */
+const pilihRelasi = document.getElementById('pilihRelasi');
+const tabVertikal = document.getElementById('tabVertikal');
+const tabHorizontal = document.getElementById('tabHorizontal');
+const sliderK = document.getElementById('sliderK');
+let testMode = 'vertikal';
+
+tabVertikal.addEventListener('click', ()=>{
+  testMode='vertikal'; tabVertikal.classList.add('active'); tabHorizontal.classList.remove('active'); updateTest();
+});
+tabHorizontal.addEventListener('click', ()=>{
+  testMode='horizontal'; tabHorizontal.classList.add('active'); tabVertikal.classList.remove('active'); updateTest();
+});
+pilihRelasi.addEventListener('change', updateTest);
+sliderK.addEventListener('input', updateTest);
+
+function drawRelasi(tipe){
+  let path='';
+  if(tipe==='garis'){
+    let d='M ';
+    for(let x=-12;x<=12;x+=0.5){ const p=mapPoint(clip(x), clip(2*x-1)); d+=`${p.sx},${p.sy} `; }
+    path=`<path d="${d}" fill="none" stroke="#2563EB" stroke-width="2.5"/>`;
+  } else if(tipe==='parabola'){
+    let d='M ';
+    for(let x=-12;x<=12;x+=0.3){ const p=mapPoint(x, clip(x*x*0.35)); d+=`${p.sx},${p.sy} `; }
+    path=`<path d="${d}" fill="none" stroke="#2563EB" stroke-width="2.5"/>`;
+  } else if(tipe==='sideways'){
+    let d='M ';
+    for(let y=-12;y<=12;y+=0.3){ const p=mapPoint(clip(y*y*0.35), y); d+=`${p.sx},${p.sy} `; }
+    path=`<path d="${d}" fill="none" stroke="#2563EB" stroke-width="2.5"/>`;
+  } else if(tipe==='lingkaran'){
+    let d='M ';
+    for(let t=0;t<=360;t+=4){ const rad=t*Math.PI/180; const p=mapPoint(3*Math.cos(rad), 3*Math.sin(rad)); d+= (t===0?'':'L ') + `${p.sx},${p.sy} `; }
+    path=`<path d="${d}Z" fill="none" stroke="#2563EB" stroke-width="2.5"/>`;
+  }
+  return path;
+}
+function hitungPotonganRelasi(tipe, mode, k){
+  if(tipe==='garis'){ return 1; }
+  if(tipe==='parabola'){
+    if(mode==='vertikal') return 1;
+    return k>0?2:(k===0?1:0);
+  }
+  if(tipe==='sideways'){
+    if(mode==='vertikal') return k>0?2:(k===0?1:0);
+    return 1;
+  }
+  if(tipe==='lingkaran'){
+    return Math.abs(k) < 3 ? 2 : (Math.abs(k)===3?1:0);
+  }
+}
+function updateTest(){
+  const tipe = pilihRelasi.value;
+  const k = parseFloat(sliderK.value);
+  document.getElementById('valK').textContent = k;
+
+  let content = buildGrid();
+  content += drawRelasi(tipe);
+
+  if(testMode==='vertikal'){
+    const p1 = mapPoint(k,-12), p2 = mapPoint(k,12);
+    content += `<line x1="${p1.sx}" y1="${p1.sy}" x2="${p2.sx}" y2="${p2.sy}" stroke="#F59E0B" stroke-width="2" stroke-dasharray="6,4"/>`;
+  } else {
+    const p1 = mapPoint(-12,k), p2 = mapPoint(12,k);
+    content += `<line x1="${p1.sx}" y1="${p1.sy}" x2="${p2.sx}" y2="${p2.sy}" stroke="#F59E0B" stroke-width="2" stroke-dasharray="6,4"/>`;
+  }
+  document.getElementById('graphTest').innerHTML = content;
+
+  const n = hitungPotonganRelasi(tipe, testMode, k);
+  const namaRelasi = {garis:'garis y = 2x − 1', parabola:'parabola y = x²', sideways:'parabola miring x = y²', lingkaran:'lingkaran x² + y² = 9'}[tipe];
+  const insight = document.getElementById('insightTest');
+
+  if(testMode==='vertikal'){
+    if(n<=1){
+      insight.innerHTML = `Garis vertikal ini memotong <b>${namaRelasi}</b> sebanyak <b>${n} kali</b>. Karena tidak lebih dari satu, ini <b>adalah fungsi</b> (untuk posisi x ini).`;
+    } else {
+      insight.innerHTML = `Garis vertikal ini memotong <b>${namaRelasi}</b> sebanyak <b>${n} kali</b>. Karena lebih dari satu, <b>${namaRelasi} bukan fungsi</b>.`;
+    }
+  } else {
+    if(tipe==='sideways' || tipe==='lingkaran'){
+      insight.innerHTML = `Garis horizontal memotong <b>${namaRelasi}</b> sebanyak <b>${n} kali</b>. Tapi ingat, karena ${namaRelasi} sudah gagal di uji garis vertikal, kita tidak perlu lagi bicara soal invers di sini.`;
+    } else if(n<=1){
+      insight.innerHTML = `Garis horizontal ini memotong <b>${namaRelasi}</b> sebanyak <b>${n} kali</b>. Karena tidak lebih dari satu, fungsi ini <b>punya invers</b>.`;
+    } else {
+      insight.innerHTML = `Garis horizontal ini memotong <b>${namaRelasi}</b> sebanyak <b>${n} kali</b>. Karena lebih dari satu, fungsi ini <b>tidak punya invers</b> pada seluruh daerah asalnya.`;
+    }
+  }
+}
+
+/* ================= COBA SENDIRI — BAGIAN 2: TITIK CERMIN ================= */
+const sliderMX = document.getElementById('sliderMX');
+function updateMirror(){
+  const x = parseFloat(sliderMX.value);
+  document.getElementById('valMX').textContent = x;
+  const y = 0.5*x + 2;
+
+  let content = buildGrid();
+  let dPath='M ';
+  for(let xx=-12;xx<=12;xx+=0.5){ const p=mapPoint(clip(xx), clip(0.5*xx+2)); dPath+=`${p.sx},${p.sy} `; }
+  content += `<path d="${dPath}" fill="none" stroke="#2563EB" stroke-width="2.5"/>`;
+
+  let dInv='M ';
+  for(let xx=-12;xx<=12;xx+=0.5){ const yy=(xx-2)/0.5; const p=mapPoint(clip(xx), clip(yy)); dInv+=`${p.sx},${p.sy} `; }
+  content += `<path d="${dInv}" fill="none" stroke="#EF4444" stroke-width="2.5"/>`;
+
+  const yx1 = mapPoint(-12,-12), yx2 = mapPoint(12,12);
+  content += `<line x1="${yx1.sx}" y1="${yx1.sy}" x2="${yx2.sx}" y2="${yx2.sy}" stroke="#94A3B8" stroke-width="1.6" stroke-dasharray="5,4"/>`;
+
+  const pA = mapPoint(clip(x), clip(y));
+  const pAp = mapPoint(clip(y), clip(x));
+  content += `<line x1="${pA.sx}" y1="${pA.sy}" x2="${pAp.sx}" y2="${pAp.sy}" stroke="#CBD5E1" stroke-width="1.4" stroke-dasharray="3,3"/>`;
+  content += `<circle cx="${pA.sx}" cy="${pA.sy}" r="5" fill="#2563EB" stroke="#fff" stroke-width="1.5"/>`;
+  content += `<circle cx="${pAp.sx}" cy="${pAp.sy}" r="5" fill="#EF4444" stroke="#fff" stroke-width="1.5"/>`;
+
+  document.getElementById('graphMirror').innerHTML = content;
+
+  const insight = document.getElementById('insightMirror');
+  if(Math.abs(x - y) < 0.3){
+    insight.innerHTML = `💡 Perhatikan! Saat x = ${x}, titik A dan A′ nyaris berimpit di garis y = x, karena f(${x}) ≈ ${roundClean(y)} — ini dekat dengan kondisi f(x) = x.`;
+    insight.classList.add('show');
+  } else {
+    insight.innerHTML = `Titik A = (${x}, ${roundClean(y)}) pada f(x), titik cerminnya A′ = (${roundClean(y)}, ${x}) pada f⁻¹(x) — koordinatnya tepat tertukar.`;
+    insight.classList.add('show');
+  }
+}
+sliderMX.addEventListener('input', updateMirror);
+
+/* ================= SVG SOAL ================= */
+function buildSoal1(){
+  let content = buildGridMini();
+  const mp = (x,y)=>({sx:110+x*10, sy:110-y*10});
+  const p = mp(2,5);
+  content += `<circle cx="${p.sx}" cy="${p.sy}" r="4.5" fill="#2563EB"/>`;
+  content += `<text x="${p.sx+8}" y="${p.sy-6}" font-size="11" fill="#0F172A" font-family="Inter,sans-serif">(2, 5)</text>`;
+  document.getElementById('svgSoal1').innerHTML = content;
+}
+function buildSoal2(){
+  let content = buildGridMini();
+  const mp = (x,y)=>({sx:110+x*10, sy:110-y*10});
+  let d='M ';
+  for(let x=-10;x<=10;x+=1){ const p=mp(x, Math.max(-10,Math.min(10,2*x-1))); d+=`${p.sx},${p.sy} `; }
+  content += `<path d="${d}" fill="none" stroke="#2563EB" stroke-width="2.2"/>`;
+  const p1 = mp(0,-1), p2 = mp(2,3);
+  content += `<circle cx="${p1.sx}" cy="${p1.sy}" r="4" fill="#2563EB"/><text x="${p1.sx+6}" y="${p1.sy+14}" font-size="11" fill="#0F172A" font-family="Inter,sans-serif">(0, −1)</text>`;
+  content += `<circle cx="${p2.sx}" cy="${p2.sy}" r="4" fill="#2563EB"/><text x="${p2.sx+6}" y="${p2.sy-8}" font-size="11" fill="#0F172A" font-family="Inter,sans-serif">(2, 3)</text>`;
+  document.getElementById('svgSoal2').innerHTML = content;
+}
+
+/* ================= CHALLENGE — LOGIKA JAWABAN ================= */
+document.getElementById('cek1').addEventListener('click', ()=>{
+  if(!identitasLengkap()) return;
+  const jawab = parseFloat(document.getElementById('jawab1').value);
+  const fb = document.getElementById('fb1');
+  const benar = 2;
+  let statusKirim;
+  if(jawab === benar){
+    fb.textContent = '✓ Benar! Karena grafik f melewati (2, 5), berarti f(2) = 5, sehingga f⁻¹(5) = 2.';
+    fb.className = 'feedback benar';
+    statusKirim = 'Benar';
+  } else if(jawab === 5){
+    fb.textContent = '✕ Belum tepat. Sepertinya kamu menjawab nilai y dari titiknya, bukan mencari f⁻¹(5). Ingat, f⁻¹(5) artinya kita cari x yang membuat f(x) = 5.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  } else {
+    fb.textContent = '✕ Belum tepat. Karena titik (2, 5) ada pada grafik f, itu artinya f(2) = 5. Karena f⁻¹ membalik proses f, maka f⁻¹(5) = 2.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  }
+  kirimKeGuru('1', document.getElementById('jawab1').value, '', statusKirim, 'status1');
+});
+
+document.getElementById('cek2').addEventListener('click', ()=>{
+  if(!identitasLengkap()) return;
+  const jawab = parseFloat(document.getElementById('jawab2').value);
+  const fb = document.getElementById('fb2');
+  const benar = 4;
+  let statusKirim;
+  if(jawab === benar){
+    fb.textContent = '✓ Benar! f⁻¹(x) = (x+1)/2, sehingga f⁻¹(7) = (7+1)/2 = 4.';
+    fb.className = 'feedback benar';
+    statusKirim = 'Benar';
+  } else if(jawab === 13){
+    fb.textContent = '✕ Belum tepat. Sepertinya kamu menghitung f(7), bukan f⁻¹(7). Cari dulu rumus f⁻¹(x) = (x+1)/2, baru substitusikan x = 7.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  } else {
+    fb.textContent = '✕ Belum tepat. Tulis y = 2x − 1, tukar x dan y, lalu selesaikan untuk y agar dapat f⁻¹(x) = (x+1)/2, baru masukkan x = 7.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  }
+  kirimKeGuru('2', document.getElementById('jawab2').value, '', statusKirim, 'status2');
+});
+
+document.getElementById('cek3').addEventListener('click', ()=>{
+  if(!identitasLengkap()) return;
+  const jawab = parseFloat(document.getElementById('jawab3').value);
+  const fb = document.getElementById('fb3');
+  const benar = -2;
+  let statusKirim;
+  if(jawab === benar){
+    fb.textContent = '✓ Benar! Titik potong di y = x berarti g(2) = 2. Substitusi: 2² + a = 2 → 4 + a = 2 → a = −2.';
+    fb.className = 'feedback benar';
+    statusKirim = 'Benar';
+  } else if(jawab === 2){
+    fb.textContent = '✕ Belum tepat. Sepertinya kamu langsung menjawab koordinat titiknya. Ingat, titik potong (2,2) di garis y = x berarti g(2) harus sama dengan 2 — gunakan ini untuk mencari nilai a.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  } else {
+    fb.textContent = '✕ Belum tepat. Karena grafik g dan g⁻¹ berpotongan di garis y = x pada titik (2,2), itu artinya g(2) = 2. Substitusikan x = 2 ke g(x) = x² + a, samakan hasilnya dengan 2, lalu selesaikan untuk a.';
+    fb.className = 'feedback salah';
+    statusKirim = 'Salah';
+  }
+  kirimKeGuru('3', document.getElementById('jawab3').value, '', statusKirim, 'status3');
+});
+
+/* ================= REFLEKSI ================= */
+document.getElementById('kirimRefleksi').addEventListener('click', ()=>{
+  if(!identitasLengkap()) return;
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  const statusEl = document.getElementById('statusRefleksi');
+  if(!r1 || !r2){
+    statusEl.textContent = 'Isi kedua pertanyaan refleksi dulu sebelum dikirim ya.';
+    statusEl.style.color = 'var(--error-text)';
+    return;
+  }
+  statusEl.style.color = 'var(--text-secondary)';
+  kirimKeGuru('Refleksi', r1, r2, '-', 'statusRefleksi');
+});
+</script>
+</body>
+</html>

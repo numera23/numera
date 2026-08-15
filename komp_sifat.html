@@ -1,0 +1,796 @@
+<!--
+  NUMERA
+  Judul: Sifat Komposisi Fungsi
+  Jenis: Modul Interaktif (pakai KaTeX)
+  Versi: 1.4
+  Dikembangkan oleh Kiki Herdiansyah
+  Copyright © 2026 Numera
+  Identitas proyek: Numera - Media Pembelajaran Matematika Interaktif
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sifat Komposisi Fungsi · Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Numera. Dikembangkan oleh Kiki Herdiansyah.">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 18px;}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;margin:0 auto;padding:14px 18px;
+  font-weight:600;font-size:14.5px;color:var(--primary);
+  letter-spacing:.2px;
+}
+.progress-track{height:3px;background:var(--border);width:100%;}
+.progress-bar{height:3px;background:var(--primary);width:0%;transition:width 80ms linear;}
+
+section{padding:44px 0;}
+h2{font-size:21px;margin:0 0 6px;letter-spacing:-.2px;}
+h3{font-size:17px;margin:22px 0 8px;color:var(--text);}
+p{margin:0 0 12px;color:var(--text);}
+.muted{color:var(--text-secondary);}
+.eyebrow{
+  font-size:12.5px;font-weight:700;color:var(--primary);
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow);
+  padding:24px;
+  margin-bottom:18px;
+}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--primary);color:#fff;border:none;
+  border-radius:var(--radius-btn);
+  min-height:42px;padding:0 20px;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;
+  cursor:pointer;transition:background 200ms ease, transform 200ms ease;
+}
+.btn:hover{background:var(--primary-hover);}
+.btn:active{transform:scale(.98);}
+.btn.secondary{
+  background:var(--primary-light);color:var(--primary-hover);
+}
+.btn.secondary:hover{background:#c7dcfb;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+
+.fade-up{opacity:0;transform:translateY(18px);transition:opacity 600ms ease, transform 600ms ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* Header */
+.header-card{
+  background:linear-gradient(180deg,#fff, #fbfdff);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow);
+  padding:28px 24px;
+  margin-top:26px;
+}
+.header-title{font-size:26px;font-weight:800;letter-spacing:-.4px;margin:0 0 10px;}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.chip{
+  background:var(--primary-light);color:var(--primary-hover);
+  font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;
+}
+.tujuan-list{margin:0;padding-left:18px;color:var(--text);}
+.tujuan-list li{margin-bottom:6px;}
+
+.identitas-box{
+  margin-top:18px;padding-top:18px;border-top:1px dashed var(--border);
+}
+.identitas-box label{
+  display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;
+}
+.identitas-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.identitas-grid input{
+  width:100%;border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;
+  background:#fff;color:var(--text);
+}
+.identitas-grid input:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+.identitas-note{font-size:12.5px;color:var(--text-secondary);margin-top:10px;}
+@media (max-width:520px){.identitas-grid{grid-template-columns:1fr;}}
+
+/* Formula box */
+.formula-box{
+  background:var(--primary-light);
+  border-radius:14px;
+  padding:16px 18px;
+  margin:14px 0;
+  overflow-x:auto;
+  text-align:center;
+}
+.formula-scroll{overflow-x:auto;}
+
+mark{background:#FEF3C7;color:var(--text);padding:0 4px;border-radius:4px;}
+
+.analogi-box{
+  background:#F0F9FF;border:1px solid #BAE6FD;border-radius:14px;
+  padding:16px 18px;margin:14px 0;
+}
+.analogi-box .eyebrow{color:#0284C7;}
+
+/* Step viewer */
+.step-panel{
+  background:#fff;border:1px solid var(--border);border-radius:14px;
+  padding:18px;min-height:130px;
+}
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:14px;}
+.step-dots{display:flex;gap:6px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);}
+.dot.active{background:var(--primary);}
+
+/* Sliders */
+.control-group{margin-bottom:18px;}
+.control-label{
+  display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:8px;
+}
+.control-label span.value{color:var(--primary);font-weight:700;}
+input[type=range]{
+  width:100%;height:6px;border-radius:999px;background:var(--border);
+  -webkit-appearance:none;appearance:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--primary);cursor:pointer;border:3px solid #fff;box-shadow:var(--shadow);
+}
+input[type=range]::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;background:var(--primary);
+  cursor:pointer;border:3px solid #fff;box-shadow:var(--shadow);
+}
+.toggle-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.toggle-btn{
+  flex:1;min-width:120px;border:1px solid var(--border);background:#fff;
+  border-radius:var(--radius-btn);padding:10px 14px;font-weight:600;font-size:14px;
+  cursor:pointer;transition:all 200ms ease;color:var(--text-secondary);
+}
+.toggle-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.result-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;}
+.result-box{
+  background:var(--text);color:#fff;border-radius:14px;padding:18px;text-align:center;
+  flex:1;min-width:130px;
+}
+.result-box .r-label{font-size:12px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+.result-box .r-value{font-size:22px;font-weight:800;margin-top:6px;}
+
+.insight-box{
+  background:#ECFDF5;border:1px solid #A7F3D0;border-radius:12px;
+  padding:12px 14px;margin-top:14px;font-size:14px;color:#065F46;
+  display:none;align-items:flex-start;gap:8px;
+}
+.insight-box.show{display:flex;}
+.insight-box .icon{font-size:16px;}
+
+.hidden-group{display:none;}
+
+/* Challenge */
+.badge{
+  display:inline-block;font-size:11.5px;font-weight:700;padding:4px 10px;
+  border-radius:999px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;
+}
+.badge.mudah{background:#D1FAE5;color:#065F46;}
+.badge.sedang{background:#FEF3C7;color:#92400E;}
+.badge.sulit{background:#FEE2E2;color:#991B1B;}
+.soal-text{font-size:15.5px;margin-bottom:14px;}
+.jawab-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.jawab-row input[type=number],.jawab-row input[type=text]{
+  flex:1;min-width:140px;border:1px solid var(--border);border-radius:10px;
+  padding:10px 12px;font-size:15px;font-family:'Inter',sans-serif;
+}
+.feedback{
+  border-radius:12px;padding:12px 14px;margin-top:10px;font-size:14px;display:none;
+}
+.feedback.benar{background:#D1FAE5;color:#065F46;display:block;}
+.feedback.salah{background:#FEE2E2;color:#991B1B;display:block;}
+.kirim-status{font-size:12.5px;color:var(--text-secondary);margin-top:8px;min-height:16px;}
+
+/* Kesalahan umum */
+.kesalahan-item{border-left:3px solid var(--error);padding:4px 0 4px 14px;margin-bottom:16px;}
+.kesalahan-item h4{margin:0 0 4px;font-size:15px;}
+.kesalahan-item p{margin:0 0 4px;font-size:14px;}
+.kesalahan-item .label-k{font-weight:700;color:var(--error);font-size:12.5px;text-transform:uppercase;letter-spacing:.3px;}
+.kesalahan-item .label-benar{font-weight:700;color:var(--success);font-size:12.5px;text-transform:uppercase;letter-spacing:.3px;}
+
+/* Ringkasan */
+.ringkasan-list{list-style:none;margin:0;padding:0;}
+.ringkasan-list li{
+  display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);
+}
+.ringkasan-list li:last-child{border-bottom:none;}
+.ringkasan-num{
+  flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--primary-light);
+  color:var(--primary-hover);font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Reflection */
+textarea{
+  width:100%;border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;font-family:'Inter',sans-serif;font-size:14.5px;
+  min-height:90px;resize:vertical;
+}
+textarea:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+
+/* Footer */
+footer{
+  padding:30px 18px 40px;text-align:center;color:var(--text-secondary);font-size:12.5px;
+  border-top:1px solid var(--border);margin-top:20px;
+}
+footer .brand{font-weight:700;color:var(--text);font-size:13.5px;}
+
+.warn-text{color:var(--error);font-size:13px;margin-top:6px;display:none;}
+.warn-text.show{display:block;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Sifat Komposisi Fungsi</div>
+</div>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <div class="header-card">
+    <h1 class="header-title">Sifat Komposisi Fungsi</h1>
+    <div class="meta-row">
+      <span class="chip">⏱ 15–20 menit</span>
+      <span class="chip">Materi mandiri</span>
+    </div>
+    <p class="muted" style="font-size:14.5px;margin-bottom:10px;">Setelah belajar dengan modul ini, kamu diharapkan bisa:</p>
+    <ul class="tujuan-list">
+      <li>Memahami dan membuktikan bahwa komposisi fungsi umumnya <strong>tidak komutatif</strong>.</li>
+      <li>Memahami dan membuktikan bahwa komposisi fungsi bersifat <strong>asosiatif</strong>.</li>
+      <li>Memahami peran <strong>fungsi identitas</strong> dalam komposisi fungsi.</li>
+      <li>Memahami hubungan antara <strong>invers fungsi komposisi</strong> dengan invers fungsi pembentuknya.</li>
+    </ul>
+
+    <div class="identitas-box">
+      <div class="identitas-grid">
+        <div>
+          <label for="inpNama">Nama Lengkap</label>
+          <input type="text" id="inpNama" placeholder="Tulis namamu">
+        </div>
+        <div>
+          <label for="inpKelas">Kelas</label>
+          <input type="text" id="inpKelas" placeholder="Contoh: XI IPA 2">
+        </div>
+      </div>
+      <p class="identitas-note">Isi dulu namamu supaya jawaban Challenge dan Refleksi kamu bisa dikirim ke gurumu.</p>
+    </div>
+  </div>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR? -->
+  <section class="fade-up">
+    <div class="eyebrow">Pemanasan</div>
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <div class="card">
+      <p>Coba bayangkan dua kegiatan ini: <strong>memakai kaos kaki, lalu memakai sepatu</strong>.</p>
+      <p>Sekarang coba dibalik: <strong>memakai sepatu, lalu memakai kaos kaki</strong>. Aneh, kan? Bahkan enggak masuk akal.</p>
+      <p>Urutan ternyata benar-benar menentukan hasil akhirnya — bukan cuma soal mana yang "lebih dulu ditulis".</p>
+      <p>Nah, di komposisi fungsi juga ada aturan-aturan semacam ini. Ada yang berubah kalau urutannya ditukar, tapi ada juga yang tetap sama walau caranya dikelompokkan berbeda-beda.</p>
+      <p>Yuk kita bongkar satu per satu, sifat apa saja yang berlaku di komposisi fungsi.</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="fade-up">
+    <div class="eyebrow">Konsep</div>
+    <h2>Penjelasan Sederhana</h2>
+
+    <div class="card">
+      <h3>Sifat 1 — Tidak Komutatif</h3>
+      <p>"Komutatif" itu artinya bisa ditukar posisinya tanpa mengubah hasil, seperti 2+3 = 3+2. Nah, komposisi fungsi <strong>umumnya tidak begitu</strong>.</p>
+      <div class="formula-box"><span id="fmlSifat1a"></span></div>
+      <p>Mari kita buktikan dengan contoh. Misalkan <span id="fmlSifat1b"></span> dan <span id="fmlSifat1c"></span>.</p>
+      <p><span id="fmlSifat1d"></span>, tapi <span id="fmlSifat1e"></span>. Lihat, bentuknya beda!</p>
+      <p>Balik lagi ke analogi kaos kaki dan sepatu tadi — urutan memang mengubah hasil. Sampai sini masih masuk akal?</p>
+    </div>
+
+    <div class="card">
+      <h3>Sifat 2 — Asosiatif</h3>
+      <p>Kalau ada tiga fungsi digabung berurutan, ternyata <strong>cara mengelompokkannya tidak mengubah hasil akhir</strong> — asal urutan f, g, h-nya tetap sama.</p>
+      <div class="formula-box"><span id="fmlSifat2a"></span></div>
+      <p>Artinya, kamu boleh kerjakan g∘h dulu baru dikomposisikan dengan f, atau f∘g dulu baru dikomposisikan dengan h. Hasilnya tetap sama.</p>
+      <p>Ini beda dengan Sifat 1 tadi ya. Sifat 1 bicara soal <mark>menukar urutan fungsi</mark> (itu yang mengubah hasil). Sifat 2 bicara soal <mark>menukar cara mengelompokkan</mark>, padahal urutannya tetap sama — dan ini tidak mengubah hasil. Nanti kita buktikan bareng di bagian "Lihat Cara Kerjanya".</p>
+    </div>
+
+    <div class="card">
+      <h3>Sifat 3 — Fungsi Identitas</h3>
+      <p>Ada satu fungsi khusus yang disebut <strong>fungsi identitas</strong>, ditulis I(x), yang aturannya sangat sederhana:</p>
+      <div class="formula-box"><span id="fmlSifat3a"></span></div>
+      <p>Fungsi ini enggak mengubah apa pun — masukin angka berapa saja, keluarnya sama persis. Nah, kalau fungsi identitas ini dikomposisikan dengan fungsi f apa pun, hasilnya selalu balik lagi jadi f itu sendiri:</p>
+      <div class="formula-box"><span id="fmlSifat3b"></span></div>
+      <p>Contoh: kalau <span id="fmlSifat3c"></span>, maka <span id="fmlSifat3d"></span> dan <span id="fmlSifat3e"></span>. Sama-sama balik ke f(x) lagi.</p>
+      <p>Fungsi identitas ini mirip seperti angka 0 pada penjumlahan, atau angka 1 pada perkalian — dia enggak "mengubah" apa-apa, tapi tetap penting.</p>
+    </div>
+
+    <div class="card">
+      <h3>Sifat 4 — Invers dari Fungsi Komposisi</h3>
+      <p>Ingat lagi analogi kaos kaki dan sepatu. Kalau mau <strong>melepasnya</strong>, urutannya harus dibalik: lepas sepatu dulu, baru lepas kaos kaki.</p>
+      <p>Hal yang sama berlaku untuk invers fungsi komposisi. Kalau f dan g sama-sama punya invers, maka:</p>
+      <div class="formula-box"><span id="fmlSifat4a"></span></div>
+      <p>Perhatikan, urutannya <mark>terbalik</mark> dari komposisi aslinya! Kalau tadinya g dulu baru f (pada f∘g), maka untuk membalikkannya harus f⁻¹ dulu baru g⁻¹.</p>
+      <p>Ini bukan kebetulan — sama seperti melepas sepatu dan kaos kaki, langkah terakhir yang dikerjakan harus dibatalkan lebih dulu.</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="fade-up">
+    <div class="eyebrow">Visualisasi</div>
+    <h2>Lihat Cara Kerjanya</h2>
+    <div class="card">
+      <p class="muted" style="font-size:14px;">Kita buktikan Sifat Asosiatif langkah demi langkah, kalau <span id="fmlStepFGH"></span>, untuk x = 2.</p>
+      <div class="step-panel" id="stepPanel"></div>
+      <div class="step-nav">
+        <button class="btn secondary" id="btnPrev" onclick="stepGeser(-1)">‹ Sebelumnya</button>
+        <div class="step-dots" id="stepDots"></div>
+        <button class="btn secondary" id="btnNext" onclick="stepGeser(1)">Selanjutnya ›</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="fade-up">
+    <div class="eyebrow">Interaktif</div>
+    <h2>Coba Sendiri</h2>
+    <div class="card">
+      <p class="muted" style="font-size:14px;">Pilih sifat yang mau kamu uji, lalu ubah angkanya. Lihat apa yang berubah, dan apa yang selalu tetap sama.</p>
+
+      <div class="toggle-row">
+        <button class="toggle-btn active" id="toggleIdentitas" onclick="pilihMode('identitas')">Uji Sifat Identitas</button>
+        <button class="toggle-btn" id="toggleAsosiatif" onclick="pilihMode('asosiatif')">Uji Sifat Asosiatif</button>
+      </div>
+
+      <!-- Mode Identitas -->
+      <div id="groupIdentitas">
+        <div class="control-group">
+          <div class="control-label">a (koefisien pada f) <span class="value" id="valIa">2</span></div>
+          <input type="range" id="sliderIa" min="-5" max="5" step="1" value="2" oninput="updateIdentitas()">
+        </div>
+        <div class="control-group">
+          <div class="control-label">b (konstanta pada f) <span class="value" id="valIb">3</span></div>
+          <input type="range" id="sliderIb" min="-5" max="5" step="1" value="3" oninput="updateIdentitas()">
+        </div>
+        <p class="muted" style="font-size:13.5px;">Fungsi identitas selalu I(x) = x, tidak berubah.</p>
+        <div class="formula-box"><span id="fmlIdHasil"></span></div>
+        <div class="insight-box" id="insightIdentitas">
+          <span class="icon">💡</span>
+          <span id="insightIdentitasText"></span>
+        </div>
+      </div>
+
+      <!-- Mode Asosiatif -->
+      <div id="groupAsosiatif" class="hidden-group">
+        <div class="control-group">
+          <div class="control-label">a, b (f(x) = ax + b) <span class="value" id="valAa">1</span> / <span class="value" id="valAb">1</span></div>
+          <input type="range" id="sliderAa" min="-4" max="4" step="1" value="1" oninput="updateAsosiatif()">
+          <input type="range" id="sliderAb" min="-5" max="5" step="1" value="1" oninput="updateAsosiatif()" style="margin-top:8px;">
+        </div>
+        <div class="control-group">
+          <div class="control-label">c, d (g(x) = cx + d) <span class="value" id="valAc">2</span> / <span class="value" id="valAd">0</span></div>
+          <input type="range" id="sliderAc" min="-4" max="4" step="1" value="2" oninput="updateAsosiatif()">
+          <input type="range" id="sliderAd" min="-5" max="5" step="1" value="0" oninput="updateAsosiatif()" style="margin-top:8px;">
+        </div>
+        <div class="control-group">
+          <div class="control-label">e, k (h(x) = ex + k) <span class="value" id="valAe">1</span> / <span class="value" id="valAk">-2</span></div>
+          <input type="range" id="sliderAe" min="-4" max="4" step="1" value="1" oninput="updateAsosiatif()">
+          <input type="range" id="sliderAk" min="-5" max="5" step="1" value="-2" oninput="updateAsosiatif()" style="margin-top:8px;">
+        </div>
+        <div class="control-group">
+          <div class="control-label">Nilai x yang dicoba <span class="value" id="valAx">2</span></div>
+          <input type="range" id="sliderAx" min="-5" max="5" step="1" value="2" oninput="updateAsosiatif()">
+        </div>
+
+        <div class="result-row">
+          <div class="result-box">
+            <div class="r-label">((f∘g)∘h)(x)</div>
+            <div class="r-value" id="hasilKiri">–</div>
+          </div>
+          <div class="result-box">
+            <div class="r-label">(f∘(g∘h))(x)</div>
+            <div class="r-value" id="hasilKanan">–</div>
+          </div>
+        </div>
+
+        <div class="insight-box" id="insightAsosiatif">
+          <span class="icon">💡</span>
+          <span id="insightAsosiatifText"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="fade-up">
+    <div class="eyebrow">Uji Pemahaman</div>
+    <h2>Challenge</h2>
+
+    <!-- Soal 1 -->
+    <div class="card">
+      <span class="badge mudah">Mudah</span>
+      <p class="soal-text">Diketahui <span id="fmlS1a"></span> dan I(x) = x adalah fungsi identitas. Tentukan nilai <span id="fmlS1b"></span>.</p>
+      <div class="jawab-row">
+        <input type="number" id="jwbS1" placeholder="Jawaban angka">
+        <button class="btn" onclick="cekSoal1()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fbS1"></div>
+      <div class="kirim-status" id="statusS1"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="card">
+      <span class="badge sedang">Sedang</span>
+      <p class="soal-text">Diketahui <span id="fmlS2a"></span> dan <span id="fmlS2b"></span>. Tentukan nilai dari <span id="fmlS2c"></span>.</p>
+      <div class="jawab-row">
+        <input type="number" id="jwbS2" placeholder="Jawaban angka">
+        <button class="btn" onclick="cekSoal2()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fbS2"></div>
+      <div class="kirim-status" id="statusS2"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="card">
+      <span class="badge sulit">Sulit</span>
+      <p class="soal-text">Diketahui <span id="fmlS3a"></span> dan <span id="fmlS3b"></span>, keduanya punya invers. Gunakan sifat <span id="fmlS3c"></span> untuk menentukan nilai <span id="fmlS3d"></span>.</p>
+      <div class="jawab-row">
+        <input type="number" id="jwbS3" placeholder="Jawaban angka">
+        <button class="btn" onclick="cekSoal3()">Cek Jawaban</button>
+      </div>
+      <div class="feedback" id="fbS3"></div>
+      <div class="kirim-status" id="statusS3"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="fade-up">
+    <div class="eyebrow">Waspada</div>
+    <h2>Kesalahan yang Sering Terjadi</h2>
+    <div class="card">
+      <div class="kesalahan-item">
+        <h4>Mengira f∘g selalu sama dengan g∘f</h4>
+        <p><span class="label-k">Yang sering dilakukan:</span> Menganggap urutan komposisi fungsi bebas ditukar, seperti penjumlahan biasa.</p>
+        <p><span class="label-benar">Kenapa salah:</span> Komposisi fungsi pada umumnya tidak komutatif. Menukar urutan f dan g biasanya menghasilkan bentuk aljabar yang berbeda.</p>
+        <p style="margin-bottom:0;"><span class="label-benar">Cara menghindarinya:</span> Selalu kerjakan sesuai urutan yang diminta soal. Kalau ragu, coba buktikan dengan contoh angka sederhana dulu.</p>
+      </div>
+      <div class="kesalahan-item">
+        <h4>Mengira fungsi identitas berarti angka 1</h4>
+        <p><span class="label-k">Yang sering dilakukan:</span> Menganggap I(x) = 1 karena kata "identitas" terdengar mirip dengan "unsur identitas perkalian" (yaitu angka 1).</p>
+        <p><span class="label-benar">Kenapa salah:</span> Fungsi identitas dalam komposisi fungsi adalah I(x) = x, bukan angka konstan. Fungsi ini mengembalikan input apa adanya.</p>
+        <p style="margin-bottom:0;"><span class="label-benar">Cara menghindarinya:</span> Ingat, I(x) = x berarti "apa pun yang masuk, itu juga yang keluar" — bukan selalu menghasilkan angka 1.</p>
+      </div>
+      <div class="kesalahan-item" style="margin-bottom:0;">
+        <h4>Salah urutan saat menuliskan invers komposisi</h4>
+        <p><span class="label-k">Yang sering dilakukan:</span> Menulis (f∘g)⁻¹ = f⁻¹∘g⁻¹, urutannya sama seperti komposisi aslinya.</p>
+        <p><span class="label-benar">Kenapa salah:</span> Invers dari komposisi fungsi membalik urutan pengerjaan, jadi seharusnya (f∘g)⁻¹ = g⁻¹∘f⁻¹.</p>
+        <p style="margin-bottom:0;"><span class="label-benar">Cara menghindarinya:</span> Ingat analogi kaos kaki dan sepatu — untuk membalikkan proses, langkah terakhir harus dibatalkan lebih dulu.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="fade-up">
+    <div class="eyebrow">Rangkuman</div>
+    <h2>Ringkasan</h2>
+    <div class="card">
+      <ul class="ringkasan-list">
+        <li><span class="ringkasan-num">1</span><span>Komposisi fungsi umumnya tidak komutatif — f∘g biasanya menghasilkan bentuk yang berbeda dari g∘f.</span></li>
+        <li><span class="ringkasan-num">2</span><span>Komposisi fungsi bersifat asosiatif — cara mengelompokkan tiga fungsi tidak mengubah hasil, selama urutannya tetap sama.</span></li>
+        <li><span class="ringkasan-num">3</span><span>Fungsi identitas I(x) = x adalah "elemen netral": f∘I = I∘f = f.</span></li>
+        <li><span class="ringkasan-num">4</span><span>Invers dari fungsi komposisi membalik urutan: (f∘g)⁻¹ = g⁻¹∘f⁻¹.</span></li>
+        <li><span class="ringkasan-num">5</span><span>Sifat-sifat ini membantu kita memeriksa dan menyederhanakan perhitungan komposisi fungsi yang rumit.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section class="fade-up">
+    <div class="eyebrow">Refleksi</div>
+    <h2>Refleksi</h2>
+    <div class="card">
+      <p class="muted" style="font-size:14px;">Tidak ada jawaban benar atau salah di bagian ini. Tulis saja dengan kata-katamu sendiri.</p>
+      <h3 style="margin-top:6px;">1. Dengan kata-katamu sendiri, apa bedanya sifat komutatif dan sifat asosiatif pada komposisi fungsi?</h3>
+      <textarea id="refleksi1" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+      <h3>2. Menurutmu, kenapa urutan pada (f∘g)⁻¹ = g⁻¹∘f⁻¹ harus dibalik, bukan tetap f⁻¹∘g⁻¹?</h3>
+      <textarea id="refleksi2" placeholder="Tulis jawabanmu di sini..."></textarea>
+
+      <div class="warn-text" id="warnRefleksi">Isi dulu kedua kolom refleksi sebelum dikirim ya.</div>
+      <div style="margin-top:14px;">
+        <button class="btn" onclick="kirimRefleksi()">Kirim Refleksi</button>
+      </div>
+      <div class="kirim-status" id="statusRefleksi"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="brand">NUMERA</div>
+  <div>Dikembangkan oleh Kiki Herdiansyah</div>
+  <div>Versi 1.4 · © 2026</div>
+</footer>
+
+<script>
+/* ================= KaTeX render helper ================= */
+function K(id, tex, display){
+  var el = document.getElementById(id);
+  if(!el) return;
+  try{
+    katex.render(tex, el, {throwOnError:false, displayMode: !!display});
+  }catch(e){ el.textContent = tex; }
+}
+
+function renderStaticFormulas(){
+  K('fmlSifat1a','f\\circ g \\ne g\\circ f \\ \\text{(pada umumnya)}', true);
+  K('fmlSifat1b','f(x) = x+2');
+  K('fmlSifat1c','g(x) = 3x');
+  K('fmlSifat1d','(f\\circ g)(x) = 3x+2');
+  K('fmlSifat1e','(g\\circ f)(x) = 3x+6');
+
+  K('fmlSifat2a','(f\\circ g)\\circ h = f\\circ (g\\circ h)', true);
+
+  K('fmlSifat3a','I(x) = x');
+  K('fmlSifat3b','(f\\circ I)(x) = (I\\circ f)(x) = f(x)', true);
+  K('fmlSifat3c','f(x) = 5x-2');
+  K('fmlSifat3d','(f\\circ I)(x) = 5x-2');
+  K('fmlSifat3e','(I\\circ f)(x) = 5x-2');
+
+  K('fmlSifat4a','(f\\circ g)^{-1} = g^{-1}\\circ f^{-1}', true);
+
+  K('fmlStepFGH','f(x) = x+1,\\ g(x) = 2x,\\ h(x) = x-3');
+
+  // Challenge
+  K('fmlS1a','f(x) = 4x - 3');
+  K('fmlS1b','(f\\circ I)(5)');
+
+  K('fmlS2a','f(x) = 2x+1');
+  K('fmlS2b','g(x) = x-4');
+  K('fmlS2c','(f\\circ g)(2) - (g\\circ f)(2)');
+
+  K('fmlS3a','f(x) = 2x+3');
+  K('fmlS3b','g(x) = x-1');
+  K('fmlS3c','(f\\circ g)^{-1} = g^{-1}\\circ f^{-1}');
+  K('fmlS3d','(f\\circ g)^{-1}(5)');
+}
+renderStaticFormulas();
+
+/* ================= Fade-up on scroll ================= */
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.fade-up').forEach(function(el){ observer.observe(el); });
+
+/* ================= Progress bar ================= */
+window.addEventListener('scroll', function(){
+  var h = document.documentElement;
+  var scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressBar').style.width = (scrolled||0) + '%';
+});
+
+/* ================= Identitas siswa ================= */
+function getIdentitas(){
+  return {
+    nama: document.getElementById('inpNama').value.trim(),
+    kelas: document.getElementById('inpKelas').value.trim()
+  };
+}
+function identitasLengkap(){
+  var id = getIdentitas();
+  return id.nama.length > 0 && id.kelas.length > 0;
+}
+function scrollKeIdentitas(){
+  document.getElementById('inpNama').scrollIntoView({behavior:'smooth', block:'center'});
+  document.getElementById('inpNama').style.borderColor = 'var(--error)';
+  setTimeout(function(){ document.getElementById('inpNama').style.borderColor=''; }, 1500);
+}
+
+/* ================= Pengiriman ke guru ================= */
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+var topik = 'Sifat Komposisi Fungsi';
+
+function kirimKeGuru(nomorSoal, jawaban, jawaban2, statusEl){
+  if(!identitasLengkap()){ scrollKeIdentitas(); return; }
+  var id = getIdentitas();
+  var payload = {
+    nama: id.nama,
+    kelas: id.kelas,
+    topik: topik,
+    nomorSoal: nomorSoal,
+    jawaban1: jawaban,
+    jawaban2: jawaban2 || '',
+    status: arguments.length > 4 ? arguments[4] : '-',
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  if(statusEl){ statusEl.textContent = 'Mengirim ke guru...'; }
+
+  if(!SCRIPT_URL){
+    if(statusEl){ statusEl.textContent = 'Tersimpan (SCRIPT_URL belum diatur guru).'; }
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(){
+    if(statusEl){ statusEl.textContent = 'Terkirim ke guru ✓'; }
+  }).catch(function(){
+    if(statusEl){ statusEl.textContent = 'Gagal mengirim. Coba lagi.'; }
+  });
+}
+
+/* ================= Lihat Cara Kerjanya (step viewer) ================= */
+var steps = [
+  {t:'Soal', c:'Diketahui <b>f(x) = x+1</b>, <b>g(x) = 2x</b>, <b>h(x) = x-3</b>. Kita buktikan ((f∘g)∘h)(2) = (f∘(g∘h))(2).'},
+  {t:'Cara 1 — kelompokkan (f∘g) dulu', c:'(f∘g)(x) = f(g(x)) = 2x+1. Lalu hitung h(2) = 2-3 = -1, masukkan ke (f∘g): <mark>(f∘g)(-1) = 2(-1)+1 = -1</mark>.'},
+  {t:'Cara 2 — kelompokkan (g∘h) dulu', c:'(g∘h)(x) = g(h(x)) = 2(x-3) = 2x-6. Lalu hitung (g∘h)(2) = 2(2)-6 = -2, masukkan ke f: <mark>f(-2) = -2+1 = -1</mark>.'},
+  {t:'Bandingkan Hasilnya', c:'Cara 1 menghasilkan -1. Cara 2 juga menghasilkan -1. Sama persis!'},
+  {t:'Kesimpulan', c:'Walau dikelompokkan dengan cara berbeda, hasil akhirnya tetap sama. Itulah bukti nyata <b>sifat asosiatif</b> pada komposisi fungsi.'}
+];
+var stepIdx = 0;
+function renderStep(){
+  var s = steps[stepIdx];
+  document.getElementById('stepPanel').innerHTML = '<h3 style="margin-top:0;">'+s.t+'</h3><p style="margin-bottom:0;">'+s.c+'</p>';
+  var dots = '';
+  for(var i=0;i<steps.length;i++){
+    dots += '<span class="dot'+(i===stepIdx?' active':'')+'"></span>';
+  }
+  document.getElementById('stepDots').innerHTML = dots;
+  document.getElementById('btnPrev').disabled = stepIdx===0;
+  document.getElementById('btnNext').disabled = stepIdx===steps.length-1;
+}
+function stepGeser(dir){
+  stepIdx = Math.max(0, Math.min(steps.length-1, stepIdx+dir));
+  renderStep();
+}
+renderStep();
+
+/* ================= Coba Sendiri ================= */
+var mode = 'identitas';
+function pilihMode(m){
+  mode = m;
+  document.getElementById('toggleIdentitas').classList.toggle('active', m==='identitas');
+  document.getElementById('toggleAsosiatif').classList.toggle('active', m==='asosiatif');
+  document.getElementById('groupIdentitas').classList.toggle('hidden-group', m!=='identitas');
+  document.getElementById('groupAsosiatif').classList.toggle('hidden-group', m!=='asosiatif');
+  if(m==='identitas'){ updateIdentitas(); } else { updateAsosiatif(); }
+}
+
+function bentukTerm(koef, variabel){
+  if(koef === 0) return '';
+  var v = variabel;
+  if(koef === 1) return v;
+  if(koef === -1) return '-'+v;
+  return koef + v;
+}
+function gabungSuku(parts){
+  var hasil = '';
+  for(var i=0;i<parts.length;i++){
+    var p = parts[i];
+    if(p === '' || p === null) continue;
+    if(hasil === ''){ hasil = p; }
+    else {
+      if(p.charAt(0) === '-'){ hasil += ' - ' + p.slice(1); }
+      else { hasil += ' + ' + p; }
+    }
+  }
+  return hasil === '' ? '0' : hasil;
+}
+
+function updateIdentitas(){
+  var a = parseInt(document.getElementById('sliderIa').value);
+  var b = parseInt(document.getElementById('sliderIb').value);
+  document.getElementById('valIa').textContent = a;
+  document.getElementById('valIb').textContent = b;
+
+  var t1 = bentukTerm(a,'x');
+  var t2 = b!==0 ? (b>0? String(b) : ('-'+Math.abs(b))) : '';
+  var fx = gabungSuku([t1,t2]);
+
+  var tex = '(f\\circ I)(x) = (I\\circ f)(x) = f(x) = ' + fx;
+  K('fmlIdHasil', tex, true);
+
+  document.getElementById('insightIdentitas').classList.add('show');
+  document.getElementById('insightIdentitasText').textContent =
+    'Coba geser a dan b sebanyak apa pun — (f∘I)(x) dan (I∘f)(x) akan selalu sama dengan f(x) itu sendiri. Itulah kenapa I disebut fungsi identitas: dia tidak mengubah apa pun.';
+}
+updateIdentitas();
+
+function updateAsosiatif(){
+  var a = parseInt(document.getElementById('sliderAa').value);
+  var b = parseInt(document.getElementById('sliderAb').value);
+  var c = parseInt(document.getElementById('sliderAc').value);
+  var d = parseInt(document.getElementById('sliderAd').value);
+  var e = parseInt(document.getElementById('sliderAe').value);
+  var k = parseInt(document.getElementById('sliderAk').value);
+  var x = parseInt(document.getElementById('sliderAx').value);
+
+  document.getElementById('valAa').textContent = a;
+  document.getElementById('valAb').textContent = b;
+  document.getElementById('valAc').textContent = c;
+  document.getElementById('valAd').textContent = d;
+  document.getElementById('valAe').textContent = e;
+  document.getElementById('valAk').textContent = k;
+  document.getElementById('valAx').textContent = x;
+
+  // f(x)=ax+b, g(x)=cx+d, h(x)=ex+k
+  // Cara 1: (f∘g)(x) = a(cx+d)+b, lalu masukkan h(x)
+  var hx = e*x + k;
+  var fgOfHx = a*(c*hx + d) + b; // ((f∘g)∘h)(x)
+
+  // Cara 2: (g∘h)(x) = c(ex+k)+d, lalu masukkan ke f
+  var ghx = c*(e*x + k) + d;
+  var fOfGhx = a*ghx + b; // (f∘(g∘h))(x)
+
+  document.getElementById('hasilKiri').textContent = fgOfHx;
+  document.getElementById('hasilKanan').textContent = fOfGhx;
+
+  document.getElementById('insightAsosiatif').classList.add('show');
+  if(fgOfHx === fOfGhx){
+    document.getElementById('insightAsosiatifText').textContent =
+      'Lihat! Walau kamu ubah angka a, b, c, d, e, k sebebas apapun, dua cara pengelompokan ini selalu menghasilkan angka yang sama ('+fgOfHx+'). Itulah sifat asosiatif komposisi fungsi.';
+  } else {
+    document.getElementById('insightAsosiatifText').textContent =
+      'Coba periksa lagi perhitungannya.';
+  }
+}
+</script>
+
+</body>
+</html>
