@@ -1,0 +1,1293 @@
+<!--
+  NUMERA
+  Judul     : Kombinasi Transformasi Fungsi
+  Jenis     : Modul Interaktif
+  Versi     : 1.0
+  Dikembangkan oleh Kiki Herdiansyah
+  Copyright © 2026
+  Bagian dari proyek Numera — s.id/cakram
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Kombinasi Transformasi Fungsi — Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Numera">
+<meta name="description" content="Modul interaktif Numera — Kombinasi Transformasi Fungsi">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --success-text:#047857;
+
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --warning-text:#B45309;
+
+  --error:#EF4444;
+  --error-bg:#FEE2E2;
+  --error-border:#FECACA;
+  --error-text:#B91C1C;
+
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Inter', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img,canvas{max-width:100%;}
+
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 18px 60px;
+}
+
+/* ===== TOPBAR & PROGRESS ===== */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(248,250,252,.9);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;
+  margin:0 auto;
+  padding:12px 18px;
+  font-weight:600;
+  font-size:14px;
+  color:var(--text);
+  letter-spacing:.2px;
+}
+.topbar-inner span{color:var(--primary);}
+.progress-track{
+  height:3px;
+  background:var(--border);
+  width:100%;
+}
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:var(--primary);
+  transition:width 80ms linear;
+}
+
+/* ===== SECTION / CARD ===== */
+section.block{
+  margin-top:28px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  padding:26px 22px;
+}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--primary);
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  margin-bottom:10px;
+}
+h1,h2,h3,h4{
+  font-family:'Inter', sans-serif;
+  color:var(--text);
+  line-height:1.3;
+  margin:0 0 12px;
+}
+h2.section-title{font-size:21px; font-weight:800;}
+h3.sub-title{font-size:16.5px; font-weight:700; margin-top:22px; color:var(--primary);}
+p{line-height:1.65; font-size:15.5px; margin:0 0 12px; color:var(--text);}
+.muted{color:var(--text-secondary); font-size:14px;}
+strong{font-weight:700;}
+.formula{
+  font-family:'Inter', sans-serif;
+  font-weight:700;
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  padding:10px 14px;
+  border-radius:10px;
+  display:inline-block;
+  font-size:16px;
+  margin:8px 0;
+}
+.formula sup{font-size:.7em;}
+.hr-soft{border:none; border-top:1px solid var(--border); margin:20px 0;}
+
+/* fade up */
+.fade-up{
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .55s ease, transform .55s ease;
+}
+.fade-up.in{opacity:1; transform:translateY(0);}
+
+/* ===== HEADER ===== */
+.header-card{
+  background:linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+}
+.header-card h1{
+  font-size:26px;
+  font-weight:800;
+}
+.meta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:14px 0 18px;
+}
+.meta-pill{
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  font-size:13px;
+  font-weight:600;
+  padding:7px 12px;
+  border-radius:999px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.goals-list{
+  margin:0;
+  padding-left:0;
+  list-style:none;
+}
+.goals-list li{
+  display:flex;
+  gap:10px;
+  padding:8px 0;
+  font-size:15px;
+  line-height:1.5;
+  border-bottom:1px dashed var(--border);
+}
+.goals-list li:last-child{border-bottom:none;}
+.goals-list li .num{
+  flex:0 0 auto;
+  width:22px;height:22px;
+  border-radius:7px;
+  background:var(--primary);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:2px;
+}
+
+/* Identity box */
+.id-box{
+  margin-top:22px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+}
+.id-box h4{font-size:14.5px; font-weight:700; margin-bottom:10px;}
+.id-fields{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+@media (max-width:520px){
+  .id-fields{grid-template-columns:1fr;}
+}
+.field label{
+  display:block;
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--text-secondary);
+  margin-bottom:6px;
+}
+.field input{
+  width:100%;
+  padding:11px 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:15px;
+  font-family:'Inter', sans-serif;
+  background:#fff;
+  color:var(--text);
+}
+.field input:focus{
+  outline:none;
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px var(--primary-light);
+}
+.id-note{
+  font-size:13px;
+  color:var(--text-secondary);
+  margin-top:10px;
+  line-height:1.5;
+}
+.id-warning{
+  display:none;
+  margin-top:10px;
+  background:var(--error-bg);
+  border:1px solid var(--error-border);
+  color:var(--error-text);
+  font-size:13.5px;
+  font-weight:600;
+  padding:9px 12px;
+  border-radius:10px;
+}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-height:44px;
+  padding:0 20px;
+  border-radius:var(--radius-btn);
+  border:none;
+  font-family:'Inter', sans-serif;
+  font-size:14.5px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .2s ease, transform .1s ease, box-shadow .2s ease;
+}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-primary:active{transform:scale(.98);}
+.btn-outline{
+  background:#fff;
+  color:var(--primary);
+  border:1.5px solid var(--primary-light);
+}
+.btn-outline:hover{background:var(--primary-light);}
+.btn:disabled{opacity:.45; cursor:not-allowed;}
+.btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+
+/* ===== HOOK SECTION ===== */
+.hook-box{
+  background:var(--primary-light);
+  border-radius:14px;
+  padding:18px 20px;
+  margin-top:6px;
+}
+.hook-box p{color:var(--primary-hover); font-weight:600; margin:0;}
+
+/* ===== CANVAS ===== */
+.canvas-wrap{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px;
+  margin:14px 0;
+}
+canvas{display:block; width:100%; height:auto; border-radius:10px;}
+
+/* ===== STEP VIEWER ===== */
+.step-nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:10px;
+}
+.step-dots{display:flex; gap:6px;}
+.step-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--border);
+}
+.step-dot.active{background:var(--primary); width:20px; border-radius:5px;}
+.step-caption{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:14.5px;
+  margin-top:12px;
+  min-height:56px;
+}
+.step-caption b{color:var(--primary-hover);}
+
+/* ===== SLIDERS ===== */
+.slider-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-top:16px;
+}
+@media (max-width:560px){.slider-grid{grid-template-columns:1fr;}}
+.slider-item label{
+  display:flex;
+  justify-content:space-between;
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:8px;
+}
+.slider-item label .val{color:var(--primary); font-weight:800;}
+input[type=range]{
+  width:100%;
+  height:34px;
+  -webkit-appearance:none;
+  background:transparent;
+}
+input[type=range]::-webkit-slider-runnable-track{
+  height:6px;
+  border-radius:4px;
+  background:var(--border);
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:22px;height:22px;
+  border-radius:50%;
+  background:var(--primary);
+  border:3px solid #fff;
+  box-shadow:0 1px 4px rgba(15,23,42,.25);
+  margin-top:-8px;
+  cursor:pointer;
+}
+input[type=range]::-moz-range-track{height:6px;border-radius:4px;background:var(--border);}
+input[type=range]::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--primary); border:3px solid #fff; cursor:pointer;
+}
+
+.formula-live{
+  text-align:center;
+  font-size:17px;
+  font-weight:800;
+  color:var(--primary-hover);
+  background:var(--primary-light);
+  padding:12px;
+  border-radius:12px;
+  margin:16px 0 6px;
+  word-break:break-word;
+}
+
+.insight-box{
+  margin-top:14px;
+  background:var(--success-bg);
+  border:1px solid var(--success-border);
+  color:var(--success-text);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14px;
+  font-weight:600;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  transition:all .2s ease;
+}
+.insight-box .ic{font-size:17px; line-height:1;}
+
+/* ===== CHALLENGE ===== */
+.badge{
+  display:inline-block;
+  font-size:11.5px;
+  font-weight:800;
+  padding:5px 10px;
+  border-radius:999px;
+  letter-spacing:.3px;
+}
+.badge-mudah{background:var(--success-bg); color:var(--success-text); border:1px solid var(--success-border);}
+.badge-sedang{background:var(--warning-bg); color:var(--warning-text); border:1px solid #FDE68A;}
+.badge-sulit{background:var(--error-bg); color:var(--error-text); border:1px solid var(--error-border);}
+
+.soal-card{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  margin-top:18px;
+  background:var(--bg);
+}
+.soal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
+.soal-head .soal-num{font-weight:800; font-size:14.5px;}
+.answer-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  margin-top:12px;
+}
+.answer-row input[type=number], .answer-row input[type=text]{
+  width:96px;
+  padding:10px 12px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:15px;
+  font-family:'Inter', sans-serif;
+  text-align:center;
+}
+.answer-row input:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light);}
+.answer-row label.small{font-size:14px; color:var(--text-secondary); font-weight:600;}
+
+.feedback{
+  margin-top:14px;
+  padding:13px 15px;
+  border-radius:12px;
+  font-size:14.5px;
+  line-height:1.55;
+  display:none;
+}
+.feedback.benar{
+  display:block;
+  background:var(--success-bg);
+  border:1px solid var(--success-border);
+  color:var(--success-text);
+}
+.feedback.salah{
+  display:block;
+  background:var(--error-bg);
+  border:1px solid var(--error-border);
+  color:var(--error-text);
+}
+.status-kirim{
+  font-size:12px;
+  color:var(--text-secondary);
+  margin-top:8px;
+  min-height:16px;
+}
+
+/* ===== KESALAHAN UMUM ===== */
+.mistake{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px 18px;
+  margin-top:14px;
+  background:var(--bg);
+}
+.mistake .m-title{
+  font-weight:700;
+  font-size:15px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  color:var(--error-text);
+  margin-bottom:8px;
+}
+.mistake p{margin:0 0 6px; font-size:14.5px;}
+.mistake .fix{color:var(--success-text); font-weight:600; font-size:14.5px;}
+
+/* ===== RINGKASAN ===== */
+.ring-list{list-style:none; margin:0; padding:0;}
+.ring-list li{
+  display:flex;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px dashed var(--border);
+  font-size:15px;
+  line-height:1.55;
+}
+.ring-list li:last-child{border-bottom:none;}
+.ring-list li .dot{
+  flex:0 0 auto;
+  width:26px;height:26px;
+  border-radius:8px;
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  font-weight:800;
+  font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ===== REFLEKSI ===== */
+textarea{
+  width:100%;
+  min-height:96px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+  font-family:'Inter', sans-serif;
+  font-size:14.5px;
+  resize:vertical;
+  margin-top:8px;
+}
+textarea:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light);}
+.refleksi-q{margin-top:18px;}
+.refleksi-q label{font-weight:700; font-size:14.5px;}
+
+/* ===== FOOTER ===== */
+footer.identitas{
+  margin-top:46px;
+  padding:20px 18px 30px;
+  text-align:center;
+  color:var(--text-secondary);
+  font-size:12.5px;
+  line-height:1.7;
+  border-top:1px solid var(--border);
+}
+footer.identitas b{color:var(--text-secondary);}
+
+@media (max-width:480px){
+  .wrap{padding:0 14px 50px;}
+  .card{padding:20px 16px;}
+  h1{font-size:22px !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · <span>Kombinasi Transformasi Fungsi</span></div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section class="block">
+    <div class="card header-card">
+      <div class="eyebrow">📘 Modul Interaktif Numera</div>
+      <h1>Kombinasi Transformasi Fungsi</h1>
+      <div class="meta-row">
+        <span class="meta-pill">⏱ Sekitar 18–20 menit</span>
+        <span class="meta-pill">🎯 6 tujuan belajar</span>
+      </div>
+      <p>Sebelum mulai, yuk baca dulu apa saja yang akan kamu pahami setelah menyelesaikan modul ini:</p>
+      <ul class="goals-list">
+        <li><span class="num">1</span><span>Memahami <b>translasi</b> (pergeseran) grafik fungsi, baik ke kiri/kanan maupun ke atas/bawah.</span></li>
+        <li><span class="num">2</span><span>Memahami <b>refleksi</b> (pencerminan) grafik fungsi terhadap sumbu-x dan sumbu-y.</span></li>
+        <li><span class="num">3</span><span>Memahami <b>dilatasi</b> (peregangan/penyusutan) grafik fungsi secara vertikal maupun horizontal.</span></li>
+        <li><span class="num">4</span><span>Bisa menggabungkan beberapa transformasi sekaligus dalam satu rumus <b>y = a·f(b(x − h)) + k</b>.</span></li>
+        <li><span class="num">5</span><span>Memahami kenapa <b>urutan pengerjaan</b> transformasi bisa memengaruhi hasil akhir grafik.</span></li>
+        <li><span class="num">6</span><span>Bisa menentukan <b>titik atau rumus hasil</b> kombinasi transformasi dari grafik aslinya.</span></li>
+      </ul>
+
+      <div class="id-box">
+        <h4>👤 Kotak Identitas Siswa</h4>
+        <div class="id-fields">
+          <div class="field">
+            <label for="inpNama">Nama lengkap</label>
+            <input type="text" id="inpNama" placeholder="Tulis nama lengkapmu">
+          </div>
+          <div class="field">
+            <label for="inpKelas">Kelas</label>
+            <input type="text" id="inpKelas" placeholder="Contoh: XI IPA 2">
+          </div>
+        </div>
+        <p class="id-note">Jawaban Challenge dan Refleksi kamu di modul ini akan dikirim otomatis ke gurumu. Isi dulu Nama dan Kelas sebelum mulai mengerjakan, ya.</p>
+        <div class="id-warning" id="idWarningGlobal">⚠️ Isi dulu Nama dan Kelas kamu sebelum mengerjakan soal.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR? -->
+  <section class="block fade-up">
+    <div class="card">
+      <div class="eyebrow">💭 Pernahkah Kamu Berpikir?</div>
+      <h2 class="section-title">Pernah edit foto di HP?</h2>
+      <p>Coba ingat-ingat waktu kamu edit foto atau stiker di HP. Kamu bisa <b>geser</b> posisinya ke kiri atau ke kanan. Kamu bisa <b>cerminkan</b> (flip) supaya menghadap arah sebaliknya. Kamu juga bisa <b>perbesar atau perkecil</b> ukurannya.</p>
+      <div class="hook-box">
+        <p>Nah, ternyata grafik fungsi juga bisa "diedit" dengan cara yang mirip banget — digeser, dicerminkan, diperbesar, atau bahkan ketiganya sekaligus. Itulah yang akan kita pelajari di modul ini: <b>Kombinasi Transformasi Fungsi</b>.</p>
+      </div>
+      <p>Yang menarik, kalau kamu tahu urutan "mengedit"-nya, kamu bisa memprediksi persis akan jadi seperti apa grafik barunya — tanpa perlu menggambar ulang dari nol. Yuk kita bongkar satu per satu.</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="block fade-up">
+    <div class="card">
+      <div class="eyebrow">📖 Penjelasan Sederhana</div>
+      <h2 class="section-title">Empat "alat edit" grafik fungsi</h2>
+
+      <h3 class="sub-title">A. Translasi — geser tanpa mengubah bentuk</h3>
+      <p>Translasi itu sesederhana <b>menggeser</b> grafik. Bentuknya sama persis, cuma posisinya yang berubah. Kalau f(x) digeser <b>h satuan ke kanan</b> dan <b>k satuan ke atas</b>, rumus grafik barunya jadi:</p>
+      <div class="formula">y = f(x − h) + k</div>
+      <p>Ini bagian yang paling sering bikin keliru: kalau kamu lihat <b>"x − h"</b> dengan h positif, grafiknya <b>bergeser ke KANAN</b>, bukan ke kiri. Kenapa? Karena supaya hasil di dalam kurung sama seperti sebelumnya, nilai x harus lebih besar dari sebelumnya sejauh h. Sedangkan "+k" di luar fungsi jelas lebih intuitif: langsung geser ke atas sejauh k.</p>
+      <p>Sampai sini masih masuk akal? Kalau iya, translasi sebenarnya adalah bagian yang paling gampang dari semua transformasi grafik.</p>
+
+      <h3 class="sub-title">B. Refleksi — mencerminkan grafik</h3>
+      <p>Refleksi itu seperti berdiri di depan cermin. Ada dua jenis cermin yang kita pakai di sini.</p>
+      <p><b>Cermin sumbu-x:</b> kalau grafik y = f(x) dikalikan −1 di depannya, jadi y = −f(x), grafik akan <b>terbalik atas-bawah</b>, seolah dipantulkan lewat sumbu-x.</p>
+      <div class="formula">y = −f(x) → cermin terhadap sumbu-x</div>
+      <p><b>Cermin sumbu-y:</b> kalau x di dalam fungsi diganti dengan −x, jadi y = f(−x), grafik akan <b>terbalik kiri-kanan</b>, seolah dipantulkan lewat sumbu-y.</p>
+      <div class="formula">y = f(−x) → cermin terhadap sumbu-y</div>
+      <p>Coba perhatikan bedanya: minus di <b>luar</b> fungsi membalik atas-bawah, minus yang menempel di <b>x, di dalam</b> fungsi, membalik kiri-kanan. Posisi minusnya menentukan arah cerminnya.</p>
+
+      <h3 class="sub-title">C. Dilatasi — memperbesar atau memperkecil</h3>
+      <p>Dilatasi mengubah <b>ukuran</b> grafik, seperti mencubit foto di layar HP untuk zoom in/out. Ada dua arah dilatasi.</p>
+      <p><b>Dilatasi vertikal</b> (mengatur tinggi grafik), dikendalikan oleh angka a di depan fungsi:</p>
+      <div class="formula">y = a · f(x)</div>
+      <p>Kalau |a| lebih dari 1, grafik jadi lebih "tinggi" alias meregang ke atas-bawah. Kalau |a| antara 0 dan 1, grafik jadi lebih "pendek" alias memampat mendekati sumbu-x.</p>
+      <p><b>Dilatasi horizontal</b> (mengatur lebar grafik), dikendalikan oleh angka b yang menempel pada x:</p>
+      <div class="formula">y = f(b · x)</div>
+      <p>Nah, ini bagian yang sering terbalik logikanya di kepala siswa: kalau |b| lebih dari 1, grafik justru jadi <b>lebih sempit</b> (memampat ke arah sumbu-y), bukan melebar! Sebaliknya, kalau |b| antara 0 dan 1, grafik jadi <b>lebih lebar</b>. Kenapa begitu? Karena untuk mendapatkan hasil f yang sama, nilai x yang dibutuhkan jadi lebih kecil ketika dikalikan b yang besar — makanya grafiknya "memampat" mendekati sumbu-y.</p>
+      <p>Menurutmu, kenapa arah dilatasi horizontal ini terasa berlawanan dengan intuisi kita? Coba pikirkan sejenak sebelum lanjut membaca.</p>
+
+      <h3 class="sub-title">D. Menggabungkan semua sekaligus</h3>
+      <p>Sekarang bagian intinya. Keempat transformasi di atas bisa digabung jadi satu rumus besar:</p>
+      <div class="formula">y = a · f(b(x − h)) + k</div>
+      <p>Ternyata, urutan mengerjakannya <b>tidak sembarangan</b>. Untuk bagian horizontal (di dalam kurung), kita harus mendilatasi <b>dulu</b> (kalikan dengan b), baru menggeser (kurangi h) — karena rumusnya ditulis sebagai b(x − h), bukan bx − h. Untuk bagian vertikal, urutannya kalikan dulu dengan a, baru tambahkan k, sesuai urutan penulisan dari dalam ke luar.</p>
+      <p>Jadi urutan lengkapnya kira-kira begini: <b>(1) dilatasi horizontal</b> dengan faktor b, <b>(2) translasi horizontal</b> sejauh h, <b>(3) dilatasi vertikal</b> dengan faktor a (termasuk refleksi kalau a negatif), lalu <b>(4) translasi vertikal</b> sejauh k. Kita akan lihat urutan ini langsung bergerak di bagian berikutnya.</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="block fade-up">
+    <div class="card">
+      <div class="eyebrow">🔍 Lihat Cara Kerjanya</div>
+      <h2 class="section-title">Empat langkah, satu per satu</h2>
+      <p>Kita akan pakai fungsi asal <b>f(x) = 0,5x² + x − 1</b> (garis putus-putus abu-abu), lalu terapkan transformasi <b>y = 2·f(1,5(x − 2)) − 3</b> langkah demi langkah. Perhatikan bagaimana grafik biru berubah di setiap tahap.</p>
+
+      <div class="canvas-wrap">
+        <canvas id="stepCanvas" width="820" height="360"></canvas>
+      </div>
+
+      <div class="step-caption" id="stepCaption"></div>
+
+      <div class="step-nav">
+        <div class="step-dots" id="stepDots"></div>
+        <div class="btn-row" style="margin-top:0;">
+          <button class="btn btn-outline" id="btnPrevStep">‹ Sebelumnya</button>
+          <button class="btn btn-primary" id="btnPlayStep">▶ Play</button>
+          <button class="btn btn-outline" id="btnNextStep">Selanjutnya ›</button>
+          <button class="btn btn-outline" id="btnResetStep">↻ Reset</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="block fade-up">
+    <div class="card">
+      <div class="eyebrow">🧪 Coba Sendiri</div>
+      <h2 class="section-title">Geser slidernya, lihat grafiknya berubah</h2>
+      <p>Fungsi asalnya tetap <b>f(x) = 0,5x² + x − 1</b> (garis putus-putus abu-abu). Grafik biru adalah hasil transformasi <b>y = a·f(b(x − h)) + k</b>. Coba geser satu per satu dan perhatikan apa yang berubah.</p>
+
+      <div class="canvas-wrap">
+        <canvas id="liveCanvas" width="820" height="360"></canvas>
+      </div>
+
+      <div class="formula-live" id="liveFormula">y = 1 · f(1 · (x − 0)) + 0</div>
+
+      <div class="slider-grid">
+        <div class="slider-item">
+          <label>a (dilatasi vertikal) <span class="val" id="valA">1.0</span></label>
+          <input type="range" id="sliderA" min="-3" max="3" step="0.1" value="1">
+        </div>
+        <div class="slider-item">
+          <label>b (dilatasi horizontal) <span class="val" id="valB">1.0</span></label>
+          <input type="range" id="sliderB" min="-3" max="3" step="0.1" value="1">
+        </div>
+        <div class="slider-item">
+          <label>h (geser horizontal) <span class="val" id="valH">0.0</span></label>
+          <input type="range" id="sliderH" min="-4" max="4" step="0.5" value="0">
+        </div>
+        <div class="slider-item">
+          <label>k (geser vertikal) <span class="val" id="valK">0.0</span></label>
+          <input type="range" id="sliderK" min="-6" max="6" step="0.5" value="0">
+        </div>
+      </div>
+
+      <div class="insight-box" id="insightBox">
+        <span class="ic">💡</span>
+        <span id="insightText">Coba geser slider a ke atas 1 dulu, lalu perhatikan grafik biru meregang ke atas-bawah.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="block fade-up">
+    <div class="card">
+      <div class="eyebrow">🏆 Challenge</div>
+      <h2 class="section-title">Uji pemahamanmu — 3 soal</h2>
+      <p>Jawab ketiga soal berikut. Setiap kamu menekan "Cek Jawaban", jawabanmu otomatis terkirim ke gurumu.</p>
+
+      <!-- SOAL 1 -->
+      <div class="soal-card">
+        <div class="soal-head">
+          <span class="soal-num">Soal 1</span>
+          <span class="badge badge-mudah">MUDAH</span>
+        </div>
+        <p>Diketahui f(x) = x². Grafik f(x) digeser <b>3 satuan ke kanan</b> dan <b>2 satuan ke atas</b>. Tentukan nilai h dan k pada rumus hasil transformasi y = (x − h)² + k.</p>
+        <div class="answer-row">
+          <label class="small">h =</label>
+          <input type="number" id="s1h" step="1">
+          <label class="small">k =</label>
+          <input type="number" id="s1k" step="1">
+          <button class="btn btn-primary" onclick="cekSoal1()">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb1"></div>
+        <div class="status-kirim" id="status1"></div>
+      </div>
+
+      <!-- SOAL 2 -->
+      <div class="soal-card">
+        <div class="soal-head">
+          <span class="soal-num">Soal 2</span>
+          <span class="badge badge-sedang">SEDANG</span>
+        </div>
+        <p>Grafik y = f(x) melalui titik (4, 5). Grafik tersebut mengalami dilatasi horizontal y = f(2x). Tentukan koordinat titik yang bersesuaian pada grafik baru.</p>
+        <p class="muted">Ingat: supaya hasil f-nya tetap sama, nilai x yang baru harus dicari dulu dari persamaan 2x_baru = x_lama.</p>
+        <div class="answer-row">
+          <label class="small">x' =</label>
+          <input type="number" id="s2x" step="0.5">
+          <label class="small">y' =</label>
+          <input type="number" id="s2y" step="0.5">
+          <button class="btn btn-primary" onclick="cekSoal2()">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb2"></div>
+        <div class="status-kirim" id="status2"></div>
+      </div>
+
+      <!-- SOAL 3 -->
+      <div class="soal-card">
+        <div class="soal-head">
+          <span class="soal-num">Soal 3</span>
+          <span class="badge badge-sulit">SULIT</span>
+        </div>
+        <p>Grafik y = f(x) melalui titik (2, 3). Grafik ini mengalami kombinasi transformasi secara berurutan:</p>
+        <p>1) didilatasi terhadap sumbu-y dengan faktor skala 2,<br>
+           2) digeser 1 satuan ke kanan,<br>
+           3) diregangkan vertikal dengan faktor 3,<br>
+           4) digeser 3 satuan ke bawah.</p>
+        <p>Tentukan koordinat titik yang bersesuaian pada grafik hasil akhir, y = g(x).</p>
+        <div class="answer-row">
+          <label class="small">x' =</label>
+          <input type="number" id="s3x" step="0.5">
+          <label class="small">y' =</label>
+          <input type="number" id="s3y" step="0.5">
+          <button class="btn btn-primary" onclick="cekSoal3()">Cek Jawaban</button>
+        </div>
+        <div class="feedback" id="fb3"></div>
+        <div class="status-kirim" id="status3"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="block fade-up">
+    <div class="card">
+      <div class="eyebrow">⚠️ Kesalahan yang Sering Terjadi</div>
+      <h2 class="section-title">Empat jebakan yang paling umum</h2>
+
+      <div class="mistake">
+        <div class="m-title">🔸 Salah arah pada translasi horizontal</div>
+        <p>Banyak siswa mengira "x − h" dengan h positif membuat grafik bergeser ke <b>kiri</b>, padahal seharusnya ke <b>kanan</b>.</p>
+        <p class="fix">Cara menghindarinya: bayangkan mengganti x dengan (x − h) berarti kita butuh x yang lebih besar h satuan supaya hasilnya sama seperti sebelumnya — itu tandanya grafik "mundur" ke arah kanan.</p>
+      </div>
+
+      <div class="mistake">
+        <div class="m-title">🔸 Arah dilatasi horizontal terbalik</div>
+        <p>Siswa sering mengira b besar pada y = f(bx) membuat grafik melebar, padahal justru membuatnya memampat/menyempit.</p>
+        <p class="fix">Cara menghindarinya: selalu cek dengan satu titik contoh. Kalau b = 2, titik yang tadinya di x = 4 sekarang ada di x = 2 — jadi grafiknya lebih dekat ke sumbu-y, alias lebih sempit.</p>
+      </div>
+
+      <div class="mistake">
+        <div class="m-title">🔸 Tertukar urutan dilatasi dan translasi horizontal</div>
+        <p>Pada y = f(b(x − h)), siswa sering menggeser dulu baru mendilatasi, padahal urutan yang benar untuk bagian horizontal adalah dilatasi dulu, baru translasi.</p>
+        <p class="fix">Cara menghindarinya: lihat bentuk rumusnya persis seperti ditulis — b menempel di (x − h), artinya seluruh (x − h) dikalikan b, bukan hanya x-nya saja.</p>
+      </div>
+
+      <div class="mistake">
+        <div class="m-title">🔸 Menyamakan −f(x) dengan f(−x)</div>
+        <p>Kedua rumus ini terlihat mirip, tapi hasilnya beda arah: satu membalik atas-bawah, satu lagi membalik kiri-kanan.</p>
+        <p class="fix">Cara menghindarinya: tanyakan pada diri sendiri, "minusnya nempel di luar fungsi atau di dalam, nempel di x?" Posisi minus itu yang menentukan arah cerminnya.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="block fade-up">
+    <div class="card">
+      <div class="eyebrow">📝 Ringkasan</div>
+      <h2 class="section-title">Lima poin penting</h2>
+      <ul class="ring-list">
+        <li><span class="dot">1</span><span>Translasi menggeser grafik tanpa mengubah bentuknya: y = f(x − h) + k.</span></li>
+        <li><span class="dot">2</span><span>Refleksi mencerminkan grafik: y = −f(x) terhadap sumbu-x, y = f(−x) terhadap sumbu-y.</span></li>
+        <li><span class="dot">3</span><span>Dilatasi mengubah ukuran grafik: a mengatur tinggi (vertikal), b mengatur lebar (horizontal) — dan b besar justru membuat grafik memampat.</span></li>
+        <li><span class="dot">4</span><span>Semua transformasi bisa digabung dalam satu rumus y = a·f(b(x − h)) + k.</span></li>
+        <li><span class="dot">5</span><span>Urutan pengerjaan transformasi memengaruhi hasil akhir — terapkan setiap langkah secara berurutan pada titik atau rumusnya.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section class="block fade-up">
+    <div class="card">
+      <div class="eyebrow">🪞 Refleksi</div>
+      <h2 class="section-title">Coba jelaskan dengan kata-katamu sendiri</h2>
+      <p>Tidak ada jawaban benar atau salah di bagian ini. Tulis saja apa yang benar-benar kamu pikirkan.</p>
+
+      <div class="refleksi-q">
+        <label for="ref1">1. Menurutmu, kenapa urutan pengerjaan dilatasi dan translasi horizontal bisa memengaruhi hasil akhir grafik?</label>
+        <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <div class="refleksi-q">
+        <label for="ref2">2. Bagian mana dari materi Kombinasi Transformasi Fungsi ini yang menurutmu paling gampang bikin keliru? Kenapa menurutmu begitu?</label>
+        <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="kirimRefleksi()">Kirim Refleksi</button>
+      </div>
+      <div class="status-kirim" id="statusRef"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="identitas">
+  <div><b>NUMERA</b> — Modul Interaktif Pembelajaran Matematika</div>
+  <div>Dikembangkan oleh Kiki Herdiansyah · Versi 1.0 · © 2026</div>
+</footer>
+
+<script>
+/* ================= KONFIGURASI PENGIRIMAN ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+const TOPIK = 'Kombinasi Transformasi Fungsi';
+
+function getIdentitas(){
+  return {
+    nama: document.getElementById('inpNama').value.trim(),
+    kelas: document.getElementById('inpKelas').value.trim()
+  };
+}
+
+function identitasLengkap(){
+  const id = getIdentitas();
+  const ok = id.nama.length > 0 && id.kelas.length > 0;
+  const warn = document.getElementById('idWarningGlobal');
+  if(!ok){
+    warn.style.display = 'block';
+    document.getElementById('inpNama').scrollIntoView({behavior:'smooth', block:'center'});
+  } else {
+    warn.style.display = 'none';
+  }
+  return ok;
+}
+
+function kirimKeGuru(nomor, jawaban, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const payload = {
+    topik: TOPIK,
+    nama: id.nama,
+    kelas: id.kelas,
+    nomor: nomor,
+    jawaban: jawaban,
+    jawaban2: jawaban2 || '',
+    status: status,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  const statusEl = statusElId ? document.getElementById(statusElId) : null;
+
+  if(!SCRIPT_URL){
+    if(statusEl) statusEl.textContent = '✓ Jawaban tersimpan (mode offline — SCRIPT_URL belum diisi guru).';
+    return;
+  }
+
+  if(statusEl) statusEl.textContent = 'Mengirim ke guru...';
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type':'text/plain'},
+    body: JSON.stringify(payload)
+  }).then(function(){
+    if(statusEl) statusEl.textContent = '✓ Jawaban terkirim ke guru.';
+  }).catch(function(){
+    if(statusEl) statusEl.textContent = '⚠️ Gagal mengirim. Periksa koneksi internet.';
+  });
+}
+
+/* ================= PROGRESS BAR ================= */
+const progressFill = document.getElementById('progressFill');
+function updateProgress(){
+  const h = document.documentElement;
+  const scrolled = h.scrollTop || document.body.scrollTop;
+  const max = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+  const pct = max > 0 ? (scrolled / max) * 100 : 0;
+  progressFill.style.width = Math.min(100, Math.max(0,pct)) + '%';
+}
+window.addEventListener('scroll', updateProgress, {passive:true});
+updateProgress();
+
+/* ================= FADE UP ================= */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, {threshold:0.12});
+document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
+
+/* ================= FUNGSI DASAR & GRAFIK ================= */
+function baseF(x){ return 0.5*x*x + x - 1; }
+function transformed(x,a,b,h,k){ return a*baseF(b*(x-h)) + k; }
+
+function clampNonZero(v, minAbs){
+  if(Math.abs(v) < minAbs) return v>=0 ? minAbs : -minAbs;
+  return v;
+}
+
+function fmt(n){
+  n = Math.round(n*10)/10;
+  return (n%1===0) ? n.toFixed(0) : n.toFixed(1);
+}
+
+function setupCanvas(canvas){
+  const ratio = window.devicePixelRatio || 1;
+  const cssW = canvas.clientWidth || canvas.width;
+  const cssH = canvas.width ? (canvas.height/canvas.width)*cssW : canvas.height;
+  canvas.width = cssW*ratio;
+  canvas.height = (canvas.getAttribute('data-h') ? parseFloat(canvas.getAttribute('data-h')) : cssH)*ratio;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+  return {ctx, w:cssW, h:canvas.height/ratio};
+}
+
+function drawScene(canvas, funcs, xMin, xMax){
+  // funcs: array of {fn, color, dash, width}
+  const ratio = window.devicePixelRatio || 1;
+  const cssW = canvas.getBoundingClientRect().width || 780;
+  const cssH = 360;
+  canvas.width = cssW*ratio;
+  canvas.height = cssH*ratio;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(ratio,0,0,ratio,0,0);
+  ctx.clearRect(0,0,cssW,cssH);
+
+  // sample to find y range
+  let yMin = Infinity, yMax = -Infinity;
+  const N = 220;
+  funcs.forEach(f=>{
+    for(let i=0;i<=N;i++){
+      const x = xMin + (xMax-xMin)*i/N;
+      const y = f.fn(x);
+      if(isFinite(y)){
+        if(y<yMin) yMin=y;
+        if(y>yMax) yMax=y;
+      }
+    }
+  });
+  if(!isFinite(yMin) || !isFinite(yMax)){ yMin=-5; yMax=5; }
+  if(yMax-yMin < 2){ const mid=(yMax+yMin)/2; yMin=mid-3; yMax=mid+3; }
+  const padY = (yMax-yMin)*0.15;
+  yMin -= padY; yMax += padY;
+
+  const padPx = 30;
+  const W = cssW - padPx*2;
+  const H = cssH - padPx*2;
+
+  function px(x){ return padPx + (x-xMin)/(xMax-xMin)*W; }
+  function py(y){ return padPx + H - (y-yMin)/(yMax-yMin)*H; }
+
+  // grid
+  ctx.strokeStyle = '#E2E8F0';
+  ctx.lineWidth = 1;
+  const xStep = Math.max(1, Math.round((xMax-xMin)/10));
+  for(let gx = Math.ceil(xMin/xStep)*xStep; gx<=xMax; gx+=xStep){
+    ctx.beginPath();
+    ctx.moveTo(px(gx), padPx);
+    ctx.lineTo(px(gx), padPx+H);
+    ctx.stroke();
+  }
+  const yStep = Math.max(1, Math.round((yMax-yMin)/8));
+  for(let gy = Math.ceil(yMin/yStep)*yStep; gy<=yMax; gy+=yStep){
+    ctx.beginPath();
+    ctx.moveTo(padPx, py(gy));
+    ctx.lineTo(padPx+W, py(gy));
+    ctx.stroke();
+  }
+
+  // axes
+  ctx.strokeStyle = '#94A3B8';
+  ctx.lineWidth = 1.5;
+  if(yMin<=0 && yMax>=0){
+    ctx.beginPath(); ctx.moveTo(padPx, py(0)); ctx.lineTo(padPx+W, py(0)); ctx.stroke();
+  }
+  if(xMin<=0 && xMax>=0){
+    ctx.beginPath(); ctx.moveTo(px(0), padPx); ctx.lineTo(px(0), padPx+H); ctx.stroke();
+  }
+
+  // curves
+  funcs.forEach(f=>{
+    ctx.beginPath();
+    ctx.setLineDash(f.dash || []);
+    ctx.strokeStyle = f.color;
+    ctx.lineWidth = f.width || 2.5;
+    let started = false;
+    for(let i=0;i<=N;i++){
+      const x = xMin + (xMax-xMin)*i/N;
+      const y = f.fn(x);
+      if(!isFinite(y)){ started=false; continue; }
+      const X = px(x), Y = py(y);
+      if(!started){ ctx.moveTo(X,Y); started=true; } else { ctx.lineTo(X,Y); }
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+}
+
+/* ================= LIHAT CARA KERJANYA (STEP) ================= */
+const stepCanvas = document.getElementById('stepCanvas');
+const stepCaption = document.getElementById('stepCaption');
+const stepDotsWrap = document.getElementById('stepDots');
+const A_TARGET = 2, B_TARGET = 1.5, H_TARGET = 2, K_TARGET = -3;
+
+const steps = [
+  {
+    title: 'Langkah 0 — Grafik asal',
+    text: 'Ini grafik asal <b>f(x) = 0,5x² + x − 1</b>, sebelum ditransformasi sama sekali.',
+    fn: (x)=> baseF(x)
+  },
+  {
+    title: 'Langkah 1 — Dilatasi horizontal (b = 1,5)',
+    text: 'Grafik <b>memampat</b> mendekati sumbu-y karena dikalikan b = 1,5 di dalam fungsi: f(1,5x).',
+    fn: (x)=> baseF(B_TARGET*x)
+  },
+  {
+    title: 'Langkah 2 — Translasi horizontal (h = 2)',
+    text: 'Grafik hasil langkah 1 <b>digeser 2 satuan ke kanan</b>: f(1,5(x − 2)).',
+    fn: (x)=> baseF(B_TARGET*(x-H_TARGET))
+  },
+  {
+    title: 'Langkah 3 — Dilatasi vertikal (a = 2)',
+    text: 'Grafik hasil langkah 2 <b>diregangkan 2 kali lebih tinggi</b>: 2·f(1,5(x − 2)).',
+    fn: (x)=> A_TARGET*baseF(B_TARGET*(x-H_TARGET))
+  },
+  {
+    title: 'Langkah 4 — Translasi vertikal (k = −3)',
+    text: 'Grafik hasil langkah 3 <b>digeser 3 satuan ke bawah</b>, menghasilkan rumus akhir: <b>y = 2·f(1,5(x − 2)) − 3</b>.',
+    fn: (x)=> transformed(x, A_TARGET, B_TARGET, H_TARGET, K_TARGET)
+  }
+];
+
+let curStep = 0;
+let stepTimer = null;
+
+function renderDots(){
+  stepDotsWrap.innerHTML = '';
+  steps.forEach((s,i)=>{
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i===curStep ? ' active' : '');
+    stepDotsWrap.appendChild(d);
+  });
+}
+
+function renderStep(){
+  const s = steps[curStep];
+  drawScene(stepCanvas, [
+    {fn: baseF, color:'#94A3B8', dash:[6,4], width:2},
+    {fn: s.fn, color:'#2563EB', width:3}
+  ], -6, 6);
+  stepCaption.innerHTML = '<b>'+s.title+'</b><br>'+s.text;
+  renderDots();
+  document.getElementById('btnPrevStep').disabled = curStep===0;
+  document.getElementById('btnNextStep').disabled = curStep===steps.length-1;
+}
+
+document.getElementById('btnPrevStep').addEventListener('click', ()=>{
+  if(curStep>0){ curStep--; renderStep(); }
+});
+document.getElementById('btnNextStep').addEventListener('click', ()=>{
+  if(curStep<steps.length-1){ curStep++; renderStep(); }
+});
+document.getElementById('btnResetStep').addEventListener('click', ()=>{
+  stopPlay();
+  curStep = 0;
+  renderStep();
+});
+
+function stopPlay(){
+  if(stepTimer){ clearInterval(stepTimer); stepTimer=null; }
+  document.getElementById('btnPlayStep').textContent = '▶ Play';
+}
+document.getElementById('btnPlayStep').addEventListener('click', ()=>{
+  if(stepTimer){
+    stopPlay();
+    return;
+  }
+  document.getElementById('btnPlayStep').textContent = '⏸ Pause';
+  stepTimer = setInterval(()=>{
+    curStep++;
+    if(curStep>steps.length-1){
+      curStep = steps.length-1;
+      stopPlay();
+      renderStep();
+      return;
+    }
+    renderStep();
+  }, 1600);
+});
+
+renderStep();
+window.addEventListener('resize', renderStep);
+
+/* ================= COBA SENDIRI (LIVE SLIDER) ================= */
+const liveCanvas = document.getElementById('liveCanvas');
+const sA = document.getElementById('sliderA');
+const sB = document.getElementById('sliderB');
+const sH = document.getElementById('sliderH');
+const sK = document.getElementById('sliderK');
+const insightText = document.getElementById('insightText');
+
+function renderLive(){
+  let a = parseFloat(sA.value);
+  let b = parseFloat(sB.value);
+  let h = parseFloat(sH.value);
+  let k = parseFloat(sK.value);
+
+  document.getElementById('valA').textContent = fmt(a);
+  document.getElementById('valB').textContent = fmt(b);
+  document.getElementById('valH').textContent = fmt(h);
+  document.getElementById('valK').textContent = fmt(k);
+
+  const aSafe = clampNonZero(a, 0.15);
+  const bSafe = clampNonZero(b, 0.15);
+
+  drawScene(liveCanvas, [
+    {fn: baseF, color:'#94A3B8', dash:[6,4], width:2},
+    {fn: (x)=>transformed(x, aSafe, bSafe, h, k), color:'#2563EB', width:3}
+  ], -8, 8);
+
+  document.getElementById('liveFormula').textContent =
+    'y = ' + fmt(a) + ' · f(' + fmt(b) + '(x − ' + fmt(h) + ')) + ' + fmt(k);
+
+  // insight
+  let msg = 'Coba ubah satu slider dulu, lalu perhatikan bagian grafik yang berubah.';
+  if(a<-0.05 && Math.abs(a)>1.02){
+    msg = 'Perhatikan! Karena a negatif dan besar, grafik dicerminkan terhadap sumbu-x sekaligus diregangkan lebih tinggi.';
+  } else if(a<-0.05){
+    msg = 'Perhatikan! Karena a negatif, grafik dicerminkan terhadap sumbu-x (terbalik atas-bawah).';
+  } else if(b<-0.05){
+    msg = 'Perhatikan! Karena b negatif, grafik dicerminkan terhadap sumbu-y (terbalik kiri-kanan).';
+  } else if(Math.abs(a)>1.5){
+    msg = 'Grafik jadi jauh lebih "tinggi" karena |a| besar — ini dilatasi vertikal.';
+  } else if(Math.abs(a)<0.6){
+    msg = 'Grafik jadi lebih "pendek", mendekati sumbu-x, karena |a| kecil.';
+  } else if(Math.abs(b)>1.5){
+    msg = 'Grafik jadi lebih sempit (memampat ke arah sumbu-y) karena |b| besar — ingat, ini kebalikan dari intuisi biasa!';
+  } else if(Math.abs(b)<0.6){
+    msg = 'Grafik jadi lebih lebar karena |b| kecil.';
+  } else if(h!==0 && k===0){
+    msg = 'Grafik bergeser ke arah horizontal sejauh h, tanpa berubah bentuk atau ukurannya.';
+  } else if(k!==0 && h===0){
+    msg = 'Grafik bergeser ke arah vertikal sejauh k, tanpa berubah bentuk atau ukurannya.';
+  } else if(h===0 && k===0 && Math.abs(a-1)<0.05 && Math.abs(b-1)<0.05){
+    msg = 'Ini masih grafik asli — belum ada transformasi. Coba geser salah satu slider!';
+  }
+  insightText.innerHTML = msg;
+}
+
+[sA,sB,sH,sK].forEach(s=> s.addEventListener('input', renderLive));
+window.addEventListener('resize', renderLive);
+renderLive();
+
+/* ================= CHALLENGE ================= */
+function cekSoal1(){
+  if(!identitasLengkap()) return;
+  const h = parseFloat(document.getElementById('s1h').value);
+  const k = parseFloat(document.getElementById('s1k').value);
+  const fb = document.getElementById('fb1');
+  let benar = (h===3 && k===2);
+  let jawabanTeks = 'h='+h+', k='+k;
+
+  if(benar){
+    fb.className = 'feedback benar';
+    fb.innerHTML = '✅ <b>Benar!</b> Geser 3 satuan ke kanan berarti h = 3 (karena bentuknya x − h), dan geser 2 satuan ke atas berarti k = 2.';
+  } else {
+    fb.className = 'feedback salah';
+    if(h===-3){
+      fb.innerHTML = '❌ Hampir! Kamu menuliskan h = −3, padahal geser ke kanan artinya h = <b>+3</b> (ingat: x − h dengan h positif = geser ke kanan).';
+    } else {
+      fb.innerHTML = '❌ Belum tepat. Geser 3 satuan ke kanan → h = 3. Geser 2 satuan ke atas → k = 2. Coba tulis ulang rumusnya: y = (x − 3)² + 2.';
+    }
+  }
+  kirimKeGuru(1, jawabanTeks, '', benar ? 'benar':'salah', 'status1');
+}
+
+function cekSoal2(){
+  if(!identitasLengkap()) return;
+  const x2 = parseFloat(document.getElementById('s2x').value);
+  const y2 = parseFloat(document.getElementById('s2y').value);
+  const fb = document.getElementById('fb2');
+  let benar = (Math.abs(x2-2)<0.01 && Math.abs(y2-5)<0.01);
+  let jawabanTeks = "x'="+x2+", y'="+y2;
+
+  if(benar){
+    fb.className = 'feedback benar';
+    fb.innerHTML = "✅ <b>Benar!</b> Karena y = f(2x), supaya 2x_baru = 4 (nilai x lama), maka x_baru = 2. Nilai y-nya tetap 5. Titik barunya (2, 5).";
+  } else {
+    fb.className = 'feedback salah';
+    if(Math.abs(x2-8)<0.01){
+      fb.innerHTML = "❌ Hati-hati! Kamu mengalikan 4 × 2 = 8, padahal seharusnya <b>dibagi</b> 2. Karena y = f(2x), berlaku 2·x_baru = 4, jadi x_baru = 4 ÷ 2 = 2.";
+    } else {
+      fb.innerHTML = "❌ Belum tepat. Karena y = f(2x), cari x_baru dari persamaan 2·x_baru = 4 (nilai x titik lama), sehingga x_baru = 2. Nilai y tetap sama, yaitu 5.";
+    }
+  }
+  kirimKeGuru(2, jawabanTeks, '', benar ? 'benar':'salah', 'status2');
+}
+
+function cekSoal3(){
+  if(!identitasLengkap()) return;
+  const x3 = parseFloat(document.getElementById('s3x').value);
+  const y3 = parseFloat(document.getElementById('s3y').value);
+  const fb = document.getElementById('fb3');
+  let benar = (Math.abs(x3-5)<0.01 && Math.abs(y3-6)<0.01);
+  let jawabanTeks = "x'="+x3+", y'="+y3;
+
+  if(benar){
+    fb.className = 'feedback benar';
+    fb.innerHTML = "✅ <b>Benar!</b> Urutannya: (2,3) → dilatasi sb-y ×2 → (4,3) → geser kanan 1 → (5,3) → regang vertikal ×3 → (5,9) → geser bawah 3 → <b>(5,6)</b>.";
+  } else {
+    fb.className = 'feedback salah';
+    fb.innerHTML = "❌ Belum tepat. Coba terapkan satu per satu secara berurutan: mulai dari (2,3), dilatasi terhadap sumbu-y faktor 2 mengubah koordinat-x menjadi 2×2=4 → (4,3). Lanjutkan langkah geser dan regang berikutnya satu per satu, jangan digabung sekaligus.";
+  }
+  kirimKeGuru(3, jawabanTeks, '', benar ? 'benar':'salah', 'status3');
+}
+
+/* ================= REFLEKSI ================= */
+function kirimRefleksi(){
+  if(!identitasLengkap()) return;
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  const statusEl = document.getElementById('statusRef');
+
+  if(r1.length===0 || r2.length===0){
+    statusEl.textContent = '⚠️ Isi dulu kedua kolom refleksi sebelum mengirim.';
+    statusEl.style.color = 'var(--error-text)';
+    return;
+  }
+  statusEl.style.color = 'var(--text-secondary)';
+  kirimKeGuru('Refleksi', r1, r2, '-', 'statusRef');
+}
+</script>
+
+</body>
+</html>

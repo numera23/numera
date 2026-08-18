@@ -1,0 +1,993 @@
+<!--
+NUMERA
+Judul: Transformasi Fungsi - Pergeseran Horizontal
+Jenis: Modul Interaktif
+Versi: 1.0
+Dikembangkan oleh Kiki Herdiansyah
+Copyright © 2026
+Bagian dari proyek Numera — s.id/cakram
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Transformasi Fungsi - Pergeseran Horizontal — Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Numera - Kiki Herdiansyah">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --success-text:#047857;
+
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --warning-text:#B45309;
+
+  --error:#EF4444;
+  --error-bg:#FEE2E2;
+  --error-border:#FECACA;
+  --error-text:#B91C1C;
+
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow: 0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 18px 60px;
+}
+img,svg{max-width:100%;}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;margin:0 auto;
+  padding:12px 18px;
+  font-weight:600;font-size:14px;
+  color:var(--primary);
+  display:flex;align-items:center;gap:8px;
+}
+.progress-track{
+  height:3px;background:var(--border);width:100%;
+}
+.progress-bar{
+  height:3px;background:var(--primary);width:0%;
+  transition:width .1s linear;
+}
+
+/* Section base */
+section{
+  margin-top:36px;
+  opacity:0;
+  transform:translateY(14px);
+  transition:opacity .5s ease, transform .5s ease;
+}
+section.visible{opacity:1;transform:translateY(0);}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow);
+  padding:24px;
+}
+@media(max-width:480px){ .card{padding:18px;} }
+
+h1{font-size:24px;font-weight:800;margin:0 0 8px;letter-spacing:-.02em;}
+h2{font-size:20px;font-weight:800;margin:0 0 14px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;}
+h3{font-size:16px;font-weight:700;margin:20px 0 8px;color:var(--text);}
+h2 .num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:9px;
+  background:var(--primary-light);color:var(--primary);
+  font-size:14px;font-weight:800;flex-shrink:0;
+}
+p{margin:0 0 12px;font-size:15.5px;color:var(--text);}
+.muted{color:var(--text-secondary);font-size:14px;}
+strong{font-weight:700;}
+mark{
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  padding:1px 5px;border-radius:5px;
+  font-weight:700;
+}
+
+/* Header */
+.header-card{
+  background:linear-gradient(180deg,var(--card) 0%, var(--card) 100%);
+}
+.badge-time{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--primary-light);color:var(--primary-hover);
+  font-size:13px;font-weight:700;
+  padding:6px 12px;border-radius:999px;margin-bottom:14px;
+}
+.goals{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px 18px;
+  margin:16px 0;
+}
+.goals ul{margin:0;padding-left:20px;}
+.goals li{margin-bottom:6px;font-size:14.5px;}
+
+.identity-box{
+  margin-top:18px;
+  background:var(--primary-light);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+}
+.identity-box h3{margin-top:0;color:var(--primary-hover);font-size:15px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;color:var(--text);}
+.field input{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-btn);
+  font-size:15px;
+  font-family:inherit;
+  background:#fff;
+}
+.field input:focus{outline:2px solid var(--primary);outline-offset:1px;}
+.identity-note{font-size:13px;color:var(--text-secondary);margin-top:8px;}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:var(--primary);color:#fff;border:none;
+  padding:0 20px;height:44px;border-radius:var(--radius-btn);
+  font-size:15px;font-weight:700;font-family:inherit;
+  cursor:pointer;transition:background .2s ease, transform .1s ease;
+}
+.btn:hover{background:var(--primary-hover);}
+.btn:active{transform:scale(.98);}
+.btn.secondary{
+  background:#fff;color:var(--primary);border:1.5px solid var(--primary-light);
+}
+.btn.secondary:hover{background:var(--primary-light);}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+
+/* Slider */
+.slider-row{margin:16px 0;}
+.slider-row label{display:flex;justify-content:space-between;font-size:14.5px;font-weight:600;margin-bottom:8px;}
+.slider-row label .val{color:var(--primary);font-weight:800;}
+input[type=range]{
+  width:100%;height:6px;border-radius:999px;
+  background:var(--border);appearance:none;-webkit-appearance:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+  background:var(--primary);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+input[type=range]::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--primary);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);
+}
+
+/* Dropdown */
+.select-row{margin:16px 0;}
+.select-row label{display:block;font-size:14.5px;font-weight:600;margin-bottom:8px;}
+select{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);
+  border-radius:var(--radius-btn);font-size:15px;font-family:inherit;
+  background:#fff;color:var(--text);
+}
+select:focus{outline:2px solid var(--primary);outline-offset:1px;}
+
+/* Equation display */
+.eq-box{
+  background:var(--text);color:#fff;
+  border-radius:14px;padding:16px 18px;
+  font-size:19px;font-weight:700;text-align:center;
+  margin:16px 0;letter-spacing:.02em;
+}
+.eq-box .sm{font-size:12.5px;font-weight:500;opacity:.75;display:block;margin-bottom:4px;letter-spacing:0;}
+
+/* Insight box */
+.insight{
+  border-radius:14px;padding:14px 16px;font-size:14.5px;
+  margin-top:14px;border:1px solid var(--border);
+  display:flex;gap:10px;align-items:flex-start;
+}
+.insight.info{background:var(--primary-light);border-color:#BFDBFE;color:var(--primary-hover);}
+.insight.success{background:var(--success-bg);border-color:var(--success-border);color:var(--success-text);}
+.insight.warning{background:var(--warning-bg);border-color:#FDE68A;color:var(--warning-text);}
+
+/* Graph */
+.graph-wrap{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:14px;padding:10px;margin:14px 0;
+}
+svg.graph{width:100%;height:auto;display:block;}
+.grid-line{stroke:var(--border);stroke-width:1;}
+.axis-line{stroke:#94A3B8;stroke-width:1.4;}
+.curve-base{fill:none;stroke:#94A3B8;stroke-width:2;stroke-dasharray:5 5;}
+.curve-main{fill:none;stroke:var(--primary);stroke-width:3;}
+.point-dot{fill:var(--primary);stroke:#fff;stroke-width:2;}
+.point-label{font-size:11px;fill:var(--text);font-weight:700;font-family:inherit;}
+
+/* Steps (Lihat Cara Kerjanya) */
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+.step-dots{display:flex;gap:6px;}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border);}
+.step-dot.active{background:var(--primary);width:20px;border-radius:5px;transition:all .2s;}
+.step-text{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:14px;padding:16px 18px;margin-top:14px;min-height:70px;
+  font-size:14.5px;
+}
+.step-text b{color:var(--primary-hover);}
+
+/* Challenge */
+.challenge-item{
+  border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px;
+}
+.q-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.q-title{font-weight:700;font-size:15.5px;}
+.badge{
+  font-size:11.5px;font-weight:800;padding:5px 11px;border-radius:999px;
+  text-transform:uppercase;letter-spacing:.03em;
+}
+.badge.mudah{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);}
+.badge.sedang{background:var(--warning-bg);color:var(--warning-text);border:1px solid #FDE68A;}
+.badge.sulit{background:var(--error-bg);color:var(--error-text);border:1px solid var(--error-border);}
+
+.opt{
+  display:flex;align-items:center;gap:10px;
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:12px 14px;margin-bottom:10px;cursor:pointer;
+  font-size:14.5px;transition:border-color .15s, background .15s;
+}
+.opt:hover{border-color:var(--primary-light);background:var(--bg);}
+.opt input{accent-color:var(--primary);width:17px;height:17px;flex-shrink:0;}
+.opt.correct{border-color:var(--success-border);background:var(--success-bg);}
+.opt.wrong{border-color:var(--error-border);background:var(--error-bg);}
+
+.num-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;}
+.num-field{flex:1;min-width:100px;}
+.num-field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:5px;color:var(--text-secondary);}
+.num-field input, .num-field select{
+  width:100%;padding:11px 12px;border:1.5px solid var(--border);
+  border-radius:10px;font-size:15px;font-family:inherit;background:#fff;
+}
+
+.feedback{
+  margin-top:12px;padding:13px 15px;border-radius:12px;font-size:14px;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.benar{background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+.feedback.salah{background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+
+.send-status{font-size:12.5px;color:var(--text-secondary);margin-top:8px;min-height:16px;}
+.send-status.ok{color:var(--success-text);}
+
+.identity-warn{
+  display:none;background:var(--error-bg);border:1px solid var(--error-border);
+  color:var(--error-text);border-radius:10px;padding:10px 13px;font-size:13.5px;margin-top:10px;
+}
+.identity-warn.show{display:block;}
+
+/* Mistakes */
+.mistake-item{
+  border-left:4px solid var(--error);
+  background:var(--bg);border-radius:0 12px 12px 0;
+  padding:14px 16px;margin-bottom:14px;
+}
+.mistake-item .lbl{font-size:11.5px;font-weight:800;color:var(--error-text);text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;}
+.mistake-item .why{margin-top:8px;font-size:14px;}
+.mistake-item .fix{margin-top:8px;font-size:14px;color:var(--success-text);font-weight:600;}
+
+/* Summary */
+.summary-list{list-style:none;margin:0;padding:0;}
+.summary-list li{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 0;border-bottom:1px solid var(--border);font-size:14.5px;
+}
+.summary-list li:last-child{border-bottom:none;}
+.summary-list .n{
+  flex-shrink:0;width:26px;height:26px;border-radius:8px;
+  background:var(--primary);color:#fff;font-weight:800;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Reflection */
+textarea{
+  width:100%;border:1.5px solid var(--border);border-radius:12px;
+  padding:12px 14px;font-family:inherit;font-size:14.5px;
+  resize:vertical;min-height:90px;
+}
+textarea:focus{outline:2px solid var(--primary);outline-offset:1px;}
+
+/* Footer */
+footer{
+  margin-top:50px;text-align:center;padding:22px 10px;
+  font-size:12.5px;color:var(--text-secondary);
+  border-top:1px solid var(--border);
+}
+footer .brand{font-weight:700;color:var(--text);}
+
+@media(hover:none){
+  .opt:hover{border-color:var(--border);background:transparent;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · Pergeseran Horizontal Fungsi</div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section id="s1" class="card header-card">
+    <span class="badge-time">⏱ Sekitar 15–20 menit</span>
+    <h1>Transformasi Fungsi — Pergeseran Horizontal</h1>
+    <p class="muted">Belajar apa yang terjadi ketika sebuah grafik digeser ke kiri atau ke kanan, dan kenapa tandanya sering bikin bingung.</p>
+
+    <div class="goals">
+      <h3 style="margin-top:0;">Setelah belajar ini, kamu akan bisa:</h3>
+      <ul>
+        <li>Menjelaskan apa itu pergeseran horizontal pada grafik fungsi</li>
+        <li>Menggunakan bentuk umum y = f(x − h) dengan benar</li>
+        <li>Memahami kenapa tanda di dalam kurung selalu kebalikan dari arah geser yang terlihat</li>
+        <li>Melihat apa yang terjadi pada setiap titik grafik saat digeser</li>
+        <li>Menerapkan pergeseran horizontal pada berbagai jenis fungsi, bukan cuma parabola</li>
+      </ul>
+    </div>
+
+    <div class="identity-box">
+      <h3>📝 Identitas Kamu</h3>
+      <div class="field">
+        <label for="nama">Nama Lengkap</label>
+        <input type="text" id="nama" placeholder="Tulis nama lengkapmu">
+      </div>
+      <div class="field">
+        <label for="kelas">Kelas</label>
+        <input type="text" id="kelas" placeholder="Contoh: XI IPA 2">
+      </div>
+      <p class="identity-note">Jawaban Challenge dan Refleksi kamu akan otomatis dikirim ke gurumu, jadi pastikan identitas di atas sudah diisi ya.</p>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section id="s2" class="card">
+    <h2><span class="num">?</span>Pernahkah Kamu Berpikir?</h2>
+    <p>Coba bayangkan kamu lagi main game 2D, terus ada karakter yang jalan ke kanan. Posisi karakternya berubah, tapi <em>bentuk</em> karakternya tetap sama persis — cuma pindah tempat.</p>
+    <p>Grafik fungsi juga bisa "jalan" seperti itu. Grafik <mark>y = x²</mark> yang biasa kamu kenal, bisa digeser ke kiri atau ke kanan, dan bentuknya tetap parabola yang sama — cuma pindah posisi di sepanjang sumbu-x.</p>
+    <p><strong>Pertanyaannya:</strong> kalau grafik digeser 3 satuan ke kanan, menurutmu tanda di dalam persamaannya jadi plus atau minus?</p>
+    <p>Banyak siswa langsung menjawab "plus", padahal jawabannya justru sebaliknya. Nah, di modul ini kita akan bongkar pelan-pelan kenapa itu bisa terjadi — sampai kamu benar-benar paham, bukan cuma hafal.</p>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section id="s3" class="card">
+    <h2><span class="num">3</span>Penjelasan Sederhana</h2>
+
+    <h3>3.1 Apa Itu Pergeseran Horizontal?</h3>
+    <p>Pergeseran horizontal itu sederhana: seluruh grafik dipindah ke kiri atau ke kanan, tanpa mengubah bentuknya sama sekali. Tidak melebar, tidak menyempit, tidak terbalik — cuma pindah tempat secara mendatar.</p>
+    <p>Bedakan dengan pergeseran ke atas/bawah (itu namanya pergeseran vertikal, dan cara kerjanya beda — nanti kita bahas di bagian 3.6). Sampai sini masih masuk akal?</p>
+
+    <h3>3.2 Bentuk Umum Pergeseran Horizontal</h3>
+    <p>Kalau grafik <mark>y = f(x)</mark> digeser sejauh <em>h</em> satuan ke kanan, persamaan barunya jadi:</p>
+    <div class="eq-box"><span class="sm">Bentuk Pergeseran Horizontal</span>y = f(x − h)</div>
+    <p>Kalau digesernya ke <strong>kiri</strong> sejauh <em>h</em> satuan, tinggal ganti tandanya:</p>
+    <div class="eq-box"><span class="sm">Geser ke Kiri</span>y = f(x + h)</div>
+    <p>Perhatikan baik-baik: <em>h</em> di sini selalu angka positif yang menyatakan "berapa jauh" pergeserannya, sementara tanda plus/minus di depan <em>h</em> yang menentukan arahnya.</p>
+
+    <h3>3.3 Kenapa Tandanya "Terbalik" dari Arah yang Terlihat?</h3>
+    <p>Ini bagian yang paling sering bikin bingung, jadi kita pelan-pelan ya.</p>
+    <p>Bayangkan grafik <mark>y = x²</mark> punya titik puncak di x = 0. Kalau grafiknya digeser 3 satuan ke kanan, titik puncak yang baru ada di x = 3.</p>
+    <p>Nah, supaya rumus <mark>y = (x − h)²</mark> menghasilkan y = 0 tepat di x = 3, kita butuh: <mark>(3 − h) = 0</mark>, yang berarti <mark>h = 3</mark>. Coba perhatikan: di dalam kurung, angka 3 itu <strong>dikurangi</strong>, bukan ditambah.</p>
+    <p>Kenapa begitu? Karena supaya nilai di dalam kurung "kembali ke nol" (posisi asal grafik), nilai x yang baru harus lebih besar dulu, baru dikurangi <em>h</em> untuk kembali seperti semula. Itu sebabnya geser ke kanan = tanda minus di dalam kurung.</p>
+    <p>Begitu juga sebaliknya: geser ke kiri berarti x butuh nilai yang lebih kecil supaya "sampai" ke titik nol, jadi tandanya jadi plus. Ternyata bukan aturan hafalan — ada alasan logisnya!</p>
+
+    <h3>3.4 Apa yang Terjadi pada Setiap Titik Grafik?</h3>
+    <p>Cara lain untuk memahaminya: bayangkan setiap titik pada grafik asli, satu per satu, dipindah ke kanan sejauh <em>h</em> satuan.</p>
+    <p>Kalau grafik asli punya titik (x, y), setelah digeser ke kanan sejauh <em>h</em>, titik itu jadi <mark>(x + h, y)</mark>. Perhatikan: nilai <strong>y-nya sama sekali tidak berubah</strong> — yang berubah cuma posisi x-nya.</p>
+    <p>Ini masuk akal, karena pergeseran horizontal memang cuma memindahkan grafik ke samping, tanpa mengubah ketinggiannya.</p>
+
+    <h3>3.5 Berlaku untuk Semua Jenis Fungsi</h3>
+    <p>Yang keren, aturan <mark>y = f(x − h)</mark> ini berlaku untuk <strong>semua</strong> jenis fungsi — bukan cuma parabola. Grafik akar <mark>y = √x</mark>, grafik nilai mutlak <mark>y = |x|</mark>, garis lurus, semuanya mengikuti aturan yang sama persis.</p>
+    <p>Bedanya cuma bentuk dasarnya saja. Cara pergeserannya tetap sama: ganti setiap <em>x</em> di dalam fungsi dengan <em>(x − h)</em>. Nanti kamu bisa coba sendiri di bagian berikutnya dengan beberapa jenis fungsi berbeda.</p>
+
+    <h3>3.6 Membedakan dengan Pergeseran Vertikal</h3>
+    <p>Supaya tidak tertukar: pergeseran <strong>horizontal</strong> mengubah bagian <em>di dalam</em> fungsi (menyentuh x), sedangkan pergeseran <strong>vertikal</strong> menambah atau mengurangi angka <em>di luar</em> fungsi (menyentuh y).</p>
+    <p>Contoh: <mark>y = (x − 3)²</mark> itu pergeseran horizontal (ke kanan 3). Sedangkan <mark>y = x² − 3</mark> itu pergeseran vertikal (ke bawah 3) — beda total, walaupun sama-sama ada angka 3.</p>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section id="s4" class="card">
+    <h2><span class="num">4</span>Lihat Cara Kerjanya</h2>
+    <p>Yuk lihat langsung bagaimana titik-titik pada grafik <mark>y = x²</mark> berpindah saat digeser 3 satuan ke kanan.</p>
+
+    <div class="graph-wrap">
+      <svg class="graph" id="stepGraph" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div class="step-text" id="stepText"></div>
+
+    <div class="step-nav">
+      <button class="btn secondary" id="stepPrev">← Sebelumnya</button>
+      <div class="step-dots" id="stepDots"></div>
+      <button class="btn secondary" id="stepNext">Selanjutnya →</button>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section id="s5" class="card">
+    <h2><span class="num">5</span>Coba Sendiri</h2>
+    <p>Pilih jenis fungsinya, lalu geser slider <em>h</em>. Perhatikan grafik biru (hasil geseran) dibanding grafik abu-abu putus-putus (grafik asli) — dan titik acuannya yang ikut berpindah.</p>
+
+    <div class="select-row">
+      <label for="funcType">Jenis Fungsi</label>
+      <select id="funcType">
+        <option value="kuadrat">Kuadrat — f(x) = x²</option>
+        <option value="akar">Akar — f(x) = √x</option>
+        <option value="mutlak">Nilai Mutlak — f(x) = |x|</option>
+      </select>
+    </div>
+
+    <div class="graph-wrap">
+      <svg class="graph" id="tryGraph" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div class="eq-box"><span class="sm">Persamaan Saat Ini</span><span id="tryEq">y = x²</span></div>
+
+    <div class="slider-row">
+      <label>Nilai h (besar & arah geser) <span class="val" id="valH">0</span></label>
+      <input type="range" id="sliderH" min="-5" max="5" step="1" value="0">
+    </div>
+
+    <div class="insight info" id="tryInsight">
+      👀 Coba geser slider ke kanan (nilai h positif) — perhatikan tanda di dalam kurung persamaan di atas.
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section id="s6" class="card">
+    <h2><span class="num">6</span>Challenge</h2>
+    <p>Yuk uji pemahamanmu dengan 3 soal berikut. Isi identitas di bagian atas dulu ya, kalau belum.</p>
+
+    <!-- Soal 1 -->
+    <div class="challenge-item">
+      <div class="q-head">
+        <span class="q-title">Soal 1</span>
+        <span class="badge mudah">Mudah</span>
+      </div>
+      <p>Grafik <mark>y = x²</mark> digeser 4 satuan ke kanan. Manakah persamaan grafik hasil pergeseran tersebut?</p>
+
+      <label class="opt"><input type="radio" name="q1" value="A"><span>A. y = (x − 4)²</span></label>
+      <label class="opt"><input type="radio" name="q1" value="B"><span>B. y = (x + 4)²</span></label>
+      <label class="opt"><input type="radio" name="q1" value="C"><span>C. y = x² − 4</span></label>
+      <label class="opt"><input type="radio" name="q1" value="D"><span>D. y = x² + 4</span></label>
+
+      <button class="btn" onclick="cekJawaban(1)">Cek Jawaban</button>
+      <div class="identity-warn" id="warn1">Isi Nama dan Kelas dulu di bagian atas ya, baru bisa cek jawaban.</div>
+      <div class="feedback" id="fb1"></div>
+      <div class="send-status" id="status1"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="challenge-item">
+      <div class="q-head">
+        <span class="q-title">Soal 2</span>
+        <span class="badge sedang">Sedang</span>
+      </div>
+      <p>Grafik <mark>y = |x|</mark> digeser secara horizontal sehingga titik puncaknya sekarang berada di <strong>(−5, 0)</strong> (sebelumnya di (0, 0)). Manakah persamaan grafik hasilnya?</p>
+
+      <label class="opt"><input type="radio" name="q2" value="A"><span>A. y = |x − 5|</span></label>
+      <label class="opt"><input type="radio" name="q2" value="B"><span>B. y = |x + 5|</span></label>
+      <label class="opt"><input type="radio" name="q2" value="C"><span>C. y = |x| − 5</span></label>
+      <label class="opt"><input type="radio" name="q2" value="D"><span>D. y = |x| + 5</span></label>
+
+      <button class="btn" onclick="cekJawaban(2)">Cek Jawaban</button>
+      <div class="identity-warn" id="warn2">Isi Nama dan Kelas dulu di bagian atas ya, baru bisa cek jawaban.</div>
+      <div class="feedback" id="fb2"></div>
+      <div class="send-status" id="status2"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="challenge-item">
+      <div class="q-head">
+        <span class="q-title">Soal 3</span>
+        <span class="badge sulit">Sulit</span>
+      </div>
+      <p>Grafik <mark>y = √x</mark> (yang aslinya hanya terdefinisi untuk x ≥ 0) digeser secara horizontal, sehingga grafik barunya hanya terdefinisi untuk <strong>x ≥ 3</strong>.</p>
+      <p>Tentukan arah dan besar pergeserannya.</p>
+
+      <div class="num-row">
+        <div class="num-field">
+          <label>Arah Pergeseran</label>
+          <select id="q3arah">
+            <option value="">Pilih...</option>
+            <option value="kanan">Kanan</option>
+            <option value="kiri">Kiri</option>
+          </select>
+        </div>
+        <div class="num-field"><label>Besar Pergeseran</label><input type="number" step="any" id="q3besar" placeholder="Contoh: 3"></div>
+      </div>
+
+      <button class="btn" onclick="cekJawaban(3)">Cek Jawaban</button>
+      <div class="identity-warn" id="warn3">Isi Nama dan Kelas dulu di bagian atas ya, baru bisa cek jawaban.</div>
+      <div class="feedback" id="fb3"></div>
+      <div class="send-status" id="status3"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section id="s7" class="card">
+    <h2><span class="num">7</span>Kesalahan yang Sering Terjadi</h2>
+
+    <div class="mistake-item">
+      <div class="lbl">Kesalahan #1</div>
+      <p><strong>Menganggap "digeser ke kanan" berarti tanda di dalam kurung jadi plus.</strong></p>
+      <p class="why">Ini kesalahan paling umum. Siswa melihat "kanan" lalu otomatis menulis (x + h), padahal seharusnya (x − h).</p>
+      <p class="fix">✅ Cara menghindarinya: ingat penjelasan di bagian 3.3 — supaya nilai di dalam kurung "kembali ke nol" saat x lebih besar, tandanya harus minus.</p>
+    </div>
+
+    <div class="mistake-item">
+      <div class="lbl">Kesalahan #2</div>
+      <p><strong>Menambahkan angka di luar fungsi padahal soal minta pergeseran horizontal.</strong></p>
+      <p class="why">Siswa kadang menulis y = x² + 4 untuk "geser 4 satuan", padahal itu pergeseran vertikal (ke atas), bukan horizontal (ke kanan/kiri).</p>
+      <p class="fix">✅ Cara menghindarinya: pergeseran horizontal selalu mengubah bagian di dalam kurung/fungsi, menyentuh x — bukan menambah angka di luar.</p>
+    </div>
+
+    <div class="mistake-item">
+      <div class="lbl">Kesalahan #3</div>
+      <p><strong>Menganggap aturan pergeseran horizontal cuma berlaku untuk parabola.</strong></p>
+      <p class="why">Karena contoh yang paling sering dipakai adalah y = x², beberapa siswa mengira rumus (x − h) cuma untuk fungsi kuadrat saja.</p>
+      <p class="fix">✅ Cara menghindarinya: ingat bahwa aturan y = f(x − h) berlaku untuk semua jenis fungsi — akar, nilai mutlak, garis lurus, dan lainnya.</p>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section id="s8" class="card">
+    <h2><span class="num">8</span>Ringkasan</h2>
+    <ol class="summary-list">
+      <li><span class="n">1</span>Pergeseran horizontal memindahkan grafik ke kiri/kanan tanpa mengubah bentuknya, dengan bentuk umum y = f(x − h).</li>
+      <li><span class="n">2</span>Tanda di dalam kurung selalu kebalikan dari arah pergeseran yang terlihat: geser kanan = minus, geser kiri = plus.</li>
+      <li><span class="n">3</span>Setiap titik (x, y) pada grafik berpindah menjadi (x + h, y) — nilai y tidak pernah berubah pada pergeseran horizontal.</li>
+      <li><span class="n">4</span>Aturan ini berlaku untuk semua jenis fungsi, bukan cuma parabola — akar, nilai mutlak, dan fungsi lainnya juga sama.</li>
+      <li><span class="n">5</span>Pergeseran horizontal berbeda dari pergeseran vertikal: horizontal mengubah bagian dalam fungsi (menyentuh x), vertikal menambah di luar fungsi (menyentuh y).</li>
+    </ol>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section id="s9" class="card">
+    <h2><span class="num">9</span>Refleksi</h2>
+    <p>Tidak ada jawaban benar atau salah di bagian ini. Tulis saja dengan kata-katamu sendiri ya.</p>
+
+    <div class="field">
+      <label for="ref1">1. Dengan kata-katamu sendiri, kenapa menggeser grafik ke kanan justru membuat tanda di dalam kurung menjadi minus, bukan plus?</label>
+      <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+    <div class="field">
+      <label for="ref2">2. Bagian mana dari pergeseran horizontal yang menurutmu paling gampang bikin ketuker dengan pergeseran vertikal? Kenapa menurutmu begitu?</label>
+      <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+
+    <button class="btn" onclick="kirimRefleksi()">Kirim Refleksi</button>
+    <div class="identity-warn" id="warnRef">Isi Nama dan Kelas dulu di bagian atas ya, baru bisa kirim refleksi.</div>
+    <div class="feedback" id="fbRef" style="display:none;background:var(--primary-light);border:1px solid #BFDBFE;color:var(--primary-hover);"></div>
+    <div class="send-status" id="statusRef"></div>
+  </section>
+
+  <footer>
+    <div class="brand">NUMERA</div>
+    <div>Dikembangkan oleh Kiki Herdiansyah</div>
+    <div>Versi 1.0 · © 2026</div>
+  </footer>
+
+</div>
+
+<script>
+/* ================= IDENTITAS ================= */
+const TOPIK = "Transformasi Fungsi - Pergeseran Horizontal";
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+
+function getIdentitas(){
+  return {
+    nama: document.getElementById('nama').value.trim(),
+    kelas: document.getElementById('kelas').value.trim()
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  return id.nama.length > 0 && id.kelas.length > 0;
+}
+
+function kirimKeGuru(nomorSoal, jawaban, jawaban2, statusBenarSalah, statusElId){
+  const id = getIdentitas();
+  const payload = {
+    topik: TOPIK,
+    nama: id.nama,
+    kelas: id.kelas,
+    nomorSoal: nomorSoal,
+    jawaban: jawaban,
+    jawaban2: jawaban2 || '',
+    status: statusBenarSalah,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  const statusEl = document.getElementById(statusElId);
+  if(!SCRIPT_URL){
+    if(statusEl){ statusEl.textContent = '⚠️ Belum terhubung ke sistem guru (SCRIPT_URL kosong).'; }
+    return;
+  }
+  if(statusEl){ statusEl.textContent = 'Mengirim...'; }
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(statusEl){ statusEl.textContent = '✅ Terkirim ke guru'; statusEl.classList.add('ok'); }
+  }).catch(()=>{
+    if(statusEl){ statusEl.textContent = '⚠️ Gagal mengirim, coba lagi.'; }
+  });
+}
+
+/* ================= GRAPH HELPERS ================= */
+const SVG_NS = "http://www.w3.org/2000/svg";
+const VIEW = 300;
+const SCALE = 20; // px per unit
+const RANGE = 7; // -7..7
+
+function toPx(xMath, yMath){
+  return {
+    x: VIEW/2 + xMath*SCALE,
+    y: VIEW/2 - yMath*SCALE
+  };
+}
+
+function buildGrid(svg){
+  svg.innerHTML = '';
+  for(let i=-RANGE;i<=RANGE;i++){
+    const p1 = toPx(i,-RANGE), p2 = toPx(i,RANGE);
+    const l1 = document.createElementNS(SVG_NS,'line');
+    l1.setAttribute('x1',p1.x); l1.setAttribute('y1',p1.y);
+    l1.setAttribute('x2',p2.x); l1.setAttribute('y2',p2.y);
+    l1.setAttribute('class','grid-line');
+    svg.appendChild(l1);
+
+    const q1 = toPx(-RANGE,i), q2 = toPx(RANGE,i);
+    const l2 = document.createElementNS(SVG_NS,'line');
+    l2.setAttribute('x1',q1.x); l2.setAttribute('y1',q1.y);
+    l2.setAttribute('x2',q2.x); l2.setAttribute('y2',q2.y);
+    l2.setAttribute('class','grid-line');
+    svg.appendChild(l2);
+  }
+  const ax1=toPx(-RANGE,0), ax2=toPx(RANGE,0);
+  const axisX = document.createElementNS(SVG_NS,'line');
+  axisX.setAttribute('x1',ax1.x); axisX.setAttribute('y1',ax1.y);
+  axisX.setAttribute('x2',ax2.x); axisX.setAttribute('y2',ax2.y);
+  axisX.setAttribute('class','axis-line');
+  svg.appendChild(axisX);
+
+  const ay1=toPx(0,-RANGE), ay2=toPx(0,RANGE);
+  const axisY = document.createElementNS(SVG_NS,'line');
+  axisY.setAttribute('x1',ay1.x); axisY.setAttribute('y1',ay1.y);
+  axisY.setAttribute('x2',ay2.x); axisY.setAttribute('y2',ay2.y);
+  axisY.setAttribute('class','axis-line');
+  svg.appendChild(axisY);
+}
+
+function addPath(svg, d, cls){
+  const path = document.createElementNS(SVG_NS,'path');
+  path.setAttribute('d', d);
+  path.setAttribute('class', cls);
+  svg.appendChild(path);
+  return path;
+}
+
+function addPoint(svg, xMath, yMath, label){
+  const p = toPx(xMath,yMath);
+  const c = document.createElementNS(SVG_NS,'circle');
+  c.setAttribute('cx',p.x); c.setAttribute('cy',p.y);
+  c.setAttribute('r',5.5); c.setAttribute('class','point-dot');
+  svg.appendChild(c);
+  if(label){
+    const t = document.createElementNS(SVG_NS,'text');
+    t.setAttribute('x',p.x+8); t.setAttribute('y',p.y-8);
+    t.setAttribute('class','point-label');
+    t.textContent = label;
+    svg.appendChild(t);
+  }
+  return c;
+}
+
+/* ================= FUNGSI DASAR (Coba Sendiri) ================= */
+function baseFunc(type, x){
+  if(type==='kuadrat') return x*x;
+  if(type==='akar') return x>=0 ? Math.sqrt(x) : null;
+  if(type==='mutlak') return Math.abs(x);
+  return null;
+}
+
+function funcPath(type, h){
+  let d = '';
+  let started = false;
+  for(let i=0;i<=140;i++){
+    const x = -RANGE + (i/140)*(2*RANGE);
+    const val = baseFunc(type, x-h);
+    if(val===null){ started=false; continue; }
+    let y = val;
+    if(y>RANGE+1) y=RANGE+1;
+    if(y<-RANGE-1) y=-RANGE-1;
+    const p = toPx(x,y);
+    d += (!started?'M':'L') + p.x.toFixed(1)+','+p.y.toFixed(1)+' ';
+    started = true;
+  }
+  return d;
+}
+
+function eqLabel(type,h){
+  if(h===0){
+    if(type==='kuadrat') return 'y = x²';
+    if(type==='akar') return 'y = √x';
+    if(type==='mutlak') return 'y = |x|';
+  }
+  const inner = 'x' + (h>0? ' − '+Math.abs(h) : ' + '+Math.abs(h));
+  if(type==='kuadrat') return `y = (${inner})²`;
+  if(type==='akar') return `y = √(${inner})`;
+  if(type==='mutlak') return `y = |${inner}|`;
+}
+
+/* ================= COBA SENDIRI ================= */
+const tryGraph = document.getElementById('tryGraph');
+const sliderH = document.getElementById('sliderH');
+const funcType = document.getElementById('funcType');
+const valH = document.getElementById('valH');
+const tryEq = document.getElementById('tryEq');
+const tryInsight = document.getElementById('tryInsight');
+
+function renderTryGraph(){
+  const type = funcType.value;
+  const h = parseFloat(sliderH.value);
+  valH.textContent = h;
+  tryEq.textContent = eqLabel(type,h);
+
+  buildGrid(tryGraph);
+  addPath(tryGraph, funcPath(type,0), 'curve-base');
+  addPath(tryGraph, funcPath(type,h), 'curve-main');
+  addPoint(tryGraph, h, 0, `(${h}, 0)`);
+
+  let msg = '';
+  let cls = 'info';
+  const namaFungsi = type==='kuadrat' ? 'kuadrat' : (type==='akar' ? 'akar' : 'nilai mutlak');
+  if(h===0){
+    msg = `👀 Grafik biru masih menumpuk pas di atas grafik abu-abu (belum digeser). Coba geser slider h!`;
+  } else if(h>0){
+    msg = `👀 Grafik digeser ${h} satuan ke <strong>kanan</strong>. Perhatikan tanda di dalam kurung/fungsi jadi <strong>minus</strong>, walaupun arah geraknya ke kanan.`;
+    cls = 'success';
+    if(type==='akar'){ msg += ` Perhatikan juga: karena digeser ke kanan, grafik akar ini sekarang baru mulai muncul dari x = ${h}.`; }
+  } else {
+    msg = `👀 Grafik digeser ${Math.abs(h)} satuan ke <strong>kiri</strong>. Perhatikan tanda di dalam kurung/fungsi jadi <strong>plus</strong>.`;
+    cls = 'success';
+    if(type==='akar'){ msg += ` Grafik akar ini sekarang mulai muncul dari x = ${h}.`; }
+  }
+  tryInsight.className = 'insight ' + cls;
+  tryInsight.innerHTML = msg;
+}
+sliderH.addEventListener('input', renderTryGraph);
+funcType.addEventListener('change', renderTryGraph);
+
+/* ================= LIHAT CARA KERJANYA ================= */
+const stepGraph = document.getElementById('stepGraph');
+const stepText = document.getElementById('stepText');
+const stepDots = document.getElementById('stepDots');
+const H_EX = 3;
+const origPoints = [[-2,4],[-1,1],[0,0],[1,1],[2,4]];
+const shiftedPoints = origPoints.map(([x,y])=>[x+H_EX,y]);
+
+const steps = [
+  {
+    html: `<b>Langkah 1 — Ini grafik asli y = x².</b><br>Perhatikan beberapa titik yang sudah ditandai pada grafik.`,
+    showShift:false, pts:[0,1,2,3,4]
+  },
+  {
+    html: `<b>Langkah 2 — Geser satu titik dulu.</b><br>Kita mau geser semuanya 3 satuan ke kanan. Titik puncak (0, 0) pindah jadi (3, 0).`,
+    showShift:false, pts:[0,1,2,3,4], extraShift:[2]
+  },
+  {
+    html: `<b>Langkah 3 — Geser titik lainnya juga.</b><br>Titik (1, 1) ikut pindah jadi (4, 1). Nilai y-nya tetap 1, cuma x-nya nambah 3.`,
+    showShift:false, pts:[0,1,2,3,4], extraShift:[2,3]
+  },
+  {
+    html: `<b>Langkah 4 — Kalau semua titik diperlakukan sama...</b><br>...terbentuklah kurva baru (biru) — itulah grafik hasil pergeseran.`,
+    showShift:true, pts:[]
+  },
+  {
+    html: `<b>Langkah 5 — Tulis persamaannya.</b><br>Karena pergeserannya ke kanan 3, tanda di dalam kurung jadi minus: <span style="font-size:17px;font-weight:800;color:var(--primary-hover);">y = (x − 3)²</span>`,
+    showShift:true, pts:[]
+  }
+];
+let curStep = 0;
+
+function renderStepGraph(step){
+  buildGrid(stepGraph);
+  addPath(stepGraph, funcPath('kuadrat',0), 'curve-base');
+  if(step.showShift){ addPath(stepGraph, funcPath('kuadrat',H_EX), 'curve-main'); }
+  step.pts.forEach(i=>{
+    const [x,y] = origPoints[i];
+    addPoint(stepGraph, x, y, `(${x},${y})`);
+  });
+  if(step.extraShift){
+    step.extraShift.forEach(i=>{
+      const [x,y] = shiftedPoints[i];
+      addPoint(stepGraph, x, y, `(${x},${y})`);
+    });
+  }
+  if(step.showShift){
+    shiftedPoints.forEach(([x,y])=>{ addPoint(stepGraph,x,y,''); });
+  }
+}
+
+function renderSteps(){
+  const s = steps[curStep];
+  stepText.innerHTML = s.html;
+  renderStepGraph(s);
+  stepDots.innerHTML = '';
+  steps.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i===curStep?' active':'');
+    stepDots.appendChild(d);
+  });
+  document.getElementById('stepPrev').disabled = curStep===0;
+  document.getElementById('stepNext').disabled = curStep===steps.length-1;
+}
+document.getElementById('stepPrev').addEventListener('click', ()=>{ if(curStep>0){curStep--; renderSteps();} });
+document.getElementById('stepNext').addEventListener('click', ()=>{ if(curStep<steps.length-1){curStep++; renderSteps();} });
+
+/* ================= CHALLENGE ================= */
+const answerKey = {1:'A', 2:'B'};
+
+function cekJawaban(n){
+  const warn = document.getElementById('warn'+n);
+  const fb = document.getElementById('fb'+n);
+
+  if(!identitasLengkap()){
+    warn.classList.add('show');
+    return;
+  }
+  warn.classList.remove('show');
+
+  if(n===1 || n===2){
+    const selected = document.querySelector(`input[name="q${n}"]:checked`);
+    document.querySelectorAll(`input[name="q${n}"]`).forEach(inp=>{
+      inp.closest('.opt').classList.remove('correct','wrong');
+    });
+    if(!selected){
+      fb.className = 'feedback salah show';
+      fb.innerHTML = 'Pilih salah satu jawaban dulu ya.';
+      return;
+    }
+    const isCorrect = selected.value === answerKey[n];
+    selected.closest('.opt').classList.add(isCorrect?'correct':'wrong');
+    document.querySelector(`input[name="q${n}"][value="${answerKey[n]}"]`).closest('.opt').classList.add('correct');
+
+    fb.className = 'feedback ' + (isCorrect?'benar':'salah') + ' show';
+    if(n===1){
+      fb.innerHTML = isCorrect
+        ? '✅ Benar! Geser ke kanan 4 satuan berarti tanda di dalam kurung jadi minus: (x − 4)². Bentuk x² − 4 dan x² + 4 itu pergeseran vertikal, bukan horizontal.'
+        : '❌ Belum tepat. Ingat: pergeseran ke <strong>kanan</strong> membuat tanda di dalam kurung jadi <strong>minus</strong>, bukan plus. Dan pilihan yang menambah/mengurangi angka di luar kurung (seperti x² − 4) itu pergeseran vertikal, bukan horizontal.';
+    } else {
+      fb.innerHTML = isCorrect
+        ? '✅ Benar! Titik puncak pindah ke (−5, 0) berarti grafik digeser 5 satuan ke kiri, jadi tandanya jadi plus: y = |x + 5|.'
+        : '❌ Belum tepat. Titik puncak di (−5, 0) itu artinya grafik digeser ke <strong>kiri</strong> 5 satuan, dan pergeseran ke kiri membuat tanda di dalam kurung jadi <strong>plus</strong>: y = |x + 5|. Pilihan yang menambah/mengurangi di luar tanda mutlak itu pergeseran vertikal, bukan horizontal.';
+    }
+    kirimKeGuru(n, selected.value, '', isCorrect?'Benar':'Salah', 'status'+n);
+  }
+
+  if(n===3){
+    const arah = document.getElementById('q3arah').value;
+    const besarRaw = document.getElementById('q3besar').value;
+    const besar = parseFloat(besarRaw);
+    if(!arah || isNaN(besar)){
+      fb.className = 'feedback salah show';
+      fb.innerHTML = 'Pilih arah pergeseran dan isi besar pergeserannya dulu ya.';
+      return;
+    }
+    const isCorrect = arah==='kanan' && Math.abs(besar-3)<0.01;
+    fb.className = 'feedback ' + (isCorrect?'benar':'salah') + ' show';
+    if(isCorrect){
+      fb.innerHTML = '✅ Tepat sekali! Domain asli y = √x dimulai dari x = 0. Supaya domain barunya mulai dari x = 3, grafik harus digeser 3 satuan ke kanan, sehingga persamaannya jadi y = √(x − 3).';
+    } else {
+      fb.innerHTML = '❌ Belum tepat. Domain asli y = √x itu x ≥ 0. Supaya domain barunya jadi x ≥ 3, grafik harus digeser ke <strong>kanan</strong> sejauh <strong>3</strong> satuan (persamaannya y = √(x − 3)). Coba hubungkan titik awal domain lama dan domain baru untuk menemukan arah dan besarnya.';
+    }
+    kirimKeGuru(3, `arah=${arah}, besar=${besar}`, '', isCorrect?'Benar':'Salah', 'status3');
+  }
+}
+
+/* ================= REFLEKSI ================= */
+function kirimRefleksi(){
+  const warn = document.getElementById('warnRef');
+  const fb = document.getElementById('fbRef');
+
+  if(!identitasLengkap()){
+    warn.classList.add('show');
+    return;
+  }
+  warn.classList.remove('show');
+
+  const j1 = document.getElementById('ref1').value.trim();
+  const j2 = document.getElementById('ref2').value.trim();
+
+  if(j1.length===0 || j2.length===0){
+    fb.style.display='block';
+    fb.style.background='var(--error-bg)';
+    fb.style.borderColor='var(--error-border)';
+    fb.style.color='var(--error-text)';
+    fb.innerHTML = 'Isi kedua kolom refleksi dulu ya, baru bisa dikirim.';
+    return;
+  }
+
+  fb.style.display='block';
+  fb.style.background='var(--primary-light)';
+  fb.style.borderColor='#BFDBFE';
+  fb.style.color='var(--primary-hover)';
+  fb.innerHTML = 'Terima kasih sudah menulis refleksinya! 🙌';
+
+  kirimKeGuru('Refleksi', j1, j2, '-', 'statusRef');
+}
+
+/* ================= FADE-UP OBSERVER ================= */
+const sections = document.querySelectorAll('section');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+},{threshold:0.12});
+sections.forEach(s=>observer.observe(s));
+
+/* ================= PROGRESS BAR ================= */
+function updateProgress(){
+  const h = document.documentElement;
+  const scrollTop = h.scrollTop || document.body.scrollTop;
+  const scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+  const pct = scrollHeight>0 ? (scrollTop/scrollHeight)*100 : 0;
+  document.getElementById('progressBar').style.width = pct+'%';
+}
+window.addEventListener('scroll', updateProgress);
+
+/* ================= INIT ================= */
+renderTryGraph();
+renderSteps();
+updateProgress();
+</script>
+</body>
+</html>

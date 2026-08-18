@@ -1,0 +1,927 @@
+<!--
+NUMERA
+Judul: Transformasi Fungsi - Pencerminan Grafik
+Jenis: Modul Interaktif
+Versi: 1.0
+Dikembangkan oleh Kiki Herdiansyah
+Copyright © 2026
+Bagian dari proyek Numera — modul pembelajaran interaktif matematika SMA.
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Numera · Transformasi Fungsi - Pencerminan Grafik</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="Copyright © 2026 Numera">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --success-text:#047857;
+
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --warning-text:#B45309;
+
+  --error:#EF4444;
+  --error-bg:#FEE2E2;
+  --error-border:#FECACA;
+  --error-text:#B91C1C;
+
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 18px 60px;}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:14px 18px;
+}
+.topbar-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+.topbar-title{font-weight:700;font-size:14.5px;color:var(--text);letter-spacing:.2px;}
+.topbar-title b{color:var(--primary);}
+.progress-track{height:3px;background:var(--border);width:100%;}
+.progress-fill{height:100%;background:var(--primary);width:0%;transition:width 80ms linear;}
+
+/* HEADER */
+.header{padding:34px 0 10px;}
+.eyebrow{
+  display:inline-block;font-size:12.5px;font-weight:600;color:var(--primary);
+  background:var(--primary-light);padding:5px 12px;border-radius:999px;margin-bottom:14px;
+}
+h1{font-size:26px;line-height:1.3;margin:0 0 10px;font-weight:800;color:var(--text);}
+.subtitle{color:var(--text-secondary);font-size:15px;margin:0 0 18px;}
+.meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px;}
+.meta-chip{
+  display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);
+  background:var(--card);border:1px solid var(--border);border-radius:999px;padding:7px 13px;
+}
+
+.tujuan-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);padding:20px 22px;margin-bottom:18px;}
+.tujuan-card h3{margin:0 0 10px;font-size:15px;font-weight:700;}
+.tujuan-card ul{margin:0;padding-left:20px;color:var(--text-secondary);font-size:14.5px;}
+.tujuan-card li{margin-bottom:6px;}
+
+.identitas-card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);padding:22px;margin-bottom:10px;
+}
+.identitas-card h3{margin:0 0 4px;font-size:15px;font-weight:700;}
+.identitas-note{color:var(--text-secondary);font-size:13.5px;margin:0 0 16px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media (max-width:520px){.field-row{grid-template-columns:1fr;}}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:13px;font-weight:600;color:var(--text-secondary);}
+.field input{
+  height:44px;border:1px solid var(--border);border-radius:var(--radius-btn);
+  padding:0 14px;font-size:15px;font-family:inherit;color:var(--text);background:var(--bg);
+}
+.field input:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+.kirim-note{
+  margin-top:14px;font-size:13px;color:var(--text-secondary);
+  background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:10px 12px;
+}
+
+/* SECTIONS */
+section.block{padding:46px 0;border-top:1px solid var(--border);opacity:0;transform:translateY(14px);transition:opacity .5s ease, transform .5s ease;}
+section.block.visible{opacity:1;transform:translateY(0);}
+section.block:first-of-type{border-top:none;}
+.sec-label{font-size:12.5px;font-weight:700;color:var(--primary);letter-spacing:.4px;text-transform:uppercase;margin-bottom:8px;}
+h2{font-size:21px;font-weight:800;margin:0 0 18px;color:var(--text);}
+h3.sub{font-size:16.5px;font-weight:700;margin:26px 0 10px;color:var(--text);}
+h3.sub:first-child{margin-top:0;}
+p{margin:0 0 14px;font-size:15px;color:var(--text);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);padding:22px;margin-bottom:16px;}
+
+.hook-card{background:linear-gradient(135deg,var(--primary-light),#EFF6FF);border:1px solid var(--primary-light);
+  border-radius:var(--radius-card);padding:26px 22px;}
+.hook-card p{margin-bottom:0;font-size:15.5px;}
+.hook-card .q{font-weight:700;color:var(--primary-hover);}
+
+mark{background:var(--primary-light);color:var(--primary-hover);padding:1px 4px;border-radius:4px;font-weight:600;}
+
+.formula{
+  background:var(--bg);border:1px solid var(--border);border-radius:12px;
+  padding:14px 18px;margin:12px 0;font-size:16px;font-weight:700;color:var(--text);
+  text-align:center;overflow-x:auto;white-space:nowrap;
+}
+.formula small{display:block;font-weight:500;font-size:12.5px;color:var(--text-secondary);margin-top:4px;white-space:normal;}
+
+.insight-box{
+  border-radius:12px;padding:13px 16px;font-size:14px;margin-top:12px;
+  border:1px solid var(--primary-light);background:var(--primary-light);color:var(--primary-hover);font-weight:600;
+  transition:all .2s ease;
+}
+
+/* GRAFIK */
+.graph-wrap{display:flex;justify-content:center;margin:10px 0;}
+svg.graph{width:100%;max-width:420px;height:auto;background:var(--card);border:1px solid var(--border);border-radius:14px;}
+.axis-line{stroke:var(--border);stroke-width:1;}
+.grid-line{stroke:var(--border);stroke-width:.6;opacity:.6;}
+.curve-base{fill:none;stroke:#CBD5E1;stroke-width:2;stroke-dasharray:5 5;}
+.curve-main{fill:none;stroke:var(--primary);stroke-width:2.6;}
+.mirror-line{fill:none;stroke:var(--text-secondary);stroke-width:1.6;stroke-dasharray:4 4;opacity:.8;}
+.invariant-pt{fill:var(--primary-hover);}
+
+/* CONTROLS */
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+@media (max-width:520px){.controls{grid-template-columns:1fr;}}
+.ctrl{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+.ctrl-label{display:flex;justify-content:space-between;font-size:13.5px;font-weight:600;margin-bottom:8px;}
+.ctrl-label span.val{color:var(--primary);font-weight:700;}
+input[type=range]{width:100%;accent-color:var(--primary);height:36px;}
+
+.mode-list{display:flex;flex-direction:column;gap:9px;margin-top:16px;}
+.mode-opt{
+  display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;cursor:pointer;font-size:14.5px;transition:border-color .15s ease, background .15s ease;
+}
+.mode-opt:hover{border-color:var(--primary-light);background:var(--primary-light);}
+.mode-opt input{width:17px;height:17px;accent-color:var(--primary);}
+
+/* STEP VIEWER */
+.step-nav{display:flex;align-items:center;justify-content:space-between;margin-top:16px;gap:10px;}
+.step-dots{display:flex;gap:6px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);}
+.dot.active{background:var(--primary);}
+.step-text{font-size:14.5px;min-height:70px;}
+.step-formula{font-size:15px;}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  height:42px;padding:0 20px;border-radius:var(--radius-btn);
+  font-size:14.5px;font-weight:700;font-family:inherit;border:none;cursor:pointer;
+  transition:background .2s ease, transform .1s ease;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-primary:active{transform:scale(.98);}
+.btn-outline{background:var(--card);color:var(--primary);border:1px solid var(--primary-light);}
+.btn-outline:hover{background:var(--primary-light);}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn-sm{height:38px;padding:0 16px;font-size:13.5px;}
+
+/* CHALLENGE */
+.badge{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:999px;letter-spacing:.3px;}
+.badge-mudah{background:var(--success-bg);color:var(--success-text);border:1px solid var(--success-border);}
+.badge-sedang{background:var(--warning-bg);color:var(--warning-text);}
+.badge-sulit{background:var(--error-bg);color:var(--error-text);border:1px solid var(--error-border);}
+.q-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.q-title{font-weight:700;font-size:15.5px;}
+.opt-list{display:flex;flex-direction:column;gap:9px;margin:14px 0;}
+.opt{
+  display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;cursor:pointer;font-size:14.5px;transition:border-color .15s ease, background .15s ease;
+}
+.opt:hover{border-color:var(--primary-light);background:var(--primary-light);}
+.opt input{width:17px;height:17px;accent-color:var(--primary);}
+
+.mini-fields{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:14px 0;}
+.mini-field{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;}
+.mini-field input{width:80px;height:40px;border:1px solid var(--border);border-radius:10px;padding:0 10px;font-size:14.5px;font-family:inherit;}
+
+.feedback{
+  margin-top:14px;border-radius:12px;padding:13px 15px;font-size:14px;display:none;
+}
+.feedback.show{display:block;}
+.feedback.benar{background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+.feedback.salah{background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+.status-kirim{font-size:12.5px;color:var(--text-secondary);margin-top:8px;min-height:16px;}
+.id-warning{font-size:13px;color:var(--error-text);background:var(--error-bg);border:1px solid var(--error-border);
+  border-radius:10px;padding:9px 12px;margin-top:10px;display:none;}
+.id-warning.show{display:block;}
+
+/* MISTAKES */
+.mistake-item{border-left:3px solid var(--warning);background:var(--warning-bg);border-radius:0 12px 12px 0;padding:14px 16px;margin-bottom:12px;}
+.mistake-item h4{margin:0 0 6px;font-size:14.5px;color:var(--warning-text);}
+.mistake-item p{margin:0 0 6px;font-size:14px;color:var(--text);}
+.mistake-item p:last-child{margin-bottom:0;}
+.mistake-item .why{color:var(--text-secondary);}
+
+/* SUMMARY */
+.sum-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
+.sum-item{display:flex;gap:12px;align-items:flex-start;}
+.sum-num{
+  flex:none;width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;margin-top:1px;
+}
+.sum-item p{margin:0;font-size:14.5px;}
+
+/* REFLEKSI */
+textarea{
+  width:100%;min-height:90px;border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;font-size:14.5px;font-family:inherit;color:var(--text);resize:vertical;background:var(--bg);
+}
+textarea:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+.refleksi-q{margin-bottom:18px;}
+.refleksi-q label{display:block;font-weight:600;font-size:14.5px;margin-bottom:8px;}
+
+/* FOOTER */
+footer.identitas{
+  max-width:900px;margin:20px auto 0;padding:22px 18px 30px;
+  text-align:center;color:var(--text-secondary);font-size:12.5px;border-top:1px solid var(--border);
+}
+footer.identitas .n{font-weight:700;color:var(--text);}
+
+@media (max-width:480px){
+  h1{font-size:22px;}
+  h2{font-size:19px;}
+  .wrap{padding:0 14px 50px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-title">NUMERA · <b>Transformasi Fungsi - Pencerminan Grafik</b></div>
+  </div>
+</div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <header class="header">
+    <span class="eyebrow">Modul Interaktif</span>
+    <h1>Transformasi Fungsi - Pencerminan Grafik</h1>
+    <p class="subtitle">Belajar memahami apa yang terjadi pada grafik sebuah fungsi ketika dicerminkan — terhadap sumbu-x, sumbu-y, garis y = x, sampai titik asal. Coba langsung, jangan cuma dihafal.</p>
+
+    <div class="meta-row">
+      <div class="meta-chip">⏱ Sekitar 15–20 menit</div>
+      <div class="meta-chip">🎯 Cermin Sumbu-x · Sumbu-y · Garis y=x · Titik Asal</div>
+    </div>
+
+    <div class="tujuan-card">
+      <h3>Setelah belajar modul ini, kamu akan bisa:</h3>
+      <ul>
+        <li>Menjelaskan apa itu pencerminan grafik terhadap sumbu-x, yaitu y = −f(x).</li>
+        <li>Menjelaskan apa itu pencerminan grafik terhadap sumbu-y, yaitu y = f(−x).</li>
+        <li>Menjelaskan apa itu pencerminan grafik terhadap garis y = x, dan kaitannya dengan fungsi invers.</li>
+        <li>Menjelaskan apa itu pencerminan grafik terhadap titik asal (0,0), yaitu y = −f(−x).</li>
+        <li>Menentukan koordinat titik hasil pencerminan, termasuk saat digabung lebih dari satu kali.</li>
+        <li>Mengenali kaitan pencerminan dengan fungsi genap dan fungsi ganjil.</li>
+      </ul>
+    </div>
+
+    <div class="identitas-card">
+      <h3>Sebelum mulai, isi dulu identitasmu ya 👋</h3>
+      <p class="identitas-note">Nama dan kelas ini dipakai supaya jawaban Challenge dan Refleksimu bisa dikirim ke guru.</p>
+      <div class="field-row">
+        <div class="field">
+          <label for="namaSiswa">Nama lengkap</label>
+          <input type="text" id="namaSiswa" placeholder="Tulis nama lengkapmu">
+        </div>
+        <div class="field">
+          <label for="kelasSiswa">Kelas</label>
+          <input type="text" id="kelasSiswa" placeholder="Contoh: XI IPA 2">
+        </div>
+      </div>
+      <div class="kirim-note">📨 Setiap kali kamu menekan tombol "Cek Jawaban" di bagian Challenge, dan saat mengirim Refleksi, jawabanmu akan otomatis dikirim ke gurumu.</div>
+    </div>
+  </header>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <section class="block" id="sec-hook">
+    <div class="sec-label">Pernahkah Kamu Berpikir?</div>
+    <div class="hook-card">
+      <p>Pernah berdiri di depan cermin, lalu mengangkat tangan kanan — dan bayanganmu malah mengangkat tangan yang kelihatannya di sebelah <span class="q">kiri</span>?</p>
+      <p style="margin-top:10px;">Atau pernah lihat pantulan pohon di permukaan air danau yang tenang? Pohonnya tegak, tapi bayangannya <span class="q">terbalik</span>, seolah tumbuh dari air ke bawah.</p>
+      <p style="margin-top:10px;">Kedua kejadian itu sebenarnya jenis "cermin" yang berbeda — satu membalik kiri-kanan, satu lagi membalik atas-bawah. Ternyata, grafik fungsi matematika juga bisa dicerminkan dengan cara-cara yang mirip. Itulah yang akan kita pelajari sekarang.</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section class="block" id="sec-penjelasan">
+    <div class="sec-label">Penjelasan Sederhana</div>
+    <h2>Empat Jenis Pencerminan Grafik</h2>
+    <p>Pencerminan (refleksi) grafik itu seperti memantulkan bentuk grafik ke sebuah "cermin". Cerminnya bisa berupa sumbu-x, sumbu-y, garis y = x, atau bahkan hanya satu titik saja, yaitu titik asal (0,0).</p>
+    <p>Yang penting kamu pegang dari awal: <b>bentuk grafiknya tidak berubah</b>, hanya posisinya yang dipantulkan. Sama seperti bayanganmu di cermin — tinggi dan bentuk tubuhmu tetap sama, cuma arah hadapnya yang berbeda.</p>
+
+    <div class="card">
+      <h3 class="sub">1. Pencerminan terhadap Sumbu-x</h3>
+      <p>Bayangkan sumbu-x sebagai permukaan air danau. Semua yang di atas air dipantulkan ke bawah air, dan sebaliknya.</p>
+      <div class="formula">y = −f(x)<small>Cermin: <b>sumbu-x</b></small></div>
+      <p>Tanda minus di sini ada di LUAR fungsi — artinya seluruh hasil f(x) dikalikan −1. Titik yang tadinya punya nilai y = 5, sekarang jadi y = −5. Nilai x-nya tidak berubah sama sekali.</p>
+      <p>Coba perhatikan: titik yang kebetulan sudah berada tepat DI sumbu-x (y = 0) tidak akan berpindah kemana-mana, karena −0 tetap 0. Titik seperti ini disebut <b>titik invarian</b> — titik yang tidak berubah posisi walau dicerminkan.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="sub">2. Pencerminan terhadap Sumbu-y</h3>
+      <p>Sekarang gantian, sumbu-y yang jadi cerminnya. Bagian kiri grafik dipantulkan ke kanan, bagian kanan dipantulkan ke kiri.</p>
+      <div class="formula">y = f(−x)<small>Cermin: <b>sumbu-y</b></small></div>
+      <p>Di sini tanda minusnya ada DI DALAM kurung — kita mengganti setiap x dengan −x sebelum dimasukkan ke fungsi. Efeknya, nilai x berubah tanda, sedangkan nilai y tetap sama.</p>
+      <p>Sampai sini masih masuk akal? Ini kebalikan tepat dari pencerminan sumbu-x tadi: yang berubah gantian antara x dan y, tapi caranya tetap sama — kalikan −1 pada bagian yang sesuai.</p>
+      <p>Ini juga bagian yang paling sering tertukar dengan pencerminan sumbu-x. Nanti kita bahas lebih detail di bagian "Kesalahan yang Sering Terjadi".</p>
+    </div>
+
+    <div class="card">
+      <h3 class="sub">3. Pencerminan terhadap Garis y = x</h3>
+      <p>Ini agak berbeda dari dua sebelumnya. Cerminnya bukan sumbu, tapi garis diagonal y = x — garis lurus yang membagi kuadran I dan III sama besar.</p>
+      <p>Kalau tadi kita mengalikan sesuatu dengan −1, sekarang caranya beda: kita cukup <b>menukar posisi x dan y</b>. Titik (2, 5) akan berpindah jadi (5, 2).</p>
+      <div class="formula">(x, y) → (y, x)<small>Cermin: <b>garis y = x</b></small></div>
+      <p>Nah, ini ada hubungannya dengan fungsi invers yang mungkin sudah pernah kamu dengar. Grafik y = f⁻¹(x) sebenarnya adalah hasil pencerminan grafik y = f(x) terhadap garis y = x!</p>
+      <p>Kamu belum perlu tahu cara mencari rumus inversnya di sini — cukup pahami dulu bahwa <mark>secara grafis</mark>, invers itu artinya "dicerminkan lewat garis y = x".</p>
+    </div>
+
+    <div class="card">
+      <h3 class="sub">4. Pencerminan terhadap Titik Asal</h3>
+      <p>Ini semacam gabungan dari dua pencerminan pertama tadi, dilakukan sekaligus.</p>
+      <div class="formula">y = −f(−x)<small>Cermin: <b>titik asal (0,0)</b></small></div>
+      <p>Perhatikan, ada dua tanda minus di sini — satu di dalam kurung (seperti cermin sumbu-y), satu lagi di luar (seperti cermin sumbu-x). Titik (x, y) langsung berpindah jadi (−x, −y).</p>
+      <p>Coba bayangkan begini: titik itu "diputar" 180° mengelilingi titik (0,0). Titik (3, 2) akan berpindah ke (−3, −2) — posisinya persis di seberang, dengan jarak yang sama dari titik asal.</p>
+    </div>
+
+    <div class="card">
+      <h3 class="sub">5. Kaitannya dengan Fungsi Genap dan Ganjil</h3>
+      <p>Sekarang kamu sudah paham empat jenis pencerminan. Ternyata, ada fungsi-fungsi "istimewa" yang kalau dicerminkan, bentuknya jadi sama persis dengan aslinya!</p>
+      <p>Kalau grafik y = f(x) dicerminkan terhadap <b>sumbu-y</b> dan hasilnya persis sama seperti grafik aslinya, fungsi itu disebut <b>fungsi genap</b>. Secara rumus, ini berarti f(−x) = f(x) untuk semua x.</p>
+      <p>Kalau grafik y = f(x) dicerminkan terhadap <b>titik asal</b> dan hasilnya persis sama seperti grafik aslinya, fungsi itu disebut <b>fungsi ganjil</b>. Secara rumus, ini berarti f(−x) = −f(x) untuk semua x.</p>
+      <p>Jadi, genap dan ganjil bukan istilah acak — itu cara matematika bilang "grafik ini punya simetri tertentu terhadap pencerminan". Menarik, kan?</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section class="block" id="sec-cara">
+    <div class="sec-label">Lihat Cara Kerjanya</div>
+    <h2>Mencerminkan Garis y = 0,5x + 1,5</h2>
+    <p>Kita pakai satu garis sederhana sebagai contoh, lalu kita cerminkan dengan empat cara berbeda. Tekan "Selanjutnya" untuk melihat masing-masing hasilnya, satu per satu dibandingkan dengan garis aslinya (abu-abu putus-putus).</p>
+
+    <div class="card">
+      <div class="graph-wrap">
+        <svg class="graph" id="stepSvg" viewBox="0 0 320 320"></svg>
+      </div>
+      <div class="step-formula formula" id="stepFormula">y = f(x)</div>
+      <div class="step-text" id="stepText"></div>
+      <div class="step-nav">
+        <button class="btn btn-outline btn-sm" id="stepPrev">← Sebelumnya</button>
+        <div class="step-dots" id="stepDots"></div>
+        <button class="btn btn-primary btn-sm" id="stepNext">Selanjutnya →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section class="block" id="sec-coba">
+    <div class="sec-label">Coba Sendiri</div>
+    <h2>Pilih Sendiri Jenis Pencerminannya</h2>
+    <p>Grafik abu-abu putus-putus adalah f(x) asli. Grafik biru adalah hasil pencerminan. Garis putus-putus lain menunjukkan "cermin" yang sedang dipakai. Coba ganti pilihannya satu per satu.</p>
+
+    <div class="card">
+      <div class="graph-wrap">
+        <svg class="graph" id="playSvg" viewBox="0 0 320 320"></svg>
+      </div>
+
+      <div class="mode-list" id="modeList">
+        <label class="mode-opt"><input type="radio" name="mode" value="none" checked> Tampilkan grafik asli saja</label>
+        <label class="mode-opt"><input type="radio" name="mode" value="x"> Cerminkan terhadap sumbu-x</label>
+        <label class="mode-opt"><input type="radio" name="mode" value="y"> Cerminkan terhadap sumbu-y</label>
+        <label class="mode-opt"><input type="radio" name="mode" value="origin"> Cerminkan terhadap titik asal (0,0)</label>
+        <label class="mode-opt"><input type="radio" name="mode" value="yx"> Cerminkan terhadap garis y = x</label>
+      </div>
+
+      <div class="formula" id="playFormula" style="margin-top:16px;">y = f(x)</div>
+      <div class="insight-box" id="insightBox">Pilih salah satu jenis pencerminan di atas untuk melihat efeknya di grafik.</div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section class="block" id="sec-challenge">
+    <div class="sec-label">Challenge</div>
+    <h2>Uji Pemahamanmu — 3 Soal</h2>
+
+    <!-- SOAL 1 -->
+    <div class="card">
+      <div class="q-head">
+        <span class="q-title">Soal 1</span>
+        <span class="badge badge-mudah">MUDAH</span>
+      </div>
+      <p>Diketahui <b>f(3) = 7</b>. Jika <b>g(x) = −f(x)</b> dan <b>h(x) = f(−x)</b>, tentukan:</p>
+      <div class="mini-fields">
+        <div class="mini-field">g(3) = <input type="number" id="s1_g"></div>
+        <div class="mini-field">h(−3) = <input type="number" id="s1_h"></div>
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal1()">Cek Jawaban</button>
+      <div class="id-warning" id="s1_warning">Isi dulu Nama dan Kelas di bagian atas ya, baru jawabanmu bisa dicek.</div>
+      <div class="feedback" id="s1_feedback"></div>
+      <div class="status-kirim" id="s1_status"></div>
+    </div>
+
+    <!-- SOAL 2 -->
+    <div class="card">
+      <div class="q-head">
+        <span class="q-title">Soal 2</span>
+        <span class="badge badge-sedang">SEDANG</span>
+      </div>
+      <p>Grafik y = f(x) memiliki titik potong dengan sumbu-x di titik <b>(4, 0)</b>. Setelah grafik itu dicerminkan terhadap <b>sumbu-y</b>, titik tersebut berpindah ke...</p>
+      <div class="opt-list" id="s2_opts">
+        <label class="opt"><input type="radio" name="s2" value="a"> (4, 0)</label>
+        <label class="opt"><input type="radio" name="s2" value="b"> (−4, 0)</label>
+        <label class="opt"><input type="radio" name="s2" value="c"> (0, −4)</label>
+        <label class="opt"><input type="radio" name="s2" value="d"> (0, 4)</label>
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal2()">Cek Jawaban</button>
+      <div class="id-warning" id="s2_warning">Isi dulu Nama dan Kelas di bagian atas ya, baru jawabanmu bisa dicek.</div>
+      <div class="feedback" id="s2_feedback"></div>
+      <div class="status-kirim" id="s2_status"></div>
+    </div>
+
+    <!-- SOAL 3 -->
+    <div class="card">
+      <div class="q-head">
+        <span class="q-title">Soal 3</span>
+        <span class="badge badge-sulit">SULIT</span>
+      </div>
+      <p>Titik <b>A(2, −5)</b> terletak pada grafik y = f(x). Grafik tersebut dicerminkan terhadap <b>sumbu-x</b>, kemudian hasilnya dicerminkan sekali lagi terhadap <b>garis y = x</b>.</p>
+      <p>Tentukan koordinat titik yang bersesuaian dengan A setelah kedua pencerminan tersebut.</p>
+      <div class="mini-fields">
+        Titik akhir: (
+        <div class="mini-field"><input type="number" id="s3_x" placeholder="x"></div>
+        ,
+        <div class="mini-field"><input type="number" id="s3_y" placeholder="y"></div>
+        )
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal3()">Cek Jawaban</button>
+      <div class="id-warning" id="s3_warning">Isi dulu Nama dan Kelas di bagian atas ya, baru jawabanmu bisa dicek.</div>
+      <div class="feedback" id="s3_feedback"></div>
+      <div class="status-kirim" id="s3_status"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section class="block" id="sec-kesalahan">
+    <div class="sec-label">Kesalahan yang Sering Terjadi</div>
+    <h2>Hati-Hati dengan Jebakan Ini</h2>
+
+    <div class="mistake-item">
+      <h4>1. Menganggap −f(x) dan f(−x) itu sama</h4>
+      <p>Keduanya sama-sama punya tanda minus, jadi sering dikira efeknya sama saja.</p>
+      <p class="why"><b>Kenapa salah:</b> posisi minusnya beda arti. −f(x) mengubah tanda y (cermin sumbu-x), sedangkan f(−x) mengubah tanda x (cermin sumbu-y).</p>
+      <p class="why"><b>Cara menghindari:</b> tanya diri sendiri, "minusnya ada di dalam atau di luar fungsi?" Di luar → sumbu-x. Di dalam → sumbu-y.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>2. Mengira pencerminan terhadap y = x berarti mengubah tanda</h4>
+      <p>Karena tiga pencerminan lain melibatkan tanda minus, siswa sering mengira pencerminan terhadap garis y = x juga begitu.</p>
+      <p class="why"><b>Kenapa salah:</b> pencerminan terhadap y = x tidak mengubah tanda apa pun. Yang terjadi hanya <b>menukar posisi</b> nilai x dan y.</p>
+      <p class="why"><b>Cara menghindari:</b> ingat aturannya beda: (x, y) → (y, x), bukan (−x, y) atau (x, −y).</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>3. Lupa bahwa titik di atas sumbu cermin bisa jadi tidak berpindah</h4>
+      <p>Siswa kadang mengira semua titik pasti berpindah posisi saat dicerminkan.</p>
+      <p class="why"><b>Kenapa salah:</b> titik yang sudah berada tepat di garis cermin (misalnya titik di sumbu-x saat dicerminkan terhadap sumbu-x) tidak akan berpindah. Titik seperti ini disebut titik invarian.</p>
+      <p class="why"><b>Cara menghindari:</b> selalu hitung dulu koordinat barunya dengan rumus, jangan menebak. Kalau hasilnya sama dengan koordinat awal, berarti memang titik itu tidak berpindah.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>4. Mengira pencerminan terhadap titik asal sama dengan salah satu cermin sumbu saja</h4>
+      <p>Karena namanya mirip, pencerminan titik asal sering disamakan dengan pencerminan sumbu-x atau sumbu-y saja.</p>
+      <p class="why"><b>Kenapa salah:</b> pencerminan titik asal itu gabungan KEDUANYA sekaligus — x dan y sama-sama berubah tanda, bukan cuma salah satu.</p>
+      <p class="why"><b>Cara menghindari:</b> cek rumusnya: y = −f(−x) punya dua tanda minus. Kalau cuma satu tanda minus, berarti itu bukan pencerminan titik asal.</p>
+    </div>
+
+    <div class="mistake-item">
+      <h4>5. Tertukar antara ciri fungsi genap dan fungsi ganjil</h4>
+      <p>Siswa sering lupa mana yang simetris terhadap sumbu-y dan mana yang simetris terhadap titik asal.</p>
+      <p class="why"><b>Kenapa salah:</b> fungsi genap (f(−x) = f(x)) simetris terhadap sumbu-y, sedangkan fungsi ganjil (f(−x) = −f(x)) simetris terhadap titik asal — bukan sebaliknya.</p>
+      <p class="why"><b>Cara menghindari:</b> coba substitusi −x ke dalam fungsi, lalu bandingkan hasilnya dengan f(x) asli dan dengan −f(x). Cocok dengan yang mana, itulah jenisnya.</p>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section class="block" id="sec-ringkasan">
+    <div class="sec-label">Ringkasan</div>
+    <h2>5 Hal Penting untuk Diingat</h2>
+    <div class="card">
+      <ul class="sum-list">
+        <li class="sum-item"><span class="sum-num">1</span><p>Pencerminan terhadap sumbu-x: y = −f(x). Nilai y berubah tanda, nilai x tetap.</p></li>
+        <li class="sum-item"><span class="sum-num">2</span><p>Pencerminan terhadap sumbu-y: y = f(−x). Nilai x berubah tanda, nilai y tetap.</p></li>
+        <li class="sum-item"><span class="sum-num">3</span><p>Pencerminan terhadap garis y = x: koordinat x dan y saling bertukar — berkaitan langsung dengan fungsi invers.</p></li>
+        <li class="sum-item"><span class="sum-num">4</span><p>Pencerminan terhadap titik asal: y = −f(−x), gabungan pencerminan sumbu-x dan sumbu-y sekaligus.</p></li>
+        <li class="sum-item"><span class="sum-num">5</span><p>Fungsi genap simetris terhadap sumbu-y (f(−x) = f(x)); fungsi ganjil simetris terhadap titik asal (f(−x) = −f(x)).</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section class="block" id="sec-refleksi">
+    <div class="sec-label">Refleksi</div>
+    <h2>Coba Jelaskan dengan Kata-Katamu Sendiri</h2>
+    <p>Tidak ada jawaban benar atau salah di bagian ini. Yang penting kamu coba jelaskan apa yang sudah kamu pahami.</p>
+
+    <div class="card">
+      <div class="refleksi-q">
+        <label for="ref1">1. Dengan kata-katamu sendiri, apa bedanya efek pencerminan terhadap sumbu-x dengan pencerminan terhadap sumbu-y pada sebuah titik (x, y)?</label>
+        <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+      <div class="refleksi-q">
+        <label for="ref2">2. Menurutmu, kenapa pencerminan terhadap titik asal bisa dianggap sebagai gabungan dua pencerminan sekaligus (sumbu-x dan sumbu-y)?</label>
+        <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="kirimRefleksi()">Kirim Refleksi</button>
+      <div class="id-warning" id="ref_warning">Isi dulu Nama dan Kelas di bagian atas ya, baru Refleksi bisa dikirim.</div>
+      <div class="id-warning" id="ref_kosong" style="display:none;">Isi dulu kedua kolom refleksinya ya, baru bisa dikirim.</div>
+      <div class="status-kirim" id="ref_status"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="identitas">
+  <div class="n">NUMERA</div>
+  <div>Modul Interaktif · Transformasi Fungsi - Pencerminan Grafik · Versi 1.0</div>
+  <div>Dikembangkan oleh Kiki Herdiansyah · Copyright © 2026</div>
+</footer>
+
+<script>
+/* ================= IDENTITAS & PENGIRIMAN ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+const TOPIK = 'Transformasi Fungsi - Pencerminan Grafik';
+
+function getIdentitas(){
+  return {
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim()
+  };
+}
+
+function identitasLengkap(){
+  const id = getIdentitas();
+  return id.nama.length > 0 && id.kelas.length > 0;
+}
+
+async function kirimKeGuru(topik, nama, kelas, nomorSoal, jawaban, jawaban2, status, waktu){
+  const payload = {
+    topik: topik,
+    nama: nama,
+    kelas: kelas,
+    nomorSoal: nomorSoal,
+    jawaban: jawaban,
+    jawaban2: jawaban2 || '',
+    status: status,
+    waktu: waktu
+  };
+  if(!SCRIPT_URL){
+    console.log('[Numera] SCRIPT_URL belum diisi guru. Data belum benar-benar terkirim:', payload);
+    return false;
+  }
+  try{
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    return true;
+  }catch(err){
+    console.warn('[Numera] Gagal mengirim ke guru:', err);
+    return false;
+  }
+}
+
+function waktuSekarang(){
+  const d = new Date();
+  return d.toLocaleString('id-ID');
+}
+
+function tampilkanStatusKirim(elId){
+  const el = document.getElementById(elId);
+  if(el){
+    el.textContent = 'Jawaban tercatat dan dikirim ke guru — ' + waktuSekarang();
+  }
+}
+
+/* ================= SOAL 1 ================= */
+function cekSoal1(){
+  if(!identitasLengkap()){
+    document.getElementById('s1_warning').classList.add('show');
+    return;
+  }
+  document.getElementById('s1_warning').classList.remove('show');
+
+  const g = parseFloat(document.getElementById('s1_g').value);
+  const h = parseFloat(document.getElementById('s1_h').value);
+
+  const benar = (g === -7 && h === 7);
+  const fb = document.getElementById('s1_feedback');
+  fb.classList.remove('benar','salah');
+  fb.classList.add('show');
+
+  if(benar){
+    fb.classList.add('benar');
+    fb.textContent = 'Benar! g(3) = −f(3) = −7, karena tanda minus di luar mengubah tanda hasilnya. Sedangkan h(−3) = f(−(−3)) = f(3) = 7, karena dua tanda minus saling meniadakan.';
+  }else{
+    fb.classList.add('salah');
+    fb.textContent = 'Coba cek lagi: g(3) = −f(3), jadi tinggal balik tanda dari f(3) = 7, hasilnya −7. Untuk h(−3) = f(−(−3)), perhatikan −(−3) = 3, jadi h(−3) = f(3) = 7 (bukan −7).';
+  }
+
+  const id = getIdentitas();
+  kirimKeGuru(TOPIK, id.nama, id.kelas, 1, 'g(3)='+g+', h(-3)='+h, '', benar ? 'benar' : 'salah', waktuSekarang());
+  tampilkanStatusKirim('s1_status');
+}
+
+/* ================= SOAL 2 ================= */
+function cekSoal2(){
+  if(!identitasLengkap()){
+    document.getElementById('s2_warning').classList.add('show');
+    return;
+  }
+  document.getElementById('s2_warning').classList.remove('show');
+
+  const opts = document.querySelectorAll('input[name="s2"]');
+  let dipilih = null;
+  opts.forEach(o => { if(o.checked) dipilih = o.value; });
+
+  const fb = document.getElementById('s2_feedback');
+  fb.classList.remove('benar','salah');
+
+  if(!dipilih){
+    fb.classList.add('show','salah');
+    fb.textContent = 'Pilih salah satu jawaban dulu ya.';
+    return;
+  }
+
+  const benar = (dipilih === 'b');
+  fb.classList.add('show');
+
+  if(benar){
+    fb.classList.add('benar');
+    fb.textContent = 'Tepat! Pencerminan terhadap sumbu-y mengubah tanda x saja, y tetap sama. Titik (4, 0) menjadi (−4, 0).';
+  }else{
+    fb.classList.add('salah');
+    if(dipilih === 'a'){
+      fb.textContent = 'Titik (4, 0) tetap berpindah kok, karena bukan titik yang berada di sumbu-y. Pencerminan sumbu-y mengubah tanda x: (4, 0) → (−4, 0).';
+    }else{
+      fb.textContent = 'Itu hasil kalau dicerminkan terhadap garis y = x (menukar posisi x dan y), bukan terhadap sumbu-y. Untuk cermin sumbu-y, cukup tanda x saja yang berubah: (4, 0) → (−4, 0).';
+    }
+  }
+
+  const id = getIdentitas();
+  kirimKeGuru(TOPIK, id.nama, id.kelas, 2, dipilih, '', benar ? 'benar' : 'salah', waktuSekarang());
+  tampilkanStatusKirim('s2_status');
+}
+
+/* ================= SOAL 3 ================= */
+function cekSoal3(){
+  if(!identitasLengkap()){
+    document.getElementById('s3_warning').classList.add('show');
+    return;
+  }
+  document.getElementById('s3_warning').classList.remove('show');
+
+  const x = parseFloat(document.getElementById('s3_x').value);
+  const y = parseFloat(document.getElementById('s3_y').value);
+
+  const benar = (x === 5 && y === 2);
+  const fb = document.getElementById('s3_feedback');
+  fb.classList.remove('benar','salah');
+  fb.classList.add('show');
+
+  if(benar){
+    fb.classList.add('benar');
+    fb.textContent = 'Tepat sekali! Langkah 1 — cermin sumbu-x: (2, −5) → (2, 5) (tanda y dibalik). Langkah 2 — cermin garis y = x: (2, 5) → (5, 2) (x dan y ditukar). Titik akhirnya (5, 2).';
+  }else{
+    fb.classList.add('salah');
+    fb.textContent = 'Coba kerjakan dua langkah berurutan: pertama cerminkan (2, −5) terhadap sumbu-x, tanda y dibalik jadi (2, 5). Baru langkah kedua, cerminkan (2, 5) terhadap garis y = x dengan menukar x dan y, hasilnya (5, 2).';
+  }
+
+  const id = getIdentitas();
+  kirimKeGuru(TOPIK, id.nama, id.kelas, 3, 'x='+x+', y='+y, '', benar ? 'benar' : 'salah', waktuSekarang());
+  tampilkanStatusKirim('s3_status');
+}
+
+/* ================= REFLEKSI ================= */
+function kirimRefleksi(){
+  if(!identitasLengkap()){
+    document.getElementById('ref_warning').classList.add('show');
+    return;
+  }
+  document.getElementById('ref_warning').classList.remove('show');
+
+  const j1 = document.getElementById('ref1').value.trim();
+  const j2 = document.getElementById('ref2').value.trim();
+
+  if(j1.length === 0 || j2.length === 0){
+    document.getElementById('ref_kosong').style.display = 'block';
+    return;
+  }
+  document.getElementById('ref_kosong').style.display = 'none';
+
+  const id = getIdentitas();
+  kirimKeGuru(TOPIK, id.nama, id.kelas, 'Refleksi', j1, j2, '-', waktuSekarang());
+  tampilkanStatusKirim('ref_status');
+}
+
+/* ================= GRAFIK UMUM ================= */
+function drawPoints(svgId, W, H, scale, mainPts, basePts, mirrorPts, showBase){
+  const svg = document.getElementById(svgId);
+  const cx = W/2, cy = H/2;
+
+  function toSvg(x,y){ return [cx + x*scale, cy - y*scale]; }
+
+  let parts = '';
+  parts += `<line class="axis-line" x1="0" y1="${cy}" x2="${W}" y2="${cy}"></line>`;
+  parts += `<line class="axis-line" x1="${cx}" y1="0" x2="${cx}" y2="${H}"></line>`;
+  for(let g=-8; g<=8; g++){
+    const gx = cx + g*scale;
+    if(gx>=0 && gx<=W) parts += `<line class="grid-line" x1="${gx}" y1="0" x2="${gx}" y2="${H}"></line>`;
+  }
+
+  if(mirrorPts && mirrorPts.length){
+    let dm = '';
+    mirrorPts.forEach(p=>{
+      const [sx,sy] = toSvg(p[0],p[1]);
+      dm += (dm===''?'M':'L') + sx.toFixed(1) + ' ' + sy.toFixed(1) + ' ';
+    });
+    parts += `<path class="mirror-line" d="${dm}"></path>`;
+  }
+
+  if(showBase && basePts){
+    let db = '';
+    basePts.forEach(p=>{
+      const [sx,sy] = toSvg(p[0],p[1]);
+      db += (db===''?'M':'L') + sx.toFixed(1) + ' ' + sy.toFixed(1) + ' ';
+    });
+    parts += `<path class="curve-base" d="${db}"></path>`;
+  }
+
+  let dmain = '';
+  mainPts.forEach(p=>{
+    const [sx,sy] = toSvg(p[0],p[1]);
+    dmain += (dmain===''?'M':'L') + sx.toFixed(1) + ' ' + sy.toFixed(1) + ' ';
+  });
+  parts += `<path class="curve-main" d="${dmain}"></path>`;
+
+  svg.innerHTML = parts;
+}
+
+/* ================= LIHAT CARA KERJANYA (garis linear) ================= */
+function fLine(t){ return 0.5*t + 1.5; }
+
+function genBasePts(){
+  const pts = [];
+  for(let t=-7; t<=7; t+=0.5){ pts.push([t, fLine(t)]); }
+  return pts;
+}
+
+const stepSteps = [
+  { type:'none', formula:'y = f(x)', text:'Ini garis asli f(x) = 0,5x + 1,5. Belum ada pencerminan apa-apa.' },
+  { type:'x', formula:'y = −f(x)', text:'Dicerminkan terhadap <mark>sumbu-x</mark> (garis putus-putus abu-abu horizontal). Semua nilai y dibalik tandanya, x tetap.' },
+  { type:'y', formula:'y = f(−x)', text:'Dicerminkan terhadap <mark>sumbu-y</mark> (garis putus-putus abu-abu vertikal). Semua nilai x dibalik tandanya, y tetap.' },
+  { type:'origin', formula:'y = −f(−x)', text:'Dicerminkan terhadap <mark>titik asal (0,0)</mark>. Ini gabungan dua pencerminan sebelumnya — x dan y sama-sama dibalik tandanya.' },
+  { type:'yx', formula:'y = f⁻¹(x)', text:'Dicerminkan terhadap <mark>garis y = x</mark> (garis diagonal putus-putus). Posisi x dan y saling bertukar. Inilah bentuk grafik fungsi inversnya!' }
+];
+let stepIndex = 0;
+
+function transformPts(basePts, type){
+  return basePts.map(p=>{
+    const [x,y] = p;
+    if(type==='none') return [x,y];
+    if(type==='x') return [x,-y];
+    if(type==='y') return [-x,y];
+    if(type==='origin') return [-x,-y];
+    if(type==='yx') return [y,x];
+    return [x,y];
+  });
+}
+
+function mirrorLineFor(type){
+  const L = 8;
+  if(type==='x') return [[-L,0],[L,0]];
+  if(type==='y') return [[0,-L],[0,L]];
+  if(type==='origin') return [[-L,0],[L,0],[0,0],[0,-L],[0,L]];
+  if(type==='yx') return [[-L,-L],[L,L]];
+  return [];
+}
+
+function renderStep(){
+  const s = stepSteps[stepIndex];
+  const base = genBasePts();
+  const main = transformPts(base, s.type);
+  const mirror = mirrorLineFor(s.type);
+
+  drawPoints('stepSvg', 320, 320, 18, main, base, mirror, s.type!=='none');
+
+  document.getElementById('stepFormula').innerHTML = s.formula;
+  document.getElementById('stepText').innerHTML = s.text;
+  document.getElementById('stepPrev').disabled = (stepIndex === 0);
+  document.getElementById('stepNext').disabled = (stepIndex === stepSteps.length-1);
+
+  const dotsEl = document.getElementById('stepDots');
+  dotsEl.innerHTML = stepSteps.map((_,i)=>`<div class="dot ${i===stepIndex?'active':''}"></div>`).join('');
+}
+
+document.getElementById('stepPrev').addEventListener('click', ()=>{
+  if(stepIndex>0){ stepIndex--; renderStep(); }
+});
+document.getElementById('stepNext').addEventListener('click', ()=>{
+  if(stepIndex<stepSteps.length-1){ stepIndex++; renderStep(); }
+});
+
+/* ================= COBA SENDIRI (kurva bebas) ================= */
+function fCurve(t){
+  return 0.15*t*t*t - 0.4*t*t - 0.3*t + 1.2;
+}
+
+function genCurveBasePts(){
+  const pts = [];
+  for(let t=-3.4; t<=3.4; t+=0.1){
+    const y = fCurve(t);
+    if(Math.abs(y) <= 9) pts.push([t, y]);
+  }
+  return pts;
+}
+
+function renderPlay(){
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+  const base = genCurveBasePts();
+  const main = transformPts(base, mode);
+  const mirror = mirrorLineFor(mode);
+
+  drawPoints('playSvg', 320, 320, 18, main, base, mirror, mode!=='none');
+
+  const formulas = {
+    none: 'y = f(x)',
+    x: 'y = −f(x)',
+    y: 'y = f(−x)',
+    origin: 'y = −f(−x)',
+    yx: 'Titik (x, y) → (y, x)'
+  };
+  document.getElementById('playFormula').textContent = formulas[mode];
+
+  const insights = {
+    none: 'Ini grafik f(x) asli, belum dicerminkan. Coba pilih salah satu jenis pencerminan di atas.',
+    x: 'Perhatikan! Grafik dipantulkan terhadap sumbu-x — bagian yang tadinya di atas sekarang di bawah, dan sebaliknya. Posisi kiri-kanan (nilai x) tidak berubah.',
+    y: 'Perhatikan! Grafik dipantulkan terhadap sumbu-y — bagian yang tadinya di kiri sekarang di kanan, dan sebaliknya. Posisi atas-bawah (nilai y) tidak berubah.',
+    origin: 'Perhatikan! Grafik seperti diputar 180° mengelilingi titik (0,0) — gabungan pencerminan sumbu-x dan sumbu-y sekaligus.',
+    yx: 'Perhatikan! Setiap titik (x, y) sekarang jadi (y, x) — grafik dipantulkan lewat garis diagonal y = x, bukan lewat sumbu.'
+  };
+  document.getElementById('insightBox').textContent = insights[mode];
+}
+
+document.querySelectorAll('input[name="mode"]').forEach(r=>{
+  r.addEventListener('change', renderPlay);
+});
+
+/* ================= INIT ================= */
+renderStep();
+renderPlay();
+
+/* ================= FADE-UP ================= */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+    }
+  });
+},{threshold:0.1});
+document.querySelectorAll('section.block').forEach(sec=>observer.observe(sec));
+
+/* ================= PROGRESS BAR ================= */
+function updateProgress(){
+  const h = document.documentElement;
+  const scrollTop = h.scrollTop || document.body.scrollTop;
+  const scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop/scrollHeight)*100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgress);
+updateProgress();
+</script>
+</body>
+</html>
