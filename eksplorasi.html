@@ -589,9 +589,157 @@
 
 <script>
 /* =========================================================================
+   PUSTAKA IKON THUMBNAIL
+   -------------------------------------------------------------------------
+   Ini SATU-SATUNYA tempat bentuk ikon didefinisikan. Setiap kunci adalah
+   nama pendek yang bisa dipakai berkali-kali di EXPLORATION_DATA lewat
+   properti `icon`. Path/lingkaran di dalamnya pakai stroke/fill="currentColor"
+   supaya warnanya OTOMATIS ikut warna kelompok (group.color) — tidak perlu
+   diatur manual lagi per item.
+
+   Cara menambah bentuk baru: cukup tambah satu entri { key: svgFragment }
+   di bawah ini. Tidak perlu menyentuh bagian render/data lain.
+
+   Sudah mencakup ±48 ikon untuk topik-topik utama SMA kelas X-XII,
+   dikelompokkan per bab supaya gampang dicari. Kalau nanti ada subbab yang
+   belum kebahas, tinggal minta ditambahkan satu entri baru.
+   ========================================================================= */
+const ICON_LIBRARY = {
+
+  /* ---------- ALJABAR ---------- */
+  "pers-linear": `<line x1="10" y1="46" x2="54" y2="18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="10" cy="46" r="2" fill="currentColor"/><circle cx="54" cy="18" r="2" fill="currentColor"/>`,
+
+  "pers-kuadrat": `<path d="M10 46 Q32 6 54 46" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+
+  "pers-mutlak": `<path d="M10 16 L32 46 L54 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+
+  "pers-rasional": `<path d="M8 12c8 4 10 16 10 20s-2 16-10 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M56 12c-8 4-10 16-10 20s2 16 10 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`,
+
+  "pers-irasional": `<path d="M8 40h6l8-24 6 14 26-18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+
+  "pertidaksamaan": `<line x1="8" y1="32" x2="56" y2="32" stroke="currentColor" stroke-width="1.6" opacity="0.4"/><circle cx="24" cy="32" r="3" fill="none" stroke="currentColor" stroke-width="2"/><line x1="24" y1="32" x2="50" y2="32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M44 27l6 5-6 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`,
+
+  "spltv": `<line x1="10" y1="14" x2="46" y2="50" stroke="currentColor" stroke-width="1.8"/><line x1="10" y1="50" x2="46" y2="14" stroke="currentColor" stroke-width="1.8"/><line x1="8" y1="34" x2="56" y2="34" stroke="currentColor" stroke-width="1.8"/><circle cx="28" cy="32" r="2.4" fill="currentColor"/>`,
+
+  "matriks": `<rect x="10" y="14" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"/><rect x="30" y="14" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5"/><rect x="10" y="34" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" opacity="0.5"/><rect x="30" y="34" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"/>`,
+
+  "determinan": `<rect x="12" y="16" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="16" x2="44" y2="48" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="44" y1="16" x2="12" y2="48" stroke="currentColor" stroke-width="1.4" opacity="0.4" stroke-dasharray="2 3"/>`,
+
+  "barisan-aritmatika": `<circle cx="12" cy="46" r="2.4" fill="currentColor"/><circle cx="24" cy="38" r="2.4" fill="currentColor"/><circle cx="36" cy="30" r="2.4" fill="currentColor"/><circle cx="48" cy="22" r="2.4" fill="currentColor"/><line x1="12" y1="46" x2="48" y2="22" stroke="currentColor" stroke-width="1.4" opacity="0.4" stroke-dasharray="2 3"/>`,
+
+  "barisan-geometri": `<circle cx="10" cy="44" r="1.8" fill="currentColor"/><circle cx="22" cy="40" r="2.4" fill="currentColor"/><circle cx="36" cy="30" r="3.2" fill="currentColor"/><circle cx="52" cy="14" r="4.2" fill="currentColor"/>`,
+
+  "deret": `<rect x="12" y="34" width="8" height="12" fill="currentColor" opacity="0.8"/><rect x="24" y="26" width="8" height="20" fill="currentColor" opacity="0.65"/><rect x="36" y="18" width="8" height="28" fill="currentColor" opacity="0.5"/><rect x="48" y="10" width="8" height="36" fill="currentColor" opacity="0.35"/>`,
+
+  "eksponen": `<path d="M10 48c8-2 14-6 18-14s10-20 26-22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+
+  "logaritma": `<path d="M10 14c2 16 10 20 18 22s26 4 26 12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+
+  "program-linear": `<polygon points="14,46 46,46 40,20 20,26" fill="currentColor" opacity="0.15" stroke="currentColor" stroke-width="2"/><line x1="10" y1="50" x2="54" y2="50" stroke="currentColor" stroke-width="1.4" opacity="0.4"/><line x1="10" y1="50" x2="10" y2="10" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>`,
+
+  /* ---------- FUNGSI ---------- */
+  "fungsi-linear": `<line x1="8" y1="54" x2="8" y2="8" stroke="currentColor" stroke-width="1.2" opacity="0.35"/><line x1="8" y1="54" x2="56" y2="54" stroke="currentColor" stroke-width="1.2" opacity="0.35"/><line x1="12" y1="46" x2="50" y2="14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+
+  "fungsi-kuadrat": `<line x1="8" y1="54" x2="8" y2="8" stroke="currentColor" stroke-width="1.2" opacity="0.35"/><line x1="8" y1="54" x2="56" y2="54" stroke="currentColor" stroke-width="1.2" opacity="0.35"/><path d="M12 48 Q32 12 52 48" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+
+  "mesin-fungsi": `<path d="M8 40c6-14 12 10 18-2s10-16 16 4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="18" cy="34" r="2" fill="currentColor"/><circle cx="34" cy="30" r="2" fill="currentColor"/>`,
+
+  "grafik-invers": `<path d="M10 24c8 0 8 18 22 18s14-18 22-18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" transform="scale(1,-1) translate(0,-56)"/><circle cx="22" cy="42" r="2.2" fill="currentColor"/><circle cx="42" cy="42" r="2.2" fill="currentColor"/><line x1="8" y1="42" x2="56" y2="42" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>`,
+
+  "proses-berantai": `<path d="M8 44c4-24 12-24 16 0s12 24 16 0 12-24 16 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`,
+
+  "balik-fungsi": `<path d="M10 20c6 0 8 24 18 24s12-24 18-24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="32" cy="44" r="2.2" fill="currentColor"/>`,
+
+  "domain-range": `<ellipse cx="18" cy="32" rx="10" ry="16" fill="none" stroke="currentColor" stroke-width="2"/><ellipse cx="46" cy="32" rx="10" ry="16" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="26" r="1.8" fill="currentColor"/><circle cx="18" cy="38" r="1.8" fill="currentColor"/><circle cx="46" cy="32" r="1.8" fill="currentColor"/><path d="M20 26l24 4M20 38l24-6" stroke="currentColor" stroke-width="1.4" opacity="0.6"/>`,
+
+  /* ---------- GEOMETRI ---------- */
+  "titik-lingkaran": `<circle cx="32" cy="32" r="16" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="32" cy="32" r="2.5" fill="currentColor"/><circle cx="48" cy="32" r="2.5" fill="currentColor"/><path d="M12 32h6M46 32h6M32 12v6M32 46v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>`,
+
+  "garis-lingkaran": `<circle cx="30" cy="32" r="14" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="30" cy="32" r="1.8" fill="currentColor"/><circle cx="30" cy="24" r="2.4" fill="currentColor"/><circle cx="42" cy="20" r="2.4" fill="currentColor" opacity="0.6"/><circle cx="46" cy="42" r="2.4" fill="currentColor" opacity="0.6"/>`,
+
+  "persamaan-lingkaran": `<circle cx="30" cy="34" r="14" fill="none" stroke="currentColor" stroke-width="2"/><line x1="12" y1="46" x2="52" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="46" r="2.2" fill="currentColor"/><circle cx="52" cy="18" r="2.2" fill="currentColor"/>`,
+
+  "bangun-datar": `<rect x="8" y="30" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="42" cy="18" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M34 46l10-16 10 16Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>`,
+
+  "bangun-ruang": `<path d="M14 22 L32 12 L50 22 L50 42 L32 52 L14 42 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 22 L32 32 L50 22 M32 32 L32 52" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.6"/>`,
+
+  "transformasi-translasi": `<rect x="10" y="30" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"/><rect x="30" y="14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"/><path d="M24 34l10-16" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2 3" opacity="0.6"/><path d="M30 22l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+
+  "transformasi-refleksi": `<line x1="32" y1="8" x2="32" y2="56" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 3" opacity="0.5"/><path d="M12 20l10 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M52 20l-10 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" opacity="0.6"/>`,
+
+  "transformasi-rotasi": `<circle cx="32" cy="32" r="2" fill="currentColor"/><path d="M32 32 L48 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M32 32 L20 46" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5"/><path d="M40 14a20 20 0 0 1 12 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M50 24l3 5-6 1" fill="currentColor" stroke="none"/>`,
+
+  "transformasi-dilatasi": `<rect x="26" y="26" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"/><rect x="14" y="14" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.5"/><circle cx="32" cy="32" r="1.6" fill="currentColor"/>`,
+
+  "vektor": `<line x1="12" y1="46" x2="44" y2="18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M36 18h8v8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`,
+
+  "jarak-titik-garis": `<line x1="10" y1="42" x2="54" y2="20" stroke="currentColor" stroke-width="2"/><circle cx="38" cy="14" r="2.4" fill="currentColor"/><line x1="38" y1="14" x2="30" y2="30" stroke="currentColor" stroke-width="1.6" stroke-dasharray="2 3"/>`,
+
+  "irisan-elips": `<ellipse cx="32" cy="32" rx="22" ry="12" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="22" cy="32" r="1.8" fill="currentColor"/><circle cx="42" cy="32" r="1.8" fill="currentColor"/>`,
+
+  "irisan-hiperbola": `<path d="M28 10c-10 8-10 36 0 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M36 10c10 8 10 36 0 44" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+
+  /* ---------- TRIGONOMETRI ---------- */
+  "amplitudo": `<path d="M12 20c6 0 8 24 20 24s14-24 20-24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="32" cy="44" r="2.2" fill="currentColor"/>`,
+
+  "geser-horizontal": `<path d="M10 46c8-2 10-30 22-30s14 28 22 30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+
+  "geser-vertikal": `<path d="M10 44c8-2 10-26 22-26s14 24 22 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><line x1="32" y1="12" x2="32" y2="50" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 3" opacity="0.5"/>`,
+
+  "periode": `<path d="M8 32c5-14 9-14 14 0s9 14 14 0 9-14 14 0 9 14 6 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>`,
+
+  "identitas-trigonometri": `<circle cx="30" cy="30" r="18" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.5"/><line x1="30" y1="30" x2="46" y2="18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><line x1="30" y1="30" x2="46" y2="30" stroke="currentColor" stroke-width="1.6" opacity="0.6"/><line x1="46" y1="30" x2="46" y2="18" stroke="currentColor" stroke-width="1.6" opacity="0.6"/>`,
+
+  "aturan-sinus": `<path d="M12 46 L46 46 L28 12 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M18 46a8 8 0 0 1 4-8" fill="none" stroke="currentColor" stroke-width="1.4" opacity="0.6"/>`,
+
+  "aturan-cosinus": `<path d="M12 46 L48 46 L30 12 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="30" cy="29" r="1.8" fill="currentColor"/><circle cx="30" cy="46" r="1.8" fill="currentColor"/>`,
+
+  "sudut-istimewa": `<circle cx="30" cy="34" r="18" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.4"/><line x1="30" y1="34" x2="48" y2="34" stroke="currentColor" stroke-width="1.8"/><line x1="30" y1="34" x2="42" y2="20" stroke="currentColor" stroke-width="1.8"/><path d="M38 34a8 8 0 0 1-3-6" fill="none" stroke="currentColor" stroke-width="1.4"/>`,
+
+  "tangen": `<path d="M14 50c4-24 4-24 8-24s4 24 8 24 4-24 8-24 4 24 8 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="32" y1="8" x2="32" y2="56" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.4"/>`,
+
+  /* ---------- STATISTIKA ---------- */
+  "data-tunggal": `<rect x="10" y="30" width="8" height="16" fill="currentColor" opacity="0.8"/><rect x="22" y="20" width="8" height="26" fill="currentColor"/><rect x="34" y="34" width="8" height="12" fill="currentColor" opacity="0.6"/><rect x="46" y="14" width="8" height="32" fill="currentColor" opacity="0.4"/>`,
+
+  "data-kelompok": `<rect x="8" y="34" width="10" height="14" fill="currentColor" opacity="0.7"/><rect x="18" y="24" width="10" height="24" fill="currentColor"/><rect x="28" y="18" width="10" height="30" fill="currentColor" opacity="0.85"/><rect x="38" y="28" width="10" height="20" fill="currentColor" opacity="0.55"/><rect x="48" y="38" width="8" height="10" fill="currentColor" opacity="0.4"/>`,
+
+  "ukuran-pemusatan": `<line x1="10" y1="40" x2="54" y2="40" stroke="currentColor" stroke-width="1.4" opacity="0.4"/><circle cx="16" cy="40" r="2.2" fill="currentColor"/><circle cx="26" cy="40" r="2.2" fill="currentColor"/><circle cx="34" cy="40" r="2.2" fill="currentColor"/><circle cx="44" cy="40" r="2.2" fill="currentColor"/><line x1="30" y1="46" x2="30" y2="24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`,
+
+  "ukuran-penyebaran": `<line x1="12" y1="32" x2="52" y2="32" stroke="currentColor" stroke-width="1.6"/><rect x="22" y="22" width="18" height="20" fill="none" stroke="currentColor" stroke-width="2"/><line x1="30" y1="22" x2="30" y2="42" stroke="currentColor" stroke-width="1.6"/>`,
+
+  "distribusi-normal": `<path d="M8 46c8 0 10-32 24-32s16 32 24 32" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><line x1="8" y1="46" x2="56" y2="46" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>`,
+
+  /* ---------- PELUANG ---------- */
+  "kombinatorik": `<circle cx="14" cy="16" r="2" fill="currentColor"/><circle cx="28" cy="16" r="2" fill="currentColor"/><circle cx="42" cy="16" r="2" fill="currentColor"/><circle cx="14" cy="32" r="2" fill="currentColor"/><circle cx="28" cy="32" r="2" fill="currentColor"/><circle cx="42" cy="32" r="2" fill="currentColor"/><circle cx="14" cy="48" r="2" fill="currentColor"/><circle cx="28" cy="48" r="2" fill="currentColor"/><circle cx="42" cy="48" r="2" fill="currentColor"/>`,
+
+  "permutasi": `<circle cx="16" cy="20" r="2.2" fill="currentColor"/><circle cx="16" cy="44" r="2.2" fill="currentColor"/><circle cx="48" cy="20" r="2.2" fill="currentColor"/><circle cx="48" cy="44" r="2.2" fill="currentColor"/><path d="M18 22l24 20M18 42l24-20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>`,
+
+  "kombinasi": `<circle cx="30" cy="30" r="20" fill="none" stroke="currentColor" stroke-width="1.6" opacity="0.4"/><circle cx="22" cy="24" r="2" fill="currentColor"/><circle cx="36" cy="20" r="2" fill="currentColor"/><circle cx="40" cy="36" r="2" fill="currentColor"/><circle cx="22" cy="40" r="2" fill="currentColor"/><ellipse cx="28" cy="28" rx="12" ry="9" fill="currentColor" opacity="0.12" stroke="currentColor" stroke-width="1.6"/>`,
+
+  "peluang-kejadian": `<rect x="12" y="12" width="36" height="36" rx="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="22" cy="22" r="2.4" fill="currentColor"/><circle cx="38" cy="22" r="2.4" fill="currentColor"/><circle cx="30" cy="30" r="2.4" fill="currentColor"/><circle cx="22" cy="38" r="2.4" fill="currentColor"/><circle cx="38" cy="38" r="2.4" fill="currentColor"/>`,
+
+  /* ---------- KALKULUS ---------- */
+  "limit": `<path d="M10 46c14 0 18-20 26-20s10 8 18 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="36" cy="26" r="2.4" fill="none" stroke="currentColor" stroke-width="2"/><line x1="36" y1="26" x2="36" y2="50" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2 3" opacity="0.5"/>`,
+
+  "turunan": `<path d="M10 46c6-24 30-30 44-14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.8"/><line x1="14" y1="40" x2="46" y2="18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="28" cy="30" r="2.2" fill="currentColor"/>`,
+
+  "integral": `<path d="M10 44c10-2 14-26 22-26s16 24 22 26L54 46 L10 46 Z" fill="currentColor" opacity="0.15" stroke="none"/><path d="M10 44c10-2 14-26 22-26s16 24 22 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`,
+
+  "kecekungan": `<path d="M8 40c8-16 14-16 22-4s16 10 26-8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="30" cy="26" r="2" fill="currentColor"/>`,
+
+  "tangen": `<path d="M14 50c4-24 4-24 8-24s4 24 8 24 4-24 8-24 4 24 8 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="32" y1="8" x2="32" y2="56" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.4"/>`,
+
+  "default": `<circle cx="32" cy="32" r="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M26 32h12M32 26v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`
+};
+
+/* =========================================================================
    DATA EKSPLORASI
-   Tambahkan materi/eksplorasi baru cukup dengan menambah objek di sini.
-   Tidak perlu mengubah HTML atau CSS untuk menambah konten baru.
+   -------------------------------------------------------------------------
+   Tambah materi baru cukup dengan menambah objek di array `items` milik
+   grup terkait. Cukup isi: name, description, href, dan `icon` (kunci dari
+   ICON_LIBRARY di atas — pakai yang paling mirip, atau minta ditambahkan
+   bentuk baru sekali saja). Warna & background thumb otomatis ikut warna
+   grup (group.color / group.colorLight) — tidak perlu diatur lagi di sini.
    ========================================================================= */
 const EXPLORATION_DATA = [
   {
@@ -606,57 +754,20 @@ const EXPLORATION_DATA = [
       {
         name: "Titik & Lingkaran",
         description: "Geser titiknya. Apa yang berubah?",
-        // GANTI href di bawah ini ke halaman eksplorasi sebenarnya
         href: "eksplorasi_titik_dan_lingkaran.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#EFF6FF"/><circle cx="32" cy="32" r="16" fill="none" stroke="#2563EB" stroke-width="2"/><circle cx="32" cy="32" r="2.5" fill="#2563EB"/><circle cx="48" cy="32" r="2.5" fill="#2563EB"/><path d="M12 32h6M46 32h6M32 12v6M32 46v6" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/></svg>`
+        icon: "titik-lingkaran"
       },
       {
         name: "Garis & Lingkaran",
         description: "Geser garis & amati posisinya terhadap lingkaran.",
         href: "eksplorasi_garis_dan_lingkaran.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><circle cx="30" cy="32" r="14" fill="none" stroke="#10B981" stroke-width="2"/><circle cx="30" cy="32" r="1.8" fill="#10B981"/><circle cx="30" cy="24" r="2.4" fill="#10B981"/><circle cx="42" cy="20" r="2.4" fill="#2563EB"/><circle cx="46" cy="42" r="2.4" fill="#EF4444"/></svg>`
+        icon: "garis-lingkaran"
       },
       {
         name: "Persamaan Lingkaran",
         description: "Geser garis dan lihat bagaimana perubahan persamaan lingkaran.",
         href: "eksplorasi_persamaan_lingkaran.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#F5F3FF"/><circle cx="30" cy="34" r="14" fill="none" stroke="#7C3AED" stroke-width="2"/><line x1="12" y1="46" x2="52" y2="18" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="46" r="2.2" fill="#7C3AED"/><circle cx="52" cy="18" r="2.2" fill="#7C3AED"/></svg>`
-      }
-    ]
-  },
-    {
-    id: "polinomial",
-    filterKey: "aljabar",
-    name: "Polinomial",
-    description: "Temukan konsep sisa dan habis bagi.",
-    color: "#2563EB",
-    colorLight: "#1E40AF",
-    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg>`,
-    items: [
-      {
-        name: "Mesin Nilai Polinomial",
-        description: "Cek perubahan output berdasarkan nilai input.",
-        // GANTI href di bawah ini ke halaman eksplorasi sebenarnya
-        href: "eksplorasi_mesin_nilai.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#EFF6FF"/><circle cx="32" cy="32" r="16" fill="none" stroke="#2563EB" stroke-width="2"/><circle cx="32" cy="32" r="2.5" fill="#2563EB"/><circle cx="48" cy="32" r="2.5" fill="#2563EB"/><path d="M12 32h6M46 32h6M32 12v6M32 46v6" stroke="#93C5FD" stroke-width="1.5" stroke-linecap="round"/></svg>`
-      },
-      {
-        name: "Balapan Dua Cara Menghitung",
-        description: "Cara mana yang lebih cepat?",
-        href: "eksplorasi_balapan_menghitung.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><circle cx="30" cy="32" r="14" fill="none" stroke="#10B981" stroke-width="2"/><circle cx="30" cy="32" r="1.8" fill="#10B981"/><circle cx="30" cy="24" r="2.4" fill="#10B981"/><circle cx="42" cy="20" r="2.4" fill="#2563EB"/><circle cx="46" cy="42" r="2.4" fill="#EF4444"/></svg>`
-      },
-      {
-        name: "Sisa yang Aneh",
-        description: "Hasil sisa pembagian vs hasil substitusi.",
-        href: "eksplorasi_sisa_aneh.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#F5F3FF"/><circle cx="30" cy="34" r="14" fill="none" stroke="#7C3AED" stroke-width="2"/><line x1="12" y1="46" x2="52" y2="18" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="46" r="2.2" fill="#7C3AED"/><circle cx="52" cy="18" r="2.2" fill="#7C3AED"/></svg>`
-      },
-      {
-        name: "Kapan Sisa Jadi Nol?",
-        description: "Geser slider hingga badge menyala.",
-        href: "eksplorasi_kapan_sisa_nol.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#F5F3FF"/><circle cx="30" cy="34" r="14" fill="none" stroke="#7C3AED" stroke-width="2"/><line x1="12" y1="46" x2="52" y2="18" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="46" r="2.2" fill="#7C3AED"/><circle cx="52" cy="18" r="2.2" fill="#7C3AED"/></svg>`
+        icon: "persamaan-lingkaran"
       }
     ]
   },
@@ -673,25 +784,60 @@ const EXPLORATION_DATA = [
         name: "Mesin Komposisi Fungsi",
         description: "Masukkan nilai ke mesin f & g.",
         href: "eksplorasi_mesin_komposisi_fungsi.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><path d="M8 40c6-14 12 10 18-2s10-16 16 4" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/><circle cx="18" cy="34" r="2" fill="#10B981"/><circle cx="34" cy="30" r="2" fill="#10B981"/></svg>`
+        icon: "mesin-fungsi"
       },
       {
         name: "Fungsi & Invers pada Grafik",
         description: "Ubah grafik & lihat inversnya.",
         href: "eksplorasi_fungsi_invers.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#FEF2F2"/><path d="M10 24c8 0 8 18 22 18s14-18 22-18" fill="none" stroke="#EF4444" stroke-width="2.2" stroke-linecap="round" transform="scale(1,-1) translate(0,-56)"/><circle cx="22" cy="42" r="2.2" fill="#EF4444"/><circle cx="42" cy="42" r="2.2" fill="#EF4444"/><line x1="8" y1="42" x2="56" y2="42" stroke="#FCA5A5" stroke-width="1.4"/></svg>`
+        icon: "grafik-invers"
       },
       {
         name: "Fungsi Proses Berantai",
         description: "Rangkaian proses saling terhubung",
         href: "eksplorasi_fungsi_proses_berantai.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#FFFBEB"/><path d="M8 44c4-24 12-24 16 0s12 24 16 0 12-24 16 0" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/></svg>`
+        icon: "proses-berantai"
       },
       {
         name: "Membalik Fungsi",
         description: "Jalankan mesin lalu kembalikan ke awal.",
         href: "eksplorasi_membalik_fungsi.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#EFF6FF"/><path d="M10 20c6 0 8 24 18 24s12-24 18-24" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"/><circle cx="32" cy="44" r="2.2" fill="#2563EB"/></svg>`
+        icon: "balik-fungsi"
+      }
+    ]
+  },
+  {
+    id: "polinomial",
+    filterKey: "aljabar",
+    name: "Polinomial",
+    description: "Pahami konsep sisa dan habis bagi.",
+    color: "#10B981",
+    colorLight: "#D1FAE5",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17c2-1 3-6 5-6s2 5 4 5 2-8 5-8"/></svg>`,
+    items: [
+      {
+        name: "Mesin Nilai Polinomial",
+        description: "Cek perubahan berdasarkan nilai input..",
+        href: "eksplorasi_mesin_nilai.html",
+        icon: "mesin-fungsi"
+      },
+      {
+        name: "Balapan Dua Cara Menghitung",
+        description: "Cara mana yang lebih cepat?",
+        href: "eksplorasi_balapan_menghitung.html",
+        icon: "domain-range"
+      },
+      {
+        name: "Sisa yang Aneh",
+        description: "Hasil sisa pembagian vs hasil substitusi.",
+        href: "eksplorasi_sisa_aneh.html",
+        icon: "balik-fungsi"
+      },
+      {
+        name: "Kapan Sisa Jadi Nol?",
+        description: "Geser slider hingga badge menyala.",
+        href: "eksplorasi_kapan_sisa_nol.html",
+        icon: "proses-berantai"
       }
     ]
   },
@@ -708,31 +854,31 @@ const EXPLORATION_DATA = [
         name: "Pengaruh Amplitudo",
         description: "Apa yang tetap sama? Apa yang berubah.",
         href: "eksplorasi_amplitudo.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#F5F3FF"/><path d="M12 20c6 0 8 24 20 24s14-24 20-24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round"/><circle cx="32" cy="44" r="2.2" fill="#7C3AED"/></svg>`
+        icon: "amplitudo"
       },
       {
         name: "Pergeseran Horizontal",
         description: "Geser & bandingkan dengan grafik awal.",
         href: "eksplorasi_geser_horizontal.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#EFF6FF"/><path d="M10 46c8-2 10-30 22-30s14 28 22 30" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round"/></svg>`
+        icon: "geser-horizontal"
       },
       {
         name: "Pergeseran Vertikal",
         description: "Geser & bandingkan dengan grafik awal.",
         href: "eksplorasi_geser_vertikal.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><path d="M10 44c8-2 10-26 22-26s14 24 22 26" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/><line x1="32" y1="12" x2="32" y2="50" stroke="#6EE7B7" stroke-width="1.4" stroke-dasharray="3 3"/></svg>`
+        icon: "geser-vertikal"
       },
       {
         name: "Pengaruh Periode",
-        description: "TApa yang berubah pada bentuk gelombangnya?",
+        description: "Apa yang berubah pada bentuk gelombangnya?",
         href: "eksplorasi_periode_sincos.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><path d="M10 44c8-2 10-26 22-26s14 24 22 26" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/><line x1="32" y1="12" x2="32" y2="50" stroke="#6EE7B7" stroke-width="1.4" stroke-dasharray="3 3"/></svg>`
+        icon: "periode"
       },
       {
         name: "Grafik Tangen",
         description: "Apa yang terjadi di garis putus-putus itu?",
         href: "eksplorasi_tangen.html",
-        thumb: `<svg viewBox="0 0 64 64"><rect width="64" height="64" fill="#ECFDF5"/><path d="M10 44c8-2 10-26 22-26s14 24 22 26" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/><line x1="32" y1="12" x2="32" y2="50" stroke="#6EE7B7" stroke-width="1.4" stroke-dasharray="3 3"/></svg>`
+        icon: "tangen"
       }
     ]
   }
@@ -750,6 +896,7 @@ const filtersEl = document.getElementById('filters');
 let activeFilter = 'semua';
 let searchTerm = '';
 let expandedGroups = new Set();
+let openGroups = new Set();
 
 function normalize(str){
   return str.toLowerCase();
@@ -764,6 +911,38 @@ function matchesSearch(item, group){
 function matchesFilter(group){
   if(activeFilter === 'semua') return true;
   return group.filterKey === activeFilter;
+}
+
+/* Kalau beberapa item dalam satu grup memakai `icon` yang SAMA (wajar kalau
+   masih satu topik, mis. 3 eksplorasi "barisan-aritmatika"), thumbnail-nya
+   otomatis divariasikan (dibalik/diputar) berdasarkan urutan kemunculan —
+   supaya tidak terlihat kembar identik, tanpa Anda perlu mengatur apa-apa
+   secara manual. Urutan dihitung dari EXPLORATION_DATA aslinya (bukan dari
+   hasil filter/pencarian) supaya variannya konsisten kapan pun dilihat. */
+const ICON_VARIANTS = ['', 'scaleX(-1)', 'rotate(180deg)', 'scaleX(-1) rotate(180deg)'];
+
+function getIconVariantIndex(group, item){
+  const key = item.icon || 'default';
+  let seen = 0;
+  for(const it of group.items){
+    if((it.icon || 'default') === key){
+      if(it === item) return seen;
+      seen++;
+    }
+  }
+  return 0;
+}
+
+/* Bangun thumbnail 64x64 dari ICON_LIBRARY + warna grup — otomatis,
+   tidak perlu SVG manual per item. */
+function renderThumb(item, group){
+  const shape = ICON_LIBRARY[item.icon] || ICON_LIBRARY.default;
+  const variant = ICON_VARIANTS[getIconVariantIndex(group, item) % ICON_VARIANTS.length];
+  const transformStyle = variant ? `transform:${variant};transform-origin:32px 32px;` : '';
+  return `<svg viewBox="0 0 64 64" style="color:${group.color};${transformStyle}">
+      <rect width="64" height="64" fill="${group.colorLight}"/>
+      ${shape}
+    </svg>`;
 }
 
 function render(){
@@ -781,8 +960,10 @@ function render(){
     const itemsToShow = isExpanded ? filteredItems : filteredItems.slice(0, PREVIEW_COUNT);
     const hasMore = !isExpanded && filteredItems.length > PREVIEW_COUNT;
 
+    const isOpen = openGroups.has(group.id) || searchTerm.length > 0;
+
     const groupEl = document.createElement('section');
-    groupEl.className = 'group';
+    groupEl.className = 'group' + (isOpen ? '' : ' collapsed');
     groupEl.style.setProperty('--group-color', group.color);
     groupEl.style.setProperty('--group-color-light', group.colorLight);
 
@@ -801,7 +982,7 @@ function render(){
         ${itemsToShow.map(item => `
           <!-- GANTI atribut href di bawah ini ke URL eksplorasi sebenarnya -->
           <a class="explore-card" href="${item.href}">
-            <div class="card-thumb">${item.thumb}</div>
+            <div class="card-thumb">${renderThumb(item, group)}</div>
             <div class="card-body">
               <h3>${item.name}</h3>
               <p>${item.description}</p>
@@ -864,10 +1045,12 @@ groupsEl.addEventListener('click', (e) => {
   if(head){
     const id = head.dataset.toggle;
     const groupEl = head.closest('.group');
-    if(expandedGroups.has(id) || (searchTerm.length === 0 && groupEl.querySelector('.card-list').children.length <= PREVIEW_COUNT)){
-      // collapse only toggles visual state; content stays queried via collapsed class
-    }
     groupEl.classList.toggle('collapsed');
+    if(groupEl.classList.contains('collapsed')){
+      openGroups.delete(id);
+    } else {
+      openGroups.add(id);
+    }
   }
 });
 
