@@ -1,0 +1,685 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Sisa yang Aneh (Teorema Sisa)
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sisa yang Aneh (Teorema Sisa) · Numera</title>
+<meta name="description" content="Eksplorasi interaktif: bandingkan sisa pembagian polinomial dengan hasil substitusi.">
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+
+  --sp-1:4px;
+  --sp-2:8px;
+  --sp-3:12px;
+  --sp-4:16px;
+  --sp-5:24px;
+  --sp-6:40px;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 var(--sp-4);
+}
+
+/* Progress bar */
+.progress-track{
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  height:3px;
+  background:transparent;
+  z-index:1001;
+}
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:var(--primary);
+  transition:width 80ms linear;
+}
+
+/* Topbar */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(248,250,252,.9);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:var(--sp-3) 0;
+}
+.topbar .wrap{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text-soft);
+  letter-spacing:.2px;
+}
+.topbar strong{color:var(--primary);}
+
+/* Header section */
+.hero{
+  padding:var(--sp-6) 0 var(--sp-5);
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--primary-light);
+  color:var(--primary);
+  font-size:12.5px;
+  font-weight:700;
+  padding:6px 12px;
+  border-radius:999px;
+  margin-bottom:var(--sp-4);
+}
+.hero h1{
+  font-size:clamp(24px,5vw,34px);
+  font-weight:800;
+  line-height:1.2;
+  margin:0 0 var(--sp-3);
+  letter-spacing:-.5px;
+}
+.hero .meta-line{
+  font-size:14px;
+  color:var(--text-soft);
+  margin:0 0 var(--sp-2);
+}
+.hero .invite{
+  font-size:15.5px;
+  font-weight:600;
+  color:var(--text);
+  margin:0;
+}
+.time-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  color:var(--text-soft);
+  margin-top:var(--sp-3);
+}
+
+/* Section cards */
+.section{
+  margin-bottom:var(--sp-5);
+}
+.section-title{
+  font-size:19px;
+  font-weight:800;
+  margin:0 0 var(--sp-3);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:var(--sp-5);
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+/* Misi */
+.misi-card p{
+  font-size:16px;
+  line-height:1.6;
+  margin:0 0 var(--sp-2);
+}
+.misi-card p:last-child{margin-bottom:0;}
+.misi-card .tanya{
+  color:var(--primary);
+  font-weight:700;
+}
+
+/* Lab */
+.lab-card{
+  padding:var(--sp-4);
+}
+.poly-display{
+  text-align:center;
+  font-size:clamp(17px,4.4vw,22px);
+  font-weight:700;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:var(--sp-4);
+  margin-bottom:var(--sp-4);
+  letter-spacing:.3px;
+}
+.poly-display sup{font-size:.65em;}
+
+.slider-wrap{
+  margin-bottom:var(--sp-5);
+}
+.slider-label-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:var(--sp-3);
+}
+.k-value{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:52px;
+  height:38px;
+  padding:0 12px;
+  border-radius:12px;
+  background:var(--primary);
+  color:#fff;
+  font-size:18px;
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+}
+.k-label{
+  font-size:14px;
+  font-weight:700;
+  color:var(--text-soft);
+}
+input[type="range"]{
+  width:100%;
+  -webkit-appearance:none;
+  appearance:none;
+  height:6px;
+  border-radius:999px;
+  background:var(--border);
+  outline:none;
+  margin:0 0 var(--sp-2);
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:var(--primary);
+  border:3px solid #fff;
+  box-shadow:0 2px 8px rgba(37,99,235,.4);
+  cursor:pointer;
+}
+input[type="range"]::-moz-range-thumb{
+  width:26px;
+  height:26px;
+  border-radius:50%;
+  background:var(--primary);
+  border:3px solid #fff;
+  box-shadow:0 2px 8px rgba(37,99,235,.4);
+  cursor:pointer;
+  border:none;
+}
+.slider-scale{
+  display:flex;
+  justify-content:space-between;
+  font-size:11.5px;
+  color:var(--text-soft);
+  padding:0 2px;
+  margin-bottom:var(--sp-3);
+}
+
+.controls-row{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:var(--sp-5);
+  flex-wrap:wrap;
+}
+.btn{
+  border:none;
+  border-radius:12px;
+  padding:0 18px;
+  height:40px;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background 200ms, transform 150ms, opacity 200ms;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.btn-secondary{
+  background:var(--card);
+  color:var(--text);
+  border:1px solid var(--border);
+}
+.btn-secondary:hover{background:var(--bg);}
+.btn-secondary:active{transform:scale(0.97);}
+
+.compare{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:var(--sp-3);
+  align-items:stretch;
+}
+@media (max-width:620px){
+  .compare{grid-template-columns:1fr;}
+  .link-col{order:2; padding:6px 0 !important;}
+  .box-b{order:3;}
+}
+
+.box{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:var(--sp-4);
+  transition:border-color 250ms, background 250ms;
+}
+.box-name{
+  font-size:13.5px;
+  font-weight:800;
+  margin-bottom:var(--sp-3);
+  text-align:center;
+}
+.box-body{
+  font-size:14px;
+  line-height:1.9;
+  text-align:center;
+  min-height:96px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  font-variant-numeric:tabular-nums;
+}
+.box-body .expr{
+  color:var(--text-soft);
+  font-size:13px;
+}
+.box-result{
+  margin-top:var(--sp-3);
+  padding-top:var(--sp-3);
+  border-top:1px dashed var(--border);
+  font-size:14px;
+  color:var(--text-soft);
+}
+.box-result strong{
+  font-size:19px;
+  color:var(--text);
+}
+.box.match{
+  border-color:var(--primary);
+  background:var(--primary-light);
+}
+.box.match .box-result strong{color:var(--primary);}
+
+.link-col{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0 4px;
+}
+.link-badge{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:var(--card);
+  border:2px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+  font-weight:800;
+  color:var(--border);
+  transition:all 300ms ease;
+}
+.link-badge.on{
+  background:var(--success);
+  border-color:var(--success);
+  color:#fff;
+  transform:scale(1.08);
+}
+
+.tally{
+  text-align:center;
+  margin-top:var(--sp-4);
+  font-size:13px;
+  color:var(--text-soft);
+}
+.tally strong{color:var(--primary);}
+
+/* Dugaan */
+.dugaan-card textarea{
+  width:100%;
+  min-height:100px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:var(--sp-3);
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  color:var(--text);
+  background:var(--bg);
+  resize:vertical;
+  outline:none;
+  transition:border-color 200ms;
+}
+.dugaan-card textarea:focus{border-color:var(--primary);}
+.dugaan-note{
+  font-size:13px;
+  color:var(--text-soft);
+  margin-top:var(--sp-2);
+  margin-bottom:0;
+}
+
+/* Lanjut ke modul */
+.lanjut-card{
+  text-align:center;
+}
+.lanjut-card p{
+  font-size:15px;
+  line-height:1.6;
+  color:var(--text-soft);
+  margin:0 0 var(--sp-4);
+}
+.modul-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--primary);
+  color:#fff;
+  text-decoration:none;
+  font-weight:700;
+  font-size:15px;
+  padding:0 22px;
+  height:46px;
+  border-radius:12px;
+  transition:background 200ms, transform 150ms;
+}
+.modul-link:hover{background:var(--primary-hover);}
+.modul-link:active{transform:scale(0.97);}
+
+/* Footer */
+.site-footer{
+  padding:var(--sp-5) 0 var(--sp-6);
+  text-align:center;
+}
+.footer-divider{
+  height:1px;
+  background:var(--border);
+  margin-bottom:var(--sp-4);
+}
+.footer-brand{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--primary);
+  margin:0 0 4px;
+}
+.footer-text{
+  font-size:13px;
+  color:var(--text-soft);
+  margin:0 0 2px;
+}
+.footer-meta{
+  font-size:12.5px;
+  color:var(--text-soft);
+  margin:0;
+  opacity:.85;
+}
+
+@media (max-width:480px){
+  .card{padding:var(--sp-4);}
+  .hero{padding:var(--sp-5) 0 var(--sp-4);}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="topbar">
+  <div class="wrap"><strong>NUMERA</strong> · 🧪 Sisa yang Aneh — Eksplorasi</div>
+</div>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="badge">🧪 Eksplorasi</span>
+    <h1>Sisa yang Aneh</h1>
+    <p class="meta-line">Bagian dari materi Teorema Sisa · Kerjakan sebelum buka Modul</p>
+    <p class="invite">Yuk cari tahu sendiri polanya.</p>
+    <div class="time-chip">⏱️ Sekitar 3–5 menit</div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">🎯 Misi Eksplorasi</h2>
+    <div class="card misi-card">
+      <p>Geser k ke beberapa nilai, lalu lihat dua kotak hasil di bawah.</p>
+      <p class="tanya">Menurutmu, kenapa keduanya selalu kompak?</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">🧪 Laboratorium Matematika</h2>
+    <div class="card lab-card">
+
+      <div class="poly-display" id="polyDisplay">P(x) = 2x<sup>3</sup> − 3x<sup>2</sup> − 8x + 5</div>
+
+      <div class="slider-wrap">
+        <div class="slider-label-row">
+          <span class="k-label">k =</span>
+          <span class="k-value" id="kValue">2</span>
+        </div>
+        <input type="range" id="kSlider" min="-4" max="6" step="1" value="2">
+        <div class="slider-scale"><span>−4</span><span>6</span></div>
+      </div>
+
+      <div class="controls-row">
+        <button class="btn btn-secondary" id="randomBtn">🎲 Acak k</button>
+      </div>
+
+      <div class="compare">
+        <div class="box box-a" id="boxA">
+          <div class="box-name">🔷 Sisa Pembagian<br><span style="font-weight:500;color:var(--text-soft);font-size:12px;">P(x) ÷ (x − k)</span></div>
+          <div class="box-body" id="bodyA"></div>
+          <div class="box-result" id="resultA"></div>
+        </div>
+
+        <div class="link-col">
+          <div class="link-badge" id="linkBadge">=</div>
+        </div>
+
+        <div class="box box-b" id="boxB">
+          <div class="box-name">🔶 Substitusi<br><span style="font-weight:500;color:var(--text-soft);font-size:12px;">P(k)</span></div>
+          <div class="box-body" id="bodyB"></div>
+          <div class="box-result" id="resultB"></div>
+        </div>
+      </div>
+
+      <div class="tally">Sudah dicoba <strong id="tryCount">0</strong> nilai k yang berbeda</div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">💭 Dugaan Saya</h2>
+    <div class="card dugaan-card">
+      <textarea id="dugaanBox" placeholder="Tulis dugaanmu di sini... apa yang kamu perhatikan dari kedua kotak tadi?"></textarea>
+      <p class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">🚀 Lanjut ke Modul</h2>
+    <div class="card lanjut-card">
+      <p>Kamu sudah punya dugaan sendiri soal kekompakan tadi. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GURU: ganti href="#" di bawah dengan URL Modul pasangan eksplorasi ini -->
+      <a href="sub_polinom.html" class="modul-link">Buka Modul Polinomial →</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- Progress bar ----
+  var progressFill = document.getElementById('progressFill');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrollTop = h.scrollTop || document.body.scrollTop;
+    var scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressFill.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // ---- Polynomial: P(x) = 2x^3 - 3x^2 - 8x + 5 ----
+  var coef = [2, -3, -8, 5]; // a, b, c, d
+
+  var kSlider = document.getElementById('kSlider');
+  var kValueEl = document.getElementById('kValue');
+  var randomBtn = document.getElementById('randomBtn');
+
+  var bodyA = document.getElementById('bodyA');
+  var resultA = document.getElementById('resultA');
+  var boxA = document.getElementById('boxA');
+
+  var bodyB = document.getElementById('bodyB');
+  var resultB = document.getElementById('resultB');
+  var boxB = document.getElementById('boxB');
+
+  var linkBadge = document.getElementById('linkBadge');
+  var tryCountEl = document.getElementById('tryCount');
+
+  var triedValues = {};
+  var tryCount = 0;
+
+  function fmt(n){
+    if (Object.is(n,-0)) n = 0;
+    return n.toString();
+  }
+  function signed(n){
+    return n >= 0 ? ('+ ' + n) : ('− ' + Math.abs(n));
+  }
+
+  function divisionByXminusK(k){
+    // Sisa pembagian P(x) oleh (x - k) via skema pembagian bersusun
+    var a = coef[0], b = coef[1], c = coef[2], d = coef[3];
+    var q1 = a;
+    var q2 = b + k*q1;
+    var q3 = c + k*q2;
+    var rem = d + k*q3;
+    return {q1:q1, q2:q2, q3:q3, rem:rem};
+  }
+
+  function substitution(k){
+    var a = coef[0], b = coef[1], c = coef[2], d = coef[3];
+    var t1 = a*k*k*k;
+    var t2 = b*k*k;
+    var t3 = c*k;
+    var total = t1+t2+t3+d;
+    return {t1:t1, t2:t2, t3:t3, total:total};
+  }
+
+  function render(k){
+    var div = divisionByXminusK(k);
+    var sub = substitution(k);
+
+    bodyA.innerHTML =
+      '<div class="expr">Susun: ' + coef[0] + ', ' + coef[1] + ', ' + coef[2] + ', ' + coef[3] + '</div>' +
+      '<div class="expr">bawa turun → kali k → jumlah, diulang</div>';
+    resultA.innerHTML = 'Sisa = <strong>' + fmt(div.rem) + '</strong>';
+
+    bodyB.innerHTML =
+      '<div class="expr">P(' + k + ') = ' + coef[0] + '(' + k + ')<sup>3</sup> ' + signed(coef[1]) + '(' + k + ')<sup>2</sup> ' + signed(coef[2]) + '(' + k + ') ' + signed(coef[3]) + '</div>' +
+      '<div class="expr">= ' + fmt(sub.t1) + ' ' + signed(sub.t2) + ' ' + signed(sub.t3) + ' ' + signed(coef[3]) + '</div>';
+    resultB.innerHTML = 'Hasil = <strong>' + fmt(sub.total) + '</strong>';
+
+    var match = div.rem === sub.total;
+    boxA.classList.toggle('match', match);
+    boxB.classList.toggle('match', match);
+    linkBadge.classList.toggle('on', match);
+
+    if (!(k in triedValues)){
+      triedValues[k] = true;
+      tryCount++;
+      tryCountEl.textContent = tryCount;
+    }
+  }
+
+  function setK(k){
+    k = Math.max(-4, Math.min(6, k));
+    kSlider.value = k;
+    kValueEl.textContent = k;
+    render(k);
+  }
+
+  kSlider.addEventListener('input', function(){
+    kValueEl.textContent = kSlider.value;
+    render(parseInt(kSlider.value, 10));
+  });
+
+  randomBtn.addEventListener('click', function(){
+    var current = parseInt(kSlider.value, 10);
+    var choices = [];
+    for (var i=-4;i<=6;i++){ if(i!==current) choices.push(i); }
+    var pick = choices[Math.floor(Math.random()*choices.length)];
+    setK(pick);
+  });
+
+  // init
+  setK(2);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,713 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Nilai Polinomial
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Nilai Polinomial | Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Laboratorium interaktif Numera — coba-coba mesin polinomial dan amati apa yang terjadi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --success-light:#D1FAE5;
+    --warning:#F59E0B;
+    --warning-light:#FEF3C7;
+    --error:#EF4444;
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:32px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:'Inter', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-tap-highlight-color:transparent;
+    overflow-x:hidden;
+  }
+
+  .container{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 20px 48px;
+  }
+
+  /* ============ TOPBAR & PROGRESS ============ */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(248,250,252,0.92);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:12px 20px;
+    text-align:center;
+  }
+  .topbar span{
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    color:var(--primary);
+  }
+  .progress-track{
+    position:sticky;
+    top:41px;
+    z-index:50;
+    height:3px;
+    background:var(--border);
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:var(--primary);
+    transition:width .1s linear;
+  }
+
+  h1,h2,h3{margin:0; letter-spacing:-0.015em;}
+  p{margin:0 0 var(--sp-3);}
+
+  .section{padding:var(--sp-6) 0;}
+  .section:not(:last-of-type){border-bottom:1px solid var(--border);}
+
+  .section-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--primary);
+    background:var(--primary-light);
+    padding:4px 11px;
+    border-radius:999px;
+    margin-bottom:var(--sp-3);
+  }
+  .section-title{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:var(--sp-2);
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    padding:var(--sp-5);
+    margin-bottom:var(--sp-4);
+  }
+
+  /* ============ HEADER ============ */
+  .header-card{
+    background:linear-gradient(135deg, var(--primary-light), #EFF6FF);
+    border-radius:18px;
+    padding:var(--sp-5);
+    border:1px solid var(--primary-light);
+  }
+  .badge-eksplorasi{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    font-weight:700;
+    color:var(--primary);
+    background:#fff;
+    padding:5px 12px;
+    border-radius:999px;
+    margin-bottom:var(--sp-3);
+  }
+  .header-title{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:var(--sp-2);
+    color:var(--text);
+  }
+  .header-meta{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-bottom:var(--sp-2);
+  }
+  .header-connect{
+    font-size:13px;
+    color:#1E3A8A;
+    margin-bottom:var(--sp-1);
+  }
+  .header-invite{
+    font-size:15px;
+    font-weight:600;
+    color:var(--text);
+    margin:0;
+  }
+
+  /* ============ MISI ============ */
+  .misi-card{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+  }
+  .misi-icon{
+    flex-shrink:0;
+    width:38px; height:38px;
+    border-radius:11px;
+    background:var(--primary-light);
+    color:var(--primary);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+  }
+  .misi-card p{font-size:15px; margin-bottom:6px;}
+  .misi-card p:last-child{margin-bottom:0; color:var(--text-secondary); font-size:13.5px;}
+
+  /* ============ LABORATORIUM ============ */
+  .lab-sub{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-bottom:var(--sp-4);
+  }
+
+  .chip-row{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:var(--sp-5);
+  }
+  .chip{
+    padding:9px 15px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:var(--card);
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--text-secondary);
+    cursor:pointer;
+    transition:all .15s ease;
+    min-height:38px;
+  }
+  .chip.active{background:var(--primary); color:#fff; border-color:var(--primary);}
+
+  .machine-box{
+    background:#F8FAFF;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:var(--sp-5);
+    text-align:center;
+    margin-bottom:var(--sp-4);
+  }
+  .machine-label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--text-secondary);
+    margin-bottom:6px;
+  }
+  .machine-expr{
+    font-size:20px;
+    font-weight:800;
+    color:var(--primary);
+    margin-bottom:var(--sp-4);
+  }
+  .machine-flow{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .flow-bubble{
+    width:56px; height:56px;
+    border-radius:50%;
+    background:#fff;
+    border:2px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px;
+    font-weight:800;
+    color:var(--text);
+    transition:transform .2s ease;
+  }
+  .flow-arrow{font-size:18px; color:var(--text-secondary);}
+  .flow-out{
+    min-width:90px;
+    height:56px;
+    padding:0 16px;
+    border-radius:16px;
+    background:var(--primary);
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-size:19px;
+    font-weight:800;
+    transition:background .25s ease, transform .2s ease;
+  }
+  .flow-out.zero{
+    background:var(--success);
+  }
+  .pulse{animation:pulseVal .35s ease;}
+  @keyframes pulseVal{
+    0%{transform:scale(1.15);}
+    100%{transform:scale(1);}
+  }
+
+  .zero-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13px;
+    font-weight:800;
+    padding:7px 14px;
+    border-radius:999px;
+    margin-top:var(--sp-3);
+    background:var(--success-light);
+    color:#065F46;
+    opacity:0;
+    transform:translateY(4px);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .zero-badge.show{opacity:1; transform:translateY(0);}
+
+  .slider-block{margin:var(--sp-5) 0 var(--sp-3);}
+  .slider-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .slider-label span.val{
+    color:var(--primary);
+    font-weight:800;
+    font-size:15px;
+  }
+  input[type="range"]{
+    width:100%;
+    height:6px;
+    border-radius:999px;
+    background:var(--border);
+    outline:none;
+    -webkit-appearance:none;
+    accent-color:var(--primary);
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:22px; height:22px;
+    border-radius:50%;
+    background:var(--primary);
+    cursor:pointer;
+    border:3px solid #fff;
+    box-shadow:0 1px 4px rgba(0,0,0,0.25);
+  }
+
+  /* ============ NUMBER LINE TRACE ============ */
+  .traceline-wrap{
+    background:#F8FAFF;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px 14px 14px;
+    position:relative;
+  }
+  .traceline-title{
+    font-size:12px;
+    font-weight:700;
+    color:var(--text-secondary);
+    margin-bottom:14px;
+  }
+  .traceline{
+    position:relative;
+    height:6px;
+    background:var(--border);
+    border-radius:999px;
+    margin:0 10px;
+  }
+  .traceline-ticks{
+    display:flex;
+    justify-content:space-between;
+    margin:6px 10px 0;
+    font-size:10.5px;
+    color:var(--text-secondary);
+    font-weight:600;
+  }
+  .trace-dot{
+    position:absolute;
+    top:50%;
+    width:10px; height:10px;
+    border-radius:50%;
+    background:var(--text-secondary);
+    opacity:0.35;
+    transform:translate(-50%,-50%);
+  }
+  .trace-dot.zero{background:var(--success); opacity:0.9;}
+  .trace-current{
+    position:absolute;
+    top:50%;
+    width:18px; height:18px;
+    border-radius:50%;
+    background:var(--primary);
+    border:3px solid #fff;
+    box-shadow:0 1px 4px rgba(0,0,0,0.3);
+    transform:translate(-50%,-50%);
+    transition:left .15s ease;
+  }
+  .btn-reset-trace{
+    display:block;
+    margin:14px auto 0;
+    padding:7px 16px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--text-secondary);
+    font-family:inherit;
+    font-size:12.5px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  /* ============ DUGAAN SAYA ============ */
+  textarea{
+    width:100%;
+    min-height:90px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px 14px;
+    font-family:inherit;
+    font-size:14px;
+    color:var(--text);
+    background:var(--bg);
+    outline:none;
+    resize:vertical;
+    transition:border-color .15s ease;
+  }
+  textarea:focus{border-color:var(--primary); background:#fff;}
+  .dugaan-note{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin-top:8px;
+    margin-bottom:0;
+  }
+  .dugaan-lanjut{
+    font-size:13.5px;
+    color:var(--text-secondary);
+    margin-top:var(--sp-4);
+    padding-top:var(--sp-4);
+    border-top:1px dashed var(--border);
+  }
+
+  /* ============ LANJUT KE MODUL ============ */
+  .modul-card{
+    text-align:center;
+    background:linear-gradient(135deg, #EFF6FF, var(--primary-light));
+    border:1px solid var(--primary-light);
+  }
+  .modul-card p{color:#1E3A8A; font-size:14.5px;}
+  .btn-modul{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-height:44px;
+    padding:0 26px;
+    border-radius:12px;
+    background:var(--primary);
+    color:#fff;
+    text-decoration:none;
+    font-family:inherit;
+    font-size:14.5px;
+    font-weight:700;
+    margin-top:8px;
+    transition:background .2s ease, transform .15s ease;
+  }
+  .btn-modul:hover{background:var(--primary-hover);}
+  .btn-modul:active{transform:scale(0.97);}
+
+  /* ============ FOOTER ============ */
+  .site-footer{
+    padding:var(--sp-5) 0 var(--sp-6);
+    text-align:center;
+  }
+  .footer-divider{
+    height:1px;
+    background:var(--border);
+    margin-bottom:var(--sp-4);
+  }
+  .footer-brand{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--primary);
+    margin:0 0 4px;
+  }
+  .footer-text{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin:0 0 2px;
+  }
+  .footer-meta{
+    font-size:12.5px;
+    color:var(--text-secondary);
+    margin:0;
+    opacity:.85;
+  }
+
+  @media(max-width:480px){
+    .container{padding:0 16px 40px;}
+    .header-title{font-size:21px;}
+    .machine-expr{font-size:17px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><span>NUMERA · 🧪 Nilai Polinomial — Eksplorasi</span></div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="container">
+
+  <!-- ================= HEADER ================= -->
+  <section class="section" id="header">
+    <div class="header-card">
+      <span class="badge-eksplorasi">🧪 Eksplorasi</span>
+      <h1 class="header-title">Nilai Polinomial</h1>
+      <p class="header-meta">⏱ Sekitar 3–5 menit</p>
+      <p class="header-connect">Bagian dari materi Polinomial · Kerjakan sebelum buka Modul</p>
+      <p class="header-invite">Yuk cari tahu sendiri polanya. 🔍</p>
+    </div>
+  </section>
+
+  <!-- ================= MISI ================= -->
+  <section class="section" id="misi">
+    <div class="section-eyebrow">🎯 Misi Eksplorasi</div>
+    <div class="card misi-card">
+      <div class="misi-icon">🎯</div>
+      <div>
+        <p>Pilih satu mesin polinomial, lalu geser x untuk memburu angka yang membuat hasilnya pas nol.</p>
+        <p>Ada berapa angka x yang bisa membuat itu terjadi?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LABORATORIUM ================= -->
+  <section class="section" id="lab">
+    <div class="section-eyebrow">🧪 Laboratorium Matematika</div>
+    <h2 class="section-title">Mesin Pemburu Nol</h2>
+    <p class="lab-sub">Setiap angka x yang kamu masukkan akan diolah mesin ini menjadi satu angka hasil. Coba semua kemungkinan x, dan tandai sendiri mana yang bikin hasilnya nol.</p>
+
+    <div class="chip-row" id="chipsPoly"></div>
+
+    <div class="machine-box">
+      <div class="machine-label">Mesin saat ini</div>
+      <div class="machine-expr" id="polyExpr">x² − 4</div>
+      <div class="machine-flow">
+        <div class="flow-bubble" id="xBubble">2</div>
+        <div class="flow-arrow">→</div>
+        <div style="font-size:13px; font-weight:700; color:var(--text-secondary);">mesin</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-out pulse" id="outBox">0</div>
+      </div>
+      <div id="zeroBadgeWrap" style="text-align:center;">
+        <span class="zero-badge" id="zeroBadge">🎯 Kena! Hasilnya nol</span>
+      </div>
+    </div>
+
+    <div class="slider-block">
+      <div class="slider-label">Angka masuk (x) <span class="val" id="xVal">2</span></div>
+      <input type="range" id="xSlider" min="-5" max="5" step="1" value="2">
+    </div>
+
+    <div class="traceline-wrap">
+      <div class="traceline-title">Jejak x yang sudah kamu coba</div>
+      <div class="traceline" id="traceline"></div>
+      <div class="traceline-ticks">
+        <span>−5</span><span>0</span><span>5</span>
+      </div>
+      <button class="btn-reset-trace" id="btnResetTrace">↻ Hapus jejak</button>
+    </div>
+  </section>
+
+  <!-- ================= DUGAAN SAYA ================= -->
+  <section class="section" id="dugaan">
+    <div class="section-eyebrow">💭 Dugaan Saya</div>
+    <h2 class="section-title">Menurutmu, ada berapa banyak?</h2>
+    <div class="card">
+      <textarea id="dugaanBox" placeholder="Tulis dugaanmu di sini... ada berapa x yang membuat hasilnya nol untuk mesin ini?"></textarea>
+      <p class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+      <p class="dugaan-lanjut">Coba ganti mesinnya. Masih terlihat pola yang sama?</p>
+    </div>
+  </section>
+
+  <!-- ================= LANJUT KE MODUL ================= -->
+  <section class="section" id="lanjut">
+    <div class="section-eyebrow">🚀 Lanjut ke Modul</div>
+    <div class="card modul-card">
+      <p>Kamu sudah menemukan sendiri beberapa angka spesial itu.</p>
+      <p>Sekarang buka Modul untuk belajar cara mencarinya tanpa harus coba-coba satu per satu.</p>
+      <!-- GURU: ganti href="#" di bawah ini dengan URL Modul "Polinomial" -->
+      <a href="sub_polinom.html" class="btn-modul">Buka Modul →</a>
+    </div>
+  </section>
+
+</div>
+
+<!-- ================= FOOTER IDENTITAS PROYEK ================= -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   PROGRESS BAR
+   ========================================================= */
+window.addEventListener('scroll', function(){
+  const h = document.documentElement;
+  const scrolled = h.scrollTop;
+  const max = h.scrollHeight - h.clientHeight;
+  const pct = max > 0 ? (scrolled / max) * 100 : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+});
+
+/* =========================================================
+   DAFTAR MESIN POLINOMIAL
+   ========================================================= */
+const POLYS = [
+  { id:'p1', label:'x² − 4',        fn:function(v){ return v*v - 4; } },
+  { id:'p2', label:'x² − 5x + 6',   fn:function(v){ return v*v - 5*v + 6; } },
+  { id:'p3', label:'x³ − 4x',       fn:function(v){ return v*v*v - 4*v; } },
+  { id:'p4', label:'x² + 2x − 3',   fn:function(v){ return v*v + 2*v - 3; } }
+];
+
+let selectedPoly = 'p1';
+let trace = {}; // { polyId: { xValue: isZero } }
+
+function getPoly(id){
+  for(let i=0;i<POLYS.length;i++){ if(POLYS[i].id===id) return POLYS[i]; }
+  return POLYS[0];
+}
+
+/* =========================================================
+   RENDER CHIP PILIHAN MESIN
+   ========================================================= */
+function renderChips(){
+  const wrap = document.getElementById('chipsPoly');
+  wrap.innerHTML = '';
+  POLYS.forEach(function(p){
+    const btn = document.createElement('button');
+    btn.className = 'chip' + (p.id===selectedPoly ? ' active' : '');
+    btn.textContent = p.label;
+    btn.onclick = function(){
+      selectedPoly = p.id;
+      renderChips();
+      update();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+/* =========================================================
+   RENDER JEJAK PADA GARIS BILANGAN
+   ========================================================= */
+function renderTrace(x, isZero){
+  if(!trace[selectedPoly]) trace[selectedPoly] = {};
+  trace[selectedPoly][x] = isZero;
+
+  const line = document.getElementById('traceline');
+  line.innerHTML = '';
+
+  const min = -5, max = 5;
+  Object.keys(trace[selectedPoly]).forEach(function(key){
+    const val = parseInt(key, 10);
+    const pct = ((val - min) / (max - min)) * 100;
+    const dot = document.createElement('div');
+    dot.className = 'trace-dot' + (trace[selectedPoly][key] ? ' zero' : '');
+    dot.style.left = pct + '%';
+    line.appendChild(dot);
+  });
+
+  const curPct = ((x - min) / (max - min)) * 100;
+  const cur = document.createElement('div');
+  cur.className = 'trace-current';
+  cur.style.left = curPct + '%';
+  line.appendChild(cur);
+}
+
+/* =========================================================
+   UPDATE UTAMA
+   ========================================================= */
+function update(){
+  const x = parseInt(document.getElementById('xSlider').value, 10);
+  document.getElementById('xVal').textContent = x;
+
+  const poly = getPoly(selectedPoly);
+  const result = poly.fn(x);
+  const isZero = result === 0;
+
+  document.getElementById('polyExpr').textContent = poly.label;
+  document.getElementById('xBubble').textContent = x;
+
+  const outBox = document.getElementById('outBox');
+  outBox.textContent = result;
+  outBox.className = 'flow-out pulse' + (isZero ? ' zero' : '');
+  void outBox.offsetWidth;
+  outBox.classList.add('pulse');
+
+  const badge = document.getElementById('zeroBadge');
+  if(isZero){
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+
+  renderTrace(x, isZero);
+}
+
+function resetTrace(){
+  trace[selectedPoly] = {};
+  update();
+}
+
+/* =========================================================
+   INISIALISASI
+   ========================================================= */
+document.getElementById('xSlider').addEventListener('input', update);
+document.getElementById('btnResetTrace').addEventListener('click', resetTrace);
+renderChips();
+update();
+</script>
+</body>
+</html>
