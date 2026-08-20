@@ -1,0 +1,319 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Bangun Transformasimu
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bangun Transformasimu · NUMERA</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+  --sp-3:16px; --sp-4:22px; --sp-5:32px; --sp-6:48px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:900px;margin:0 auto;padding:0 18px 40px;}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:12px 18px;
+  font-weight:600;font-size:13.5px;color:var(--primary);
+}
+.progress{position:sticky;top:41px;z-index:50;height:3px;background:var(--border);}
+.progress-bar{height:100%;width:0%;background:var(--primary);transition:width .1s;}
+section{padding:var(--sp-5) 0;}
+.fade{opacity:0;transform:translateY(16px);transition:opacity .5s ease, transform .5s ease;}
+.fade.show{opacity:1;transform:translateY(0);}
+h1{font-size:24px;font-weight:800;margin:6px 0 6px;}
+h2{font-size:19px;font-weight:700;margin:0 0 12px;}
+p{margin:0 0 12px;}
+.badge{
+  display:inline-block;background:var(--primary-light);color:var(--primary-hover);
+  font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px;margin-bottom:10px;
+}
+.muted{color:var(--text-soft);font-size:13.5px;}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:18px;
+  padding:22px;box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  margin-bottom:16px;
+}
+.linker{font-size:13.5px;color:var(--text-soft);margin-bottom:4px;}
+.ajakan{font-weight:600;font-size:15px;color:var(--text);}
+.svg-box{width:100%;background:#fff;border-radius:14px;border:1px solid var(--border);margin-bottom:10px;}
+.control-group{margin:18px 0;}
+.control-label{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px;}
+.control-label span.val{color:var(--primary);font-weight:800;}
+input[type=range]{width:100%;accent-color:var(--primary);height:6px;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+button{
+  font-family:inherit;font-size:14.5px;font-weight:600;border-radius:12px;border:none;
+  min-height:44px;padding:0 18px;cursor:pointer;transition:.2s;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-secondary{background:var(--primary-light);color:var(--primary-hover);}
+.btn-secondary:hover{background:#c7ddfc;}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--text-soft);margin-bottom:14px;}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.dot-line{width:16px;height:0;border-top:3px dashed #94A3B8;display:inline-block;}
+.dot-line.solid{border-top:3px solid var(--primary);}
+textarea{
+  width:100%;min-height:90px;border-radius:12px;border:1px solid var(--border);
+  padding:12px 14px;font-family:inherit;font-size:14.5px;resize:vertical;
+}
+textarea:focus{outline:none;border-color:var(--primary);}
+.tip{font-size:12.5px;color:var(--text-soft);margin-top:8px;}
+.eq-box{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-top:16px;}
+.eq-row{display:flex;justify-content:space-between;align-items:center;font-size:14.5px;padding:5px 0;}
+.eq-row:first-child{border-bottom:1px dashed var(--border);}
+.eq-label{color:var(--text-soft);font-weight:600;font-size:13px;}
+.eq-val{font-weight:700;color:var(--primary);font-variant-numeric:tabular-nums;}
+.next-card{
+  background:var(--primary);color:#fff;border-radius:18px;padding:24px;text-align:center;
+  text-decoration:none;display:block;
+}
+.next-card b{font-size:16px;display:block;margin-bottom:6px;}
+.next-card span{font-size:13.5px;opacity:.9;}
+.site-footer{padding:var(--sp-5) 0 var(--sp-6);text-align:center;}
+.footer-divider{height:1px;background:var(--border);margin-bottom:var(--sp-4);}
+.footer-brand{font-size:13.5px;font-weight:700;color:var(--primary);margin:0 0 4px;}
+.footer-text{font-size:13px;color:var(--text-soft);margin:0 0 2px;}
+.footer-meta{font-size:12.5px;color:var(--text-soft);margin:0;opacity:.85;}
+</style>
+</head>
+<body>
+
+<div class="topbar">NUMERA · 🧪 Bangun Transformasimu — Eksplorasi</div>
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="wrap">
+
+<!-- HEADER -->
+<section id="header">
+  <span class="badge">🧪 Eksplorasi</span>
+  <h1>Bangun Transformasimu</h1>
+  <p class="linker">Bagian dari materi Transformasi Fungsi · Kerjakan sebelum buka Modul</p>
+  <p class="muted">⏱️ Sekitar 3–5 menit</p>
+  <p class="ajakan">Yuk cari tahu sendiri polanya.</p>
+</section>
+
+<!-- MISI EKSPLORASI -->
+<section class="fade">
+  <h2>🎯 Misi Eksplorasi</h2>
+  <div class="card">
+    <p>Atur pengontrol di bawah sampai grafik birumu menempel pas di garis putus-putus abu-abu.</p>
+    <p><b>Menurutmu, ada berapa cara pengontrol itu bisa bekerja sama untuk membentuk grafik target?</b></p>
+  </div>
+</section>
+
+<!-- LABORATORIUM -->
+<section class="fade">
+  <h2>🧪 Laboratorium Matematika</h2>
+  <div class="card">
+    <div class="legend">
+      <span><i class="dot-line"></i> Grafik target</span>
+      <span><i class="dot-line solid"></i> Grafik kamu</span>
+    </div>
+    <svg id="labSvg" class="svg-box" viewBox="0 0 300 260"></svg>
+
+    <div class="control-group">
+      <div class="control-label">a (peregangan &amp; arah) <span class="val" id="aVal">1</span></div>
+      <input type="range" id="aSlider" min="-3" max="3" step="0.5" value="1">
+    </div>
+    <div class="control-group">
+      <div class="control-label">h (geser kiri/kanan) <span class="val" id="hVal">0</span></div>
+      <input type="range" id="hSlider" min="-4" max="4" step="1" value="0">
+    </div>
+    <div class="control-group">
+      <div class="control-label">k (geser naik/turun) <span class="val" id="kVal">0</span></div>
+      <input type="range" id="kSlider" min="-4" max="4" step="1" value="0">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="acakTarget()">🎲 Coba kondisi baru</button>
+      <button class="btn-secondary" onclick="resetKontrol()">↻ Reset pengontrolmu</button>
+    </div>
+
+    <div class="eq-box">
+      <div class="eq-row"><span class="eq-label">Sebelum</span><span class="eq-val" id="eqBefore">y = 0.5x²</span></div>
+      <div class="eq-row"><span class="eq-label">Sesudah</span><span class="eq-val" id="eqAfter">y = 0.5x²</span></div>
+    </div>
+
+    <p class="tip">Coba ubah nilainya satu-satu dulu. Lalu coba gabungkan beberapa sekaligus. Masih terlihat pola yang sama?</p>
+  </div>
+</section>
+
+<!-- DUGAAN SAYA -->
+<section class="fade">
+  <h2>💭 Dugaan Saya</h2>
+  <div class="card">
+    <p>Tulis apa yang kamu perhatikan saat mencoba mencocokkan grafiknya tadi.</p>
+    <textarea id="dugaan" placeholder="Menurutku, yang terjadi adalah..."></textarea>
+    <p class="tip">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+  </div>
+</section>
+
+<!-- LANJUT KE MODUL -->
+<section class="fade">
+  <h2>🚀 Lanjut ke Modul</h2>
+  <div class="card" style="background:transparent;border:none;box-shadow:none;padding:0">
+    <p>Kamu sudah punya dugaan sendiri soal bagaimana pengontrol-pengontrol tadi bekerja sama.</p>
+    <p>Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+    <!-- GANTI href INI DENGAN URL MODUL PASANGAN -->
+    <a href="subtopik_transfung.html" class="next-card">
+      <b>Buka Modul →</b>
+      <span>Transformasi Fungsi</span>
+    </a>
+  </div>
+</section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ================= PROGRESS + FADE ================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+});
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); });
+},{threshold:.12});
+document.querySelectorAll('.fade').forEach(el=>io.observe(el));
+
+/* ================= GRAFIK ================= */
+const XMIN=-6,XMAX=6,YMIN=-8,YMAX=10,W=300,H=260;
+function toPx(x,y){ return { px: (x-XMIN)/(XMAX-XMIN)*W, py: H - (y-YMIN)/(YMAX-YMIN)*H }; }
+function baseFn(x){ return x*x/2; } // parabola landai, biar grafik nyaman dilihat di viewBox
+
+function pathFor(a,h,k){
+  let d=''; let started=false;
+  for(let px=0;px<=W;px+=2){
+    const x = XMIN + (px/W)*(XMAX-XMIN);
+    const y = a*baseFn(x-h) + k;
+    const p = toPx(x,y);
+    if(p.py < -30 || p.py > H+30){ started=false; continue; }
+    d += (started?' L ':' M ')+p.px.toFixed(1)+' '+p.py.toFixed(1);
+    started=true;
+  }
+  return d;
+}
+function gridSvg(){
+  let s='';
+  for(let gx=XMIN; gx<=XMAX; gx++){ const p1=toPx(gx,YMIN), p2=toPx(gx,YMAX);
+    s+=`<line x1="${p1.px}" y1="${p1.py}" x2="${p2.px}" y2="${p2.py}" stroke="#EEF2F7" stroke-width="1"/>`; }
+  for(let gy=YMIN; gy<=YMAX; gy++){ const p1=toPx(XMIN,gy), p2=toPx(XMAX,gy);
+    s+=`<line x1="${p1.px}" y1="${p1.py}" x2="${p2.px}" y2="${p2.py}" stroke="#EEF2F7" stroke-width="1"/>`; }
+  const ax1=toPx(XMIN,0), ax2=toPx(XMAX,0), ay1=toPx(0,YMIN), ay2=toPx(0,YMAX);
+  s+=`<line x1="${ax1.px}" y1="${ax1.py}" x2="${ax2.px}" y2="${ax2.py}" stroke="#94A3B8" stroke-width="1.4"/>`;
+  s+=`<line x1="${ay1.px}" y1="${ay1.py}" x2="${ay2.px}" y2="${ay2.py}" stroke="#94A3B8" stroke-width="1.4"/>`;
+  return s;
+}
+
+const aSlider = document.getElementById('aSlider');
+const hSlider = document.getElementById('hSlider');
+const kSlider = document.getElementById('kSlider');
+const labSvg = document.getElementById('labSvg');
+
+let target = {a:1, h:0, k:0};
+
+function drawLab(){
+  const a = parseFloat(aSlider.value);
+  const h = parseInt(hSlider.value);
+  const k = parseInt(kSlider.value);
+  document.getElementById('aVal').textContent = a;
+  document.getElementById('hVal').textContent = h;
+  document.getElementById('kVal').textContent = k;
+
+  const dTarget = pathFor(target.a, target.h, target.k);
+  const dMine = pathFor(a, h, k);
+
+  labSvg.innerHTML = gridSvg()
+    + `<path d="${dTarget}" fill="none" stroke="#94A3B8" stroke-width="2.6" stroke-dasharray="7 6"/>`
+    + `<path d="${dMine}" fill="none" stroke="#2563EB" stroke-width="2.6"/>`;
+
+  document.getElementById('eqBefore').textContent = 'y = 0.5x²';
+  document.getElementById('eqAfter').textContent = formatEq(a,h,k);
+}
+
+function numFmt(n){
+  n = Math.round(n*100)/100;
+  return (n % 1 === 0) ? n.toString() : n.toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+}
+function formatEq(a,h,k){
+  const coef = numFmt(a*0.5);
+  let coefPart = coef === '1' ? '' : (coef === '-1' ? '-' : coef);
+  let xPart = h===0 ? 'x' : (h>0 ? `(x − ${numFmt(h)})` : `(x + ${numFmt(Math.abs(h))})`);
+  let kPart = k===0 ? '' : (k>0 ? ` + ${numFmt(k)}` : ` − ${numFmt(Math.abs(k))}`);
+  return `y = ${coefPart}${xPart}²${kPart}`;
+}
+function pilihAcak(list){ return list[Math.floor(Math.random()*list.length)]; }
+function acakTarget(){
+  const aOpt = [-2,-1.5,-1,1,1.5,2];
+  const hOpt = [-3,-2,-1,0,1,2,3];
+  const kOpt = [-3,-2,-1,0,1,2,3];
+  target = { a: pilihAcak(aOpt), h: pilihAcak(hOpt), k: pilihAcak(kOpt) };
+  drawLab();
+}
+function resetKontrol(){
+  aSlider.value = 1; hSlider.value = 0; kSlider.value = 0;
+  drawLab();
+}
+
+aSlider.addEventListener('input', drawLab);
+hSlider.addEventListener('input', drawLab);
+kSlider.addEventListener('input', drawLab);
+
+acakTarget();
+</script>
+</body>
+</html>
