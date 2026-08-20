@@ -806,6 +806,47 @@ const EXPLORATION_DATA = [
       }
     ]
   },
+    {
+    id: "transformasifungsi",
+    filterKey: "geometri",
+    name: "Transformasi Fungsi",
+    description: "Ketahui bentuk grafik setelah diubah.",
+    color: "#10B981",
+    colorLight: "#D1FAE5",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l5-5 4 3 7-7"/><path d="M17 7h3v3"/><path d="M4 20h16"/></svg>`,
+    items: [
+      {
+        name: "Geser Kiri Kanan",
+        description: "Grafik geser horizontal.",
+        href: "eksplorasi_geser_kirikanan.html",
+        icon: "geser_horizontal"
+      },
+      {
+        name: "Geser Atas Bawah",
+        description: "Grafik geser vertikal.",
+        href: "eksplorasi_geser_atasbawah.html",
+        icon: "geser_vertikal"
+      },
+      {
+        name: "Cermin Grafik",
+        description: "Apakah bentuknya berubah?.",
+        href: "eksplorasi_cermin_grafik.html",
+        icon: "irisan_elips"
+      },
+      {
+        name: "Tarik & Tekan Grafik",
+        description: "Zoom in, zoom out.",
+        href: "eksplorasi_tariktekan.html",
+        icon: "sudut_istimewa"
+      },
+      {
+        name: "Bangun Transformasimu",
+        description: "Geser slider hingga badge menyala.",
+        href: "eksplorasi_bangun_transformasimu.html",
+        icon: "proses-berantai"
+      }
+    ]
+  },
   {
     id: "polinomial",
     filterKey: "aljabar",
@@ -817,7 +858,7 @@ const EXPLORATION_DATA = [
     items: [
       {
         name: "Mesin Nilai Polinomial",
-        description: "Cek perubahan berdasarkan nilai input..",
+        description: "Cek perubahan berdasarkan nilai input.",
         href: "eksplorasi_mesin_nilai.html",
         icon: "mesin-fungsi"
       },
