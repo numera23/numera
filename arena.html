@@ -7,26 +7,44 @@
 
 <!--
     =====================================================================
-    Numera — arena.html
+    NUMERA — arena.html
     =====================================================================
-    Halaman ini adalah ETALASE/KATALOG game & kuis matematika eksternal
-    (Blooket, Kahoot, ZEP, Quizizz, dll). Game TIDAK ditanam ke halaman —
-    tombol "Mainkan" membuka link platform eksternal di tab baru.
+    DUA SUMBER DATA TERPISAH, keduanya di bagian <script> paling bawah:
+
+    1. NUMERA_GAMES — game HTML buatan Numera sendiri (Tembak Target,
+       Seimbangkan, Escape Room, dst). Setiap game punya field "tanggal"
+       (format "YYYY-MM-DD"). SISTEM OTOMATIS mengurutkan array ini dari
+       tanggal terbaru -> terlama, lalu mengambil 3 TERATAS untuk
+       ditampilkan di section "Game Buatan Numera" di bagian atas
+       halaman. Tidak perlu mengubah HTML apa pun — cukup tambah objek
+       baru ke NUMERA_GAMES dengan tanggal terbaru, game itu otomatis
+       naik ke 3 besar (dan game lama otomatis turun ke daftar lengkap).
+       Tombol "Lihat semua ->" membuka daftar LENGKAP seluruh
+       NUMERA_GAMES (tetap di halaman yang sama, tanpa reload/backend).
+
+    2. GAMES — game & kuis dari platform EKSTERNAL (Blooket, Kahoot!,
+       ZEP, Quizizz, dll). Ditampilkan di section terpisah "Game & Kuis
+       Eksternal" lengkap dengan filter platform + tombol "lihat
+       lainnya". Section ini murni untuk game eksternal — game buatan
+       Numera TIDAK lagi dicampur di sini, supaya siswa jelas
+       membedakan mana produk Numera dan mana platform luar.
+
+    CARA MENGISI LINK
+    -------------------------------------------
+    - NUMERA_GAMES: isi "link" dengan nama file HTML game itu, mis.
+      "tembak-target.html", KALAU file game itu ada di folder/repo yang
+      sama dengan arena.html. Kalau di-hosting di alamat lain, isi
+      dengan URL lengkapnya, mis. "https://numera23.github.io/games/
+      tembak-target.html".
+    - GAMES (eksternal): isi "link" dengan URL lengkap game/kuis
+      tersebut, mis. "https://play.blooket.com/play/xxxxxxx" atau
+      "https://kahoot.it/challenge/xxxxxxx".
+    - Kalau link belum ada, biarkan "TEMPEL LINK GAME DI SINI" — tombol
+      tetap aman diklik (tidak error), cuma belum mengarah ke mana-mana.
 
     Kerangka teknis & visual (app-shell mobile canvas, typography, warna,
     bottom navigation) mengikuti beranda.html (berandav3_1.html).
     File ini TIDAK mengubah halaman lain.
-
-    CARA MENAMBAH / MENGUBAH GAME
-    -------------------------------
-    Semua game ada pada array GAMES di bagian <script> paling bawah.
-    Cukup salin satu blok { ... }, tempel, lalu ganti teks di dalamnya.
-    Field "platform" HARUS salah satu dari: "Blooket", "Kahoot", "ZEP",
-    "Quizizz" — platform lain akan otomatis masuk kategori "Lainnya".
-
-    Bagian "Lanjutkan" dan "Game sesuai materi yang sedang dipelajari"
-    diatur lewat LANJUTKAN dan MATERI_AKTIF — jumlah game yang tertulis
-    di sana dihitung otomatis dari isi GAMES, bukan angka manual.
     =====================================================================
 -->
 
@@ -119,13 +137,6 @@
         padding: 20px 20px 4px;
     }
 
-    .app-header h1 {
-        font-size: 25px;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        color: var(--text);
-    }
-
     .icon-btn {
         display: flex;
         align-items: center;
@@ -145,44 +156,53 @@
     .icon-btn svg { width: 18px; height: 18px; }
 
     /* =================================================================
-       HERO
+       HERO — ringkas
        ================================================================= */
     .hero {
         position: relative;
-        margin: 16px 0 28px;
-        padding: 24px 22px;
-        border-radius: 20px;
+        margin: 12px 0 24px;
+        padding: 14px 16px;
+        border-radius: 16px;
         overflow: hidden;
         background: linear-gradient(155deg, #EFF4FF 0%, #F8FAFC 65%);
         border: 1px solid var(--border);
         animation: fadeInUp 0.5s ease both;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 
-    .hero-text { position: relative; z-index: 1; max-width: 64%; }
+    .hero-text { position: relative; z-index: 1; flex: 1; min-width: 0; }
 
     .hero-text h2 {
-        font-size: 21px;
+        font-size: 16px;
         font-weight: 800;
         letter-spacing: -0.02em;
-        line-height: 1.28;
+        line-height: 1.25;
         color: var(--text);
-        margin-bottom: 8px;
+        margin-bottom: 3px;
     }
 
     .hero-text p {
-        font-size: 13px;
+        font-size: 12px;
         color: var(--text-secondary);
-        line-height: 1.5;
+        line-height: 1.4;
     }
 
     .hero-visual {
-        position: absolute;
-        right: -6px;
-        bottom: -8px;
-        width: 130px;
-        height: 130px;
-        pointer-events: none;
+        position: relative;
+        z-index: 1;
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: linear-gradient(150deg, var(--primary), var(--primary-hover));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 14px rgba(37,99,235,0.25);
     }
+    .hero-visual svg { width: 24px; height: 24px; }
 
     /* =================================================================
        SECTION HEADING (dipakai berulang)
@@ -210,234 +230,193 @@
 
     .section-title svg { width: 16px; height: 16px; color: var(--primary); }
 
-    .section-link {
-        display: flex;
-        align-items: center;
-        gap: 3px;
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--primary);
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-    .section-link svg { width: 14px; height: 14px; }
-
-    /* =================================================================
-       LANJUTKAN — kartu platform horizontal scroll
-       ================================================================= */
-    .lanjut-scroll {
-        display: flex;
-        gap: 12px;
-        overflow-x: auto;
-        scrollbar-width: none;
-        padding-bottom: 2px;
-    }
-    .lanjut-scroll::-webkit-scrollbar { display: none; }
-
-    .lanjut-card {
-        flex: 0 0 auto;
-        width: 148px;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 14px;
-        box-shadow: 0 1px 2px rgba(15,23,42,0.03);
-    }
-
-    .lanjut-badge {
-        width: 38px;
-        height: 38px;
-        border-radius: 11px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 15px;
-        color: #fff;
-        margin-bottom: 10px;
-    }
-
-    .lanjut-materi {
-        font-size: 14.5px;
-        font-weight: 700;
-        color: var(--text);
-        letter-spacing: -0.01em;
-        line-height: 1.3;
-        margin-bottom: 10px;
-    }
-
-    .lanjut-count {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 12px;
-        color: var(--text-secondary);
-        font-weight: 500;
-    }
-    .lanjut-count svg { width: 14px; height: 14px; color: var(--primary); flex-shrink: 0; }
-
-    /* =================================================================
-       GAME SESUAI MATERI YANG SEDANG DIPELAJARI (featured)
-       ================================================================= */
-    .featured-card {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 14px;
-        box-shadow: 0 1px 2px rgba(15,23,42,0.03);
-    }
-
-    @media (min-width: 400px) {
-        .featured-card { flex-direction: row; align-items: center; }
-    }
-
-    .featured-thumb {
-        flex-shrink: 0;
-        width: 100%;
-        height: 108px;
-        border-radius: 13px;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: flex-end;
-        padding: 14px;
-        background: linear-gradient(155deg, #6D28D9 0%, #4C1D95 55%, #1E3A8A 100%);
-    }
-    @media (min-width: 400px) {
-        .featured-thumb { width: 116px; height: 100px; }
-    }
-
-    .featured-thumb-deco {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    .featured-thumb-platform {
-        position: absolute;
-        top: 10px;
-        left: 12px;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        border-radius: 8px;
-        background: rgba(255,255,255,0.16);
-        backdrop-filter: blur(2px);
-        font-size: 11px;
-        font-weight: 800;
-        color: #fff;
-    }
-    .featured-thumb-platform svg { width: 13px; height: 13px; }
-
-    .featured-thumb-title {
-        position: relative;
-        z-index: 1;
-        color: #fff;
-        font-weight: 800;
-        font-size: 15.5px;
-        letter-spacing: -0.01em;
-        line-height: 1.2;
-        text-transform: uppercase;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.25);
-    }
-
-    .featured-body { flex: 1; min-width: 0; }
-
-    .featured-platform {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-secondary);
-        margin-bottom: 4px;
-    }
-    .featured-platform-badge {
-        width: 18px; height: 18px; border-radius: 5px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 10px; font-weight: 800; color: #fff; flex-shrink: 0;
-    }
-
-    .featured-title {
-        font-size: 16.5px;
-        font-weight: 800;
-        color: var(--text);
-        letter-spacing: -0.01em;
-        margin-bottom: 4px;
-    }
-
-    .featured-desc {
-        font-size: 13px;
+    .section-sub {
+        font-size: 12.5px;
         color: var(--text-secondary);
         line-height: 1.45;
-        margin-bottom: 10px;
+        margin: -6px 0 14px;
+        max-width: 46ch;
     }
 
-    .featured-footer {
+    /* =================================================================
+       GAME BUATAN NUMERA — list vertikal dengan thumbnail (tanpa scroll)
+       ================================================================= */
+    .numera-list {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
         gap: 10px;
     }
 
-    .featured-count {
+    .numera-row {
         display: flex;
         align-items: center;
-        gap: 5px;
-        font-size: 12px;
-        color: var(--text-secondary);
-        font-weight: 500;
+        gap: 12px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 10px;
+        box-shadow: 0 1px 2px rgba(15,23,42,0.03);
     }
-    .featured-count svg { width: 14px; height: 14px; color: var(--primary); flex-shrink: 0; }
 
-    .btn-primary {
-        display: inline-flex;
+    .numera-thumb {
+        position: relative;
+        width: 72px;
+        height: 72px;
+        border-radius: 12px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: #F1F5F9;
+    }
+    .numera-thumb-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .numera-thumb-fallback {
+        width: 100%;
+        height: 100%;
+        display: flex;
         align-items: center;
-        gap: 6px;
-        background: var(--primary);
-        color: #fff;
-        font-size: 13.5px;
-        font-weight: 700;
-        padding: 9px 16px;
-        border-radius: 999px;
-        border: none;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: background 0.15s ease;
+        justify-content: center;
     }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-primary svg { width: 14px; height: 14px; }
+    .numera-thumb-emoji { font-size: 26px; }
 
-    .badge-baru {
-        display: inline-block;
-        font-size: 11px;
+    .numera-thumb-badge {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        font-size: 9px;
         font-weight: 700;
         color: #16A34A;
         background: #F0FDF4;
         border: 1px solid #DCFCE7;
-        padding: 3px 10px;
+        padding: 1px 6px;
         border-radius: 999px;
-        margin-left: 8px;
+        line-height: 1.5;
+    }
+
+    .numera-info { flex: 1; min-width: 0; }
+
+    .numera-meta {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 3px;
+    }
+    .numera-tag-original {
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        color: var(--primary);
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .numera-meta .dot {
+        width: 3px; height: 3px; border-radius: 50%;
+        background: var(--text-secondary); flex-shrink: 0;
+    }
+    .numera-meta-materi {
+        font-size: 11px;
+        color: var(--text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .numera-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .numera-desc {
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .numera-play-btn {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: #fff;
+        background: linear-gradient(150deg, var(--primary), var(--primary-hover));
+        padding: 8px 13px;
+        border-radius: 999px;
+        box-shadow: 0 4px 10px rgba(37,99,235,0.22);
+    }
+    .numera-play-btn svg { width: 12px; height: 12px; }
+
+    .numera-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 28px 20px;
+        color: var(--text-secondary);
+        background: var(--card);
+        border: 1px dashed var(--border);
+        border-radius: 16px;
+        font-size: 13px;
+    }
+
+    .btn-lihat-semua {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        width: 100%;
+        margin-top: 12px;
+        padding: 11px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        color: var(--primary);
+        font-size: 13.5px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+    .btn-lihat-semua svg { width: 14px; height: 14px; transition: transform 0.15s ease; }
+    .btn-lihat-semua.expanded svg { transform: rotate(90deg); }
+
+    .numera-full {
+        margin-top: 14px;
+        padding-top: 16px;
+        border-top: 1px dashed var(--border);
+    }
+    .numera-full[hidden] { display: none; }
+    .numera-full-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text-secondary);
+        margin-bottom: 10px;
     }
 
     /* =================================================================
-       SEMUA GAME & KUIS — filter + list
+       SEMUA GAME & KUIS — filter (wrap, bukan scroll) + list
        ================================================================= */
     .filters {
         display: flex;
+        flex-wrap: wrap;
         gap: 8px;
-        overflow-x: auto;
-        scrollbar-width: none;
         padding-bottom: 14px;
     }
-    .filters::-webkit-scrollbar { display: none; }
 
     .chip {
         flex-shrink: 0;
@@ -633,98 +612,51 @@
 
     <div class="container">
 
-        <!-- ================= HERO ================= -->
+        <!-- ================= HERO (ringkas) ================= -->
         <div class="hero">
             <div class="hero-text">
-                <h2>Belajar seru,<br>menang itu bonus!</h2>
+                <h2>Belajar seru, menang itu bonus!</h2>
                 <p>Mainkan kuis, tantang diri, dan jadi yang terbaik.</p>
             </div>
-            <svg class="hero-visual" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="70" cy="70" r="55" fill="none" stroke="#2563EB" stroke-width="1.4" opacity="0.14"/>
-
-                <!-- kartu kuis -->
-                <g transform="rotate(-8 62 58)">
-                    <rect x="30" y="30" width="64" height="56" rx="12" fill="#FFFFFF" stroke="#2563EB" stroke-width="2" opacity="0.95"/>
-                    <circle cx="46" cy="46" r="7" fill="#DBEAFE"/>
-                    <path d="M42.5 46 l2.5 2.5 5 -5.5" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <rect x="58" y="42.5" width="26" height="6.5" rx="3.25" fill="#DBEAFE"/>
-                    <circle cx="46" cy="65" r="7" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.6"/>
-                    <rect x="58" y="61.5" width="26" height="6.5" rx="3.25" fill="#F1F5F9"/>
-                </g>
-
-                <!-- bintang -->
-                <path d="M104 30 l3.4 7 7.7 1.1 -5.6 5.4 1.3 7.7 -6.8 -3.6 -6.8 3.6 1.3 -7.7 -5.6 -5.4 7.7 -1.1 z" fill="#FBBF24"/>
-
-                <!-- kontroler game (gaya sama dengan ikon Arena Game di bottom nav) -->
-                <g transform="translate(24 92)">
-                    <rect x="0" y="0" width="40" height="21" rx="10.5" fill="#2563EB"/>
-                    <line x1="10" y1="10.5" x2="10" y2="10.51" stroke="#F8FAFC" stroke-width="3" stroke-linecap="round"/>
-                    <line x1="10" y1="7.2" x2="10" y2="13.8" stroke="#F8FAFC" stroke-width="3" stroke-linecap="round"/>
-                    <line x1="6.7" y1="10.5" x2="13.3" y2="10.5" stroke="#F8FAFC" stroke-width="3" stroke-linecap="round"/>
-                    <circle cx="27" cy="7.5" r="2" fill="#F8FAFC"/>
-                    <circle cx="32" cy="12" r="2" fill="#F8FAFC"/>
-                </g>
-
-                <circle cx="20" cy="46" r="3" fill="#2563EB" opacity="0.4"/>
-                <circle cx="116" cy="70" r="2.5" fill="#2563EB" opacity="0.4"/>
-                <circle cx="100" cy="100" r="3.5" fill="#2563EB" opacity="0.3"/>
-            </svg>
+            <div class="hero-visual">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="white" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="white" stroke="none"/></svg>
+            </div>
         </div>
 
-        <!-- ================= LANJUTKAN ================= -->
-        <div class="section" id="sectionLanjut">
+        <!-- ================= GAME BUATAN NUMERA (3 terbaru + lihat semua) ================= -->
+        <div class="section" id="sectionNumera">
             <div class="section-head">
                 <div class="section-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-5 3-9 9-9"/><path d="M13 11c4-1 6-4 6-8-4 0-7 2-8 6"/><circle cx="6" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
-                    Lanjutkan
-                </div>
-                <a class="section-link" href="#" data-nav-target="semua-game">
-                    Lihat semua
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </a>
-            </div>
-            <div class="lanjut-scroll" id="lanjutScroll"></div>
-        </div>
-
-        <!-- ================= GAME SESUAI MATERI YANG SEDANG DIPELAJARI ================= -->
-        <div class="section" id="sectionFeatured">
-            <div class="section-head">
-                <div class="section-title">
-                    Game sesuai materi yang sedang dipelajari
-                    <span class="badge-baru" id="featuredBadge"></span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M8 5.5 10 8M16 5.5 14 8"/><rect x="4" y="8" width="16" height="13" rx="4"/><circle cx="9" cy="14.5" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="14.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+                    Game Buatan Numera
                 </div>
             </div>
-            <a class="featured-card" href="#" id="featuredCard"></a>
+            <p class="section-sub">Game matematika interaktif yang dibuat khusus untuk Numera.</p>
+
+            <div class="numera-list" id="numeraFeatured"></div>
+
+            <a class="btn-lihat-semua" href="game-numera.html">
+                <span>Lihat semua</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
         </div>
 
-        <!-- ================= SEMUA GAME & KUIS ================= -->
-        <div class="section" id="semua-game">
+        <!-- ================= GAME & KUIS EKSTERNAL (preview singkat) ================= -->
+        <div class="section" id="game-eksternal">
             <div class="section-head">
                 <div class="section-title">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
-                    Semua Game &amp; Kuis
+                    Game & Kuis Eksternal
                 </div>
             </div>
+            <p class="section-sub">Kuis dari platform luar seperti Blooket, Kahoot!, ZEP, dan Quizizz.</p>
 
-            <nav class="filters" id="filters">
-                <button class="chip active" data-filter="semua">Semua</button>
-                <button class="chip" data-filter="Blooket">Blooket</button>
-                <button class="chip" data-filter="Kahoot">Kahoot!</button>
-                <button class="chip" data-filter="ZEP">ZEP</button>
-                <button class="chip" data-filter="Quizizz">Quizizz</button>
-                <button class="chip" data-filter="lainnya">Lainnya</button>
-            </nav>
+            <div class="game-list" id="gameListPreview"></div>
 
-            <div class="game-list" id="gameList"></div>
-            <div class="empty-state" id="emptyState">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/></svg>
-                <p>Belum ada game pada kategori ini.</p>
-            </div>
-
-            <button class="load-more" id="loadMoreBtn" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/></svg>
-                <span id="loadMoreLabel">Lihat game lainnya</span>
-            </button>
+            <a class="btn-lihat-semua" href="game-eksternal.html">
+                <span>Lihat game lainnya</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
         </div>
 
     </div>
@@ -758,318 +690,40 @@
 
 </div>
 
+<script src="data-games.js"></script>
 <script>
     /* ================================================================
-       ZONA EDIT GURU
-       ================================================================
-
-       GURU HANYA PERLU MENGEDIT BAGIAN INI (sampai tulisan
-       "JANGAN UBAH KODE DI BAWAH INI").
-
-       1. Tambahkan game baru di GAMES.
-       2. Masukkan link game pada bagian link.
-       3. Atur game yang ingin ditampilkan sebagai game unggulan
-          pada MATERI_AKTIF.
-       4. (Opsional) Atur kartu ringkasan platform pada LANJUTKAN.
-
-       JANGAN MENGUBAH KODE DI LUAR ZONA INI.
+       HALAMAN INI HANYA MERENDER DATA — untuk MENGEDIT GAME (Numera
+       maupun eksternal), edit array NUMERA_GAMES / GAMES di file
+       data-games.js. Perubahan otomatis muncul di halaman ini,
+       game-numera.html, dan game-eksternal.html sekaligus.
        ================================================================ */
 
-    // ================================================================
-    // CARA MENAMBAHKAN GAME BARU
-    // ================================================================
-    //
-    // 1. Salin satu blok game (dari tanda { sampai tanda }).
-    // 2. Tempel di bawah game terakhir.
-    // 3. Ganti nama, materi, platform, dan deskripsi.
-    // 4. Ganti "TEMPEL LINK GAME DI SINI" dengan link game sebenarnya.
-    //
-    // Contoh:
-    // link: "https://play.blooket.com/..."
-    //
-    // Platform HARUS salah satu dari: "Blooket", "Kahoot", "ZEP",
-    // "Quizizz" — platform lain otomatis masuk kategori "Lainnya"
-    // pada filter.
-    // ================================================================
-
-    const GAMES = [
-        {
-            nama: "Akar & Faktor Polinomial",
-            materi: "Polinomial",
-            platform: "Blooket",
-            deskripsi: "Uji pemahamanmu tentang akar dan faktor polinomial melalui kuis seru.",
-            link: "TEMPEL LINK GAME DI SINI"
-        },
-        {
-            nama: "Operasi Polinomial",
-            materi: "Polinomial",
-            platform: "Kahoot",
-            deskripsi: "Kuis cepat seputar penjumlahan, pengurangan, dan perkalian polinomial.",
-            link: "TEMPEL LINK GAME DI SINI"
-        },
-        {
-            nama: "Sifat-sifat Polinomial",
-            materi: "Polinomial",
-            platform: "ZEP",
-            deskripsi: "Jelajahi dunia ZEP sambil menjawab soal-soal polinomial.",
-            link: "TEMPEL LINK GAME DI SINI"
-        },
-        {
-            nama: "Persamaan Lingkaran",
-            materi: "Persamaan Lingkaran",
-            platform: "Kahoot",
-            deskripsi: "Kuis interaktif seputar persamaan lingkaran.",
-            link: "TEMPEL LINK GAME DI SINI"
-        },
-        {
-            nama: "Pusat dan Jari-jari",
-            materi: "Persamaan Lingkaran",
-            platform: "ZEP",
-            deskripsi: "Jelajahi konsep pusat dan jari-jari melalui permainan interaktif.",
-            link: "TEMPEL LINK GAME DI SINI"
-        },
-        {
-            nama: "Operasi Aljabar",
-            materi: "Aljabar",
-            platform: "Quizizz",
-            deskripsi: "Latihan cepat operasi aljabar.",
-            link: "TEMPEL LINK GAME DI SINI"
-        },
-        {
-            nama: "Balapan Matematika",
-            materi: "Campuran",
-            platform: "Quizizz",
-            deskripsi: "Kuis seru yang mencakup berbagai materi matematika.",
-            link: "TEMPEL LINK GAME DI SINI"
-        }
-    ];
-
-    // ================================================================
-    // KARTU RINGKASAN "LANJUTKAN" (opsional)
-    // ================================================================
-    // Cukup daftar platform yang ingin ditonjolkan. Jumlah game
-    // ("X game tersedia") dihitung OTOMATIS dari isi GAMES sesuai
-    // platform tersebut — tidak perlu diketik manual.
-    // ================================================================
-
-    const LANJUTKAN = [
-        { platform: "Blooket", link: "TEMPEL LINK GAME DI SINI" },
-        { platform: "Kahoot", link: "TEMPEL LINK GAME DI SINI" },
-        { platform: "ZEP", link: "TEMPEL LINK GAME DI SINI" }
-    ];
-
-    // ================================================================
-    // GAME SESUAI MATERI YANG SEDANG DIPELAJARI
-    //
-    // Ganti bagian ini ketika materi pembelajaran utama berubah.
-    // Jumlah game ("X game tersedia") juga dihitung OTOMATIS dari
-    // GAMES sesuai nama materi ini — tidak perlu diketik manual.
-    //
-    // Contoh:
-    // materi: "Persamaan Lingkaran"
-    // platform: "ZEP"
-    // ================================================================
-
-    const MATERI_AKTIF = {
-        materi: "Polinomial",
-        platform: "Blooket",
-        deskripsi: "Uji pemahamanmu tentang polinomial melalui kuis seru!",
-        link: "TEMPEL LINK GAME UTAMA DI SINI",
-        badge: "Baru"   // kosongkan / hapus baris ini jika tidak perlu badge
-    };
-
-    /* ================================================================
-       JANGAN UBAH KODE DI BAWAH INI
-       (sistem otomatis — filter, hitung jumlah game, render tampilan)
-       ================================================================ */
-
-    const PLATFORM_CONFIG = {
-        Blooket: { label: "Blooket", color: "#7C3AED", icon: "B" },
-        Kahoot:  { label: "Kahoot!", color: "#5B21B6", icon: "K!" },
-        ZEP:     { label: "ZEP",     color: "#2563EB", icon: "Z" },
-        Quizizz: { label: "Quizizz", color: "#EA580C", icon: "Q" }
-    };
-    const PLATFORM_DEFAULT = {
-        label: "Lainnya",
-        color: "#16A34A",
-        iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/></svg>'
-    };
-
-    function platformConfig(platform){
-        return PLATFORM_CONFIG[platform] || PLATFORM_DEFAULT;
-    }
-
-    function platformBadgeHTML(platform, size){
-        const cfg = platformConfig(platform);
-        const inner = cfg.icon ? cfg.icon : cfg.iconSvg;
-        return `<div class="${size}" style="background:${cfg.color};">${inner}</div>`;
-    }
-
-    const ICON_GAME = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/></svg>';
-    const ICON_ARROW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
-
-    // Validasi link sederhana: jika guru belum mengganti placeholder
-    // (atau field link kosong), tombol tetap aman diklik — cukup
-    // diarahkan ke "#" tanpa membuka tab baru, tidak ada error apa pun.
-    const LINK_PLACEHOLDER_PATTERNS = ['tempel link'];
-    function isLinkFilled(link){
-        if(!link) return false;
-        const clean = link.trim().toLowerCase();
-        if(clean === '' || clean === '#') return false;
-        return !LINK_PLACEHOLDER_PATTERNS.some(p => clean.includes(p));
-    }
-    function safeLinkAttrs(link){
-        const filled = isLinkFilled(link);
-        return {
-            href: filled ? link : '#',
-            targetRel: filled ? 'target="_blank" rel="noopener"' : ''
-        };
-    }
-
-    /* ---------------- LANJUTKAN ---------------- */
-    function renderLanjutkan(){
-        const wrap = document.getElementById('lanjutScroll');
+    /* ---------------- GAME BUATAN NUMERA — 3 terbaru ---------------- */
+    function renderGameNumeraFeatured(){
+        const wrap = document.getElementById('numeraFeatured');
         wrap.innerHTML = '';
-        LANJUTKAN.forEach(item => {
-            const count = GAMES.filter(g => g.platform === item.platform).length;
-            const cfg = platformConfig(item.platform);
-            const { href, targetRel } = safeLinkAttrs(item.link);
-            const el = document.createElement('a');
-            el.className = 'lanjut-card';
-            el.href = href;
-            if(targetRel){ el.target = '_blank'; el.rel = 'noopener'; }
-            el.innerHTML = `
-                ${platformBadgeHTML(item.platform, 'lanjut-badge')}
-                <div class="lanjut-materi">${cfg.label}</div>
-                <div class="lanjut-count">${ICON_GAME} ${count} game tersedia</div>
-            `;
-            wrap.appendChild(el);
-        });
-    }
-
-    /* ---------------- GAME SESUAI MATERI AKTIF ---------------- */
-    function renderFeatured(){
-        const card = document.getElementById('featuredCard');
-        const badgeEl = document.getElementById('featuredBadge');
-        const count = GAMES.filter(g => g.materi === MATERI_AKTIF.materi).length;
-        const cfg = platformConfig(MATERI_AKTIF.platform);
-
-        badgeEl.textContent = MATERI_AKTIF.badge || '';
-        badgeEl.style.display = MATERI_AKTIF.badge ? 'inline-block' : 'none';
-
-        const { href, targetRel } = safeLinkAttrs(MATERI_AKTIF.link);
-        card.href = href;
-        if(targetRel){ card.target = '_blank'; card.rel = 'noopener'; }
-        else { card.removeAttribute('target'); card.removeAttribute('rel'); }
-        card.innerHTML = `
-            <div class="featured-thumb">
-                <svg class="featured-thumb-deco" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                    <circle cx="172" cy="26" r="34" fill="none" stroke="#fff" stroke-width="1.4" opacity="0.18"/>
-                    <circle cx="150" cy="20" r="3" fill="#fff" opacity="0.35"/>
-                    <path d="M20 18 h20 M30 8 v20" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity="0.28"/>
-                    <path d="M155 95 l14 14 M169 95 l-14 14" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity="0.22"/>
-                    <circle cx="24" cy="110" r="16" fill="none" stroke="#fff" stroke-width="1.4" stroke-dasharray="2 5" opacity="0.3"/>
-                    <path d="M96 12 a10 10 0 1 1 0 0.1" fill="none" stroke="#fff" stroke-width="1.4" opacity="0.16"/>
-                </svg>
-                <span class="featured-thumb-platform">${cfg.icon ? cfg.icon : cfg.iconSvg}</span>
-                <span class="featured-thumb-title">${MATERI_AKTIF.materi}</span>
-            </div>
-            <div class="featured-body">
-                <div class="featured-platform">
-                    ${platformBadgeHTML(MATERI_AKTIF.platform, 'featured-platform-badge')}
-                    ${cfg.label}
-                </div>
-                <div class="featured-title">${MATERI_AKTIF.materi}</div>
-                <p class="featured-desc">${MATERI_AKTIF.deskripsi || ''}</p>
-                <div class="featured-footer">
-                    <span class="featured-count">${ICON_GAME} ${count} game tersedia</span>
-                    <span class="btn-primary">Mainkan ${ICON_ARROW}</span>
-                </div>
-            </div>
-        `;
-    }
-
-    /* ---------------- SEMUA GAME & KUIS ---------------- */
-    const filtersEl = document.getElementById('filters');
-    const listEl = document.getElementById('gameList');
-    const emptyEl = document.getElementById('emptyState');
-    const loadMoreBtn = document.getElementById('loadMoreBtn');
-    const loadMoreLabel = document.getElementById('loadMoreLabel');
-
-    const PREVIEW_COUNT = 5;
-    let kategoriAktif = 'semua';
-    let expanded = false;
-
-    function cocokKategori(game){
-        if(kategoriAktif === 'semua') return true;
-        if(kategoriAktif === 'lainnya') return !PLATFORM_CONFIG[game.platform];
-        return game.platform === kategoriAktif;
-    }
-
-    function buatBarisGame(item){
-        const cfg = platformConfig(item.platform);
-        const { href, targetRel } = safeLinkAttrs(item.link);
-        const row = document.createElement('div');
-        row.className = 'game-row';
-        row.innerHTML = `
-            ${platformBadgeHTML(item.platform, 'game-badge')}
-            <div class="game-info">
-                <div class="game-name">${item.nama}</div>
-                <div class="game-meta">${cfg.label}<span class="dot"></span>${item.materi}</div>
-            </div>
-            <a class="btn-outline" href="${href}" ${targetRel}>Mainkan</a>
-        `;
-        return row;
-    }
-
-    function renderGameList(){
-        const data = GAMES.filter(cocokKategori);
-        listEl.innerHTML = '';
+        const data = numeraTerurut().slice(0, 3);
 
         if(data.length === 0){
-            emptyEl.classList.add('show');
-            loadMoreBtn.style.display = 'none';
+            wrap.innerHTML = '<div class="numera-empty">Belum ada game. Tambahkan game pada array NUMERA_GAMES di data-games.js.</div>';
             return;
         }
-        emptyEl.classList.remove('show');
-
-        const shown = expanded ? data : data.slice(0, PREVIEW_COUNT);
-        shown.forEach(item => listEl.appendChild(buatBarisGame(item)));
-
-        if(data.length > PREVIEW_COUNT){
-            loadMoreBtn.style.display = 'flex';
-            loadMoreBtn.classList.toggle('expanded', expanded);
-            loadMoreLabel.textContent = expanded ? 'Tampilkan lebih sedikit' : 'Lihat game lainnya';
-        } else {
-            loadMoreBtn.style.display = 'none';
-        }
+        data.forEach(game => wrap.appendChild(buatKartuNumera(game)));
     }
 
-    filtersEl.addEventListener('click', (e) => {
-        const chip = e.target.closest('.chip');
-        if(!chip) return;
-        filtersEl.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        kategoriAktif = chip.dataset.filter;
-        expanded = false;
-        renderGameList();
-    });
-
-    loadMoreBtn.addEventListener('click', () => {
-        expanded = !expanded;
-        renderGameList();
-    });
-
-    /* ---------------- "Lihat semua" pada Lanjutkan -> scroll ke Semua Game ---------------- */
-    document.querySelector('[data-nav-target="semua-game"]').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('semua-game').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
+    /* ---------------- GAME & KUIS EKSTERNAL — preview singkat ---------------- */
+    const PREVIEW_COUNT = 5;
+    function renderGameEksternalPreview(){
+        const wrap = document.getElementById('gameListPreview');
+        wrap.innerHTML = '';
+        const data = GAMES.slice(0, PREVIEW_COUNT);
+        data.forEach(item => wrap.appendChild(buatBarisGame(item)));
+    }
 
     /* ---------------- INISIALISASI ---------------- */
-    renderLanjutkan();
-    renderFeatured();
-    renderGameList();
+    renderGameNumeraFeatured();
+    renderGameEksternalPreview();
 </script>
 
 </body>
