@@ -62,15 +62,15 @@ const NUMERA_GAMES = [
         badge: "Baru"
     },
     {
-        nama: "⚖️ Seimbangkan",
-        materi: "Matematika",
-        deskripsi: "Seimbangkan permainan dengan menemukan jawaban yang tepat.",
-        link: "TEMPEL LINK GAME DI SINI",
-        tanggal: "2026-08-19",
+        nama: "🧩 Susun Langkah",
+        materi: "Fungsi Invers",
+        deskripsi: "Urutkan langkahnya, pecahkan masalahnya.",
+        link: "game_susunlangkah_fungsiinvers.html",
+        tanggal: "2026-08-21",
         thumbnail: "",
         warna: "#7C3AED",
-        emoji: "⚖️",
-        badge: ""
+        emoji: "🧩",
+        badge: "Baru"
     },
     {
         nama: "🔐 Escape Room",
