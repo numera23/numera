@@ -3,28 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Beranda | Numera</title>
-
-<!--
-    =====================================================================
-    Numera — beranda.html
-    =====================================================================
-    Halaman ini adalah HALAMAN DEPAN aplikasi (bukan katalog materi).
-    Menjawab: "Apa yang perlu saya lihat / lakukan sekarang?"
-
-    Kerangka teknis & visual (app-shell mobile canvas, typography,
-    warna, bottom navigation) dijaga konsisten dengan topik.html
-    (topikv3.1.html). File ini TIDAK mengubah topik.html.
-
-    CARA MENGUBAH ISI
-    -------------------------------
-    - Data Pengumuman ada pada array PENGUMUMAN di bagian <script>.
-    - Data "Sedang Dipelajari" ada pada objek SEDANG_DIPELAJARI.
-    - Data video "Dari Cakrawala" ada pada objek VIDEO_CAKRAWALA.
-    Guru cukup mengubah nilai-nilai tersebut; tampilan menyesuaikan
-    otomatis.
-    =====================================================================
--->
+<title>Beranda | Cakrawala Matematika</title>
 
 <style>
 .brand{
@@ -35,9 +14,9 @@
 }
 
 .brand-mark{
-    width:34px;
-    height:34px;
-    border-radius:10px;
+    width:28px;
+    height:28px;
+    border-radius:8px;
     background:#2563EB;
     display:flex;
     align-items:center;
@@ -48,13 +27,10 @@
 
 .brand-name{
     font-weight:800;
-    font-size:14px;
-    line-height:1.18;
+    font-size:15px;
+    line-height:1;
     letter-spacing:-0.01em;
 }
-    /* =================================================================
-       RESET & DASAR
-       ================================================================= */
     * {
         margin: 0;
         padding: 0;
@@ -80,11 +56,6 @@
 
     a { text-decoration: none; color: inherit; }
 
-    /* =================================================================
-       APP SHELL — canvas mobile
-       Sama seperti topik.html: di PC/laptop tetap sempit & di tengah,
-       tidak melebar mengikuti lebar monitor.
-       ================================================================= */
     .app-shell {
         max-width: 440px;
         margin: 0 auto;
@@ -113,14 +84,11 @@
         * { animation: none !important; transition: none !important; }
     }
 
-    /* =================================================================
-       HEADER — kecil, konsisten dengan gaya aplikasi
-       ================================================================= */
     .app-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 18px 20px 4px;
+        padding: 12px 20px 2px;
     }
     .app-header h1 {
     font-size: 20px;
@@ -133,9 +101,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 38px;
-        height: 38px;
-        border-radius: 12px;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
         color: var(--text-secondary);
         background: transparent;
         border: none;
@@ -150,14 +118,11 @@
 
     .icon-btn svg { width: 20px; height: 20px; }
 
-    /* =================================================================
-       HERO
-       ================================================================= */
     .hero {
         position: relative;
-        margin: 16px 0 28px;
-        padding: 24px 20px;
-        border-radius: 20px;
+        margin: 8px 0 22px;
+        padding: 18px 20px;
+        border-radius: 18px;
         overflow: hidden;
         background: linear-gradient(155deg, #EFF4FF 0%, #F8FAFC 65%);
         border: 1px solid var(--border);
@@ -178,18 +143,17 @@
     .hero-text {
         position: relative;
         z-index: 1;
-        max-width: 100%;
+        max-width: 72%;
     }
 
-.hero-text h2 {
-    font-size: 21px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.32;
-    color: var(--text);
-    margin-bottom: 10px;
-    white-space: nowrap;
-}
+    .hero-text h2 {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.3;
+        color: var(--text);
+        margin-bottom: 8px;
+    }
 
     .hero-tagline {
         font-size: 13px;
@@ -198,9 +162,6 @@
         letter-spacing: -0.01em;
     }
 
-    /* =================================================================
-       SECTION HEADING (dipakai berulang)
-       ================================================================= */
     .section {
         margin-bottom: 26px;
         animation: fadeInUp 0.5s ease both;
@@ -248,9 +209,6 @@
 
     .section-link:hover svg { transform: translateX(3px); }
 
-    /* =================================================================
-       PENGUMUMAN
-       ================================================================= */
     .announce-list {
         display: flex;
         flex-direction: column;
@@ -352,20 +310,17 @@
 
     .announce-cta svg { width: 13px; height: 13px; }
 
-    /* =================================================================
-       SEDANG DIPELAJARI
-       ================================================================= */
-    .continue-card {
+    .recommend-card {
         display: flex;
         align-items: center;
         gap: 14px;
-        background: #F0FDF4;
-        border: 1px solid #DCFCE7;
+        background: #EFF6FF;
+        border: 1px solid #DBEAFE;
         border-radius: 16px;
         padding: 14px 16px;
     }
 
-    .continue-icon {
+    .recommend-icon {
         flex-shrink: 0;
         width: 46px;
         height: 46px;
@@ -374,37 +329,37 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
+        color: var(--primary);
     }
 
-    .continue-body { flex: 1; min-width: 0; }
+    .recommend-icon svg { width: 22px; height: 22px; }
 
-    .continue-name {
+    .recommend-body { flex: 1; min-width: 0; }
+
+    .recommend-tag {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 2px;
+    }
+
+    .recommend-title {
         font-size: 15.5px;
         font-weight: 700;
         color: var(--text);
         letter-spacing: -0.01em;
     }
 
-    .continue-meta {
-        display: flex;
-        align-items: center;
-        gap: 5px;
+    .recommend-reason {
         margin-top: 3px;
         font-size: 12.5px;
-        color: #16A34A;
-        font-weight: 500;
+        color: var(--text-secondary);
+        line-height: 1.4;
     }
 
-    .continue-meta::before {
-        content: "";
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: #16A34A;
-    }
-
-    .continue-arrow {
+    .recommend-arrow {
         flex-shrink: 0;
         width: 36px;
         height: 36px;
@@ -413,108 +368,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #16A34A;
+        color: var(--primary);
         box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
 
-    .continue-arrow svg { width: 17px; height: 17px; }
+    .recommend-arrow svg { width: 17px; height: 17px; }
 
-    /* =================================================================
-       DARI CAKRAWALA
-       ================================================================= */
-    .video-card {
-        display: flex;
-        gap: 12px;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 12px;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
-    }
-
-    .video-thumb {
-        position: relative;
-        flex-shrink: 0;
-        width: 118px;
-        height: 84px;
-        border-radius: 12px;
-        overflow: hidden;
-        background: linear-gradient(150deg, #0F172A 0%, #1E293B 100%);
-    }
-
-    .video-thumb svg.bg {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.5;
-    }
-
-    .video-play {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.92);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .video-play svg {
-        width: 13px;
-        height: 13px;
-        color: #0F172A;
-        margin-left: 1px;
-    }
-
-    .video-duration {
-        position: absolute;
-        right: 6px;
-        bottom: 6px;
-        font-size: 10px;
-        font-weight: 600;
-        color: #fff;
-        background: rgba(0, 0, 0, 0.55);
-        padding: 2px 6px;
-        border-radius: 6px;
-    }
-
-    .video-body {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .video-title {
-        font-size: 14.5px;
-        font-weight: 700;
-        color: var(--text);
-        letter-spacing: -0.01em;
-        margin-bottom: 4px;
-    }
-
-    .video-desc {
-        font-size: 12.5px;
-        color: var(--text-secondary);
-        line-height: 1.4;
-        margin-bottom: 6px;
-    }
-
-    .video-date {
-        font-size: 11.5px;
-        color: var(--text-secondary);
-        opacity: 0.85;
-    }
-
-    /* =================================================================
-       BOTTOM NAVIGATION — identik dengan topik.html
-       ================================================================= */
     .bottom-nav-spacer {
         height: calc(72px + env(safe-area-inset-bottom));
     }
@@ -573,7 +432,6 @@
 
 <div class="app-shell">
 
-    <!-- ================= HEADER ================= -->
     <div class="app-header">
     <div class="brand">
         <div class="brand-mark">
@@ -598,11 +456,10 @@
 
     <div class="container">
 
-        <!-- ================= HERO ================= -->
         <div class="hero">
             <div class="hero-text">
-                <h2>Coba. Amati. Pahami.<br>Lalu tanyakan: &ldquo;Kok bisa?&rdquo;</h2>
-                <p class="hero-tagline">Belajar &middot; Bereksperimen &middot; Bertumbuh</p>
+                <h2>Coba, amati, lalu tanyakan &ldquo;kok bisa?&rdquo;</h2>
+                <p class="hero-tagline">Belajar &middot; Bereksperimen &middot; Bermain</p>
             </div>
             <svg class="hero-visual" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="150" cy="60" r="34" fill="none" stroke="#2563EB" stroke-width="1.5" opacity="0.18"/>
@@ -617,7 +474,6 @@
             </svg>
         </div>
 
-        <!-- ================= PENGUMUMAN ================= -->
         <div class="section" id="sectionPengumuman">
             <div class="section-head">
                 <div class="section-title">
@@ -632,38 +488,20 @@
             <div class="announce-list" id="announceList"></div>
         </div>
 
-        <!-- ================= SEDANG DIPELAJARI ================= -->
-        <div class="section" id="sectionLanjut">
+        <div class="section" id="sectionRekomendasi">
             <div class="section-head">
                 <div class="section-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20c0-5 3-9 9-9"/><path d="M13 11c4-1 6-4 6-8-4 0-7 2-8 6"/><circle cx="6" cy="18" r="1.5" fill="currentColor" stroke="none"/></svg>
-                    Sedang Dipelajari
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.44 1 1.15 1 1.93V17h6v-.37c0-.78.4-1.5 1-1.93A7 7 0 0 0 12 2Z"/></svg>
+                    Rekomendasi Belajar
                 </div>
             </div>
-            <a class="continue-card" href="#" id="continueCard"></a>
-        </div>
-
-        <!-- ================= DARI CAKRAWALA ================= -->
-        <div class="section" id="sectionVideo">
-            <div class="section-head">
-                <div class="section-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
-                    Dari Cakrawala
-                </div>
-                <a class="section-link" href="#">
-                    Lihat semua
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </a>
-            </div>
-            <a class="video-card" href="#" id="videoCard"></a>
+            <a class="recommend-card" href="#" id="recommendCard"></a>
         </div>
 
     </div>
 
-    <!-- ================= SPACER — mencegah konten tertutup bottom navigation ================= -->
     <div class="bottom-nav-spacer"></div>
 
-    <!-- ================= BOTTOM NAVIGATION ================= -->
     <nav class="bottom-nav" aria-label="Navigasi utama">
         <a class="nav-item active" href="beranda.html" data-nav="beranda" aria-current="page">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
@@ -673,15 +511,15 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h7"/></svg>
             <span>Topik</span>
         </a>
-        <a class="nav-item" href="eksplorasi.html" data-nav="eksplorasi">
+        <a class="nav-item" href="#" data-nav="eksplorasi">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
             <span>Eksplorasi</span>
         </a>
-        <a class="nav-item" href="arena.html" data-nav="arena">
+        <a class="nav-item" href="#" data-nav="arena">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
             <span>Arena Game</span>
         </a>
-        <a class="nav-item" href="cakrawala.html" data-nav="Cakrawala">
+        <a class="nav-item" href="#" data-nav="Cakrawala">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
             <span>Cakrawala</span>
         </a>
@@ -690,14 +528,9 @@
 </div>
 
 <script>
-    /* =============================================================
-       DATA PENGUMUMAN (preview — maksimal 3 item terbaru)
-       Properti "cta" opsional. Card TANPA "cta" dan TANPA "link"
-       akan tampil tanpa panah (murni informasi).
-       ============================================================= */
     const PENGUMUMAN = [
         {
-            tipe: "ulangan",       // ulangan | materi | deadline
+            tipe: "ulangan",
             label: "Ulangan",
             judul: "Ulangan Polinomial",
             deskripsi: "Selasa, 11 Agustus 2026 \u00B7 Jam ke-3",
@@ -720,8 +553,8 @@
             judul: "Pengumpulan Latihan 1",
             deskripsi: "Paling lambat Jumat, 9 Agustus 2026.",
             tanggal: "9 Ags 2026",
-            link: "#",
-            cta: "Lihat tugas"
+            link: null,
+            cta: null
         }
     ];
 
@@ -778,79 +611,48 @@
     }
 
     /* =============================================================
-       SEDANG DIPELAJARI
+       REKOMENDASI BELAJAR — satu saran langkah berikutnya.
+       tipe: "modul" | "eksplorasi" — menentukan label & ikon.
        ============================================================= */
-    const SEDANG_DIPELAJARI = {
-        ikon: "\uD83C\uDF3F",
-        nama: "Polinomial",
-        status: "Terakhir dibuka \u00B7 Hari ini",
-        link: "polinomial.html"
+    const REKOMENDASI = {
+        tipe: "modul",
+        judul: "Teorema Sisa",
+        alasan: "Lanjutkan setelah kamu menyelesaikan Metode Horner.",
+        link: "teorema-sisa.html"
     };
 
-    function renderLanjut() {
-        const card = document.getElementById("continueCard");
-        card.href = SEDANG_DIPELAJARI.link;
+    const REKOMENDASI_ICON = {
+        modul: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="16.5" x2="15" y2="16.5"/></svg>',
+        eksplorasi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>'
+    };
+
+    const REKOMENDASI_LABEL = {
+        modul: "Modul",
+        eksplorasi: "Eksplorasi"
+    };
+
+    function renderRekomendasi() {
+        const card = document.getElementById("recommendCard");
+        card.href = REKOMENDASI.link;
         card.innerHTML = `
-            <div class="continue-icon">${SEDANG_DIPELAJARI.ikon}</div>
-            <div class="continue-body">
-                <div class="continue-name">${SEDANG_DIPELAJARI.nama}</div>
-                <div class="continue-meta">${SEDANG_DIPELAJARI.status}</div>
+            <div class="recommend-icon">${REKOMENDASI_ICON[REKOMENDASI.tipe]}</div>
+            <div class="recommend-body">
+                <div class="recommend-tag">${REKOMENDASI_LABEL[REKOMENDASI.tipe]}</div>
+                <div class="recommend-title">${REKOMENDASI.judul}</div>
+                <div class="recommend-reason">${REKOMENDASI.alasan}</div>
             </div>
-            <div class="continue-arrow">
+            <div class="recommend-arrow">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </div>
         `;
     }
 
-    /* =============================================================
-       DARI CAKRAWALA — preview video
-       ============================================================= */
-    const VIDEO_CAKRAWALA = {
-        judul: "Mengapa 0,999... = 1?",
-        deskripsi: "Penjelasan sederhana yang sering membuat kita terkejut.",
-        tanggal: "2 Agustus 2026",
-        durasi: "6:24",
-        link: "https://www.youtube.com/"
-    };
-
-    function renderVideo() {
-        const card = document.getElementById("videoCard");
-        card.href = VIDEO_CAKRAWALA.link;
-        card.target = "_blank";
-        card.rel = "noopener";
-        card.innerHTML = `
-            <div class="video-thumb">
-                <svg class="bg" viewBox="0 0 118 84" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="95" cy="14" r="26" fill="none" stroke="#3B82F6" stroke-width="1.2" opacity="0.35"/>
-                    <line x1="10" y1="66" x2="34" y2="66" stroke="#3B82F6" stroke-width="1.2" opacity="0.3"/>
-                    <line x1="22" y1="54" x2="22" y2="78" stroke="#3B82F6" stroke-width="1.2" opacity="0.3"/>
-                </svg>
-                <div class="video-play">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
-                </div>
-                <span class="video-duration">${VIDEO_CAKRAWALA.durasi}</span>
-            </div>
-            <div class="video-body">
-                <div class="video-title">${VIDEO_CAKRAWALA.judul}</div>
-                <div class="video-desc">${VIDEO_CAKRAWALA.deskripsi}</div>
-                <div class="video-date">${VIDEO_CAKRAWALA.tanggal}</div>
-            </div>
-        `;
-    }
-
-    /* =============================================================
-       ICON PENCARIAN — arahkan ke halaman Topik (pencarian materi)
-       ============================================================= */
     document.querySelector('[data-action="search"]').addEventListener("click", () => {
         window.location.href = "topik.html";
     });
 
-    /* =============================================================
-       INISIALISASI
-       ============================================================= */
     renderPengumuman();
-    renderLanjut();
-    renderVideo();
+    renderRekomendasi();
 </script>
 
 </body>
