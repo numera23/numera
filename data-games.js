@@ -51,14 +51,14 @@
 
 const NUMERA_GAMES = [
     {
-        nama: "⚙ Mesin Matematika",
-        materi: "Penjumlahan Pengurangan Komposisi Fungsi",
-        deskripsi: "Masukkan input dan jalankan mesinnya.",
-        link: "game_mesin_jumlah_kurang_komposisi.html",
+        nama: "🎯 Tembak Target",
+        materi: "Polinomial",
+        deskripsi: "Arahkan bidikanmu ke jawaban yang benar.",
+        link: "TEMPEL LINK GAME DI SINI",
         tanggal: "2026-08-20",
         thumbnail: "",
-        warna: "#00E5FF",
-        emoji: "⚙",
+        warna: "#2563EB",
+        emoji: "🎯",
         badge: "Baru"
     },
     {
@@ -210,20 +210,24 @@ function buatKartuNumera(game){
     el.href = href;
     if(targetRel){ el.target = '_blank'; el.rel = 'noopener'; }
     el.innerHTML = `
-        <div class="numera-thumb">
-            ${numeraThumbHTML(game)}
-            ${game.badge ? `<span class="numera-thumb-badge">${game.badge}</span>` : ''}
-        </div>
-        <div class="numera-info">
-            <div class="numera-meta">
-                <span class="numera-tag-original">Arena Numera</span>
-                <span class="dot"></span>
-                <span class="numera-meta-materi">${game.materi || ''}</span>
+        <div class="numera-top">
+            <div class="numera-thumb">
+                ${numeraThumbHTML(game)}
+                ${game.badge ? `<span class="numera-thumb-badge">${game.badge}</span>` : ''}
             </div>
-            <div class="numera-title">${game.nama}</div>
-            <p class="numera-desc">${game.deskripsi || ''}</p>
+            <div class="numera-info">
+                <div class="numera-meta">
+                    <span class="numera-tag-original">Numera Original</span>
+                    <span class="dot"></span>
+                    <span class="numera-meta-materi">${game.materi || ''}</span>
+                </div>
+                <div class="numera-title">${game.nama}</div>
+                <p class="numera-desc">${game.deskripsi || ''}</p>
+            </div>
         </div>
-        <span class="numera-play-btn">${ICON_PLAY} Mainkan</span>
+        <div class="numera-actions">
+            <span class="numera-play-btn">${ICON_PLAY} Mainkan</span>
+        </div>
     `;
     return el;
 }
