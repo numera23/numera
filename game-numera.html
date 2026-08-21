@@ -213,6 +213,50 @@
         max-width: 46ch;
     }
 
+    .search-box {
+        position: relative;
+        margin-bottom: 14px;
+    }
+    .search-box svg {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        color: var(--text-secondary);
+        pointer-events: none;
+    }
+    .search-box input {
+        width: 100%;
+        padding: 11px 14px 11px 38px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        font-size: 13.5px;
+        font-family: inherit;
+        color: var(--text);
+        outline: none;
+    }
+    .search-box input:focus { border-color: var(--primary); }
+    .search-box input::placeholder { color: var(--text-secondary); }
+    .search-box .clear-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--border);
+        color: var(--text-secondary);
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    .search-box .clear-btn svg { position: static; width: 11px; height: 11px; color: inherit; }
+    .search-box.has-text .clear-btn { display: flex; }
+
     /* =================================================================
        GAME BUATAN NUMERA — list vertikal dengan thumbnail (tanpa scroll)
        ================================================================= */
@@ -225,11 +269,11 @@
     .numera-row {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 6px;
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 12px;
+        border-radius: 14px;
+        padding: 10px;
         box-shadow: 0 1px 2px rgba(15,23,42,0.03);
     }
 
@@ -319,11 +363,11 @@
     }
 
     .numera-desc {
-        font-size: 12px;
+        font-size: 11.5px;
         color: var(--text-secondary);
-        line-height: 1.4;
+        line-height: 1.35;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 1;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
@@ -331,21 +375,22 @@
     .numera-actions {
         display: flex;
         justify-content: flex-end;
+        margin-top: -2px;
     }
     .numera-play-btn {
         flex-shrink: 0;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
-        font-size: 12.5px;
+        gap: 3px;
+        font-size: 11px;
         font-weight: 700;
         color: #fff;
         background: linear-gradient(150deg, var(--primary), var(--primary-hover));
-        padding: 8px 15px;
+        padding: 5px 11px;
         border-radius: 999px;
-        box-shadow: 0 4px 10px rgba(37,99,235,0.22);
+        box-shadow: 0 3px 7px rgba(37,99,235,0.2);
     }
-    .numera-play-btn svg { width: 12px; height: 12px; }
+    .numera-play-btn svg { width: 10px; height: 10px; }
 
     .numera-empty {
         display: flex;
@@ -625,6 +670,14 @@
             </div>
             <p class="section-sub">Semua game matematika interaktif yang dibuat khusus untuk Numera, diurutkan dari yang terbaru.</p>
 
+            <div class="search-box" id="searchBoxNumera">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchNumera" placeholder="Cari nama game atau materi..." autocomplete="off">
+                <button class="clear-btn" id="clearSearchNumera" type="button" aria-label="Hapus pencarian">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
             <div class="numera-list" id="numeraFullList"></div>
         </div>
 
@@ -665,17 +718,43 @@
        HALAMAN INI HANYA MERENDER DATA — untuk MENGEDIT GAME, edit
        array NUMERA_GAMES di file data-games.js.
        ================================================================ */
+    const searchInputNumera = document.getElementById('searchNumera');
+    const searchBoxNumera = document.getElementById('searchBoxNumera');
+    const clearSearchNumera = document.getElementById('clearSearchNumera');
+    let queryNumera = '';
+
+    function cocokPencarian(game, q){
+        if(!q) return true;
+        const gabungan = [game.nama, game.materi, game.deskripsi].join(' ').toLowerCase();
+        return gabungan.includes(q);
+    }
+
     function renderNumeraFull(){
         const wrap = document.getElementById('numeraFullList');
         wrap.innerHTML = '';
-        const data = numeraTerurut();
+        const data = numeraTerurut().filter(g => cocokPencarian(g, queryNumera));
 
         if(data.length === 0){
-            wrap.innerHTML = '<div class="numera-empty">Belum ada game. Tambahkan game pada array NUMERA_GAMES di data-games.js.</div>';
+            wrap.innerHTML = queryNumera
+                ? '<div class="numera-empty">Game tidak ditemukan untuk kata kunci tersebut. Coba kata kunci lain.</div>'
+                : '<div class="numera-empty">Belum ada game. Tambahkan game pada array NUMERA_GAMES di data-games.js.</div>';
             return;
         }
         data.forEach(game => wrap.appendChild(buatKartuNumera(game)));
     }
+
+    searchInputNumera.addEventListener('input', () => {
+        queryNumera = searchInputNumera.value.trim().toLowerCase();
+        searchBoxNumera.classList.toggle('has-text', queryNumera.length > 0);
+        renderNumeraFull();
+    });
+    clearSearchNumera.addEventListener('click', () => {
+        searchInputNumera.value = '';
+        queryNumera = '';
+        searchBoxNumera.classList.remove('has-text');
+        renderNumeraFull();
+        searchInputNumera.focus();
+    });
 
     renderNumeraFull();
 </script>
