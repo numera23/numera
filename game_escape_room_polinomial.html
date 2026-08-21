@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Escape Room — Operasi Polinomial | Numera</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+/* ============================================================
+   DESIGN TOKENS
+============================================================ */
+:root{
+  --sky-top:#7DD3FC;
+  --sky-mid:#A5B4FC;
+  --sky-bottom:#C4B5FD;
+
+  --blue:#2563EB;
+  --blue-dark:#1D4ED8;
+  --cyan:#06B6D4;
+  --purple:#8B5CF6;
+  --green:#22C55E;
+  --green-dark:#15803D;
+  --gold:#F59E0B;
+  --gold-light:#FBBF24;
+  --orange:#FB923C;
+  --red:#EF4444;
+  --red-dark:#B91C1C;
+
+  --paper:#FFF8E7;
+  --paper-line:#F3E2B3;
+  --ink:#3B2F1E;
+  --ink-muted:#8A7658;
+
+  --panel:#FFFFFF;
+  --text-dark:#1E293B;
+  --text-muted:#64748B;
+
+  --radius-lg:24px;
+  --radius:16px;
+  --radius-sm:12px;
+  --shadow:0 10px 28px rgba(30,41,59,.18);
+  --shadow-sm:0 4px 12px rgba(30,41,59,.12);
+  --glow-gold:0 0 22px rgba(245,158,11,.55);
+  --glow-blue:0 0 22px rgba(37,99,235,.4);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;width:100%;min-height:100%;overflow-x:hidden;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:linear-gradient(180deg,var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-bottom) 100%);
+  color:var(--text-dark);
+  min-height:100vh;
+}
+#app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;}
+.screen{display:none;flex-direction:column;flex:1;padding:16px 14px 26px;animation:fadeIn .35s ease;}
+.screen.active{display:flex;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+button{font-family:inherit;}
+
+/* floating decorative clouds */
+.cloud{position:absolute;border-radius:100px;background:rgba(255,255,255,.55);filter:blur(1px);z-index:0;}
+.cloud1{width:120px;height:40px;top:6%;left:-20px;}
+.cloud2{width:90px;height:32px;top:16%;right:-10px;}
+.cloud3{width:70px;height:26px;top:2%;left:55%;}
+
+/* ============================================================
+   SHARED UI
+============================================================ */
+.brand-row{display:flex;align-items:center;gap:8px;position:relative;z-index:1;}
+.brand-logo{
+  width:34px;height:34px;border-radius:10px;background:linear-gradient(145deg,var(--blue),var(--purple));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:16px;
+  box-shadow:var(--shadow-sm);
+}
+.brand-text{line-height:1.1;}
+.brand-text .b1{font-size:13px;font-weight:800;color:var(--blue-dark);letter-spacing:.02em;}
+.brand-text .b2{font-size:9px;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;}
+
+.pill-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  border:none;border-radius:100px;font-weight:800;cursor:pointer;
+  transition:transform .1s;-webkit-user-select:none;user-select:none;
+}
+.pill-btn:active{transform:scale(.96);}
+
+.btn-primary{
+  width:100%;padding:16px;font-size:16.5px;border-radius:18px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;font-weight:800;
+  box-shadow:0 8px 20px rgba(34,197,94,.4);transition:transform .1s;-webkit-user-select:none;user-select:none;
+}
+.btn-primary:active{transform:scale(.97);}
+.btn-primary:disabled{opacity:.5;box-shadow:none;cursor:not-allowed;}
+.btn-secondary{
+  width:100%;padding:14px;font-size:15px;border-radius:16px;border:2px solid var(--blue);cursor:pointer;
+  background:#fff;color:var(--blue-dark);font-weight:800;transition:transform .1s;
+}
+.btn-secondary:active{transform:scale(.97);background:#EFF4FE;}
+
+.icon-btn{
+  width:38px;height:38px;border-radius:12px;border:none;background:rgba(255,255,255,.85);
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;box-shadow:var(--shadow-sm);
+}
+.icon-btn:active{transform:scale(.93);}
+
+/* ============================================================
+   START SCREEN
+============================================================ */
+#screen-start{position:relative;z-index:1;}
+.start-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+
+.title-wrap{text-align:center;margin-top:6px;}
+.lab-illustration{width:100%;max-width:280px;height:120px;margin:6px auto 4px;position:relative;}
+.lab-illustration .shelf{
+  position:absolute;bottom:0;left:0;right:0;height:54px;background:linear-gradient(180deg,#B98A46,#8C5E2B);
+  border-radius:10px;box-shadow:var(--shadow-sm);
+}
+.lab-illustration .book{position:absolute;bottom:8px;width:14px;height:38px;border-radius:2px;}
+.lab-illustration .b1{left:20px;background:#EF4444;}
+.lab-illustration .b2{left:36px;background:#22C55E;height:32px;bottom:8px;}
+.lab-illustration .b3{left:52px;background:#3B82F6;height:42px;bottom:8px;}
+.lab-illustration .door{
+  position:absolute;bottom:0;right:24px;width:52px;height:82px;border-radius:10px 10px 4px 4px;
+  background:linear-gradient(160deg,#38BDF8,#2563EB);box-shadow:var(--shadow-sm);
+}
+.lab-illustration .door::after{
+  content:"";position:absolute;right:8px;top:38px;width:7px;height:7px;border-radius:50%;background:var(--gold-light);
+  box-shadow:var(--glow-gold);
+}
+.lab-illustration .flask{
+  position:absolute;bottom:56px;left:100px;width:22px;height:30px;border-radius:0 0 10px 10px;
+  background:linear-gradient(180deg,rgba(139,92,246,.15),rgba(139,92,246,.65));
+  border:2px solid #fff;
+}
+.lab-illustration .star{position:absolute;color:var(--gold-light);font-size:16px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15));}
+.lab-illustration .s1{top:6px;left:8px;}
+.lab-illustration .s2{top:14px;right:20px;}
+
+.game-title{
+  font-size:38px;font-weight:900;letter-spacing:-.02em;line-height:1;margin:6px 0 2px;
+  background:linear-gradient(180deg,#60A5FA,#2563EB);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 4px 0 rgba(37,99,235,.15);
+}
+.game-subtitle{
+  display:inline-block;margin-top:4px;padding:6px 18px;border-radius:100px;
+  background:linear-gradient(135deg,var(--gold-light),var(--orange));color:#fff;font-weight:800;font-size:13px;
+  letter-spacing:.03em;box-shadow:var(--shadow-sm);
+}
+.game-desc{color:var(--text-dark);font-size:14px;line-height:1.55;margin:14px auto 16px;max-width:320px;text-align:center;font-weight:600;}
+
+.feature-row{display:flex;gap:8px;justify-content:center;margin-bottom:18px;flex-wrap:wrap;}
+.feature-chip{
+  background:#fff;border-radius:14px;padding:8px 12px;font-size:11.5px;font-weight:700;color:var(--text-dark);
+  box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:6px;
+}
+
+.start-card{
+  background:var(--paper);border:2px solid var(--paper-line);border-radius:var(--radius-lg);
+  padding:16px 18px;box-shadow:var(--shadow);margin-bottom:14px;
+}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:12px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.field input{
+  width:100%;padding:13px 15px;font-size:16px;border:2px solid var(--paper-line);border-radius:14px;
+  background:#fff;color:var(--text-dark);outline:none;font-weight:600;
+}
+.field input:focus{border-color:var(--blue);}
+.field-error{color:var(--red-dark);font-size:12px;font-weight:700;margin-top:-4px;margin-bottom:10px;display:none;}
+
+.spacer{flex:1;}
+footer.credit{text-align:center;font-size:11px;color:rgba(30,41,59,.55);padding-top:10px;font-weight:600;}
+
+/* ============================================================
+   GAME SCREEN
+============================================================ */
+#screen-game{position:relative;z-index:1;}
+.game-header{
+  display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:10px;flex-wrap:wrap;
+}
+.header-badges{display:flex;gap:6px;flex:1;flex-wrap:wrap;}
+.badge{
+  border-radius:100px;padding:7px 13px;font-size:12px;font-weight:800;box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.badge-room{background:var(--blue);color:#fff;}
+.badge-progress{background:var(--gold-light);color:#5A3B00;}
+.badge-score{background:#fff;color:var(--text-dark);}
+.badge-score .star{color:var(--gold);}
+
+/* room path — 10 station icons */
+.room-path{
+  display:flex;gap:5px;overflow-x:auto;padding:10px 4px;margin-bottom:8px;
+  scrollbar-width:none;
+}
+.room-path::-webkit-scrollbar{display:none;}
+.station{
+  flex:none;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;background:#fff;box-shadow:var(--shadow-sm);opacity:.45;filter:grayscale(60%);
+  transition:transform .2s, box-shadow .2s, opacity .2s;position:relative;
+}
+.station.done{opacity:1;filter:none;background:linear-gradient(145deg,var(--green),var(--green-dark));}
+.station.done::after{content:"✓";position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;
+  background:#fff;color:var(--green-dark);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+.station.current{opacity:1;filter:none;transform:scale(1.15);box-shadow:var(--glow-blue),var(--shadow-sm);
+  background:linear-gradient(145deg,#60A5FA,var(--blue));}
+
+/* code progress strip */
+.code-strip{display:flex;align-items:center;gap:6px;justify-content:center;margin-bottom:10px;}
+.code-strip .lbl{font-size:10.5px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;}
+.code-slot{
+  width:26px;height:30px;border-radius:8px;background:#fff;box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--text-dark);
+  border:2px solid var(--paper-line);
+}
+.code-slot.filled{border-color:var(--gold);background:linear-gradient(145deg,#FEF3C7,var(--gold-light));color:#5A3B00;}
+
+/* story/context banner */
+.story-banner{
+  background:linear-gradient(135deg,var(--purple),#6D28D9);color:#fff;border-radius:14px;
+  padding:10px 14px;font-size:12.5px;font-weight:700;text-align:center;margin-bottom:10px;line-height:1.4;
+  box-shadow:var(--shadow-sm);
+}
+
+/* puzzle card (parchment style) */
+.puzzle-card{
+  background:var(--paper);border:2px solid var(--paper-line);border-radius:var(--radius-lg);
+  padding:16px;box-shadow:var(--shadow);margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.puzzle-card .katex{font-size:19px !important;color:var(--ink);}
+#question-formula{display:inline-block;min-width:100%;text-align:center;margin-bottom:8px;}
+.puzzle-prompt{font-size:13.5px;color:var(--ink);font-weight:700;line-height:1.5;text-align:center;}
+
+/* answer display + keypad */
+.answer-display{
+  background:#fff;border:2px solid var(--paper-line);border-radius:14px;padding:12px 16px;text-align:center;
+  font-size:22px;font-weight:800;color:var(--text-dark);margin-bottom:10px;min-height:52px;
+  display:flex;align-items:center;justify-content:center;letter-spacing:.03em;
+}
+.answer-display.placeholder{color:#B9AE90;font-weight:600;font-size:14px;}
+
+/* expression coefficient input (untuk soal penjumlahan/pengurangan/perkalian polinomial) */
+.expr-preview{
+  background:#F5F3FF;border:2px dashed var(--purple);border-radius:14px;padding:10px 12px;
+  text-align:center;margin-bottom:10px;min-height:40px;display:flex;align-items:center;justify-content:center;
+  overflow-x:auto;
+}
+.expr-preview .katex{font-size:18px !important;color:#4C1D95;}
+.expr-row{display:flex;gap:8px;margin-bottom:10px;}
+.expr-box{
+  flex:1;background:#fff;border:2px solid var(--paper-line);border-radius:14px;padding:10px 6px;
+  text-align:center;cursor:pointer;transition:border-color .15s, box-shadow .15s;
+}
+.expr-box.active{border-color:var(--blue);box-shadow:var(--glow-blue);background:#EFF6FF;}
+.expr-box-label{display:block;font-size:9.5px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
+.expr-box-val{display:block;font-size:20px;font-weight:900;color:var(--text-dark);}
+.expr-box.active .expr-box-val{color:var(--blue-dark);}
+
+/* yes/tidak (teorema faktor) */
+.yesno-row{display:flex;gap:10px;margin-top:4px;}
+.yesno-btn{
+  flex:1;padding:18px 10px;border-radius:16px;border:none;font-weight:900;font-size:15px;cursor:pointer;
+  box-shadow:var(--shadow-sm);transition:transform .1s;
+}
+.yesno-btn:active{transform:scale(.96);}
+.yesno-btn.yes{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;}
+.yesno-btn.no{background:linear-gradient(135deg,#F87171,var(--red-dark));color:#fff;}
+
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px;}
+.key{
+  aspect-ratio:1.5/1;border-radius:13px;border:none;background:#fff;box-shadow:var(--shadow-sm);
+  font-size:19px;font-weight:800;color:var(--text-dark);cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.key:active{transform:scale(.94);background:#EFF4FE;}
+.key.op{background:#FEE2E2;color:var(--red-dark);}
+.key.ok{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;grid-column:span 1;}
+
+/* feedback modal */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;
+  z-index:40;padding:20px;
+}
+.modal-overlay.show{display:flex;}
+.modal-card{
+  width:100%;max-width:360px;background:var(--panel);border-radius:22px;padding:20px 20px 18px;box-shadow:var(--shadow);
+  text-align:center;animation:popIn .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.ribbon{
+  display:inline-block;padding:9px 26px;border-radius:100px;font-size:19px;font-weight:900;color:#fff;
+  margin-bottom:10px;letter-spacing:.02em;
+}
+.ribbon.ok{background:linear-gradient(135deg,var(--green),var(--green-dark));box-shadow:0 6px 16px rgba(34,197,94,.4);}
+.ribbon.bad{background:linear-gradient(135deg,#F87171,var(--red-dark));box-shadow:0 6px 16px rgba(239,68,68,.35);}
+.modal-body-text{font-size:14px;color:var(--text-dark);font-weight:600;line-height:1.5;margin-bottom:14px;}
+.reward-box{
+  background:#FFFBEB;border:2px solid #FDE68A;border-radius:14px;padding:12px 14px;margin-bottom:14px;
+  font-size:13px;color:#7C4A03;font-weight:700;line-height:1.5;
+}
+.reward-star{font-size:26px;margin-bottom:2px;}
+.hint-box{
+  background:#EFF6FF;border:2px solid #BFDBFE;border-radius:14px;padding:12px 14px;margin-bottom:14px;
+  font-size:13px;color:#1E40AF;font-weight:600;line-height:1.5;text-align:left;
+}
+.hint-box b{color:#1D4ED8;}
+
+/* ============================================================
+   CODE ENTRY SCREEN
+============================================================ */
+#screen-code{position:relative;z-index:1;text-align:center;}
+.door-icon-wrap{margin:8px auto 6px;width:120px;height:120px;position:relative;}
+.door-icon{
+  position:absolute;inset:0;border-radius:16px;background:linear-gradient(160deg,#38BDF8,var(--blue));
+  box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:50px;
+}
+.code-title{font-size:22px;font-weight:900;color:var(--blue-dark);margin:8px 0 4px;}
+.code-desc{font-size:13.5px;color:var(--text-dark);font-weight:600;margin-bottom:14px;}
+
+.collected-chips{display:flex;gap:8px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+.collected-chip{
+  background:#fff;border-radius:14px;padding:8px 12px;box-shadow:var(--shadow-sm);text-align:center;min-width:64px;
+}
+.collected-chip .cnum{font-size:9px;color:var(--text-muted);font-weight:800;text-transform:uppercase;}
+.collected-chip .cval{font-size:18px;font-weight:900;color:var(--blue-dark);}
+
+.code-input-row{display:flex;gap:10px;justify-content:center;margin-bottom:16px;}
+.code-box{
+  width:52px;height:60px;border-radius:14px;background:#fff;border:2.5px solid var(--paper-line);
+  display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:var(--text-dark);
+  box-shadow:var(--shadow-sm);
+}
+.code-box.filled{border-color:var(--blue);}
+.code-error{color:var(--red-dark);font-size:12.5px;font-weight:700;margin-bottom:10px;min-height:16px;}
+
+/* ============================================================
+   RESULT SCREEN
+============================================================ */
+#screen-result{position:relative;z-index:1;text-align:center;}
+.trophy-wrap{margin:10px auto 6px;font-size:64px;filter:drop-shadow(0 8px 16px rgba(245,158,11,.4));}
+.result-title{font-size:25px;font-weight:900;color:var(--blue-dark);margin:0 0 4px;}
+.result-sub{font-size:14px;color:var(--text-dark);font-weight:700;margin-bottom:4px;}
+.result-room{font-size:13.5px;color:var(--purple);font-weight:800;margin-bottom:16px;}
+
+.player-card{
+  background:#fff;border-radius:16px;padding:12px 16px;margin-bottom:14px;box-shadow:var(--shadow-sm);
+  display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--text-dark);
+}
+.player-card .grp{text-align:left;}
+.player-card .lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;font-weight:800;}
+
+.score-big{
+  text-align:center;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:var(--radius-lg);
+  padding:20px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.score-big .num{font-size:38px;font-weight:900;color:#7C4A03;line-height:1;}
+.score-big .lbl{font-size:12px;color:#92640B;font-weight:800;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;}
+
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;}
+.result-cell{background:#fff;border-radius:14px;padding:13px;text-align:center;box-shadow:var(--shadow-sm);}
+.result-cell .num{font-size:19px;font-weight:900;color:var(--text-dark);}
+.result-cell .lbl{font-size:11px;color:var(--text-muted);font-weight:700;margin-top:2px;}
+
+.appreciation{font-size:13.5px;font-weight:700;color:var(--green-dark);margin-bottom:14px;}
+.send-status{text-align:center;font-size:12px;color:var(--text-muted);margin-bottom:14px;min-height:16px;font-weight:600;}
+.result-btn-row{display:flex;gap:10px;}
+.result-btn-row .btn-primary,.result-btn-row .btn-secondary{flex:1;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============================================================
+       START SCREEN
+  ============================================================ -->
+  <section id="screen-start" class="screen active">
+    <div class="cloud cloud1"></div><div class="cloud cloud2"></div><div class="cloud cloud3"></div>
+
+    <div class="start-header">
+      <div class="brand-row">
+        <div class="brand-logo">N</div>
+        <div class="brand-text"><div class="b1">Numera</div><div class="b2">Arena Matematika</div></div>
+      </div>
+      <button class="icon-btn" id="btn-mute-start">🔊</button>
+    </div>
+
+    <div class="title-wrap">
+      <div class="lab-illustration">
+        <span class="star s1">✦</span><span class="star s2">✦</span>
+        <div class="flask"></div>
+        <div class="shelf"></div>
+        <div class="book b1"></div><div class="book b2"></div><div class="book b3"></div>
+        <div class="door"></div>
+      </div>
+      <div class="game-title">ESCAPE<br>ROOM</div>
+      <div class="game-subtitle">🔑 OPERASI POLINOMIAL</div>
+      <p class="game-desc">Pecahkan 7 teka-teki: penjumlahan-pengurangan, perkalian, Teorema Sisa, dan Teorema Faktor untuk membuka pintu Laboratorium Polinomial!</p>
+      <div class="feature-row">
+        <div class="feature-chip">🧩 7 Puzzle</div>
+        <div class="feature-chip">⭐ Skor Real-time</div>
+        <div class="feature-chip">🔐 Kode Pintu</div>
+      </div>
+    </div>
+
+    <div class="start-card">
+      <div class="field">
+        <label for="input-nama">Nama</label>
+        <input id="input-nama" type="text" placeholder="Tulis namamu" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="input-kelas">Kelas</label>
+        <input id="input-kelas" type="text" placeholder="Contoh: XI IPA 2" autocomplete="off">
+      </div>
+      <div class="field-error" id="start-error">Nama dan kelas wajib diisi sebelum memulai petualangan.</div>
+      <button class="btn-primary" id="btn-start">🚀 MULAI PETUALANGAN</button>
+    </div>
+    <div class="spacer"></div>
+    <footer class="credit">Numera — Arena Game Matematika</footer>
+  </section>
+
+  <!-- ============================================================
+       GAME SCREEN (PUZZLE)
+  ============================================================ -->
+  <section id="screen-game" class="screen">
+    <div class="game-header">
+      <div class="header-badges">
+        <div class="badge badge-room">🔬 Escape Room</div>
+        <div class="badge badge-progress" id="badge-progress">PUZZLE 1/10</div>
+        <div class="badge badge-score"><span class="star">⭐</span><span id="badge-score">0</span></div>
+      </div>
+      <button class="icon-btn" id="btn-mute-game">🔊</button>
+    </div>
+
+    <div class="room-path" id="room-path"></div>
+
+    <div class="code-strip" id="code-strip" style="display:none;">
+      <span class="lbl">Kode:</span>
+      <div class="code-slot" id="cs-0">?</div>
+      <div class="code-slot" id="cs-1">?</div>
+      <div class="code-slot" id="cs-2">?</div>
+      <div class="code-slot" id="cs-3">?</div>
+    </div>
+
+    <div class="story-banner" id="story-banner"></div>
+
+    <div class="puzzle-card">
+      <div id="question-formula"></div>
+      <div class="puzzle-prompt" id="question-prompt"></div>
+    </div>
+
+    <div id="answer-area"></div>
+  </section>
+
+  <!-- ============================================================
+       CODE ENTRY SCREEN
+  ============================================================ -->
+  <section id="screen-code" class="screen">
+    <div class="brand-row" style="margin-bottom:10px;">
+      <div class="brand-logo">N</div>
+      <div class="brand-text"><div class="b1">Numera</div><div class="b2">Arena Matematika</div></div>
+    </div>
+
+    <div class="door-icon-wrap"><div class="door-icon">🚪</div></div>
+    <div class="code-title">MASUKKAN KODE PINTU</div>
+    <p class="code-desc">Gabungkan semua angka petunjuk yang sudah kamu temukan selama menjelajahi laboratorium!</p>
+
+    <div class="collected-chips" id="collected-chips"></div>
+
+    <div class="code-input-row" id="code-input-row">
+      <div class="code-box" id="cb-0"></div>
+      <div class="code-box" id="cb-1"></div>
+      <div class="code-box" id="cb-2"></div>
+      <div class="code-box" id="cb-3"></div>
+    </div>
+    <div class="code-error" id="code-error"></div>
+
+    <div class="keypad" id="code-keypad"></div>
+  </section>
+
+  <!-- ============================================================
+       RESULT SCREEN
+  ============================================================ -->
+  <section id="screen-result" class="screen">
+    <div class="brand-row" style="margin-bottom:6px;">
+      <div class="brand-logo">N</div>
+      <div class="brand-text"><div class="b1">Numera</div><div class="b2">Arena Matematika</div></div>
+    </div>
+
+    <div class="trophy-wrap">🏆</div>
+    <div class="result-title" id="result-title">MISSION COMPLETE!</div>
+    <div class="result-sub">Kamu berhasil keluar dari Laboratorium Polinomial!</div>
+    <div class="result-room">🔬 Escape Room — Teorema Sisa</div>
+
+    <div class="player-card">
+      <div class="grp"><div class="lbl">Nama</div><div id="result-nama">-</div></div>
+      <div class="grp" style="text-align:right;"><div class="lbl">Kelas</div><div id="result-kelas">-</div></div>
+    </div>
+
+    <div class="score-big">
+      <div class="num" id="result-score">0 / 1000</div>
+      <div class="lbl">Skor Akhir</div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-cell"><div class="num" id="result-correct">0/10</div><div class="lbl">Soal Benar</div></div>
+      <div class="result-cell"><div class="num" id="result-acc">0%</div><div class="lbl">Akurasi</div></div>
+      <div class="result-cell"><div class="num" id="result-time">00:00</div><div class="lbl">Waktu Bermain</div></div>
+      <div class="result-cell"><div class="num" id="result-wrong">0</div><div class="lbl">Percobaan Salah</div></div>
+    </div>
+
+    <div class="appreciation" id="result-appreciation">Kerja bagus, detektif polinomial!</div>
+    <div class="send-status" id="send-status">Mengirim hasil...</div>
+
+    <div class="result-btn-row">
+      <button class="btn-secondary" id="btn-menu">🏠 KEMBALI KE MENU</button>
+      <button class="btn-primary" id="btn-again">🔄 MAIN LAGI</button>
+    </div>
+    <div class="spacer"></div>
+    <footer class="credit">Numera — Arena Game Matematika</footer>
+  </section>
+
+</div>
+
+<!-- Feedback modal (correct / wrong) -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-card" id="modal-card">
+    <div id="modal-ribbon"></div>
+    <div class="modal-body-text" id="modal-body-text"></div>
+    <div id="modal-extra"></div>
+    <button class="btn-primary" id="modal-btn">LANJUTKAN</button>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   CONFIGURATION
+============================================================ */
+const CONFIG = {
+  totalPuzzles: 7,
+  pointsPerCorrect: 100,   // 7 puzzle x 100 = 700 (skor maksimum)
+  maxScore: 700
+};
+
+/* ============================================================
+   QUESTION BANK — Operasi Polinomial, Teorema Sisa & Teorema Faktor
+   (edit di sini untuk mengganti soal)
+   Setiap soal:
+   - context      : narasi/konteks ruangan yang ditampilkan di atas soal
+   - questionLatex: rumus utama (dirender dengan KaTeX)
+   - promptText   : pertanyaan dalam bahasa biasa
+   - type         : bentuk jawaban —
+                       "numeric" -> keypad angka, jawaban satu angka
+                       "expr2"   -> 2 kotak koefisien, bentuk ax + b
+                       "expr3"   -> 3 kotak koefisien, bentuk ax^2+bx+c
+                       "yesno"   -> dua tombol YA / TIDAK
+   - answer       : jawaban benar. String utk numeric/yesno("ya"/"tidak"),
+                     object {a,b} utk expr2, {a,b,c} utk expr3
+   - hint         : petunjuk yang tampil saat jawaban salah
+   - rewardText   : pesan yang tampil saat jawaban benar
+   - codeDigit    : jika diisi ("0"-"9"), angka ini otomatis menjadi
+                     salah satu dari 4 digit KODE PINTU di akhir game
+                     (urutan diambil sesuai urutan puzzle). Isi null
+                     jika puzzle ini tidak menyumbang kode.
+                     PENTING: total codeDigit yang tidak-null di
+                     seluruh QUESTION_BANK harus tepat 4 buah.
+============================================================ */
+const QUESTION_BANK = [
+  {
+    context: "🧮 Meja kerja profesor penuh coretan tiga suku banyak yang saling terkait.",
+    questionLatex: "\\begin{gathered} A(x) = 2x^{2} + 3x - 1 \\\\ B(x) = x^{2} - 4x + 5 \\\\ C(x) = x^{2} - 2x - 3 \\end{gathered}",
+    promptText: "Tentukan hasil A(x) + B(x) \u2212 C(x). Nyatakan jawabanmu dalam bentuk ax\u00b2 + bx + c.",
+    type: "expr3",
+    answer: { a: 2, b: 1, c: 7 },
+    hint: "Jumlahkan dulu suku sejenis pada A(x) + B(x), baru kurangkan hasilnya dengan C(x) suku demi suku.",
+    rewardText: "Ketiga suku banyak berhasil digabungkan! Sepotong kode ditemukan terselip di meja.",
+    codeDigit: "4"
+  },
+  {
+    context: "📐 Papan tulis geser menampilkan tiga suku banyak linear yang harus digabungkan.",
+    questionLatex: "\\begin{gathered} P(x) = 4x + 3 \\\\ Q(x) = 2x - 5 \\\\ R(x) = x + 6 \\end{gathered}",
+    promptText: "Tentukan hasil P(x) \u2212 Q(x) + R(x). Nyatakan jawabanmu dalam bentuk ax + b.",
+    type: "expr2",
+    answer: { a: 3, b: 14 },
+    hint: "Kurangkan P(x) dengan Q(x) terlebih dahulu suku demi suku, lalu tambahkan hasilnya dengan R(x).",
+    rewardText: "Papan tulis geser terbuka, mengungkap ruang kecil di baliknya.",
+    codeDigit: null
+  },
+  {
+    context: "🧪 Dua tabung reaksi berlabel faktor polinomial menunggu untuk direaksikan (dikalikan).",
+    questionLatex: "(x + 2)(x + 3)",
+    promptText: "Kalikan kedua faktor tersebut, lalu nyatakan hasilnya dalam bentuk ax\u00b2 + bx + c.",
+    type: "expr3",
+    answer: { a: 1, b: 5, c: 6 },
+    hint: "Gunakan cara F-O-I-L (First, Outer, Inner, Last): (x)(x) + (x)(3) + (2)(x) + (2)(3).",
+    rewardText: "Reaksi berhasil! Sebuah digit kode baru tercetak di layar tabung.",
+    codeDigit: "7"
+  },
+  {
+    context: "📦 Sebuah kotak terkunci menampilkan suku banyak pangkat tiga dan meminta sisa pembagiannya.",
+    questionLatex: "f(x) = 2x^{3} - x^{2} + 3x - 4",
+    promptText: "Tentukan sisa pembagian f(x) oleh (x \u2212 2) menggunakan Teorema Sisa.",
+    type: "numeric",
+    answer: "14",
+    hint: "Sisa pembagian f(x) oleh (x-a) sama dengan f(a). Substitusikan x = 2 ke dalam f(x), hitung tiap suku dengan teliti termasuk pangkat tiganya.",
+    rewardText: "Kotak terbuka, memperlihatkan alat lab yang berkilau.",
+    codeDigit: null
+  },
+  {
+    context: "🗝️ Gembok kombinasi berikutnya meminta perhitungan sisa pembagian lainnya.",
+    questionLatex: "f(x) = 2x^{2} - 3x + 1",
+    promptText: "Tentukan sisa pembagian f(x) oleh (x + 1).",
+    type: "numeric",
+    answer: "6",
+    hint: "(x + 1) berarti a = \u22121. Substitusikan x = \u22121 ke f(x).",
+    rewardText: "Gembok kombinasi berikutnya terbuka! Kamu menemukan digit kode baru.",
+    codeDigit: "2"
+  },
+  {
+    context: "🔍 Sebuah mesin pemeriksa faktor menyala, menunggu jawaban Ya/Tidak darimu.",
+    questionLatex: "f(x) = x^{2} - 3x + 2",
+    promptText: "Apakah (x \u2212 1) merupakan faktor dari f(x)? Gunakan Teorema Faktor: (x-a) adalah faktor jika f(a) = 0.",
+    type: "yesno",
+    answer: "ya",
+    hint: "Hitung f(1). Jika hasilnya 0, maka (x-1) adalah faktor dari f(x).",
+    rewardText: "Mesin berbunyi 'BENAR!' — faktor terverifikasi, ruangan bergetar pelan.",
+    codeDigit: null
+  },
+  {
+    context: "🚪 Panel terakhir sebelum pintu keluar menampilkan suku banyak pangkat tiga, meminta nilai parameter agar faktor terverifikasi.",
+    questionLatex: "f(x) = x^{3} + kx^{2} - 4x + 8",
+    promptText: "Jika (x \u2212 2) merupakan faktor dari f(x), tentukan nilai k.",
+    type: "numeric",
+    answer: "-2",
+    hint: "Karena (x-2) faktor, maka f(2) = 0. Substitusikan x = 2 ke dalam f(x) (termasuk pangkat tiganya), lalu selesaikan persamaan untuk k.",
+    rewardText: "Panel terakhir menyala hijau — seluruh kode telah lengkap!",
+    codeDigit: "9"
+  }
+];
+
+/* ============================================================
+   GOOGLE FORM
+============================================================ */
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse";
+const ENTRY = {
+  nama: "entry.1128873320",
+  kelas: "entry.1715675447",
+  game: "entry.339753918",
+  skor: "entry.1119427673"
+};
+const GAME_NAME = "Escape Room — Teorema Sisa";
+
+/* ============================================================
+   AUDIO — Web Audio API (musik prosedural + efek suara, tanpa file eksternal)
+============================================================ */
+let actx = null;
+let musicTimer = null;
+let musicIdx = 0;
+let state_muted = false;
+let state_audioReady = false;
+
+// Skala minor magis (A minor pentatonic + 1 nada warna) — nuansa adventure/mysterious yang ramah
+const SCALE = [440.00, 493.88, 523.25, 587.33, 659.25, 698.46]; // A4 B4 C5 D5 E5 F5
+const PATTERN = [
+  { deg:0, dur:1 }, { deg:2, dur:0.5 }, { deg:3, dur:0.5 },
+  { deg:4, dur:1 }, { deg:3, dur:0.5 }, { deg:2, dur:0.5 },
+  { deg:1, dur:1 }, { deg:0, dur:1 }
+];
+const BASS_ROOT = 110.00; // A2
+const STEP_UNIT = 0.26;
+
+function initAudio(){
+  if(actx) return;
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  state_audioReady = true;
+}
+function playTone(freq, time, duration, type, gainPeak){
+  if(!actx || state_muted) return;
+  const osc = actx.createOscillator();
+  const gain = actx.createGain();
+  osc.type = type || "sine";
+  osc.frequency.setValueAtTime(freq, time);
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(gainPeak || 0.14, time + 0.03);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+  osc.connect(gain).connect(actx.destination);
+  osc.start(time); osc.stop(time + duration + 0.05);
+}
+function scheduleMusicStep(){
+  if(!actx || state_muted){ musicTimer = setTimeout(scheduleMusicStep, 300); return; }
+  const now = actx.currentTime;
+  const step = PATTERN[musicIdx % PATTERN.length];
+  const dur = step.dur * STEP_UNIT * 2;
+  playTone(SCALE[step.deg], now, dur * 0.9, "triangle", 0.07);
+  if(step.dur === 1) playTone(BASS_ROOT, now, dur * 1.4, "sine", 0.05);
+  musicIdx++;
+  musicTimer = setTimeout(scheduleMusicStep, dur * 1000);
+}
+function startMusic(){ if(musicTimer) return; musicIdx = 0; scheduleMusicStep(); }
+function stopMusic(){ if(musicTimer){ clearTimeout(musicTimer); musicTimer = null; } }
+
+function sfxPress(){ if(!actx||state_muted) return; playTone(520, actx.currentTime, 0.06, "square", 0.05); }
+function sfxCorrect(){
+  if(!actx||state_muted) return; const t = actx.currentTime;
+  playTone(659.25, t, 0.14, "triangle", 0.15); playTone(880.00, t+0.09, 0.22, "triangle", 0.16);
+}
+function sfxWrong(){
+  if(!actx||state_muted) return; const t = actx.currentTime;
+  playTone(233.08, t, 0.16, "sawtooth", 0.08); playTone(207.65, t+0.09, 0.2, "sawtooth", 0.08);
+}
+function sfxReward(){
+  if(!actx||state_muted) return; const t = actx.currentTime;
+  [880,1046.5,1318.5].forEach((f,i)=> playTone(f, t+i*0.09, 0.18, "triangle", 0.12));
+}
+function sfxDoorOpen(){
+  if(!actx||state_muted) return; const t = actx.currentTime;
+  [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=> playTone(f, t+i*0.11, 0.3, "triangle", 0.15));
+}
+function sfxComplete(){
+  if(!actx||state_muted) return; const t = actx.currentTime;
+  [523.25,659.25,783.99,1046.5,1318.5,1567.98].forEach((f,i)=> playTone(f, t+i*0.1, 0.35, "triangle", 0.16));
+}
+
+/* ============================================================
+   GAME STATE
+============================================================ */
+let state = {
+  nama: "", kelas: "",
+  puzzleIndex: 0,
+  score: 0,
+  correctCount: 0,
+  wrongAttempts: 0,
+  collectedDigits: [],
+  currentInput: "",
+  exprValues: {},
+  activeExprField: null,
+  yesnoChoice: null,
+  startTime: null,
+  elapsedTimerId: null,
+  elapsedSeconds: 0,
+  locked: false
+};
+
+const DOOR_CODE = QUESTION_BANK.filter(q => q.codeDigit !== null).map(q => q.codeDigit).join("");
+
+/* ============================================================
+   HELPERS
+============================================================ */
+function renderMath(container, text){
+  container.innerHTML = "";
+  container.style.fontSize = "";
+  if(window.katex){
+    try{ katex.render(text, container, { throwOnError:false }); autofitMath(container); return; }
+    catch(e){ /* fallback */ }
+  }
+  container.textContent = text;
+}
+function autofitMath(container){
+  let size = parseFloat(getComputedStyle(container).fontSize) || 16;
+  let guard = 0;
+  while(container.scrollWidth > container.clientWidth + 1 && size > 10 && guard < 14){
+    size -= 1; container.style.fontSize = size + "px"; guard++;
+  }
+}
+function fmtTime(sec){
+  const m = Math.floor(sec/60).toString().padStart(2,"0");
+  const s = Math.floor(sec%60).toString().padStart(2,"0");
+  return m+":"+s;
+}
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=> s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+function setMuteIcons(){
+  const label = state_muted ? "🔇" : "🔊";
+  document.getElementById("btn-mute-start").textContent = label;
+  document.getElementById("btn-mute-game").textContent = label;
+}
+
+/* ============================================================
+   PUZZLE SYSTEM
+============================================================ */
+function buildRoomPath(){
+  const wrap = document.getElementById("room-path");
+  wrap.innerHTML = "";
+  const icons = ["🧮","📐","🧪","📦","🗝️","🔍","🚪"];
+  QUESTION_BANK.forEach((q,i)=>{
+    const el = document.createElement("div");
+    el.className = "station";
+    el.id = "station-" + i;
+    el.textContent = icons[i] || "🔹";
+    wrap.appendChild(el);
+  });
+}
+function updateRoomPath(){
+  QUESTION_BANK.forEach((q,i)=>{
+    const el = document.getElementById("station-" + i);
+    el.classList.toggle("done", i < state.puzzleIndex);
+    el.classList.toggle("current", i === state.puzzleIndex);
+  });
+  const current = document.getElementById("station-" + state.puzzleIndex);
+  if(current) current.scrollIntoView({ inline:"center", behavior:"smooth", block:"nearest" });
+}
+function updateCodeStrip(){
+  const strip = document.getElementById("code-strip");
+  const digitsSoFar = state.collectedDigits.length;
+  strip.style.display = digitsSoFar > 0 ? "flex" : "none";
+  for(let i=0;i<4;i++){
+    const slot = document.getElementById("cs-" + i);
+    if(state.collectedDigits[i] !== undefined){
+      slot.textContent = state.collectedDigits[i];
+      slot.classList.add("filled");
+    } else {
+      slot.textContent = "?";
+      slot.classList.remove("filled");
+    }
+  }
+}
+function updateHeaderBadges(){
+  document.getElementById("badge-progress").textContent = "PUZZLE " + (state.puzzleIndex+1) + "/" + CONFIG.totalPuzzles;
+  document.getElementById("badge-score").textContent = state.score;
+}
+
+function buildKeypad(targetId, allowSign){
+  const grid = document.getElementById(targetId);
+  grid.innerHTML = "";
+  const keys = ["1","2","3","4","5","6","7","8","9", allowSign ? "±" : "", "0", "⌫"];
+  keys.forEach(k=>{
+    const btn = document.createElement("button");
+    btn.className = "key" + (k === "⌫" || k === "±" ? " op" : "");
+    btn.textContent = k;
+    if(k === "") { btn.style.visibility = "hidden"; btn.disabled = true; }
+    btn.addEventListener("click", ()=> onKeyPress(targetId, k));
+    grid.appendChild(btn);
+  });
+}
+
+function onKeyPress(targetId, key){
+  if(state.locked || key === "") return;
+  sfxPress();
+  if(targetId === "keypad"){
+    handlePuzzleKey(key);
+  } else {
+    handleCodeKey(key);
+  }
+}
+
+function handlePuzzleKey(key){
+  if(key === "⌫"){
+    state.currentInput = state.currentInput.slice(0, -1);
+  } else if(key === "±"){
+    state.currentInput = state.currentInput.startsWith("-")
+      ? state.currentInput.slice(1)
+      : "-" + state.currentInput;
+  } else {
+    if(state.currentInput.length < 6) state.currentInput += key;
+  }
+  updateAnswerDisplay();
+}
+
+function updateAnswerDisplay(){
+  const disp = document.getElementById("answer-display");
+  if(!disp) return;
+  if(state.currentInput === ""){
+    disp.textContent = "Masukkan jawaban...";
+    disp.classList.add("placeholder");
+  } else {
+    disp.textContent = state.currentInput;
+    disp.classList.remove("placeholder");
+  }
+}
+
+/* ------------------------------------------------------------
+   Keypad angka generik dipakai untuk semua tipe jawaban puzzle
+   (numeric & expr). Terpisah dari keypad layar kode pintu.
+------------------------------------------------------------ */
+function createAnswerKeypad(allowSign, onKey){
+  const grid = document.createElement("div");
+  grid.className = "keypad";
+  const keys = ["1","2","3","4","5","6","7","8","9", allowSign ? "±" : "", "0", "⌫"];
+  keys.forEach(k=>{
+    const btn = document.createElement("button");
+    btn.className = "key" + (k === "⌫" || k === "±" ? " op" : "");
+    btn.textContent = k;
+    if(k === ""){
+      btn.style.visibility = "hidden";
+      btn.disabled = true;
+    } else {
+      btn.addEventListener("click", ()=>{
+        if(state.locked) return;
+        sfxPress();
+        onKey(k);
+      });
+    }
+    grid.appendChild(btn);
+  });
+  return grid;
+}
+
+function buildSubmitButton(){
+  const btn = document.createElement("button");
+  btn.className = "btn-primary";
+  btn.style.marginTop = "6px";
+  btn.textContent = "✓ PERIKSA JAWABAN";
+  btn.addEventListener("click", submitPuzzleAnswer);
+  return btn;
+}
+
+/* ---------- tipe: numeric (satu angka, boleh negatif) ---------- */
+function renderNumericAnswer(){
+  const area = document.getElementById("answer-area");
+  area.innerHTML = "";
+  state.currentInput = "";
+
+  const disp = document.createElement("div");
+  disp.className = "answer-display placeholder";
+  disp.id = "answer-display";
+  disp.textContent = "Masukkan jawaban...";
+  area.appendChild(disp);
+
+  const keypad = createAnswerKeypad(true, (k)=>{
+    if(k === "⌫") state.currentInput = state.currentInput.slice(0, -1);
+    else if(k === "±") state.currentInput = state.currentInput.startsWith("-") ? state.currentInput.slice(1) : "-" + state.currentInput;
+    else if(state.currentInput.length < 6) state.currentInput += k;
+    updateAnswerDisplay();
+  });
+  area.appendChild(keypad);
+  area.appendChild(buildSubmitButton());
+}
+
+/* ---------- tipe: expr2 (ax+b) / expr3 (ax^2+bx+c) ---------- */
+function exprFieldLabel(f, fieldsOrder){
+  if(fieldsOrder.length === 3){
+    if(f === "a") return "Koef. x²";
+    if(f === "b") return "Koef. x";
+    return "Konstanta";
+  }
+  return f === "a" ? "Koef. x" : "Konstanta";
+}
+function highlightActiveExprBox(){
+  document.querySelectorAll(".expr-box").forEach(b=>{
+    b.classList.toggle("active", b.dataset.field === state.activeExprField);
+  });
+}
+function updateExprPreview(fieldsOrder){
+  const el = document.getElementById("expr-preview");
+  if(!el) return;
+  const v = state.exprValues;
+  let latex;
+  if(fieldsOrder.length === 3){
+    latex = (v.a === "" ? "\\,?\\," : v.a) + "x^{2} + (" + (v.b === "" ? "?" : v.b) + ")x + (" + (v.c === "" ? "?" : v.c) + ")";
+  } else {
+    latex = (v.a === "" ? "\\,?\\," : v.a) + "x + (" + (v.b === "" ? "?" : v.b) + ")";
+  }
+  renderMath(el, latex);
+}
+function renderExprAnswer(fieldsOrder){
+  const area = document.getElementById("answer-area");
+  area.innerHTML = "";
+
+  state.exprValues = {};
+  fieldsOrder.forEach(f => state.exprValues[f] = "");
+  state.activeExprField = fieldsOrder[0];
+
+  const preview = document.createElement("div");
+  preview.className = "expr-preview";
+  preview.id = "expr-preview";
+  area.appendChild(preview);
+
+  const row = document.createElement("div");
+  row.className = "expr-row";
+  fieldsOrder.forEach(f=>{
+    const box = document.createElement("button");
+    box.type = "button";
+    box.className = "expr-box";
+    box.dataset.field = f;
+    box.innerHTML = '<span class="expr-box-label">' + exprFieldLabel(f, fieldsOrder) + '</span><span class="expr-box-val" id="expr-val-' + f + '">?</span>';
+    box.addEventListener("click", ()=>{
+      if(state.locked) return;
+      state.activeExprField = f;
+      highlightActiveExprBox();
+    });
+    row.appendChild(box);
+  });
+  area.appendChild(row);
+  highlightActiveExprBox();
+  updateExprPreview(fieldsOrder);
+
+  const keypad = createAnswerKeypad(true, (k)=>{
+    const f = state.activeExprField;
+    let v = state.exprValues[f];
+    if(k === "⌫") v = v.slice(0, -1);
+    else if(k === "±") v = v.startsWith("-") ? v.slice(1) : "-" + v;
+    else if(v.length < 4) v += k;
+    state.exprValues[f] = v;
+    const valEl = document.getElementById("expr-val-" + f);
+    if(valEl) valEl.textContent = v === "" ? "?" : v;
+    updateExprPreview(fieldsOrder);
+  });
+  area.appendChild(keypad);
+  area.appendChild(buildSubmitButton());
+}
+function shakeExprBoxes(){
+  const row = document.querySelector(".expr-row");
+  if(!row) return;
+  row.style.animation = "none";
+  void row.offsetWidth;
+  row.style.animation = "shake .3s";
+}
+
+/* ---------- tipe: yesno (Teorema Faktor) ---------- */
+function renderYesNoAnswer(){
+  const area = document.getElementById("answer-area");
+  area.innerHTML = "";
+  state.yesnoChoice = null;
+
+  const row = document.createElement("div");
+  row.className = "yesno-row";
+
+  const btnYa = document.createElement("button");
+  btnYa.className = "yesno-btn yes";
+  btnYa.textContent = "✔ YA, FAKTOR";
+  btnYa.addEventListener("click", ()=>{
+    if(state.locked) return;
+    sfxPress();
+    state.yesnoChoice = "ya";
+    submitPuzzleAnswer();
+  });
+
+  const btnTidak = document.createElement("button");
+  btnTidak.className = "yesno-btn no";
+  btnTidak.textContent = "✘ TIDAK";
+  btnTidak.addEventListener("click", ()=>{
+    if(state.locked) return;
+    sfxPress();
+    state.yesnoChoice = "tidak";
+    submitPuzzleAnswer();
+  });
+
+  row.appendChild(btnYa);
+  row.appendChild(btnTidak);
+  area.appendChild(row);
+}
+
+function renderPuzzle(){
+  const q = QUESTION_BANK[state.puzzleIndex];
+  document.getElementById("story-banner").textContent = q.context;
+  renderMath(document.getElementById("question-formula"), q.questionLatex);
+  document.getElementById("question-prompt").textContent = q.promptText;
+  updateHeaderBadges();
+  updateRoomPath();
+  updateCodeStrip();
+  state.locked = false;
+
+  if(q.type === "numeric") renderNumericAnswer();
+  else if(q.type === "expr2") renderExprAnswer(["a","b"]);
+  else if(q.type === "expr3") renderExprAnswer(["a","b","c"]);
+  else if(q.type === "yesno") renderYesNoAnswer();
+}
+
+function submitPuzzleAnswer(){
+  if(state.locked) return;
+  const q = QUESTION_BANK[state.puzzleIndex];
+  let isCorrect = false;
+
+  if(q.type === "numeric"){
+    if(state.currentInput === "" || state.currentInput === "-"){
+      shakeAnswerDisplay();
+      return;
+    }
+    const given = parseInt(state.currentInput, 10);
+    const correct = parseInt(q.answer, 10);
+    isCorrect = given === correct;
+  } else if(q.type === "expr2" || q.type === "expr3"){
+    const fields = q.type === "expr3" ? ["a","b","c"] : ["a","b"];
+    const incomplete = fields.some(f => state.exprValues[f] === "" || state.exprValues[f] === "-");
+    if(incomplete){
+      shakeExprBoxes();
+      return;
+    }
+    isCorrect = fields.every(f => parseInt(state.exprValues[f], 10) === q.answer[f]);
+  } else if(q.type === "yesno"){
+    if(!state.yesnoChoice) return;
+    isCorrect = state.yesnoChoice === q.answer;
+  } else {
+    return;
+  }
+
+  state.locked = true;
+
+  if(isCorrect){
+    state.score += CONFIG.pointsPerCorrect;
+    state.correctCount++;
+    if(q.codeDigit !== null) state.collectedDigits.push(q.codeDigit);
+    updateHeaderBadges();
+    updateCodeStrip();
+    sfxCorrect();
+    setTimeout(()=> sfxReward(), 250);
+    showFeedback(true, q);
+  } else {
+    state.wrongAttempts++;
+    sfxWrong();
+    showFeedback(false, q);
+  }
+}
+
+function shakeAnswerDisplay(){
+  const disp = document.getElementById("answer-display");
+  if(!disp) return;
+  disp.style.animation = "none";
+  void disp.offsetWidth;
+  disp.style.animation = "shake .3s";
+}
+
+/* ============================================================
+   FEEDBACK
+============================================================ */
+function showFeedback(isCorrect, q){
+  const overlay = document.getElementById("modal-overlay");
+  const ribbon = document.getElementById("modal-ribbon");
+  const bodyText = document.getElementById("modal-body-text");
+  const extra = document.getElementById("modal-extra");
+  const btn = document.getElementById("modal-btn");
+
+  if(isCorrect){
+    ribbon.innerHTML = '<div class="ribbon ok">✓ BENAR!</div>';
+    bodyText.textContent = "Jawabanmu tepat!";
+    extra.innerHTML = '<div class="reward-box"><div class="reward-star">⭐</div>PETUNJUK TERBUKA!<br>' + q.rewardText + '</div>';
+    btn.textContent = (state.puzzleIndex >= QUESTION_BANK.length - 1) ? "LANJUTKAN →" : "LANJUTKAN";
+    btn.onclick = ()=>{ closeModal(); advanceAfterCorrect(); };
+  } else {
+    ribbon.innerHTML = '<div class="ribbon bad">BELUM TEPAT</div>';
+    bodyText.textContent = "Coba periksa kembali perhitunganmu.";
+    extra.innerHTML = '<div class="hint-box"><b>💡 Petunjuk:</b><br>' + q.hint + '</div>';
+    btn.textContent = "COBA LAGI";
+    btn.onclick = ()=>{ closeModal(); retryPuzzle(); };
+  }
+  overlay.classList.add("show");
+}
+function closeModal(){
+  document.getElementById("modal-overlay").classList.remove("show");
+}
+function retryPuzzle(){
+  const q = QUESTION_BANK[state.puzzleIndex];
+  state.locked = false;
+  if(q.type === "numeric"){
+    state.currentInput = "";
+    updateAnswerDisplay();
+  } else if(q.type === "yesno"){
+    state.yesnoChoice = null;
+  }
+  // untuk expr2/expr3: nilai yang sudah diketik dibiarkan supaya siswa tinggal koreksi
+}
+function advanceAfterCorrect(){
+  if(state.puzzleIndex >= QUESTION_BANK.length - 1){
+    goToCodeEntry();
+  } else {
+    state.puzzleIndex++;
+    renderPuzzle();
+  }
+}
+
+/* ============================================================
+   CODE ENTRY SCREEN
+============================================================ */
+let codeInput = "";
+function goToCodeEntry(){
+  state.locked = false;
+  showScreen("screen-code");
+  codeInput = "";
+  renderCollectedChips();
+  renderCodeBoxes();
+  buildKeypad("code-keypad", false);
+  document.getElementById("code-error").textContent = "";
+}
+function renderCollectedChips(){
+  const wrap = document.getElementById("collected-chips");
+  wrap.innerHTML = "";
+  state.collectedDigits.forEach((d,i)=>{
+    const chip = document.createElement("div");
+    chip.className = "collected-chip";
+    chip.innerHTML = '<div class="cnum">Puzzle ' + (i+1) + '</div><div class="cval">' + d + '</div>';
+    wrap.appendChild(chip);
+  });
+}
+function renderCodeBoxes(){
+  for(let i=0;i<4;i++){
+    const box = document.getElementById("cb-" + i);
+    box.textContent = codeInput[i] || "";
+    box.classList.toggle("filled", !!codeInput[i]);
+  }
+}
+function handleCodeKey(key){
+  if(key === "⌫"){
+    codeInput = codeInput.slice(0, -1);
+  } else if(key !== "±") {
+    if(codeInput.length < 4) codeInput += key;
+  }
+  renderCodeBoxes();
+  document.getElementById("code-error").textContent = "";
+  if(codeInput.length === 4){
+    setTimeout(()=> checkDoorCode(), 200);
+  }
+}
+function checkDoorCode(){
+  if(codeInput === DOOR_CODE){
+    sfxDoorOpen();
+    document.getElementById("code-error").style.color = "var(--green-dark)";
+    document.getElementById("code-error").textContent = "✓ PINTU TERBUKA!";
+    setTimeout(()=>{ sfxComplete(); finishGame(); }, 700);
+  } else {
+    document.getElementById("code-error").style.color = "var(--red-dark)";
+    document.getElementById("code-error").textContent = "Kode belum tepat. Periksa kembali petunjuk yang sudah kamu kumpulkan.";
+    sfxWrong();
+    setTimeout(()=>{ codeInput = ""; renderCodeBoxes(); }, 900);
+  }
+}
+
+/* ============================================================
+   SCORING helpers
+============================================================ */
+function computeAccuracy(){
+  const total = state.correctCount + state.wrongAttempts;
+  return total > 0 ? Math.round((state.correctCount/total)*100) : 100;
+}
+
+/* ============================================================
+   RESULT SCREEN
+============================================================ */
+function finishGame(){
+  stopMusic();
+  clearInterval(state.elapsedTimerId);
+  showScreen("screen-result");
+
+  document.getElementById("result-nama").textContent = state.nama;
+  document.getElementById("result-kelas").textContent = state.kelas;
+  document.getElementById("result-score").textContent = state.score + " / " + CONFIG.maxScore;
+  document.getElementById("result-correct").textContent = state.correctCount + "/" + CONFIG.totalPuzzles;
+  const acc = computeAccuracy();
+  document.getElementById("result-acc").textContent = acc + "%";
+  document.getElementById("result-time").textContent = fmtTime(state.elapsedSeconds);
+  document.getElementById("result-wrong").textContent = state.wrongAttempts;
+
+  let msg;
+  if(acc >= 95) msg = "🌟 Luar biasa! Kamu detektif polinomial sejati!";
+  else if(acc >= 80) msg = "👍 Kerja bagus! Pemahamanmu tentang Teorema Sisa sangat baik.";
+  else if(acc >= 60) msg = "🔧 Cukup baik! Terus asah kemampuanmu.";
+  else msg = "🛠️ Kamu berhasil keluar! Yuk berlatih lagi agar makin lancar.";
+  document.getElementById("result-appreciation").textContent = msg;
+
+  document.getElementById("send-status").textContent = "Mengirim hasil...";
+  submitToGoogleForm();
+}
+
+let gformIframeReady = false;
+function ensureHiddenGformIframe(){
+  if(gformIframeReady) return;
+  const iframe = document.createElement("iframe");
+  iframe.name = "gform-hidden-frame";
+  iframe.id = "gform-hidden-frame";
+  iframe.style.display = "none";
+  document.body.appendChild(iframe);
+  gformIframeReady = true;
+}
+
+function submitToGoogleForm(){
+  const statusEl = document.getElementById("send-status");
+  const fields = {};
+  fields[ENTRY.nama] = state.nama;
+  fields[ENTRY.kelas] = state.kelas;
+  fields[ENTRY.game] = GAME_NAME;
+  fields[ENTRY.skor] = String(state.score);
+
+  let formMethodOk = false;
+
+  // Metode utama: submit form HTML asli ke iframe tersembunyi.
+  // Ini cara paling andal untuk mengirim data ke Google Forms, karena
+  // memakai POST form browser sungguhan (bukan fetch), sehingga tidak
+  // terganjal pembatasan CORS/no-cors yang kadang membuat fetch gagal diam-diam.
+  try{
+    ensureHiddenGformIframe();
+    const form = document.createElement("form");
+    form.action = FORM_URL;
+    form.method = "POST";
+    form.target = "gform-hidden-frame";
+    form.style.display = "none";
+
+    Object.keys(fields).forEach(name=>{
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = fields[name];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+    formMethodOk = true;
+  }catch(e){
+    formMethodOk = false;
+  }
+
+  // Metode cadangan: fetch no-cors, dikirim juga sebagai jaga-jaga
+  // apabila metode form di atas gagal karena sebab lain.
+  try{
+    const params = new URLSearchParams();
+    Object.keys(fields).forEach(name => params.append(name, fields[name]));
+    fetch(FORM_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString()
+    }).catch(()=>{});
+  }catch(e){}
+
+  statusEl.textContent = formMethodOk
+    ? "✓ Hasil berhasil dikirim"
+    : "⚠ Gagal mengirim hasil. Periksa koneksi internet.";
+}
+
+/* ============================================================
+   START / RESTART
+============================================================ */
+function resetState(){
+  state.puzzleIndex = 0;
+  state.score = 0;
+  state.correctCount = 0;
+  state.wrongAttempts = 0;
+  state.collectedDigits = [];
+  state.currentInput = "";
+  state.exprValues = {};
+  state.activeExprField = null;
+  state.yesnoChoice = null;
+  state.elapsedSeconds = 0;
+  state.locked = false;
+}
+function startElapsedTimer(){
+  clearInterval(state.elapsedTimerId);
+  state.elapsedTimerId = setInterval(()=>{ state.elapsedSeconds++; }, 1000);
+}
+function beginGame(){
+  resetState();
+  buildRoomPath();
+  renderPuzzle();
+  showScreen("screen-game");
+  startElapsedTimer();
+  if(state_audioReady) startMusic();
+}
+
+/* ============================================================
+   EVENT BINDINGS
+============================================================ */
+function validateStart(){
+  return document.getElementById("input-nama").value.trim().length > 0
+      && document.getElementById("input-kelas").value.trim().length > 0;
+}
+
+document.getElementById("btn-start").addEventListener("click", ()=>{
+  const errEl = document.getElementById("start-error");
+  if(!validateStart()){
+    errEl.style.display = "block";
+    return;
+  }
+  errEl.style.display = "none";
+  state.nama = document.getElementById("input-nama").value.trim();
+  state.kelas = document.getElementById("input-kelas").value.trim();
+  initAudio();
+  beginGame();
+});
+
+function toggleMute(){
+  state_muted = !state_muted;
+  setMuteIcons();
+  if(state_muted){ stopMusic(); } else if(state_audioReady){ startMusic(); }
+}
+document.getElementById("btn-mute-start").addEventListener("click", toggleMute);
+document.getElementById("btn-mute-game").addEventListener("click", toggleMute);
+
+document.getElementById("btn-again").addEventListener("click", ()=>{
+  initAudio();
+  beginGame();
+});
+document.getElementById("btn-menu").addEventListener("click", ()=>{
+  showScreen("screen-start");
+});
+
+// tutup modal jika area gelap di luar kartu diketuk hanya untuk estetika (tidak melewatkan feedback wajib)
+document.getElementById("modal-overlay").addEventListener("click", (e)=>{
+  if(e.target.id === "modal-overlay") { /* sengaja tidak menutup: siswa harus menekan tombol */ }
+});
+
+})();
+</script>
+
+<style>
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+</style>
+</body>
+</html>

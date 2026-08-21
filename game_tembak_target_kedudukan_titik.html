@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Tembak Target — Numera</title>
+<!-- KaTeX: dipakai untuk merender rumus matematika (pecahan, limit, akar, dll) di dalam soal.
+     Butuh koneksi internet saat game dibuka (sama seperti kebutuhan kirim skor ke Google Form). -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --bg-dark:#0a0f1e;
+    --bg-darker:#060a14;
+    --panel:#111a2e;
+    --panel-border:#25335a;
+    --gold:#ffc93c;
+    --gold-dark:#e0a600;
+    --green:#2ecc71;
+    --green-dark:#1e9c56;
+    --red:#ff4d4f;
+    --red-dark:#c0392b;
+    --blue:#3aa8ff;
+    --text:#eef2ff;
+    --text-dim:#93a0c2;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent; user-select:none;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:var(--bg-darker);
+    color:var(--text);
+    font-family:'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    overflow:hidden;
+    touch-action:none;
+  }
+  #app{
+    position:fixed; inset:0;
+    max-width:520px; margin:0 auto;
+    background:radial-gradient(ellipse at top, #131c33 0%, #05070f 100%);
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+
+  .screen{ display:none; flex-direction:column; height:100%; width:100%; }
+  .screen.active{ display:flex; }
+
+  ::-webkit-scrollbar{ display:none; }
+
+  /* ---------- shared bits ---------- */
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; padding:16px 18px 4px; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-logo{
+    width:38px; height:38px; border-radius:12px;
+    background:linear-gradient(145deg,var(--blue),#1c5fb0);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:18px; color:#fff;
+    box-shadow:0 4px 10px rgba(58,168,255,.35);
+  }
+  .brand-text b{ display:block; font-size:15px; letter-spacing:.5px; }
+  .brand-text span{ display:block; font-size:11px; color:var(--text-dim); }
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%;
+    background:var(--panel); border:1px solid var(--panel-border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; color:var(--text); cursor:pointer;
+  }
+
+  /* ---------- start screen ---------- */
+  #screen-start{ overflow-y:auto; padding-bottom:24px; }
+  .start-hero{ text-align:center; padding:6px 24px 10px; }
+  .start-hero h1{
+    font-size:40px; margin:6px 0 4px; line-height:1;
+    font-weight:900; letter-spacing:1px;
+    background:linear-gradient(180deg,#fff6d6,var(--gold) 60%,var(--gold-dark));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 4px 0 rgba(0,0,0,.25);
+  }
+  .start-hero .emoji{ font-size:46px; }
+  .start-hero p{ color:var(--text-dim); font-size:14px; margin:6px 0 0; }
+
+  .stat-pills{ display:flex; gap:10px; justify-content:center; padding:14px 20px 4px; }
+  .pill{
+    flex:1; background:var(--panel); border:1px solid var(--panel-border);
+    border-radius:14px; padding:10px 8px; text-align:center;
+  }
+  .pill .n{ font-size:18px; font-weight:800; color:var(--gold); }
+  .pill .l{ font-size:11px; color:var(--text-dim); }
+
+  .card{
+    margin:14px 18px; background:var(--panel); border:1px solid var(--panel-border);
+    border-radius:16px; padding:14px 16px;
+  }
+  .card h3{ margin:0 0 8px; font-size:13px; letter-spacing:.5px; color:var(--gold); }
+  .rule{ display:flex; gap:10px; align-items:flex-start; font-size:13px; color:#cfd6ee; margin:8px 0; }
+  .rule .dot{ font-size:15px; flex:none; }
+
+  .level-row{ display:flex; gap:8px; margin:6px 18px 4px; }
+  .level-btn{
+    flex:1; padding:12px 6px; border-radius:12px; text-align:center;
+    background:var(--panel); border:1px solid var(--panel-border);
+    font-size:13px; font-weight:700; color:var(--text-dim); cursor:pointer;
+  }
+  .level-btn.active{
+    background:linear-gradient(145deg,#2c3a63,#1a2440);
+    border-color:var(--blue); color:#fff;
+    box-shadow:0 0 0 2px rgba(58,168,255,.25) inset;
+  }
+  .level-btn small{ display:block; font-weight:400; font-size:10px; margin-top:2px; opacity:.8; }
+  .level-btn .lvl-name{ font-size:13px; font-weight:800; }
+  .level-btn .lvl-sub{ font-size:10px; opacity:.75; margin-top:1px; }
+  .level-btn .lvl-pts{
+    margin-top:6px; font-size:10.5px; font-weight:800; color:var(--gold);
+    background:rgba(255,201,60,.12); border-radius:8px; padding:3px 4px;
+  }
+  .level-btn.active .lvl-pts{ background:rgba(255,201,60,.22); }
+  .reward-hint{
+    margin:2px 18px 4px; font-size:12px; color:var(--text-dim);
+    text-align:center; font-style:italic;
+  }
+
+  .field{ margin:10px 18px; }
+  .field label{ display:block; font-size:12px; color:var(--gold); margin-bottom:6px; font-weight:700; letter-spacing:.4px; }
+  .field input{
+    width:100%; padding:13px 14px; border-radius:12px; border:1px solid var(--panel-border);
+    background:#0c1526; color:var(--text); font-size:15px; outline:none;
+  }
+  .field input:focus{ border-color:var(--blue); }
+
+  .btn-primary{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    margin:16px 18px 6px; padding:16px; border:none; border-radius:16px;
+    background:linear-gradient(145deg,var(--green),var(--green-dark));
+    color:#fff; font-size:17px; font-weight:800; letter-spacing:.5px;
+    box-shadow:0 6px 0 #14733d, 0 10px 18px rgba(30,156,86,.35);
+    cursor:pointer;
+  }
+  .btn-primary:active{ transform:translateY(4px); box-shadow:0 2px 0 #14733d; }
+  .hint-err{ text-align:center; color:var(--red); font-size:12px; min-height:16px; margin:0 18px 6px; }
+
+  /* ---------- game screen ---------- */
+  #screen-game{ height:100%; }
+  .hud-top{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px 6px; }
+  .hud-title{ font-size:15px; font-weight:800; letter-spacing:1px; color:#fff; }
+
+  .hud-stats{ display:flex; gap:8px; padding:2px 14px 8px; }
+  .stat-box{ flex:1; background:var(--panel); border:1px solid var(--panel-border); border-radius:12px; padding:7px 4px; text-align:center; }
+  .stat-box .v{ font-size:16px; font-weight:800; }
+  .stat-box .k{ font-size:10px; color:var(--text-dim); letter-spacing:.5px; }
+  #stat-timer.low{ color:var(--red); animation:pulse 1s infinite; }
+  #stat-score{ color:var(--gold); }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+  .progress-wrap{ margin:0 14px 8px; height:6px; background:#111a2e; border-radius:6px; overflow:hidden; border:1px solid var(--panel-border); }
+  .progress-bar{ height:100%; width:0%; background:linear-gradient(90deg,var(--blue),#7ecbff); transition:width .35s ease; }
+
+  .question-box{
+    margin:0 14px 8px; background:linear-gradient(180deg,#182446,#101a33);
+    border:1px solid #2b3c6b; border-radius:14px; padding:12px 14px;
+    text-align:center; min-height:52px; display:flex; align-items:center; justify-content:center;
+    overflow-x:auto;
+  }
+  .question-box p{ margin:0; font-size:15px; font-weight:600; color:#fff2c6; line-height:1.35; }
+  .question-box .katex{ font-size:1.05em; color:#fff2c6; }
+  .question-box .katex-display{ margin:2px 0; }
+
+  .arena-wrap{
+    position:relative; flex:1; margin:0 10px; border-radius:18px; overflow:hidden;
+    background:
+      radial-gradient(ellipse at 20% 10%, rgba(255,180,60,.10), transparent 40%),
+      linear-gradient(180deg,#0d1730 0%, #0a1225 55%, #0c1a12 100%);
+    border:1px solid #223256;
+    touch-action:none;
+  }
+  .arena-trees{
+    position:absolute; inset:0; pointer-events:none; opacity:.35;
+    background-image:
+      radial-gradient(circle at 8% 90%, #0e2a17 0 30px, transparent 31px),
+      radial-gradient(circle at 22% 95%, #0e2a17 0 22px, transparent 23px),
+      radial-gradient(circle at 88% 92%, #0e2a17 0 34px, transparent 35px),
+      radial-gradient(circle at 70% 96%, #0e2a17 0 20px, transparent 21px);
+  }
+  .arena-ground{
+    position:absolute; left:0; right:0; bottom:0; height:26%;
+    background:linear-gradient(180deg, rgba(20,60,30,.55), rgba(8,20,10,.85));
+    pointer-events:none;
+  }
+
+  .target{
+    position:absolute; width:64px; height:64px; border-radius:50%;
+    background:
+      radial-gradient(circle, #fff 0 6px, #e6483f 6px 14px, #fff 14px 22px, #e6483f 22px 30px, #fff 30px 32px);
+    box-shadow:0 4px 10px rgba(0,0,0,.5), 0 0 0 3px rgba(0,0,0,.25);
+    display:flex; align-items:center; justify-content:center;
+    will-change:transform;
+  }
+  .target span{
+    font-size:10.5px; font-weight:900; color:#1a1a1a; line-height:1.15;
+    background:#ffdd66; min-width:52px; max-width:58px; padding:5px 4px;
+    border-radius:10px; text-align:center; white-space:normal;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 2px #a56b00 inset;
+  }
+  .target.hit-flash{ animation:hitflash .35s ease; }
+  @keyframes hitflash{ 0%{ transform:scale(1);} 40%{ transform:scale(1.35); filter:brightness(1.8);} 100%{ transform:scale(0);} }
+
+  .crosshair{
+    position:absolute; width:46px; height:46px; margin:-23px 0 0 -23px;
+    border:3px solid var(--gold); border-radius:50%;
+    box-shadow:0 0 12px rgba(255,201,60,.7);
+    pointer-events:none; z-index:5;
+  }
+  .crosshair::before,.crosshair::after{
+    content:''; position:absolute; background:var(--gold);
+  }
+  .crosshair::before{ left:50%; top:-9px; width:2px; height:9px; transform:translateX(-1px); }
+  .crosshair::after{ left:50%; top:50%; width:6px; height:6px; border-radius:50%; transform:translate(-3px,-3px); }
+
+  .arrow-fly{
+    position:absolute; width:34px; height:6px; margin:-3px 0 0 -6px;
+    background:linear-gradient(90deg,#caa06a,#8a5a2b); border-radius:3px;
+    z-index:6; transform-origin:left center;
+  }
+  .arrow-fly::after{
+    content:''; position:absolute; right:-6px; top:-4px;
+    border-left:10px solid #d8d8d8; border-top:7px solid transparent; border-bottom:7px solid transparent;
+  }
+
+  .burst{
+    position:absolute; width:10px; height:10px; margin:-5px 0 0 -5px;
+    border-radius:50%; background:var(--gold); z-index:7;
+    animation:burst .5s ease-out forwards;
+  }
+  @keyframes burst{
+    0%{ transform:scale(0.3); opacity:1; box-shadow:0 0 0 0 rgba(255,201,60,.9); }
+    100%{ transform:scale(1); opacity:0; box-shadow:0 0 0 26px rgba(255,201,60,0); }
+  }
+
+  .feedback-banner{
+    position:absolute; left:50%; top:38%; transform:translate(-50%,-50%) scale(.7);
+    padding:10px 26px; border-radius:14px; font-weight:900; font-size:20px;
+    letter-spacing:.5px; opacity:0; z-index:9; text-align:center; white-space:nowrap;
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  .feedback-banner.show{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+  .feedback-banner.correct{ background:linear-gradient(145deg,var(--green),var(--green-dark)); color:#fff; }
+  .feedback-banner.wrong{ background:linear-gradient(145deg,#ff7a6b,var(--red-dark)); color:#fff; }
+  .feedback-banner small{ display:block; font-size:12px; font-weight:600; opacity:.9; margin-top:2px;}
+
+  .bottom-bar{
+    display:flex; align-items:center; gap:14px; padding:12px 16px calc(14px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg,transparent,#070c17 30%);
+  }
+  .bow-icon{
+    width:56px; height:64px; flex:none; position:relative;
+  }
+  .bow-icon svg{ width:100%; height:100%; }
+  .shots-indicator{ font-size:11px; color:var(--text-dim); text-align:center; }
+  .shots-indicator b{ display:block; color:var(--gold); font-size:14px; }
+
+  .btn-shoot{
+    flex:1; padding:18px; border:none; border-radius:18px;
+    background:linear-gradient(145deg,#ff6b5b,var(--red-dark));
+    color:#fff; font-size:18px; font-weight:900; letter-spacing:1px;
+    box-shadow:0 6px 0 #8f2418, 0 10px 20px rgba(192,57,43,.4);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-shoot:active{ transform:translateY(4px); box-shadow:0 2px 0 #8f2418; }
+
+  /* ---------- result screen ---------- */
+  #screen-result{ align-items:center; justify-content:center; padding:20px; overflow-y:auto; }
+  .result-card{ width:100%; text-align:center; }
+  .result-card .trophy{ font-size:56px; }
+  .result-card h2{ margin:6px 0 2px; font-size:22px; font-weight:900; color:var(--gold); }
+  .result-card p.sub{ color:var(--text-dim); font-size:13px; margin:0 0 8px; }
+  .level-badge{
+    display:inline-block; margin:0 0 14px; padding:5px 14px; border-radius:20px;
+    background:var(--panel); border:1px solid var(--panel-border);
+    font-size:12px; font-weight:800; letter-spacing:.5px; color:var(--gold);
+  }
+  .score-big{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:18px;
+    padding:18px; margin-bottom:14px;
+  }
+  .score-big .k{ font-size:12px; color:var(--text-dim); letter-spacing:1px; }
+  .score-big .v{ font-size:44px; font-weight:900; color:var(--gold); line-height:1.1; }
+  .score-big .m{ font-size:12px; color:var(--text-dim); }
+
+  .result-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+  .rbox{ background:var(--panel); border:1px solid var(--panel-border); border-radius:14px; padding:12px 8px; }
+  .rbox .v{ font-size:20px; font-weight:800; }
+  .rbox .k{ font-size:11px; color:var(--text-dim); margin-top:2px; }
+  .rbox.green .v{ color:var(--green); }
+  .rbox.red .v{ color:var(--red); }
+  .rbox.blue .v{ color:var(--blue); }
+
+  .send-status{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    background:#0f2419; border:1px solid #1e5c3a; color:#9beebb;
+    border-radius:14px; padding:10px; font-size:12px; margin-bottom:14px;
+  }
+  .send-status.pending{ background:#221c0f; border-color:#5c4a1e; color:#eed89b; }
+  .send-status.fail{ background:#2a1414; border-color:#5c1e1e; color:#eeb0b0; }
+
+  .result-actions{ display:flex; gap:10px; }
+  .btn-secondary{
+    flex:1; padding:14px; border-radius:14px; border:1px solid var(--panel-border);
+    background:var(--panel); color:var(--text); font-weight:700; font-size:14px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- =========================================================
+       LAYAR 1 — HALAMAN AWAL
+  ========================================================== -->
+  <div id="screen-start" class="screen active">
+    <div class="brand-row">
+      <div class="brand">
+        <div class="brand-logo">N</div>
+        <div class="brand-text">
+          <b>NUMERA</b>
+          <span>Arena Game Matematika</span>
+        </div>
+      </div>
+      <div class="icon-btn" id="btn-mute-start">🔊</div>
+    </div>
+
+    <div class="start-hero">
+      <div class="emoji">🏹</div>
+      <h1>TEMBAK TARGET</h1>
+      <p>Bidik target jawaban yang benar, lalu lepaskan panahmu sebelum waktu habis!</p>
+    </div>
+
+    <div class="stat-pills">
+      <div class="pill"><div class="n" id="info-jumlah-soal">10</div><div class="l">SOAL</div></div>
+      <div class="pill"><div class="n" id="info-waktu">02:00</div><div class="l">WAKTU</div></div>
+      <div class="pill"><div class="n" id="info-skormax">100</div><div class="l">SKOR MAKS</div></div>
+    </div>
+    <p class="reward-hint">Semakin tinggi level, semakin sulit tantangannya — tetapi semakin besar hadiahnya!</p>
+
+    <div class="card">
+      <h3>CARA BERMAIN</h3>
+      <div class="rule"><span class="dot">📖</span> Baca soal matematika di bagian atas layar.</div>
+      <div class="rule"><span class="dot">👆</span> Geser jari di area permainan untuk memindahkan bidikan.</div>
+      <div class="rule"><span class="dot">🏹</span> Tekan tombol <b>TEMBAK</b> untuk melepaskan anak panah.</div>
+      <div class="rule"><span class="dot">🎯</span> Target terus bergerak — perkirakan waktu bidikanmu!</div>
+    </div>
+
+    <h3 style="margin:6px 18px 8px; font-size:13px; color:var(--gold); letter-spacing:.5px;">PILIH LEVEL</h3>
+    <div class="level-row" id="level-row">
+      <div class="level-btn" data-level="mudah">
+        <div class="lvl-name">🟢 Mudah</div>
+        <div class="lvl-sub">Santai</div>
+        <div class="lvl-pts">5 poin/benar</div>
+      </div>
+      <div class="level-btn active" data-level="sedang">
+        <div class="lvl-name">🔵 Sedang</div>
+        <div class="lvl-sub">Normal</div>
+        <div class="lvl-pts">10 poin/benar</div>
+      </div>
+      <div class="level-btn" data-level="sulit">
+        <div class="lvl-name">🔴 Sulit</div>
+        <div class="lvl-sub">Menantang</div>
+        <div class="lvl-pts">20 poin/benar</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>NAMA</label>
+      <input type="text" id="input-nama" placeholder="Tulis namamu" maxlength="40" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>KELAS</label>
+      <input type="text" id="input-kelas" placeholder="Contoh: X IPA 1" maxlength="30" autocomplete="off">
+    </div>
+
+    <div class="hint-err" id="start-error"></div>
+    <button class="btn-primary" id="btn-mulai">🏹 MULAI GAME</button>
+  </div>
+
+  <!-- =========================================================
+       LAYAR 2 — PERMAINAN
+  ========================================================== -->
+  <div id="screen-game" class="screen">
+    <div class="hud-top">
+      <div class="hud-title">TEMBAK TARGET</div>
+      <div class="icon-btn" id="btn-mute-game">🔊</div>
+    </div>
+
+    <div class="hud-stats">
+      <div class="stat-box"><div class="v" id="stat-soal">1/10</div><div class="k">SOAL</div></div>
+      <div class="stat-box"><div class="v" id="stat-score">0</div><div class="k">SKOR</div></div>
+      <div class="stat-box"><div class="v" id="stat-timer">02:00</div><div class="k">WAKTU</div></div>
+    </div>
+
+    <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+
+    <div class="question-box"><p id="question-text">Memuat soal...</p></div>
+
+    <div class="arena-wrap" id="arena">
+      <div class="arena-trees"></div>
+      <div class="arena-ground"></div>
+      <!-- target & crosshair & arrow elements di-generate JS -->
+      <div class="crosshair" id="crosshair"></div>
+      <div class="feedback-banner" id="feedback-banner"></div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="bow-icon">
+        <svg viewBox="0 0 60 70">
+          <path d="M14 4 C 4 22, 4 48, 14 66" stroke="#8a5a2b" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <line x1="14" y1="6" x2="14" y2="64" stroke="#d8d8d8" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="shots-indicator">TEMBAKAN<br><b id="shots-count">1/10</b></div>
+      <button class="btn-shoot" id="btn-tembak">🏹 TEMBAK</button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       LAYAR 3 — HASIL AKHIR
+  ========================================================== -->
+  <div id="screen-result" class="screen">
+    <div class="result-card">
+      <div class="trophy">🏆</div>
+      <h2>PERMAINAN SELESAI!</h2>
+      <p class="sub" id="result-sub">Kerja bagus!</p>
+      <div class="level-badge" id="result-level-badge">LEVEL: -</div>
+
+      <div class="score-big">
+        <div class="k">SKOR AKHIR</div>
+        <div class="v" id="result-score">0</div>
+        <div class="m" id="result-score-max">/ 0</div>
+      </div>
+
+      <div class="result-grid">
+        <div class="rbox green"><div class="v" id="result-benar">0</div><div class="k">JAWABAN BENAR</div></div>
+        <div class="rbox red"><div class="v" id="result-salah">0</div><div class="k">JAWABAN SALAH</div></div>
+        <div class="rbox blue"><div class="v" id="result-akurasi">0%</div><div class="k">AKURASI</div></div>
+        <div class="rbox"><div class="v" id="result-waktu">00:00</div><div class="k">WAKTU TERPAKAI</div></div>
+      </div>
+
+      <div class="send-status pending" id="send-status">⏳ Mengirim hasil...</div>
+
+      <div class="result-actions">
+        <button class="btn-secondary" id="btn-menu">🏠 Menu</button>
+        <button class="btn-primary" id="btn-main-lagi" style="margin:0; flex:1;">🔄 MAIN LAGI</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* =====================================================================
+   ================= SOAL DI SINI =================
+   =====================================================================
+   Bank soal sekarang dipisah per LEVEL: mudah, sedang, sulit.
+   Tambahkan / ganti soal cukup di dalam array level yang bersangkutan —
+   tidak perlu mengubah bagian kode lain di luar blok ini.
+
+   Format setiap soal (SAMA untuk ketiga level):
+   {
+     question : "Teks pertanyaan yang tampil di layar",
+     targets  : [array angka yang muncul sebagai target di arena],
+     answer   : [array angka yang dianggap BENAR bila terkena panah]
+   }
+
+   Catatan penting:
+   - "targets" sebaiknya berisi 4 angka, tidak boleh ada angka duplikat
+     dalam satu soal.
+   - "answer" boleh berisi 1 angka atau lebih (misal soal punya 2 akar),
+     dan SEMUA angka di "answer" wajib ada di dalam "targets".
+   - Setiap main, game mengambil maksimal 10 soal secara ACAK dari level
+     yang dipilih siswa (kalau soal di level itu kurang dari 10, semua
+     soal yang ada akan dipakai, tanpa error).
+   - Boleh menambah soal sebanyak yang diinginkan di tiap level, game
+     otomatis menyesuaikan.
+
+   RUMUS MATEMATIKA (pecahan, limit, akar, dsb):
+   - Bungkus bagian rumus dengan \\( ... \\) memakai sintaks LaTeX,
+     bagian teks biasa di luar \\( \\) tetap tampil apa adanya.
+   - Contoh pecahan  : "Berapa hasil dari \\( \\frac{3}{4} \\times 8 \\)?"
+   - Contoh limit     : "Tentukan nilai dari \\( \\lim_{x \\to 3} \\frac{x^2-9}{x-3} \\)"
+   - Contoh akar      : "Tentukan nilai dari \\( \\sqrt{81} \\)"
+   - Contoh pangkat   : "Tentukan nilai dari \\( 2^{5} \\)"
+   - Ingat: di JavaScript setiap tanda \\ harus ditulis DUA kali (\\\\)
+     seperti contoh di atas — kalau lupa, soal tidak akan tampil error,
+     tapi rumusnya tidak terender dengan benar.
+   - Contoh soal berlabel "(contoh rumus)" di bawah ini sudah memakai
+     format ini — silakan dijadikan acuan.
+   ===================================================================== */
+/* Materi: KEDUDUKAN TITIK TERHADAP LINGKARAN (level 1–3 dari skala 1–10).
+   Karena materi ini memang dipatok pada tingkat kesulitan yang seragam
+   (rendah), ketiga level game (mudah/sedang/sulit) memakai 10 soal yang
+   SAMA — level di sini hanya mengubah kecepatan target, waktu, dan poin
+   per jawaban benar, bukan tingkat kesulitan konsepnya.
+   Setiap soal HANYA punya 3 target/opsi jawaban: "Pada", "Di Dalam",
+   "Di Luar" — sesuai permintaan, bukan 4 seperti bank soal aritmetika
+   sebelumnya. Cara mengecek: hitung d² (kuadrat jarak titik ke pusat
+   lingkaran) lalu bandingkan dengan r² (kuadrat jari-jari):
+   d² = r² → Pada, d² < r² → Di Dalam, d² > r² → Di Luar. */
+const TARGET_OPSI = ["Pada", "Di Dalam", "Di Luar"];
+const SOAL_LINGKARAN = [
+  { question: "Diketahui lingkaran \\( x^2 + y^2 = 25 \\) dan titik \\( A(3, 4) \\). Kedudukan titik A terhadap lingkaran tersebut adalah ...", targets: TARGET_OPSI, answer: ["Pada"] },
+  { question: "Sebuah lingkaran berpusat di O(0, 0) dengan jari-jari 4. Titik \\( B(1, 2) \\) terletak ... terhadap lingkaran itu.", targets: TARGET_OPSI, answer: ["Di Dalam"] },
+  { question: "Lingkaran \\( x^2 + y^2 = 9 \\) dan titik \\( C(4, 4) \\). Kedudukan titik C terhadap lingkaran tersebut adalah ...", targets: TARGET_OPSI, answer: ["Di Luar"] },
+  { question: "Diketahui lingkaran \\( x^2 + y^2 = 36 \\) dan titik \\( D(6, 0) \\). Titik D terletak ... terhadap lingkaran tersebut.", targets: TARGET_OPSI, answer: ["Pada"] },
+  { question: "Lingkaran berpusat di titik asal dengan jari-jari 7. Titik \\( E(2, 3) \\) berada di kedudukan ... terhadap lingkaran itu.", targets: TARGET_OPSI, answer: ["Di Dalam"] },
+  { question: "Diketahui lingkaran \\( x^2 + y^2 = 4 \\) dan titik \\( F(3, 3) \\). Kedudukan titik F terhadap lingkaran tersebut adalah ...", targets: TARGET_OPSI, answer: ["Di Luar"] },
+  { question: "Lingkaran \\( (x-1)^2 + (y-2)^2 = 25 \\) berpusat di \\( (1, 2) \\). Titik \\( G(4, 6) \\) terletak ... terhadap lingkaran tersebut.", targets: TARGET_OPSI, answer: ["Pada"] },
+  { question: "Diketahui lingkaran \\( (x-2)^2 + y^2 = 9 \\) dan titik \\( H(2, 1) \\). Kedudukan titik H terhadap lingkaran itu adalah ...", targets: TARGET_OPSI, answer: ["Di Dalam"] },
+  { question: "Lingkaran \\( (x+1)^2 + (y-1)^2 = 16 \\) dan titik \\( I(5, 1) \\). Titik I terletak ... terhadap lingkaran tersebut.", targets: TARGET_OPSI, answer: ["Di Luar"] },
+  { question: "Sebuah lingkaran berpusat di O(0, 0) dengan jari-jari 10. Titik \\( J(6, 8) \\) berada pada kedudukan ... terhadap lingkaran tersebut.", targets: TARGET_OPSI, answer: ["Pada"] },
+];
+
+const QUESTION_BANK = {
+  mudah : SOAL_LINGKARAN,
+  sedang: SOAL_LINGKARAN,
+  sulit : SOAL_LINGKARAN,
+};
+
+/* ================= LEVEL DI SINI =================
+   Ubah nilai di bawah untuk menyesuaikan kecepatan, waktu, dan poin
+   per level. "points" = poin yang didapat untuk SETIAP jawaban benar
+   pada level tersebut. */
+const LEVEL_CONFIG = {
+  mudah : { speed: 45,  totalTime: 150, label: "Mudah",  points: 5  },
+  sedang: { speed: 75,  totalTime: 120, label: "Sedang", points: 10 },
+  sulit : { speed: 115, totalTime: 90,  label: "Sulit",  points: 20 },
+};
+const JUMLAH_SOAL_DEFAULT = 10; // maksimal soal yang diambil per level tiap main
+
+/* ================= GOOGLE FORM ================= */
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse";
+const ENTRY = {
+  nama : "entry.1128873320",
+  kelas: "entry.1715675447",
+  game : "entry.339753918",
+  skor : "entry.1119427673",
+};
+const GAME_NAME = "Tembak Target";
+
+/* ===================================================================
+   STATE
+   =================================================================== */
+let state = {
+  level: "sedang",
+  questions: [],
+  qIndex: 0,
+  score: 0,
+  correctCount: 0,
+  wrongCount: 0,
+  timeLeft: 120,
+  totalTime: 120,
+  timerInterval: null,
+  gameEnded: false,
+  targets: [],       // {el, x, y, r, speed, dir, value}
+  crosshairPos: {x:0, y:0},
+  rafId: null,
+  lastTs: 0,
+  paused: false,
+  nama: "",
+  kelas: "",
+  startTimestamp: 0,
+};
+
+const el = (id) => document.getElementById(id);
+const screens = {
+  start : el("screen-start"),
+  game  : el("screen-game"),
+  result: el("screen-result"),
+};
+function showScreen(name){
+  Object.values(screens).forEach(s => s.classList.remove("active"));
+  screens[name].classList.add("active");
+}
+
+/* ===================================================================
+   AUDIO — Web Audio API (tanpa file MP3)
+   =================================================================== */
+const Audio2 = {
+  ctx: null,
+  masterGain: null,
+  musicGain: null,
+  sfxGain: null,
+  musicNodes: [],
+  musicTimer: null,
+  muted: false,
+  ready: false,
+
+  init(){
+    if (this.ready) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AC();
+    this.masterGain = this.ctx.createGain();
+    this.masterGain.gain.value = 1;
+    this.masterGain.connect(this.ctx.destination);
+
+    this.musicGain = this.ctx.createGain();
+    this.musicGain.gain.value = 0.10;
+    this.musicGain.connect(this.masterGain);
+
+    this.sfxGain = this.ctx.createGain();
+    this.sfxGain.gain.value = 0.35;
+    this.sfxGain.connect(this.masterGain);
+
+    this.ready = true;
+  },
+
+  toggleMute(){
+    this.muted = !this.muted;
+    if (this.masterGain) this.masterGain.gain.value = this.muted ? 0 : 1;
+    return this.muted;
+  },
+
+  // --- simple looping arcade-ish bg music using two oscillators ---
+  startMusic(){
+    if (!this.ready) return;
+    this.stopMusic();
+    const notesLead = [392, 440, 494, 440, 523, 494, 440, 392]; // G4 A4 B4 A4 C5 B4 A4 G4
+    const notesBass = [196, 196, 220, 220, 196, 196, 174, 174]; // simple bass loop
+    let step = 0;
+    const stepDur = 0.28;
+
+    const playStep = () => {
+      if (!this.ready) return;
+      const t = this.ctx.currentTime + 0.02;
+      // lead
+      const lead = this.ctx.createOscillator();
+      const leadGain = this.ctx.createGain();
+      lead.type = "triangle";
+      lead.frequency.value = notesLead[step % notesLead.length];
+      leadGain.gain.setValueAtTime(0.0001, t);
+      leadGain.gain.linearRampToValueAtTime(0.5, t + 0.03);
+      leadGain.gain.exponentialRampToValueAtTime(0.0001, t + stepDur*0.9);
+      lead.connect(leadGain).connect(this.musicGain);
+      lead.start(t); lead.stop(t + stepDur);
+
+      // bass
+      const bass = this.ctx.createOscillator();
+      const bassGain = this.ctx.createGain();
+      bass.type = "sine";
+      bass.frequency.value = notesBass[step % notesBass.length];
+      bassGain.gain.setValueAtTime(0.0001, t);
+      bassGain.gain.linearRampToValueAtTime(0.6, t + 0.03);
+      bassGain.gain.exponentialRampToValueAtTime(0.0001, t + stepDur*0.95);
+      bass.connect(bassGain).connect(this.musicGain);
+      bass.start(t); bass.stop(t + stepDur);
+
+      step++;
+    };
+
+    playStep();
+    this.musicTimer = setInterval(playStep, stepDur*1000);
+  },
+
+  stopMusic(){
+    if (this.musicTimer){ clearInterval(this.musicTimer); this.musicTimer = null; }
+  },
+
+  playShoot(){
+    if (!this.ready) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(900, t);
+    osc.frequency.exponentialRampToValueAtTime(200, t + 0.18);
+    g.gain.setValueAtTime(0.4, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+    osc.connect(g).connect(this.sfxGain);
+    osc.start(t); osc.stop(t + 0.2);
+  },
+
+  playCorrect(){
+    if (!this.ready) return;
+    const t = this.ctx.currentTime;
+    [660, 880, 1100].forEach((f, i) => {
+      const osc = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      osc.type = "square";
+      osc.frequency.value = f;
+      const st = t + i*0.09;
+      g.gain.setValueAtTime(0.001, st);
+      g.gain.linearRampToValueAtTime(0.3, st + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, st + 0.16);
+      osc.connect(g).connect(this.sfxGain);
+      osc.start(st); osc.stop(st + 0.18);
+    });
+  },
+
+  playWrong(){
+    if (!this.ready) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const g = this.ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(220, t);
+    osc.frequency.linearRampToValueAtTime(110, t + 0.3);
+    g.gain.setValueAtTime(0.3, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+    osc.connect(g).connect(this.sfxGain);
+    osc.start(t); osc.stop(t + 0.32);
+  },
+
+  playGameOver(){
+    if (!this.ready) return;
+    const t = this.ctx.currentTime;
+    [523, 659, 784, 1046].forEach((f, i) => {
+      const osc = this.ctx.createOscillator();
+      const g = this.ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.value = f;
+      const st = t + i*0.14;
+      g.gain.setValueAtTime(0.001, st);
+      g.gain.linearRampToValueAtTime(0.35, st + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, st + 0.3);
+      osc.connect(g).connect(this.sfxGain);
+      osc.start(st); osc.stop(st + 0.32);
+    });
+  }
+};
+
+function updateMuteIcons(){
+  const icon = Audio2.muted ? "🔇" : "🔊";
+  el("btn-mute-start").textContent = icon;
+  el("btn-mute-game").textContent = icon;
+}
+el("btn-mute-start").addEventListener("click", () => { Audio2.toggleMute(); updateMuteIcons(); });
+el("btn-mute-game").addEventListener("click", () => { Audio2.toggleMute(); updateMuteIcons(); });
+
+/* ===================================================================
+   LEVEL SELECT (halaman awal)
+   =================================================================== */
+document.querySelectorAll(".level-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".level-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    state.level = btn.dataset.level;
+    updateStartInfo();
+  });
+});
+
+function fmtTime(sec){
+  sec = Math.max(0, Math.round(sec));
+  const m = Math.floor(sec/60).toString().padStart(2,"0");
+  const s = (sec%60).toString().padStart(2,"0");
+  return m + ":" + s;
+}
+
+function updateStartInfo(){
+  const cfg = LEVEL_CONFIG[state.level];
+  const bank = QUESTION_BANK[state.level] || [];
+  const jumlahSoal = Math.min(JUMLAH_SOAL_DEFAULT, bank.length);
+  el("info-jumlah-soal").textContent = jumlahSoal;
+  el("info-waktu").textContent = fmtTime(cfg.totalTime);
+  el("info-skormax").textContent = jumlahSoal * cfg.points;
+}
+updateStartInfo();
+
+/* ===================================================================
+   MULAI GAME
+   =================================================================== */
+el("btn-mulai").addEventListener("click", () => {
+  const nama = el("input-nama").value.trim();
+  const kelas = el("input-kelas").value.trim();
+  if (!nama){
+    el("start-error").textContent = "Nama wajib diisi ya sebelum mulai bermain.";
+    return;
+  }
+  el("start-error").textContent = "";
+  state.nama = nama;
+  state.kelas = kelas || "-";
+
+  // Inisialisasi audio setelah interaksi user (hindari blokir autoplay)
+  Audio2.init();
+  Audio2.startMusic();
+  updateMuteIcons();
+
+  startGame();
+});
+
+function shuffle(arr){
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startGame(){
+  const cfg = LEVEL_CONFIG[state.level];
+  const bank = QUESTION_BANK[state.level] || [];
+  state.questions = shuffle(bank).slice(0, Math.min(JUMLAH_SOAL_DEFAULT, bank.length));
+  state.qIndex = 0;
+  state.score = 0;
+  state.correctCount = 0;
+  state.wrongCount = 0;
+  state.totalTime = cfg.totalTime;
+  state.timeLeft = cfg.totalTime;
+  state.gameEnded = false;
+  state.paused = false;
+  state.startTimestamp = Date.now();
+
+  showScreen("game");
+  el("stat-score").textContent = "0";
+  updateProgress();
+  startTimer();
+  loadQuestion();
+  startAnimationLoop();
+}
+
+function startTimer(){
+  clearInterval(state.timerInterval);
+  updateTimerDisplay();
+  state.timerInterval = setInterval(() => {
+    state.timeLeft -= 1;
+    updateTimerDisplay();
+    if (state.timeLeft <= 0){
+      endGame();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(){
+  const t = el("stat-timer");
+  t.textContent = fmtTime(state.timeLeft);
+  t.classList.toggle("low", state.timeLeft <= 15);
+}
+
+function updateProgress(){
+  const total = state.questions.length;
+  const done = state.qIndex;
+  el("progress-bar").style.width = (done/total*100) + "%";
+  el("stat-soal").textContent = (state.qIndex+1) + "/" + total;
+  el("shots-count").textContent = (state.qIndex+1) + "/" + total;
+}
+
+/* ===================================================================
+   ARENA & TARGET
+   =================================================================== */
+const arena = el("arena");
+const crosshairEl = el("crosshair");
+
+function clearTargets(){
+  state.targets.forEach(t => t.el.remove());
+  state.targets = [];
+}
+
+/* ================= RENDER SOAL (mendukung rumus KaTeX) =================
+   Tulis soal seperti biasa untuk teks biasa.
+   Untuk RUMUS matematika (pecahan, akar, pangkat, limit, integral,
+   trigonometri, logaritma, dll), bungkus bagian rumusnya dengan
+   \\( ... \\) memakai sintaks LaTeX, contoh:
+     "Tentukan nilai dari \\( \\lim_{x \\to 2} \\frac{x^2-4}{x-2} \\)"
+   Bagian di luar \\( \\) tetap tampil sebagai teks biasa.
+   Delimiter display-mode "$$ ... $$" juga didukung untuk rumus besar
+   yang ingin ditampilkan di tengah/lebih besar. */
+function renderQuestionText(text){
+  const boxEl = el("question-text");
+  boxEl.innerHTML = text;
+
+  const tryRender = () => {
+    if (typeof renderMathInElement !== "function") return false;
+    try{
+      renderMathInElement(boxEl, {
+        delimiters: [
+          { left: "\\(", right: "\\)", display: false },
+          { left: "$$", right: "$$", display: true },
+        ],
+        throwOnError: false, // rumus tetap tampil (apa adanya) walau ada typo LaTeX kecil
+        strict: false,       // longgar terhadap notasi umum (mis. simbol derajat °) — tidak dianggap error
+      });
+      return true;
+    } catch(e){ return false; }
+  };
+
+  // Skrip KaTeX dimuat dengan atribut `defer`, jadi normalnya sudah siap
+  // saat siswa mulai bermain. Sebagai jaga-jaga (mis. koneksi lambat),
+  // coba render sekali lagi sesaat kemudian bila belum berhasil —
+  // ini tidak pernah menyebabkan error, hanya fallback tampilan.
+  if (!tryRender()){
+    setTimeout(tryRender, 300);
+  }
+}
+
+function loadQuestion(){
+  if (state.qIndex >= state.questions.length){
+    endGame();
+    return;
+  }
+  clearTargets();
+  const q = state.questions[state.qIndex];
+  renderQuestionText(q.question);
+  updateProgress();
+
+  const cfg = LEVEL_CONFIG[state.level];
+  const rect = arena.getBoundingClientRect();
+  const arenaW = rect.width;
+  const arenaH = rect.height;
+  const rowY = [arenaH*0.30, arenaH*0.55, arenaH*0.30, arenaH*0.55];
+
+  const values = shuffle(q.targets);
+  values.forEach((val, i) => {
+    const targetEl = document.createElement("div");
+    targetEl.className = "target";
+    const span = document.createElement("span");
+    span.textContent = val;
+    targetEl.appendChild(span);
+    arena.appendChild(targetEl);
+
+    const startX = 40 + Math.random()*(arenaW-120);
+    const dir = Math.random() < 0.5 ? -1 : 1;
+    const speed = cfg.speed * (0.75 + Math.random()*0.6);
+
+    const t = {
+      el: targetEl,
+      x: startX,
+      y: rowY[i % rowY.length],
+      r: 32,
+      speed: speed,
+      dir: dir,
+      value: val,
+    };
+    state.targets.push(t);
+    positionTarget(t, arenaW);
+  });
+
+  // reset crosshair ke tengah arena
+  state.crosshairPos = { x: arenaW/2, y: arenaH/2 };
+  updateCrosshairDom();
+}
+
+function positionTarget(t, arenaW){
+  t.el.style.transform = `translate(${t.x}px, ${t.y}px)`;
+}
+
+function updateCrosshairDom(){
+  crosshairEl.style.transform = `translate(${state.crosshairPos.x}px, ${state.crosshairPos.y}px)`;
+}
+
+/* ---- animasi gerak target ---- */
+function startAnimationLoop(){
+  cancelAnimationFrame(state.rafId);
+  state.lastTs = performance.now();
+  const loop = (ts) => {
+    const dt = Math.min(0.05, (ts - state.lastTs)/1000);
+    state.lastTs = ts;
+    if (!state.paused && !state.gameEnded){
+      const rect = arena.getBoundingClientRect();
+      const arenaW = rect.width;
+      state.targets.forEach(t => {
+        t.x += t.dir * t.speed * dt;
+        if (t.x < 20){ t.x = 20; t.dir = 1; }
+        if (t.x > arenaW - 84){ t.x = arenaW - 84; t.dir = -1; }
+        positionTarget(t, arenaW);
+      });
+    }
+    state.rafId = requestAnimationFrame(loop);
+  };
+  state.rafId = requestAnimationFrame(loop);
+}
+
+/* ---- kontrol crosshair via Pointer Events (touch-friendly) ---- */
+function pointToArenaCoords(clientX, clientY){
+  const rect = arena.getBoundingClientRect();
+  let x = clientX - rect.left;
+  let y = clientY - rect.top;
+  x = Math.max(10, Math.min(rect.width - 10, x));
+  y = Math.max(10, Math.min(rect.height - 10, y));
+  return { x, y };
+}
+
+let dragging = false;
+arena.addEventListener("pointerdown", (e) => {
+  if (state.gameEnded) return;
+  dragging = true;
+  arena.setPointerCapture(e.pointerId);
+  const p = pointToArenaCoords(e.clientX, e.clientY);
+  state.crosshairPos = p;
+  updateCrosshairDom();
+});
+arena.addEventListener("pointermove", (e) => {
+  if (!dragging || state.gameEnded) return;
+  const p = pointToArenaCoords(e.clientX, e.clientY);
+  state.crosshairPos = p;
+  updateCrosshairDom();
+});
+arena.addEventListener("pointerup", (e) => { dragging = false; });
+arena.addEventListener("pointercancel", (e) => { dragging = false; });
+
+/* ===================================================================
+   TEMBAK — hit test berdasarkan posisi crosshair saat tombol ditekan
+   =================================================================== */
+el("btn-tembak").addEventListener("click", () => {
+  if (state.gameEnded || state.paused) return;
+  fireShot();
+});
+
+function fireShot(){
+  state.paused = true;
+  Audio2.playShoot();
+
+  // Posisi bidikan (crosshair) SAAT tombol TEMBAK ditekan — ini yang
+  // dipakai untuk menentukan target yang kena, bukan posisi target
+  // setelah bergerak lagi.
+  const aimPoint = { x: state.crosshairPos.x, y: state.crosshairPos.y };
+
+  // cari target terdekat dalam radius tembak (bisa saja tidak ada / meleset)
+  const HIT_RADIUS = 46;
+  let bestTarget = null;
+  let bestDist = Infinity;
+  state.targets.forEach(t => {
+    const cx = t.x + 32; // pusat target (lebar 64)
+    const cy = t.y + 32;
+    const dx = cx - aimPoint.x;
+    const dy = cy - aimPoint.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist <= HIT_RADIUS && dist < bestDist){
+      bestDist = dist;
+      bestTarget = t;
+    }
+  });
+  // bestTarget boleh tetap null di sini (artinya meleset) — itu KONDISI
+  // NORMAL, bukan error. animateArrow() dan resolveShot() di bawah ini
+  // sudah dirancang aman untuk kasus ini: panah tetap melesat ke arah
+  // bidikan, lalu feedback "BELUM TEPAT" tetap muncul tanpa error JS.
+  animateArrow(aimPoint, () => {
+    resolveShot(bestTarget, aimPoint);
+  });
+}
+
+/* Menganimasikan anak panah dari busur menuju titik bidikan (aimPoint).
+   aimPoint SELALU berupa koordinat {x,y} yang valid — terlepas dari
+   apakah bidikan itu nanti terbukti kena target atau meleset — sehingga
+   animasi ini tidak pernah bergantung pada ada/tidaknya target. */
+function animateArrow(aimPoint, onDone){
+  const rect = arena.getBoundingClientRect();
+  const startX = rect.width/2;
+  const startY = rect.height + 10;
+
+  const dx = aimPoint.x - startX;
+  const dy = aimPoint.y - startY;
+  const angle = Math.atan2(dy, dx) * 180/Math.PI;
+
+  const arrowEl = document.createElement("div");
+  arrowEl.className = "arrow-fly";
+  arrowEl.style.left = startX + "px";
+  arrowEl.style.top = startY + "px";
+  arrowEl.style.width = "6px";
+  arrowEl.style.transform = `rotate(${angle}deg)`;
+  arena.appendChild(arrowEl);
+
+  const duration = 260;
+  const t0 = performance.now();
+  function step(ts){
+    const p = Math.min(1, (ts - t0)/duration);
+    const w = 6 + (34-6)*p;
+    const curX = startX + dx*p;
+    const curY = startY + dy*p;
+    arrowEl.style.width = w + "px";
+    arrowEl.style.left = curX + "px";
+    arrowEl.style.top = curY + "px";
+    if (p < 1){
+      requestAnimationFrame(step);
+    } else {
+      arrowEl.remove();
+      onDone(); // dipanggil baik saat kena maupun meleset
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+function resolveShot(hitTarget, pos){
+  // hitTarget bisa null (meleset) — seluruh logika di bawah ini aman
+  // untuk kondisi tersebut, tidak ada properti hitTarget yang diakses
+  // tanpa pengecekan null terlebih dahulu.
+  const q = state.questions[state.qIndex];
+  const isCorrect = !!hitTarget && Array.isArray(q.answer) && q.answer.includes(hitTarget.value);
+
+  // efek visual di titik kena
+  const burst = document.createElement("div");
+  burst.className = "burst";
+  burst.style.left = pos.x + "px";
+  burst.style.top = pos.y + "px";
+  burst.style.background = isCorrect ? "var(--green)" : "var(--red)";
+  arena.appendChild(burst);
+  setTimeout(() => burst.remove(), 500);
+
+  if (hitTarget){
+    hitTarget.el.classList.add("hit-flash");
+  }
+
+  const banner = el("feedback-banner");
+  if (isCorrect){
+    const poin = LEVEL_CONFIG[state.level].points;
+    state.score += poin;
+    state.correctCount += 1;
+    el("stat-score").textContent = state.score;
+    banner.className = "feedback-banner correct show";
+    banner.innerHTML = "BENAR! +" + poin + "<small>Target yang tepat 🎯</small>";
+    Audio2.playCorrect();
+  } else {
+    state.wrongCount += 1;
+    banner.className = "feedback-banner wrong show";
+    banner.innerHTML = "BELUM TEPAT<small>Coba perhatikan lagi soalnya</small>";
+    Audio2.playWrong();
+  }
+
+  setTimeout(() => {
+    banner.classList.remove("show");
+    state.qIndex += 1;
+    state.paused = false;
+    if (state.timeLeft > 0 && state.qIndex < state.questions.length){
+      loadQuestion();
+    } else {
+      endGame();
+    }
+  }, 950);
+}
+
+/* ===================================================================
+   AKHIR PERMAINAN
+   =================================================================== */
+function endGame(){
+  if (state.gameEnded) return;
+  state.gameEnded = true;
+  clearInterval(state.timerInterval);
+  cancelAnimationFrame(state.rafId);
+  Audio2.stopMusic();
+  Audio2.playGameOver();
+
+  const cfg = LEVEL_CONFIG[state.level];
+  const elapsed = Math.round((Date.now() - state.startTimestamp)/1000);
+  const totalAnswered = state.correctCount + state.wrongCount;
+  const accuracy = totalAnswered > 0 ? Math.round((state.correctCount/totalAnswered)*100) : 0;
+  const maxScore = state.questions.length * cfg.points;
+
+  el("result-level-badge").textContent = "LEVEL: " + cfg.label.toUpperCase();
+  el("result-score").textContent = state.score;
+  el("result-score-max").textContent = "/ " + maxScore;
+  el("result-benar").textContent = state.correctCount;
+  el("result-salah").textContent = state.wrongCount;
+  el("result-akurasi").textContent = accuracy + "%";
+  el("result-waktu").textContent = fmtTime(Math.min(elapsed, state.totalTime));
+  el("result-sub").textContent = accuracy >= 80 ? "Luar biasa! Bidikanmu sangat tajam 🎯"
+                                : accuracy >= 50 ? "Kerja bagus, terus berlatih!"
+                                : "Yuk coba lagi dan tingkatkan akurasimu!";
+
+  showScreen("result");
+  sendResultToGoogleForm(state.score);
+}
+
+/* ================= PENGIRIMAN SKOR KE GOOGLE FORM ================= */
+function sendResultToGoogleForm(score){
+  const statusEl = el("send-status");
+  statusEl.className = "send-status pending";
+  statusEl.textContent = "⏳ Mengirim hasil...";
+
+  const body = new URLSearchParams();
+  body.append(ENTRY.nama, state.nama);
+  body.append(ENTRY.kelas, state.kelas);
+  body.append(ENTRY.game, GAME_NAME);
+  body.append(ENTRY.skor, String(score));
+
+  fetch(FORM_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: body.toString(),
+  }).then(() => {
+    statusEl.className = "send-status";
+    statusEl.textContent = "✅ Hasil berhasil dikirim. Terima kasih sudah bermain!";
+  }).catch(() => {
+    statusEl.className = "send-status fail";
+    statusEl.textContent = "⚠️ Gagal mengirim hasil, cek koneksi internetmu.";
+  });
+}
+
+/* ===================================================================
+   NAVIGASI ULANG
+   =================================================================== */
+el("btn-main-lagi").addEventListener("click", () => {
+  Audio2.startMusic();
+  startGame();
+});
+el("btn-menu").addEventListener("click", () => {
+  Audio2.stopMusic();
+  showScreen("start");
+});
+
+/* Cegah scroll/zoom bawaan browser saat bermain di HP */
+document.addEventListener("touchmove", (e) => {
+  if (screens.game.classList.contains("active")) e.preventDefault();
+}, { passive:false });
+
+window.addEventListener("resize", () => {
+  if (screens.game.classList.contains("active") && !state.gameEnded){
+    // reposisi crosshair bila keluar batas setelah resize
+    const rect = arena.getBoundingClientRect();
+    state.crosshairPos.x = Math.min(state.crosshairPos.x, rect.width-10);
+    state.crosshairPos.y = Math.min(state.crosshairPos.y, rect.height-10);
+    updateCrosshairDom();
+  }
+});
+</script>
+</body>
+</html>
