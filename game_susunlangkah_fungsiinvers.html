@@ -244,7 +244,7 @@
   <section id="screen-game" class="screen">
     <div class="game-content">
       <div class="hud">
-        <div class="hud-chip" id="hud-round">Ronde 1/10</div>
+        <div class="hud-chip" id="hud-round">Soal 1/10</div>
         <div class="hud-chip score" id="hud-score">⭐ 0</div>
         <button class="mute-btn" id="btn-mute">🔊</button>
       </div>
@@ -279,7 +279,7 @@
   <section id="screen-result" class="screen">
     <div class="result-emoji" id="result-emoji">🎉</div>
     <div class="result-title" id="result-title">Permainan Selesai!</div>
-    <div class="result-sub" id="result-sub">Kerja bagus menyelesaikan semua ronde.</div>
+    <div class="result-sub" id="result-sub">Kerja bagus menyelesaikan semua soal.</div>
 
     <div class="score-banner">
       <div class="num" id="final-score">0</div>
@@ -690,7 +690,7 @@ function renderQuestion(){
     const q = currentQuestion();
     const total = state.order.length;
 
-    document.getElementById('hud-round').textContent = `Ronde ${state.currentIndex + 1}/${total}`;
+    document.getElementById('hud-round').textContent = `Soal ${state.currentIndex + 1}/${total}`;
     document.getElementById('hud-score').textContent = `⭐ ${state.score}`;
     document.getElementById('progress-fill').style.width = `${(state.currentIndex / total) * 100}%`;
 
