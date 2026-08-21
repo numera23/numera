@@ -58,7 +58,7 @@ const NUMERA_GAMES = [
         tanggal: "2026-08-20",
         thumbnail: "",
         warna: "#2563EB",
-        emoji: "🎯",
+        emoji: "⚙",
         badge: "Baru"
     },
     {
