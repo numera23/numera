@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>⚙️ Mesin Matematika — Numera</title>
+
+<!-- KaTeX untuk notasi matematika -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-dark:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --primary-soft:#EFF6FF;
+    --ink:#0F172A;
+    --ink-soft:#475569;
+    --line:#E2E8F0;
+    --bg:#F8FAFC;
+    --white:#FFFFFF;
+    --good:#16A34A;
+    --good-soft:#DCFCE7;
+    --bad:#DC2626;
+    --bad-soft:#FEE2E2;
+    --gold:#F59E0B;
+    --radius-lg:28px;
+    --radius-md:18px;
+    --radius-sm:12px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent; user-select:none;}
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    background:var(--bg);
+    font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Inter, sans-serif;
+    color:var(--ink);
+    overscroll-behavior:none;
+    touch-action: manipulation;
+  }
+  input, button{ font-family: inherit; }
+
+  #app{
+    position:relative;
+    width:100%;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding-top:calc(var(--safe-top) + 14px);
+    padding-bottom:calc(var(--safe-bottom) + 14px);
+    overflow-x:hidden;
+  }
+
+  .screen{
+    width:100%;
+    max-width:480px;
+    padding:0 20px;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    flex:1;
+  }
+  .screen.active{ display:flex; }
+
+  /* ============ START SCREEN ============ */
+  .brand-eyebrow{
+    display:flex; align-items:center; gap:8px;
+    color:var(--primary);
+    font-weight:700; font-size:13px;
+    letter-spacing:.08em; text-transform:uppercase;
+    margin-top:8px;
+  }
+  .brand-eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--primary); }
+
+  .gear-hero{
+    width:96px; height:96px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:52px;
+    margin:22px 0 6px;
+    animation: idleSpin 9s linear infinite;
+  }
+  @keyframes idleSpin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+  h1.title{
+    font-size:30px; font-weight:800; margin:0 0 6px; text-align:center;
+    letter-spacing:-0.02em;
+  }
+  p.subtitle{
+    color:var(--ink-soft); text-align:center; font-size:15.5px;
+    line-height:1.5; margin:0 0 28px; max-width:320px;
+  }
+
+  .field{ width:100%; margin-bottom:16px; }
+  .field label{
+    display:block; font-size:13px; font-weight:700; color:var(--ink-soft);
+    margin-bottom:7px; letter-spacing:.01em;
+  }
+  .field input[type="text"]{
+    width:100%;
+    padding:16px 16px;
+    font-size:16px;
+    border-radius:var(--radius-sm);
+    border:1.5px solid var(--line);
+    background:var(--white);
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input[type="text"]:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 4px var(--primary-light);
+  }
+
+  .btn{
+    appearance:none; border:none; cursor:pointer;
+    border-radius:var(--radius-md);
+    font-weight:700; font-size:17px;
+    padding:17px 22px;
+    width:100%;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .08s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{
+    background:var(--primary); color:#fff;
+    box-shadow:0 10px 24px -8px rgba(37,99,235,.55);
+  }
+  .btn-primary:active{ background:var(--primary-dark); }
+  .btn-primary:disabled{ background:#94A3B8; box-shadow:none; cursor:not-allowed; }
+  .btn-secondary{
+    background:var(--primary-soft); color:var(--primary);
+    border:1.5px solid var(--primary-light);
+  }
+
+  .start-cta{ margin-top:8px; width:100%; }
+
+  /* ============ GAME SCREEN ============ */
+  .hud{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    padding:6px 2px 18px;
+  }
+  .hud-chip{
+    display:flex; align-items:center; gap:6px;
+    background:var(--white);
+    border:1.5px solid var(--line);
+    padding:8px 14px;
+    border-radius:999px;
+    font-weight:700; font-size:14px;
+    color:var(--ink);
+  }
+  .hud-chip.score{ color:var(--primary); border-color:var(--primary-light); background:var(--primary-soft); }
+  .mute-btn{
+    width:40px; height:40px; border-radius:50%;
+    border:1.5px solid var(--line); background:var(--white);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; cursor:pointer;
+  }
+
+  .progress-track{
+    width:100%; height:6px; background:var(--line); border-radius:999px; overflow:hidden;
+    margin-bottom:22px;
+  }
+  .progress-fill{
+    height:100%; background:var(--primary); border-radius:999px;
+    transition:width .35s ease;
+  }
+
+  .machine-card{
+    width:100%;
+    background:var(--white);
+    border-radius:var(--radius-lg);
+    border:1.5px solid var(--line);
+    padding:22px 18px 20px;
+    display:flex; flex-direction:column; align-items:center;
+    box-shadow:0 18px 40px -24px rgba(15,23,42,.25);
+    position:relative;
+    overflow:hidden;
+  }
+
+  .function-context{
+    width:100%;
+    background:var(--primary-soft);
+    border:1.5px solid var(--primary-light);
+    border-radius:var(--radius-sm);
+    padding:12px 14px;
+    margin-bottom:14px;
+    text-align:center;
+    font-size:14.5px;
+    color:var(--primary-dark);
+    display:none;
+  }
+  .function-context.show{ display:block; }
+  .function-context .fc-label{
+    font-size:10.5px; font-weight:800; color:var(--primary);
+    text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px;
+  }
+  .function-context .katex{ font-size:1.05em !important; }
+
+  .io-row{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .io-box{
+    flex:1;
+    min-height:64px;
+    background:var(--bg);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius-sm);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:8px 6px;
+    transition:all .2s ease;
+  }
+  .io-label{ font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; margin-bottom:2px; }
+  .io-value{ font-size:24px; font-weight:800; color:var(--ink); }
+  .io-value.placeholder{ color:#94A3B8; }
+
+  .io-arrow{ font-size:20px; color:var(--primary); font-weight:800; }
+
+  .machine-body{
+    width:100%;
+    margin:16px 0;
+    background:linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius:var(--radius-md);
+    padding:18px 14px;
+    display:flex; flex-direction:column; align-items:center;
+    position:relative;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.18), 0 14px 28px -14px rgba(37,99,235,.65);
+  }
+  .machine-gears{
+    position:absolute; top:10px; right:14px;
+    display:flex; gap:4px; opacity:.55;
+  }
+  .machine-gears span{ font-size:16px; display:inline-block; animation: gearSpin 4s linear infinite; }
+  .machine-gears span:nth-child(2){ animation-direction:reverse; animation-duration:3s; }
+  @keyframes gearSpin{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+  .machine-label{
+    color:rgba(255,255,255,.85); font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px;
+  }
+  .machine-rule{
+    color:#fff; font-size:20px; font-weight:700; min-height:28px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .machine-rule .katex{ color:#fff !important; font-size:1.15em; }
+
+  .machine-body.active{ animation: machineShake .35s ease; }
+  @keyframes machineShake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(-4px) rotate(-0.4deg); }
+    40%{ transform:translateX(4px) rotate(0.4deg); }
+    60%{ transform:translateX(-3px); }
+    80%{ transform:translateX(3px); }
+  }
+  .machine-body.glow{
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.18), 0 0 0 6px rgba(37,99,235,.25), 0 14px 28px -14px rgba(37,99,235,.85);
+  }
+  .machine-body.wrong-flash{
+    background:linear-gradient(180deg, #EF4444 0%, #B91C1C 100%);
+  }
+
+  .io-box.pulse-good{ background:var(--good-soft); border-color:var(--good); }
+  .io-box.pulse-bad{ background:var(--bad-soft); border-color:var(--bad); animation: shakeSmall .3s ease; }
+  @keyframes shakeSmall{
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-5px)}
+    75%{transform:translateX(5px)}
+  }
+
+  .feedback-line{
+    min-height:20px;
+    font-size:13.5px; font-weight:700;
+    margin-top:10px;
+    text-align:center;
+  }
+  .feedback-line.good{ color:var(--good); }
+  .feedback-line.bad{ color:var(--bad); }
+
+  /* Answer input display */
+  .answer-display{
+    width:100%;
+    margin-top:14px;
+    background:var(--bg);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius-sm);
+    padding:14px;
+    text-align:center;
+    font-size:26px; font-weight:800;
+    min-height:56px;
+    letter-spacing:.02em;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .answer-display.empty{ color:#94A3B8; font-weight:600; font-size:16px; }
+
+  /* Keypad */
+  .keypad{
+    width:100%;
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+  }
+  .key{
+    appearance:none; border:none; cursor:pointer;
+    background:var(--white);
+    border:1.5px solid var(--line);
+    border-radius:var(--radius-sm);
+    font-size:22px; font-weight:700; color:var(--ink);
+    padding:16px 0;
+    transition:transform .06s ease, background .1s ease;
+  }
+  .key:active{ transform:scale(0.94); background:var(--primary-soft); }
+  .key.wide{ font-size:15px; }
+  .key.negative{ color:var(--primary); }
+  .key.clear{ color:var(--bad); font-size:19px; }
+  .key.submit{
+    background:var(--primary); color:#fff; border-color:var(--primary);
+  }
+  .key.submit:active{ background:var(--primary-dark); }
+  .key.submit:disabled{ background:#CBD5E1; border-color:#CBD5E1; color:#fff; }
+
+  /* ============ RESULT SCREEN ============ */
+  .result-emoji{ font-size:56px; margin-top:10px; }
+  .result-title{ font-size:24px; font-weight:800; text-align:center; margin:10px 0 4px; }
+  .result-sub{ color:var(--ink-soft); font-size:14.5px; text-align:center; margin-bottom:22px; }
+
+  .stat-grid{
+    width:100%; display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    margin-bottom:22px;
+  }
+  .stat-card{
+    background:var(--white); border:1.5px solid var(--line);
+    border-radius:var(--radius-md); padding:16px; text-align:center;
+  }
+  .stat-num{ font-size:24px; font-weight:800; color:var(--primary); }
+  .stat-label{ font-size:12px; color:var(--ink-soft); font-weight:700; margin-top:2px; text-transform:uppercase; letter-spacing:.05em;}
+
+  .score-banner{
+    width:100%;
+    background:var(--primary);
+    color:#fff;
+    border-radius:var(--radius-md);
+    padding:18px;
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .score-banner .num{ font-size:34px; font-weight:800; }
+  .score-banner .lbl{ font-size:12px; opacity:.85; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+
+  .sending-note{ font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; min-height:16px; }
+
+  footer.foot{
+    margin-top:auto; padding-top:22px;
+    font-size:11.5px; color:#94A3B8; text-align:center;
+  }
+
+  @media (min-width:520px){
+    h1.title{ font-size:34px; }
+    .io-value{ font-size:28px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ======================= LAYAR AWAL ======================= -->
+  <section id="screen-start" class="screen active">
+    <div class="brand-eyebrow"><span class="dot"></span>NUMERA</div>
+    <div class="gear-hero">⚙️</div>
+    <h1 class="title">Mesin Matematika</h1>
+    <p class="subtitle">Masukkan angka ke mesin (f+g) atau (f-g). Kamu yang menentukan hasilnya — materi Penjumlahan &amp; Pengurangan Fungsi.</p>
+
+    <div class="field">
+      <label for="input-name">Nama Kamu</label>
+      <input type="text" id="input-name" placeholder="Tulis namamu" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="input-class">Kelas</label>
+      <input type="text" id="input-class" placeholder="Contoh: XI IPA 2" autocomplete="off">
+    </div>
+
+    <button class="btn btn-primary start-cta" id="btn-start">⚙️ Mulai Main</button>
+  </section>
+
+  <!-- ======================= LAYAR PERMAINAN ======================= -->
+  <section id="screen-game" class="screen">
+    <div class="hud">
+      <div class="hud-chip" id="hud-round">Ronde 1/10</div>
+      <div class="hud-chip score" id="hud-score">⭐ 0</div>
+      <button class="mute-btn" id="btn-mute">🔊</button>
+    </div>
+
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:10%"></div></div>
+
+    <div class="function-context" id="function-context">
+      <div class="fc-label">Diketahui</div>
+      <div id="function-context-body"></div>
+    </div>
+
+    <div class="machine-card">
+      <div class="io-row">
+        <div class="io-box">
+          <div class="io-label">Input</div>
+          <div class="io-value" id="io-input">—</div>
+        </div>
+        <div class="io-arrow">→</div>
+        <div class="io-box" id="io-output-box">
+          <div class="io-label">Output</div>
+          <div class="io-value placeholder" id="io-output">?</div>
+        </div>
+      </div>
+
+      <div class="machine-body" id="machine-body">
+        <div class="machine-gears"><span>⚙️</span><span>⚙️</span></div>
+        <div class="machine-label">Aturan Mesin</div>
+        <div class="machine-rule" id="machine-rule"></div>
+      </div>
+
+      <div class="answer-display empty" id="answer-display">Ketik jawabanmu</div>
+      <div class="feedback-line" id="feedback-line"></div>
+
+      <div class="keypad" id="keypad">
+        <button class="key" data-key="1">1</button>
+        <button class="key" data-key="2">2</button>
+        <button class="key" data-key="3">3</button>
+        <button class="key" data-key="4">4</button>
+        <button class="key" data-key="5">5</button>
+        <button class="key" data-key="6">6</button>
+        <button class="key" data-key="7">7</button>
+        <button class="key" data-key="8">8</button>
+        <button class="key" data-key="9">9</button>
+        <button class="key negative" data-key="-">−</button>
+        <button class="key" data-key="0">0</button>
+        <button class="key clear" data-key="back">⌫</button>
+        <button class="key wide" data-key=".">,</button>
+        <button class="key submit" data-key="submit" id="btn-submit" style="grid-column: span 2;">✓ Cek Jawaban</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= LAYAR HASIL ======================= -->
+  <section id="screen-result" class="screen">
+    <div class="result-emoji" id="result-emoji">🌟</div>
+    <div class="result-title" id="result-title">Mesinmu Bekerja Hebat!</div>
+    <div class="result-sub" id="result-sub">Kamu berhasil menyelesaikan semua ronde.</div>
+
+    <div class="score-banner">
+      <div class="num" id="final-score">0</div>
+      <div class="lbl">Skor Akhir</div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-correct">0</div>
+        <div class="stat-label">Benar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-wrong">0</div>
+        <div class="stat-label">Salah</div>
+      </div>
+      <div class="stat-card" style="grid-column: span 2;">
+        <div class="stat-num" id="stat-percent">0%</div>
+        <div class="stat-label">Persentase Benar</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-again">🔄 Main Lagi</button>
+    <div class="sending-note" id="sending-note"></div>
+
+    <footer class="foot">Numera — Mesin Matematika</footer>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   1. CONFIG
+   Ubah di sini untuk mengatur jumlah ronde dan skor.
+========================================================= */
+const CONFIG = {
+    totalQuestions: 10,   // jumlah ronde per permainan
+    pointsCorrect: 10,    // poin saat jawaban benar
+    pointsWrong: -2       // poin saat jawaban salah (boleh negatif)
+};
+
+/* =========================================================
+   2. GOOGLE FORM CONFIG
+   Jangan ubah kecuali Form/Entry ID berganti.
+========================================================= */
+const GOOGLE_FORM_CONFIG = {
+    formAction: "https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse",
+    nameEntry: "entry.1128873320",
+    classEntry: "entry.1715675447",
+    gameEntry: "entry.339753918",
+    scoreEntry: "entry.1119427673"
+};
+const GAME_NAME = "Mesin Matematika";
+
+/* =========================================================
+   3. BANK SOAL — Penjumlahan & Pengurangan Fungsi
+   (bagian dari materi Komposisi Fungsi)
+   Cukup edit array ini untuk mengganti materi.
+   - context    : definisi f(x) dan g(x), ditulis dalam LaTeX
+                  (tanpa tanda $), ditampilkan di atas mesin.
+                  Kosongkan ("") jika soal tidak butuh konteks.
+   - input      : nilai x yang dimasukkan ke mesin
+   - rule       : operasi yang dilakukan mesin, dalam LaTeX,
+                  misalnya "(f+g)(x)" atau "(f-g)(x)"
+   - answer     : jawaban yang benar, yaitu nilai (f+g)(input)
+                  atau (f-g)(input) setelah dihitung
+   - difficulty : tingkat kesulitan 1 (termudah) - 4 (tersulit),
+                  hanya untuk dokumentasi & ditampilkan di HUD,
+                  tidak memengaruhi logika permainan.
+   Urutan soal SENGAJA TIDAK DIACAK (lihat buildQuestionOrder)
+   agar tingkat kesulitan naik bertahap dari 1 ke 4.
+========================================================= */
+const QUESTIONS = [
+    { context: "f(x) = 2x + 1,\\quad g(x) = x + 3",
+      input: 2,  rule: "(f+g)(x)", answer: 10, difficulty: 1 },
+
+    { context: "f(x) = x + 4,\\quad g(x) = 2x - 1",
+      input: 3,  rule: "(f-g)(x)", answer: 2,  difficulty: 1 },
+
+    { context: "f(x) = 3x,\\quad g(x) = x + 2",
+      input: 4,  rule: "(f+g)(x)", answer: 18, difficulty: 1 },
+
+    { context: "f(x) = x^2 + 1,\\quad g(x) = 2x - 3",
+      input: 3,  rule: "(f+g)(x)", answer: 13, difficulty: 2 },
+
+    { context: "f(x) = x^2 - 2x,\\quad g(x) = 3x + 1",
+      input: 2,  rule: "(f-g)(x)", answer: -7, difficulty: 2 },
+
+    { context: "f(x) = 2x^2,\\quad g(x) = x^2 - 5",
+      input: 2,  rule: "(f-g)(x)", answer: 9,  difficulty: 2 },
+
+    { context: "f(x) = 3x^2 - 2x + 1,\\quad g(x) = x^2 + 4x - 5",
+      input: -1, rule: "(f+g)(x)", answer: -2, difficulty: 3 },
+
+    { context: "f(x) = \\tfrac{1}{2}x^2 + 3x,\\quad g(x) = x^2 - x + 4",
+      input: 4,  rule: "(f-g)(x)", answer: 4,  difficulty: 3 },
+
+    { context: "f(x) = 2x^2 - 3x + 5,\\quad g(x) = -x^2 + 4x - 2",
+      input: -2, rule: "(f+g)(x)", answer: 5,  difficulty: 4 },
+
+    { context: "f(x) = x^2 + 2x - 6,\\quad g(x) = 3x^2 - x + 4",
+      input: -1, rule: "(f-g)(x)", answer: -15, difficulty: 4 }
+];
+
+/* =========================================================
+   4. AUDIO SYSTEM (Web Audio API — musik latar bermelodi sungguhan)
+========================================================= */
+const AudioSystem = (function(){
+    let ctx = null;
+    let masterGain = null;
+    let musicGain = null;
+    let sfxGain = null;
+    let muted = false;
+    let initialized = false;
+
+    // --- musik latar: melodi ceria berulang (sama seperti game Numera lainnya) ---
+    // Skala + pola nada sederhana, dijadwalkan lewat setTimeout rekursif
+    // (bukan file MP3/WAV — murni Web Audio API, oscillator).
+    const BGM_MELODY = [523.25, 659.25, 783.99, 659.25, 587.33, 698.46, 880.00, 698.46]; // C5 E5 G5 E5 D5 F5 A5 F5
+    const BGM_BASS    = [130.81, 0, 146.83, 0, 130.81, 0, 174.61, 0]; // C3 - D3 - C3 - F3 -
+    const BGM_STEP = 0.3; // detik per langkah, ceria & tidak terburu-buru
+    let bgmIndex = 0;
+    let bgmTimer = null;
+
+    function init(){
+        if (initialized) return;
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = ctx.createGain();
+        masterGain.gain.value = muted ? 0 : 1;
+        masterGain.connect(ctx.destination);
+
+        musicGain = ctx.createGain();
+        musicGain.gain.value = 0.5; // musik latar: cukup terdengar, tidak mendominasi
+        musicGain.connect(masterGain);
+
+        sfxGain = ctx.createGain();
+        sfxGain.gain.value = 0.55; // sfx: sedikit lebih jelas dari musik
+        sfxGain.connect(masterGain);
+
+        initialized = true;
+    }
+
+    function resume(){
+        if (!initialized) init();
+        if (ctx.state === "suspended") ctx.resume();
+    }
+
+    // --- nada sederhana (dipakai untuk SFX) ---
+    function tone(freq, start, dur, type, gainVal, node){
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = type || "sine";
+        osc.frequency.value = freq;
+        g.gain.value = 0;
+        osc.connect(g); g.connect(node || sfxGain);
+        const t0 = ctx.currentTime + start;
+        g.gain.linearRampToValueAtTime(gainVal, t0 + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        osc.start(t0);
+        osc.stop(t0 + dur + 0.05);
+    }
+
+    // --- nada musik latar (melodi + bass ringan) ---
+    function playBgmNote(freq, time, dur, type, peakGain){
+        if (!freq) return; // 0 = jeda/rest
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, time);
+        g.gain.exponentialRampToValueAtTime(peakGain, time + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+        osc.connect(g); g.connect(musicGain);
+        osc.start(time);
+        osc.stop(time + dur + 0.05);
+    }
+
+    // --- Background music: melodi berulang, dijadwalkan lewat setTimeout ---
+    function scheduleBgmStep(){
+        if (!initialized) return;
+        if (muted){ bgmTimer = setTimeout(scheduleBgmStep, 300); return; }
+        const now = ctx.currentTime;
+        const idx = bgmIndex % BGM_MELODY.length;
+        playBgmNote(BGM_MELODY[idx], now, BGM_STEP * 0.9, "triangle", 0.18);
+        if (BGM_BASS[idx] > 0) playBgmNote(BGM_BASS[idx], now, BGM_STEP * 1.5, "sine", 0.12);
+        bgmIndex++;
+        bgmTimer = setTimeout(scheduleBgmStep, BGM_STEP * 1000);
+    }
+    function startBGM(){
+        if (!initialized) return;
+        stopBGM();
+        bgmIndex = 0;
+        scheduleBgmStep();
+    }
+    function stopBGM(){
+        if (bgmTimer){ clearTimeout(bgmTimer); bgmTimer = null; }
+    }
+
+    function sfxMachineStart(){
+        if (!initialized) return;
+        tone(180, 0, 0.12, "square", 0.16);
+        tone(140, 0.05, 0.15, "square", 0.14);
+    }
+    function sfxCorrect(){
+        if (!initialized) return;
+        tone(523.25, 0, 0.14, "sine", 0.22);
+        tone(659.25, 0.08, 0.16, "sine", 0.22);
+        tone(783.99, 0.16, 0.22, "sine", 0.24);
+    }
+    function sfxWrong(){
+        if (!initialized) return;
+        tone(180, 0, 0.18, "sawtooth", 0.18);
+        tone(140, 0.1, 0.22, "sawtooth", 0.16);
+    }
+    function sfxOutput(){
+        if (!initialized) return;
+        tone(880, 0, 0.08, "square", 0.16);
+        tone(988, 0.06, 0.08, "square", 0.16);
+    }
+    function sfxComplete(){
+        if (!initialized) return;
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
+            tone(f, idx * 0.13, 0.28, "sine", 0.22);
+        });
+    }
+
+    function setMuted(val){
+        muted = val;
+        if (masterGain) masterGain.gain.value = muted ? 0 : 1;
+    }
+    function isMuted(){ return muted; }
+
+    return { init, resume, startBGM, stopBGM, sfxMachineStart, sfxCorrect, sfxWrong, sfxOutput, sfxComplete, setMuted, isMuted };
+})();
+
+/* =========================================================
+   5. GAME STATE
+========================================================= */
+let state = {
+    playerName: "",
+    playerClass: "",
+    order: [],        // urutan soal (indeks ke QUESTIONS) yang sudah diacak
+    currentIndex: 0,
+    score: 0,
+    correctCount: 0,
+    wrongCount: 0,
+    currentAnswer: "",
+    locked: false      // mengunci input selama animasi berjalan
+};
+
+function shuffleArray(arr){
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function buildQuestionOrder(){
+    // Urutan SENGAJA TIDAK DIACAK: QUESTIONS sudah disusun dari
+    // tingkat kesulitan 1 (termudah) ke 4 (tersulit), jadi urutan
+    // tampilnya harus mengikuti urutan array apa adanya.
+    const total = Math.min(CONFIG.totalQuestions, QUESTIONS.length);
+    return QUESTIONS.map((_, i) => i).slice(0, total);
+}
+
+/* =========================================================
+   6. GAME LOGIC
+========================================================= */
+function startGame(){
+    state.playerName = document.getElementById('input-name').value.trim() || "Siswa";
+    state.playerClass = document.getElementById('input-class').value.trim() || "-";
+    state.order = buildQuestionOrder();
+    state.currentIndex = 0;
+    state.score = 0;
+    state.correctCount = 0;
+    state.wrongCount = 0;
+    state.locked = false;
+
+    AudioSystem.resume();
+    AudioSystem.startBGM();
+
+    showScreen('screen-game');
+    renderQuestion();
+}
+
+function currentQuestion(){
+    return QUESTIONS[state.order[state.currentIndex]];
+}
+
+function renderQuestion(){
+    clearAnswer();
+    const q = currentQuestion();
+    const total = state.order.length;
+
+    document.getElementById('hud-round').textContent = `Ronde ${state.currentIndex + 1}/${total} · Level ${q.difficulty}`;
+    document.getElementById('hud-score').textContent = `⭐ ${state.score}`;
+    document.getElementById('progress-fill').style.width = `${((state.currentIndex) / total) * 100}%`;
+
+    document.getElementById('io-input').textContent = formatNum(q.input);
+    const outEl = document.getElementById('io-output');
+    outEl.textContent = "?";
+    outEl.classList.add('placeholder');
+
+    document.getElementById('io-output-box').classList.remove('pulse-good','pulse-bad');
+    document.getElementById('machine-body').classList.remove('active','glow','wrong-flash');
+    document.getElementById('feedback-line').textContent = "";
+    document.getElementById('feedback-line').className = "feedback-line";
+
+    renderContext(q.context);
+    renderRuleKatex(q.rule);
+    setSubmitEnabled(false);
+    state.locked = false;
+}
+
+function renderContext(latex){
+    const panel = document.getElementById('function-context');
+    const body = document.getElementById('function-context-body');
+    if (!latex){
+        panel.classList.remove('show');
+        return;
+    }
+    panel.classList.add('show');
+    try{
+        if (window.katex){
+            katex.render(latex, body, { throwOnError:false, displayMode:false });
+        } else {
+            body.textContent = latex;
+        }
+    }catch(e){
+        body.textContent = latex;
+    }
+}
+
+function renderRuleKatex(latex){
+    const el = document.getElementById('machine-rule');
+    try{
+        if (window.katex){
+            katex.render(latex, el, { throwOnError:false, displayMode:false });
+        } else {
+            el.textContent = latex;
+        }
+    }catch(e){
+        el.textContent = latex;
+    }
+}
+
+function formatNum(n){
+    // tampilkan angka rapi (hilangkan .0 yang tidak perlu)
+    if (typeof n !== "number") return n;
+    return Number.isInteger(n) ? n.toString() : n.toString();
+}
+
+function submitAnswer(){
+    if (state.locked) return;
+    if (state.currentAnswer === "" || state.currentAnswer === "-") return;
+
+    state.locked = true;
+    const q = currentQuestion();
+    const given = parseFloat(state.currentAnswer);
+    const correct = Math.abs(given - q.answer) < 1e-9;
+
+    AudioSystem.sfxMachineStart();
+    const machineBody = document.getElementById('machine-body');
+    machineBody.classList.add('active');
+
+    setTimeout(() => {
+        AudioSystem.sfxOutput();
+        const outEl = document.getElementById('io-output');
+        outEl.textContent = formatNum(given);
+        outEl.classList.remove('placeholder');
+
+        const outBox = document.getElementById('io-output-box');
+        const feedback = document.getElementById('feedback-line');
+
+        if (correct){
+            state.score += CONFIG.pointsCorrect;
+            state.correctCount++;
+            outBox.classList.add('pulse-good');
+            machineBody.classList.add('glow');
+            feedback.textContent = `Tepat! +${CONFIG.pointsCorrect} poin ⭐`;
+            feedback.classList.add('good');
+            AudioSystem.sfxCorrect();
+        } else {
+            state.score += CONFIG.pointsWrong;
+            state.wrongCount++;
+            outBox.classList.add('pulse-bad');
+            machineBody.classList.add('wrong-flash');
+            feedback.textContent = `Belum tepat. Jawaban: ${formatNum(q.answer)} (${CONFIG.pointsWrong} poin)`;
+            feedback.classList.add('bad');
+            AudioSystem.sfxWrong();
+        }
+
+        document.getElementById('hud-score').textContent = `⭐ ${state.score}`;
+
+        setTimeout(() => {
+            machineBody.classList.remove('active');
+            nextRound();
+        }, 1100);
+
+    }, 420);
+}
+
+function nextRound(){
+    state.currentIndex++;
+    if (state.currentIndex >= state.order.length){
+        finishGame();
+    } else {
+        renderQuestion();
+    }
+}
+
+function finishGame(){
+    AudioSystem.stopBGM();
+    AudioSystem.sfxComplete();
+
+    const total = state.order.length;
+    const percent = Math.round((state.correctCount / total) * 100);
+
+    document.getElementById('final-score').textContent = state.score;
+    document.getElementById('stat-correct').textContent = state.correctCount;
+    document.getElementById('stat-wrong').textContent = state.wrongCount;
+    document.getElementById('stat-percent').textContent = `${percent}%`;
+
+    const cat = resultCategory(percent);
+    document.getElementById('result-emoji').textContent = cat.emoji;
+    document.getElementById('result-title').textContent = cat.title;
+    document.getElementById('result-sub').textContent = cat.sub;
+
+    showScreen('screen-result');
+    sendScoreToGoogleForm();
+}
+
+function resultCategory(percent){
+    if (percent >= 90) return { emoji:"🌟", title:"Mesinmu Bekerja Hebat!", sub:"Pemahamanmu terhadap konsep ini sudah sangat kuat." };
+    if (percent >= 70) return { emoji:"⚙️", title:"Mesinmu Berjalan Mulus!", sub:"Sedikit lagi menuju penguasaan penuh." };
+    if (percent >= 50) return { emoji:"🔧", title:"Mesinmu Mulai Menyala!", sub:"Terus berlatih, kamu sudah di jalur yang tepat." };
+    return { emoji:"🛠️", title:"Mesinmu Perlu Sedikit Perawatan", sub:"Coba lagi — setiap percobaan membuat pemahamanmu makin kuat." };
+}
+
+/* =========================================================
+   7. TOUCH INPUT (keypad)
+   Semua kontrol memakai click/tap, tidak bergantung keyboard fisik.
+========================================================= */
+function clearAnswer(){
+    state.currentAnswer = "";
+    updateAnswerDisplay();
+}
+
+function updateAnswerDisplay(){
+    const el = document.getElementById('answer-display');
+    if (state.currentAnswer === ""){
+        el.textContent = "Ketik jawabanmu";
+        el.classList.add('empty');
+    } else {
+        el.textContent = state.currentAnswer;
+        el.classList.remove('empty');
+    }
+    setSubmitEnabled(state.currentAnswer !== "" && state.currentAnswer !== "-");
+}
+
+function setSubmitEnabled(enabled){
+    document.getElementById('btn-submit').disabled = !enabled;
+}
+
+function handleKey(key){
+    if (state.locked) return;
+    if (key === "back"){
+        state.currentAnswer = state.currentAnswer.slice(0, -1);
+    } else if (key === "-"){
+        if (state.currentAnswer.includes("-")){
+            state.currentAnswer = state.currentAnswer.replace("-", "");
+        } else {
+            state.currentAnswer = "-" + state.currentAnswer;
+        }
+    } else if (key === "."){
+        if (!state.currentAnswer.includes(".")){
+            state.currentAnswer += (state.currentAnswer === "" || state.currentAnswer === "-") ? "0." : ".";
+        }
+    } else if (key === "submit"){
+        submitAnswer();
+        return;
+    } else {
+        if (state.currentAnswer.replace('-','').length >= 8) return; // batas wajar
+        state.currentAnswer += key;
+    }
+    updateAnswerDisplay();
+}
+
+/* =========================================================
+   8. UI (navigasi layar & pengikatan tombol)
+========================================================= */
+function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function bindUI(){
+    // Tombol mulai
+    const btnStart = document.getElementById('btn-start');
+    btnStart.addEventListener('click', startGame);
+
+    // Keypad — event delegation, seluruhnya berbasis click (aman untuk sentuhan)
+    document.getElementById('keypad').addEventListener('click', (e) => {
+        const btn = e.target.closest('.key');
+        if (!btn) return;
+        handleKey(btn.dataset.key);
+    });
+
+    // Mute
+    document.getElementById('btn-mute').addEventListener('click', () => {
+        const nowMuted = !AudioSystem.isMuted();
+        AudioSystem.setMuted(nowMuted);
+        document.getElementById('btn-mute').textContent = nowMuted ? "🔇" : "🔊";
+    });
+
+    // Main lagi
+    document.getElementById('btn-again').addEventListener('click', () => {
+        showScreen('screen-start');
+    });
+
+    // Enter pada input nama/kelas tidak wajib, tapi tetap dukung tap "Mulai"
+    document.getElementById('input-name').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('input-class').focus();
+    });
+    document.getElementById('input-class').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') startGame();
+    });
+}
+
+/* =========================================================
+   9. ANIMATION
+   Ditangani lewat CSS class (lihat submitAnswer & style di atas):
+   .active (getar), .glow (menyala), .wrong-flash (merah),
+   .pulse-good / .pulse-bad pada kotak output.
+========================================================= */
+
+/* =========================================================
+   10. SCORE
+   Dikelola langsung di GAME LOGIC (state.score) + HUD update.
+========================================================= */
+
+/* =========================================================
+   11. GOOGLE FORM SUBMISSION
+   Dikirim otomatis sekali saat permainan selesai.
+========================================================= */
+function sendScoreToGoogleForm(){
+    const note = document.getElementById('sending-note');
+    try{
+        const formData = new FormData();
+        formData.append(GOOGLE_FORM_CONFIG.nameEntry, state.playerName);
+        formData.append(GOOGLE_FORM_CONFIG.classEntry, state.playerClass);
+        formData.append(GOOGLE_FORM_CONFIG.gameEntry, GAME_NAME);
+        formData.append(GOOGLE_FORM_CONFIG.scoreEntry, String(state.score));
+
+        fetch(GOOGLE_FORM_CONFIG.formAction, {
+            method: "POST",
+            mode: "no-cors",
+            body: formData
+        }).then(() => {
+            note.textContent = "Hasil kamu sudah tersimpan ✓";
+        }).catch(() => {
+            note.textContent = "";
+        });
+    }catch(err){
+        note.textContent = "";
+    }
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+    bindUI();
+    // Inisialisasi/resume AudioContext HANYA setelah interaksi pengguna
+    // (ditekan tombol Mulai Main), sesuai kebijakan autoplay browser.
+});
+</script>
+</body>
+</html>
