@@ -51,14 +51,14 @@
 
 const NUMERA_GAMES = [
     {
-        nama: "🎯 Tembak Target",
-        materi: "Polinomial",
-        deskripsi: "Arahkan bidikanmu ke jawaban yang benar.",
-        link: "TEMPEL LINK GAME DI SINI",
+        nama: "⚙ Mesin Matematika",
+        materi: "Penjumlahan Pengurangan Komposisi",
+        deskripsi: "Masukkan input yang sesuai agar mesin berjalan.",
+        link: "game_mesin_jumlah_kurang_komposisi.html",
         tanggal: "2026-08-20",
         thumbnail: "",
         warna: "#2563EB",
-        emoji: "🎯",
+        emoji: "⚙",
         badge: "Baru"
     },
     {
