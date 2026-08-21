@@ -59,7 +59,7 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#2563EB",
         emoji: "⚙",
-        badge: "Baru"
+        badge: ""
     },
     {
         nama: "🧩 Susun Langkah",
@@ -74,14 +74,25 @@ const NUMERA_GAMES = [
     },
     {
         nama: "🔐 Escape Room",
-        materi: "Teorema Sisa",
+        materi: "Polinomial (Semua Materi)",
         deskripsi: "Pecahkan soal matematika dan buka jalan keluar.",
-        link: "TEMPEL LINK GAME DI SINI",
-        tanggal: "2026-08-18",
+        link: "game_escape_room_polinomial.html",
+        tanggal: "2026-08-22",
         thumbnail: "",
         warna: "#0F172A",
         emoji: "🔐",
-        badge: ""
+        badge: "Baru"
+    },
+   {
+        nama: "🎯 Tembak Target",
+        materi: "Kedudukan Titik Terhadap Lingkaran",
+        deskripsi: "Bidik target sesuai jawaban yang benar.",
+        link: "game_tembak_target_kedudukan_titik.html",
+        tanggal: "2026-08-22",
+        thumbnail: "",
+        warna: "#0F172A",
+        emoji: "🎯",
+        badge: "Baru"
     }
 ];
 
