@@ -57,7 +57,7 @@ const NUMERA_GAMES = [
         link: "game_mesin_jumlah_kurang_komposisi.html",
         tanggal: "2026-08-20",
         thumbnail: "",
-        warna: "#2563EB",
+        warna: "#2526EB",
         emoji: "⚙",
         badge: "Baru"
     },
