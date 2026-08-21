@@ -226,19 +226,25 @@
 
     .numera-row {
         display: flex;
-        align-items: center;
-        gap: 12px;
+        flex-direction: column;
+        gap: 10px;
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 16px;
-        padding: 10px;
+        padding: 12px;
         box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+    }
+
+    .numera-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
     }
 
     .numera-thumb {
         position: relative;
-        width: 72px;
-        height: 72px;
+        width: 64px;
+        height: 64px;
         border-radius: 12px;
         overflow: hidden;
         flex-shrink: 0;
@@ -257,7 +263,7 @@
         align-items: center;
         justify-content: center;
     }
-    .numera-thumb-emoji { font-size: 26px; }
+    .numera-thumb-emoji { font-size: 22px; }
 
     .numera-thumb-badge {
         position: absolute;
@@ -308,9 +314,10 @@
         letter-spacing: -0.01em;
         line-height: 1.3;
         margin-bottom: 3px;
-        white-space: nowrap;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     .numera-desc {
@@ -323,6 +330,10 @@
         overflow: hidden;
     }
 
+    .numera-actions {
+        display: flex;
+        justify-content: flex-end;
+    }
     .numera-play-btn {
         flex-shrink: 0;
         display: inline-flex;
@@ -332,7 +343,7 @@
         font-weight: 700;
         color: #fff;
         background: linear-gradient(150deg, var(--primary), var(--primary-hover));
-        padding: 8px 13px;
+        padding: 8px 15px;
         border-radius: 999px;
         box-shadow: 0 4px 10px rgba(37,99,235,0.22);
     }
