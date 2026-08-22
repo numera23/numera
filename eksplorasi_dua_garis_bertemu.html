@@ -1,0 +1,495 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : 📍 Di Mana Dua Garis Bertemu?
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Di Mana Dua Garis Bertemu? — Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif Numera: coba geser dua garis dan temukan sendiri polanya.">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --error:#EF4444;
+
+  --sp-1:8px;
+  --sp-2:12px;
+  --sp-3:16px;
+  --sp-4:24px;
+  --sp-5:32px;
+  --sp-6:48px;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:14px 0;
+}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;}
+.topbar-title{font-weight:700;font-size:14px;letter-spacing:.2px;}
+.topbar-title span{color:var(--primary);}
+.progress-track{height:3px;background:var(--border);width:100%;}
+.progress-fill{height:3px;background:var(--primary);width:0%;transition:width .1s linear;}
+
+section{padding:var(--sp-6) 0;}
+section.fade-up{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+section.fade-up.visible{opacity:1;transform:translateY(0);}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px;
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+h1{font-size:24px;font-weight:800;margin:0 0 8px;line-height:1.3;}
+h2{font-size:19px;font-weight:750;margin:0 0 10px;}
+p{margin:0 0 12px;font-size:15px;}
+.eyebrow{
+  text-transform:uppercase;font-size:12px;font-weight:700;letter-spacing:.6px;
+  color:var(--primary);margin-bottom:6px;
+}
+
+.badge-lab{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--primary-light);color:var(--primary-hover);
+  border-radius:999px;padding:5px 14px;font-size:13px;font-weight:700;
+  margin-bottom:12px;
+}
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 14px;}
+.meta-chip{
+  background:var(--bg);border:1px solid var(--border);color:var(--text-secondary);
+  border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:600;
+}
+.linker{font-size:13px;color:var(--text-secondary);margin-bottom:4px;}
+.invite{font-size:15.5px;font-weight:650;color:var(--primary-hover);margin-top:10px;}
+
+/* Buttons */
+button{
+  font-family:inherit;cursor:pointer;border:none;border-radius:12px;
+  min-height:40px;padding:0 18px;font-size:14px;font-weight:600;
+  transition:all .2s ease;
+}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-secondary{background:var(--primary-light);color:var(--primary-hover);}
+.btn-secondary:hover{background:#c7dcfb;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+
+/* Misi */
+.misi-line{font-size:16px;font-weight:650;margin-bottom:6px;}
+.misi-question{font-size:15px;color:var(--primary-hover);font-weight:600;}
+
+/* Laboratorium */
+.line-controls{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+@media(max-width:560px){.line-controls{grid-template-columns:1fr;}}
+.line-card{border-radius:14px;padding:16px;border:1px solid var(--border);}
+.line-card.a{background:#EFF4FF;}
+.line-card.b{background:#FFF7EC;}
+.line-card h3{margin:0 0 10px;font-size:14px;font-weight:750;display:flex;align-items:center;gap:8px;}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.dot-a{background:#2563EB;}
+.dot-b{background:#F59E0B;}
+.slider-row{margin-bottom:12px;}
+.slider-row label{font-size:12.5px;font-weight:600;color:var(--text-secondary);display:flex;justify-content:space-between;margin-bottom:4px;}
+.slider-row input[type=range]{width:100%;accent-color:var(--primary);}
+.line-card.b input[type=range]{accent-color:var(--warning);}
+
+.graph-wrap{background:var(--bg);border-radius:14px;padding:10px;border:1px solid var(--border);position:relative;}
+svg{width:100%;height:auto;display:block;touch-action:none;cursor:crosshair;}
+
+.readout-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.chip{
+  border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;
+  border:1.5px solid var(--border);color:var(--text-secondary);background:#fff;
+  transition:all .15s ease;
+}
+.chip.active-a{border-color:#2563EB;color:#2563EB;background:var(--primary-light);}
+.chip.active-b{border-color:#F59E0B;color:#B45309;background:var(--warning-bg);}
+.chip.active-both{border-color:var(--success);color:var(--success);background:var(--success-bg);}
+.coord-readout{font-size:13.5px;color:var(--text-secondary);margin-top:10px;}
+.coord-readout b{color:var(--text);}
+.hint-line{font-size:13px;color:var(--text-secondary);margin-top:10px;font-style:italic;}
+
+/* Dugaan */
+textarea{
+  width:100%;border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;font-size:15px;font-family:inherit;min-height:100px;resize:vertical;
+  background:#fff;color:var(--text);
+}
+textarea:focus{outline:2px solid var(--primary-light);border-color:var(--primary);}
+.dugaan-note{font-size:12.5px;color:var(--text-secondary);margin-top:8px;}
+
+/* Lanjut ke Modul */
+.next-card{
+  background:linear-gradient(135deg,var(--primary) 0%, var(--primary-hover) 100%);
+  color:#fff;border-radius:18px;padding:26px 24px;text-align:center;
+}
+.next-card p{color:#EAF0FF;font-size:15px;}
+.next-card a.btn-white{
+  display:inline-block;margin-top:8px;background:#fff;color:var(--primary-hover);
+  border-radius:12px;padding:12px 24px;font-weight:700;font-size:14.5px;
+  text-decoration:none;min-height:40px;
+}
+
+/* Footer */
+.site-footer{padding:var(--sp-5) 0 var(--sp-6);text-align:center;}
+.footer-divider{height:1px;background:var(--border);margin-bottom:var(--sp-4);}
+.footer-brand{font-size:13.5px;font-weight:700;color:var(--primary);margin:0 0 4px;}
+.footer-text{font-size:13px;color:var(--text-soft);margin:0 0 2px;}
+.footer-meta{font-size:12.5px;color:var(--text-soft);margin:0;opacity:.85;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="topbar-title">NUMERA <span>·</span> 🧪 Di Mana Dua Garis Bertemu? — Eksplorasi</div>
+  </div>
+</div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- 1. HEADER -->
+<section class="fade-up">
+  <div class="wrap">
+    <div class="card">
+      <div class="badge-lab">🧪 Eksplorasi</div>
+      <h1>📍 Di Mana Dua Garis Bertemu?</h1>
+      <div class="meta-row">
+        <span class="meta-chip">⏱ 3–5 menit</span>
+      </div>
+      <p class="linker">Bagian dari materi Penerapan SPLDV · Kerjakan sebelum buka Modul</p>
+      <p class="invite">Yuk cari tahu sendiri polanya.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. MISI EKSPLORASI -->
+<section class="fade-up">
+  <div class="wrap">
+    <div class="card">
+      <div class="eyebrow">🎯 Misi Eksplorasi</div>
+      <p class="misi-line">Ubah dua garis di bawah, lalu coba klik-klik di area grafiknya.</p>
+      <p class="misi-question">Titik yang mana saja yang cocok buat kedua garis sekaligus?</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. LABORATORIUM MATEMATIKA -->
+<section class="fade-up">
+  <div class="wrap">
+    <div class="card">
+      <div class="eyebrow">🧪 Laboratorium Matematika</div>
+      <h2>Geser Garisnya, Lalu Klik di Grafik</h2>
+
+      <div class="line-controls">
+        <div class="line-card a">
+          <h3><span class="dot dot-a"></span>Garis A</h3>
+          <div class="slider-row">
+            <label><span>Arah garis</span><span id="mAval">0.5</span></label>
+            <input type="range" id="mA" min="-2" max="2" step="0.5" value="0.5">
+          </div>
+          <div class="slider-row">
+            <label><span>Posisi garis</span><span id="cAval">1</span></label>
+            <input type="range" id="cA" min="0" max="8" step="0.5" value="1">
+          </div>
+        </div>
+        <div class="line-card b">
+          <h3><span class="dot dot-b"></span>Garis B</h3>
+          <div class="slider-row">
+            <label><span>Arah garis</span><span id="mBval">-1</span></label>
+            <input type="range" id="mB" min="-2" max="2" step="0.5" value="-1">
+          </div>
+          <div class="slider-row">
+            <label><span>Posisi garis</span><span id="cBval">8</span></label>
+            <input type="range" id="cB" min="0" max="8" step="0.5" value="8">
+          </div>
+        </div>
+      </div>
+
+      <div class="graph-wrap">
+        <svg id="graphSvg" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+
+      <div class="readout-row">
+        <span class="chip" id="chipA">Di Garis A</span>
+        <span class="chip" id="chipB">Di Garis B</span>
+      </div>
+      <div class="coord-readout" id="coordReadout">Klik di mana saja pada grafik untuk mencoba sebuah titik.</div>
+      <div class="hint-line">Titik abu-abu kecil menandai posisi kedua garis saling bertemu.</div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" id="randomBtn">🔀 Coba kondisi baru</button>
+        <button class="btn-secondary" id="clearBtn">Hapus titik coba</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. DUGAAN SAYA -->
+<section class="fade-up">
+  <div class="wrap">
+    <div class="card">
+      <div class="eyebrow">💭 Dugaan Saya</div>
+      <p>Menurutmu, titik seperti apa yang cocok buat kedua garis sekaligus?</p>
+      <textarea id="dugaan" placeholder="Tulis dugaanmu di sini..."></textarea>
+      <div class="dugaan-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. LANJUT KE MODUL -->
+<section class="fade-up">
+  <div class="wrap">
+    <div class="next-card">
+      <h2 style="color:#fff;">🚀 Lanjut ke Modul</h2>
+      <p>Kamu sudah punya dugaan sendiri. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GURU: ganti href di bawah ini sesuai lokasi file Modul "Penerapan SPLDV" -->
+      <a class="btn-white" href="penerapan-spldv.html">Buka Modul Penerapan SPLDV →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* Fade up */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.12});
+document.querySelectorAll('section.fade-up').forEach(s=>observer.observe(s));
+
+/* Progress bar */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressFill').style.width = scrolled + '%';
+});
+
+/* ================= LABORATORIUM: DUA GARIS ================= */
+const DOMAIN = 10; // data domain 0..10 for x and y
+const svg = document.getElementById('graphSvg');
+
+const els = {
+  mA: document.getElementById('mA'), cA: document.getElementById('cA'),
+  mB: document.getElementById('mB'), cB: document.getElementById('cB'),
+  mAval: document.getElementById('mAval'), cAval: document.getElementById('cAval'),
+  mBval: document.getElementById('mBval'), cBval: document.getElementById('cBval')
+};
+
+let testPoint = null;
+
+function mapPt(x,y){
+  return [30 + (x/DOMAIN)*260, 290 - (y/DOMAIN)*260];
+}
+function unmapPt(px,py){
+  return [ (px-30)/260*DOMAIN, (290-py)/260*DOMAIN ];
+}
+
+function clipSegment(m,c){
+  const pts=[];
+  const inR=(v)=> v>=-1e-6 && v<=DOMAIN+1e-6;
+  let y0=c; if(inR(y0)) pts.push([0,y0]);
+  let y1=m*DOMAIN+c; if(inR(y1)) pts.push([DOMAIN,y1]);
+  if(Math.abs(m)>1e-9){
+    let x0=-c/m; if(inR(x0)) pts.push([x0,0]);
+    let x1=(DOMAIN-c)/m; if(inR(x1)) pts.push([x1,DOMAIN]);
+  }
+  const uniq=[];
+  pts.forEach(p=>{
+    if(!uniq.some(q=>Math.abs(q[0]-p[0])<1e-6 && Math.abs(q[1]-p[1])<1e-6)) uniq.push(p);
+  });
+  return uniq.slice(0,2);
+}
+
+function svgLine(x1,y1,x2,y2,color,width,dash){
+  const el=document.createElementNS('http://www.w3.org/2000/svg','line');
+  el.setAttribute('x1',x1);el.setAttribute('y1',y1);
+  el.setAttribute('x2',x2);el.setAttribute('y2',y2);
+  el.setAttribute('stroke',color);el.setAttribute('stroke-width',width);
+  el.setAttribute('stroke-linecap','round');
+  if(dash) el.setAttribute('stroke-dasharray',dash);
+  svg.appendChild(el);
+}
+function svgCircle(x,y,r,fill,stroke){
+  const el=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  el.setAttribute('cx',x);el.setAttribute('cy',y);el.setAttribute('r',r);
+  el.setAttribute('fill',fill);
+  if(stroke){el.setAttribute('stroke',stroke);el.setAttribute('stroke-width',2);}
+  svg.appendChild(el);
+}
+
+function drawGraph(){
+  svg.innerHTML='';
+  const mA=parseFloat(els.mA.value), cA=parseFloat(els.cA.value);
+  const mB=parseFloat(els.mB.value), cB=parseFloat(els.cB.value);
+
+  // grid
+  for(let i=0;i<=DOMAIN;i+=2){
+    const p1=mapPt(i,0), p2=mapPt(i,DOMAIN);
+    svgLine(p1[0],p1[1],p2[0],p2[1],'#E2E8F0',1);
+    const q1=mapPt(0,i), q2=mapPt(DOMAIN,i);
+    svgLine(q1[0],q1[1],q2[0],q2[1],'#E2E8F0',1);
+  }
+  // axes
+  const o=mapPt(0,0), xEnd=mapPt(DOMAIN,0), yEnd=mapPt(0,DOMAIN);
+  svgLine(o[0],o[1],xEnd[0],xEnd[1],'#94A3B8',2);
+  svgLine(o[0],o[1],yEnd[0],yEnd[1],'#94A3B8',2);
+
+  // lines
+  const segA = clipSegment(mA,cA);
+  const segB = clipSegment(mB,cB);
+  if(segA.length===2){
+    const [p1,p2]=segA.map(p=>mapPt(p[0],p[1]));
+    svgLine(p1[0],p1[1],p2[0],p2[1],'#2563EB',3.5);
+  }
+  if(segB.length===2){
+    const [p1,p2]=segB.map(p=>mapPt(p[0],p[1]));
+    svgLine(p1[0],p1[1],p2[0],p2[1],'#F59E0B',3.5);
+  }
+
+  // crossing point
+  if(Math.abs(mA-mB) > 1e-6){
+    const x = (cB-cA)/(mA-mB);
+    const y = mA*x+cA;
+    if(x>=0 && x<=DOMAIN && y>=0 && y<=DOMAIN){
+      const p = mapPt(x,y);
+      svgCircle(p[0],p[1],4.5,'#94A3B8');
+    }
+  }
+
+  // test point
+  if(testPoint){
+    const p = mapPt(testPoint[0], testPoint[1]);
+    const tol = 0.4;
+    const onA = Math.abs(testPoint[1] - (mA*testPoint[0]+cA)) < tol;
+    const onB = Math.abs(testPoint[1] - (mB*testPoint[0]+cB)) < tol;
+    let color = '#0F172A';
+    if(onA && onB) color = '#10B981';
+    else if(onA) color = '#2563EB';
+    else if(onB) color = '#F59E0B';
+    svgCircle(p[0],p[1],7,color,'#fff');
+
+    document.getElementById('coordReadout').innerHTML =
+      'Titik yang kamu coba: <b>(' + testPoint[0].toFixed(1) + ', ' + testPoint[1].toFixed(1) + ')</b>';
+
+    const chipA = document.getElementById('chipA');
+    const chipB = document.getElementById('chipB');
+    chipA.className = 'chip' + (onA ? (onB ? ' active-both':' active-a') : '');
+    chipB.className = 'chip' + (onB ? (onA ? ' active-both':' active-b') : '');
+  }
+}
+
+['mA','cA','mB','cB'].forEach(key=>{
+  els[key].addEventListener('input', ()=>{
+    els[key+'val'].textContent = els[key].value;
+    drawGraph();
+  });
+});
+
+function getSvgCoords(evt){
+  const pt = svg.createSVGPoint();
+  const src = evt.touches && evt.touches.length ? evt.touches[0] : evt;
+  pt.x = src.clientX; pt.y = src.clientY;
+  const ctm = svg.getScreenCTM();
+  if(!ctm) return null;
+  const loc = pt.matrixTransform(ctm.inverse());
+  return unmapPt(loc.x, loc.y);
+}
+
+function handlePick(evt){
+  const coords = getSvgCoords(evt);
+  if(!coords) return;
+  let [x,y] = coords;
+  x = Math.max(0, Math.min(DOMAIN, x));
+  y = Math.max(0, Math.min(DOMAIN, y));
+  testPoint = [x,y];
+  drawGraph();
+}
+svg.addEventListener('click', handlePick);
+svg.addEventListener('touchstart', (e)=>{ handlePick(e); }, {passive:true});
+
+document.getElementById('randomBtn').addEventListener('click', ()=>{
+  const slopes = [-2,-1.5,-1,-0.5,0.5,1,1.5,2];
+  let mA = slopes[Math.floor(Math.random()*slopes.length)];
+  let mB = slopes[Math.floor(Math.random()*slopes.length)];
+  while(mB===mA){ mB = slopes[Math.floor(Math.random()*slopes.length)]; }
+  const cA = Math.round(Math.random()*16)/2;
+  const cB = Math.round(Math.random()*16)/2;
+  els.mA.value=mA; els.cA.value=cA; els.mB.value=mB; els.cB.value=cB;
+  els.mAval.textContent=mA; els.cAval.textContent=cA; els.mBval.textContent=mB; els.cBval.textContent=cB;
+  testPoint=null;
+  document.getElementById('coordReadout').textContent='Klik di mana saja pada grafik untuk mencoba sebuah titik.';
+  document.getElementById('chipA').className='chip';
+  document.getElementById('chipB').className='chip';
+  drawGraph();
+});
+
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  testPoint=null;
+  document.getElementById('coordReadout').textContent='Klik di mana saja pada grafik untuk mencoba sebuah titik.';
+  document.getElementById('chipA').className='chip';
+  document.getElementById('chipB').className='chip';
+  drawGraph();
+});
+
+drawGraph();
+</script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : 🔀 Ketika Garis Berubah
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ketika Garis Berubah — Eksplorasi Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif: amati dua garis dan temukan pola kedudukannya.">
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-secondary:#64748B;
+    --text-soft:#64748B;
+    --border:#E2E8F0;
+
+    --success:#10B981;
+    --success-bg:#ECFDF5;
+    --success-border:#A7F3D0;
+    --success-text:#047857;
+
+    --warning:#F59E0B;
+    --warning-bg:#FEF3C7;
+    --warning-text:#B45309;
+
+    --error:#EF4444;
+    --error-bg:#FEE2E2;
+    --error-border:#FECACA;
+    --error-text:#B91C1C;
+
+    --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+
+  .topbar{
+    position:sticky;top:0;z-index:100;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    padding:14px 20px;
+    font-weight:600;font-size:14px;
+    color:var(--primary);text-align:center;
+  }
+  .progress-bar{position:sticky;top:45px;z-index:99;height:3px;background:var(--border);}
+  .progress-fill{height:100%;width:0%;background:var(--primary);transition:width .1s linear;}
+
+  .card{
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    padding:28px 24px;
+    margin-top:24px;
+  }
+
+  .fade-up{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease;}
+  .fade-up.visible{opacity:1;transform:translateY(0);}
+
+  h1{font-size:23px;font-weight:800;margin:0 0 8px;letter-spacing:-.02em;}
+  h2{font-size:18px;font-weight:700;margin:0 0 12px;letter-spacing:-.01em;}
+  p{margin:0 0 12px;font-size:15.5px;color:var(--text);}
+  .muted{color:var(--text-secondary);font-size:14px;}
+
+  .badge-eksplorasi{
+    display:inline-block;font-size:12px;font-weight:700;
+    color:var(--primary);background:var(--primary-light);
+    padding:5px 12px;border-radius:20px;margin-bottom:10px;letter-spacing:.02em;
+  }
+  .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 4px;}
+  .meta-chip{
+    font-size:13px;background:var(--bg);border:1px solid var(--border);
+    padding:6px 12px;border-radius:20px;color:var(--text-secondary);
+  }
+
+  .misi-box{
+    background:linear-gradient(135deg,var(--primary-light),#EFF6FF);
+    border-radius:16px;padding:22px;margin-top:14px;
+  }
+  .misi-box p{margin-bottom:8px;}
+  .misi-box p:last-child{margin-bottom:0;font-weight:600;}
+
+  /* LAB */
+  .lab-grid{display:grid;grid-template-columns:1fr;gap:18px;margin-top:16px;}
+  .graph-wrap{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:12px;}
+  svg{width:100%;height:auto;display:block;}
+
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--text-secondary);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .legend .swatch{width:18px;height:3px;border-radius:2px;display:inline-block;background:var(--primary);}
+  .legend .swatch.dash{background:none;border-top:3px dashed var(--text-secondary);width:18px;}
+
+  .control-group{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:16px;}
+  .control-group.g1{border-left:4px solid var(--primary);}
+  .control-group.g2{border-left:4px solid var(--text-secondary);margin-top:14px;}
+  .control-title{font-size:13.5px;font-weight:800;margin-bottom:12px;}
+  .control-title.g1{color:var(--primary-hover);}
+  .control-title.g2{color:var(--text-secondary);}
+
+  .slider-row{margin-bottom:14px;}
+  .slider-row:last-child{margin-bottom:0;}
+  .slider-label{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;}
+  .slider-label span.val{color:var(--primary);font-weight:800;}
+  input[type=range]{width:100%;accent-color:var(--primary);height:6px;}
+
+  .eq-display{
+    background:var(--card);border:1px solid var(--border);border-radius:12px;
+    padding:14px 16px;margin-top:16px;font-size:16px;font-weight:700;text-align:center;
+  }
+  .eq-display .g1txt{color:var(--primary-hover);}
+  .eq-display .g2txt{color:var(--text-secondary);}
+
+  .status-box{margin-top:14px;padding:14px 16px;border-radius:12px;font-size:14px;font-weight:600;text-align:center;}
+  .status-a{background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+  .status-b{background:var(--warning-bg);color:var(--warning-text);}
+  .status-c{background:var(--primary-light);color:var(--primary-hover);}
+
+  button{
+    font-family:inherit;cursor:pointer;border:none;border-radius:12px;
+    min-height:40px;font-weight:600;font-size:14px;transition:all .2s ease;
+  }
+  .btn-primary{background:var(--primary);color:#fff;padding:10px 20px;}
+  .btn-primary:hover{background:var(--primary-hover);}
+  .btn-row{display:flex;justify-content:center;margin-top:18px;}
+
+  /* DUGAAN */
+  .guess-item{margin-top:6px;}
+  .guess-item label{display:block;font-weight:600;font-size:14.5px;margin-bottom:8px;}
+  textarea{
+    width:100%;min-height:90px;padding:12px 14px;
+    border:1px solid var(--border);border-radius:12px;
+    font-family:inherit;font-size:14px;resize:vertical;
+    background:var(--bg);color:var(--text);
+  }
+  textarea:focus{outline:2px solid var(--primary-light);border-color:var(--primary);background:var(--card);}
+  .guess-note{font-size:12.5px;color:var(--text-secondary);margin-top:10px;}
+
+  /* LANJUT */
+  .next-card{text-align:center;}
+  .next-btn{
+    display:inline-block;text-decoration:none;
+    background:var(--primary);color:#fff;
+    padding:13px 28px;border-radius:12px;
+    font-weight:700;font-size:15px;margin-top:14px;
+    transition:background .2s ease;
+  }
+  .next-btn:hover{background:var(--primary-hover);}
+
+  /* FOOTER (format wajib) */
+  .site-footer{padding:var(--sp-5) 0 var(--sp-6);text-align:center;}
+  .footer-divider{height:1px;background:var(--border);margin-bottom:var(--sp-4);}
+  .footer-brand{font-size:13.5px;font-weight:700;color:var(--primary);margin:0 0 4px;}
+  .footer-text{font-size:13px;color:var(--text-soft);margin:0 0 2px;}
+  .footer-meta{font-size:12.5px;color:var(--text-soft);margin:0;opacity:.85;}
+
+  @media (min-width:640px){
+    .lab-grid{grid-template-columns:1.2fr 1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">NUMERA · 🧪 Ketika Garis Berubah — Eksplorasi</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <div class="card fade-up" style="margin-top:16px;">
+    <span class="badge-eksplorasi">🧪 Eksplorasi</span>
+    <h1>Ketika Garis Berubah</h1>
+    <p class="muted">Bagian dari materi SPLDV · Kerjakan sebelum buka Modul</p>
+    <div class="meta-row">
+      <span class="meta-chip">⏱️ 3–5 menit</span>
+    </div>
+    <p style="margin-top:14px;">Yuk cari tahu sendiri polanya.</p>
+  </div>
+
+  <!-- 2. MISI EKSPLORASI -->
+  <div class="card fade-up">
+    <h2>🎯 Misi Eksplorasi</h2>
+    <div class="misi-box">
+      <p>Geser-geser dua garis di bawah ini.</p>
+      <p>Kadang mereka bertemu, kadang enggak — coba temukan kapan itu terjadi.</p>
+    </div>
+  </div>
+
+  <!-- 3. LABORATORIUM MATEMATIKA -->
+  <div class="card fade-up">
+    <h2>🧪 Laboratorium Matematika</h2>
+
+    <div class="lab-grid">
+      <div class="graph-wrap">
+        <svg id="graphSvg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="legend">
+          <span><span class="swatch"></span> Garis 1</span>
+          <span><span class="swatch dash"></span> Garis 2</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="control-group g1">
+          <div class="control-title g1">Garis 1</div>
+          <div class="slider-row">
+            <div class="slider-label">Kemiringan <span class="val" id="m1Val">1</span></div>
+            <input type="range" id="m1Slider" min="-3" max="3" step="0.5" value="1">
+          </div>
+          <div class="slider-row">
+            <div class="slider-label">Posisi <span class="val" id="c1Val">-2</span></div>
+            <input type="range" id="c1Slider" min="-8" max="8" step="1" value="-2">
+          </div>
+        </div>
+
+        <div class="control-group g2">
+          <div class="control-title g2">Garis 2</div>
+          <div class="slider-row">
+            <div class="slider-label">Kemiringan <span class="val" id="m2Val">-0.5</span></div>
+            <input type="range" id="m2Slider" min="-3" max="3" step="0.5" value="-0.5">
+          </div>
+          <div class="slider-row">
+            <div class="slider-label">Posisi <span class="val" id="c2Val">4</span></div>
+            <input type="range" id="c2Slider" min="-8" max="8" step="1" value="4">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq-display">
+      <span class="g1txt" id="eq1Text">y = 1x − 2</span>
+      &nbsp;&nbsp;·&nbsp;&nbsp;
+      <span class="g2txt" id="eq2Text">y = −0.5x + 4</span>
+    </div>
+
+    <div class="status-box status-a" id="statusBox">Berpotongan di satu titik: (4, 2)</div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="randomBtn">🎲 Coba Kondisi Baru</button>
+    </div>
+  </div>
+
+  <!-- 4. DUGAAN SAYA -->
+  <div class="card fade-up">
+    <h2>💭 Dugaan Saya</h2>
+    <div class="guess-item">
+      <label>Apa yang kamu perhatikan? Coba tulis polanya di sini.</label>
+      <textarea id="guess1" placeholder="Tulis apa yang kamu amati..."></textarea>
+    </div>
+    <p class="guess-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+  </div>
+
+  <!-- 5. LANJUT KE MODUL -->
+  <div class="card fade-up next-card">
+    <h2>🚀 Lanjut ke Modul</h2>
+    <p>Kamu sudah punya dugaan sendiri.</p>
+    <p>Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+    <!-- GURU: ganti href="#" dengan link Modul yang sesuai -->
+    <a href="#" class="next-btn">Buka Modul →</a>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+/* FADE UP */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.12});
+document.querySelectorAll('.fade-up').forEach(el=>observer.observe(el));
+
+/* PROGRESS BAR */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressFill').style.width = scrolled + '%';
+});
+
+/* GRAPH SETUP */
+const svg = document.getElementById('graphSvg');
+const RANGE = 10;
+const SIZE = 400;
+const PAD = 30;
+
+function toSvgX(x){ return PAD + (x + RANGE) / (2*RANGE) * (SIZE - 2*PAD); }
+function toSvgY(y){ return PAD + (RANGE - y) / (2*RANGE) * (SIZE - 2*PAD); }
+
+function getLineEndpoints(m, c){
+  const pts = [];
+  const push = (x,y)=>{ if(x>=-RANGE-0.001 && x<=RANGE+0.001 && y>=-RANGE-0.001 && y<=RANGE+0.001) pts.push([x,y]); };
+  push(-RANGE, m*(-RANGE)+c);
+  push(RANGE, m*RANGE+c);
+  if(m !== 0){
+    push((-RANGE-c)/m, -RANGE);
+    push((RANGE-c)/m, RANGE);
+  }
+  const uniq = [];
+  pts.forEach(p=>{
+    if(!uniq.some(q=>Math.abs(q[0]-p[0])<0.01 && Math.abs(q[1]-p[1])<0.01)) uniq.push(p);
+  });
+  if(uniq.length < 2) return null;
+  uniq.sort((a,b)=>a[0]-b[0]);
+  return [uniq[0], uniq[uniq.length-1]];
+}
+
+function buildGrid(){
+  let html = '';
+  for(let i=-RANGE;i<=RANGE;i+=2){
+    const sx = toSvgX(i), sy = toSvgY(i);
+    html += `<line x1="${sx}" y1="${PAD}" x2="${sx}" y2="${SIZE-PAD}" stroke="#E2E8F0" stroke-width="1"/>`;
+    html += `<line x1="${PAD}" y1="${sy}" x2="${SIZE-PAD}" y2="${sy}" stroke="#E2E8F0" stroke-width="1"/>`;
+  }
+  html += `<line x1="${PAD}" y1="${toSvgY(0)}" x2="${SIZE-PAD}" y2="${toSvgY(0)}" stroke="#94A3B8" stroke-width="1.5"/>`;
+  html += `<line x1="${toSvgX(0)}" y1="${PAD}" x2="${toSvgX(0)}" y2="${SIZE-PAD}" stroke="#94A3B8" stroke-width="1.5"/>`;
+  return html;
+}
+
+function fmt(n){
+  const r = Math.round(n*100)/100;
+  return Number.isInteger(r) ? r.toString() : r.toFixed(2);
+}
+
+function render(){
+  const m1 = parseFloat(document.getElementById('m1Slider').value);
+  const c1 = parseFloat(document.getElementById('c1Slider').value);
+  const m2 = parseFloat(document.getElementById('m2Slider').value);
+  const c2 = parseFloat(document.getElementById('c2Slider').value);
+
+  document.getElementById('m1Val').textContent = fmt(m1);
+  document.getElementById('c1Val').textContent = fmt(c1);
+  document.getElementById('m2Val').textContent = fmt(m2);
+  document.getElementById('c2Val').textContent = fmt(c2);
+
+  document.getElementById('eq1Text').textContent = `y = ${fmt(m1)}x ${c1>=0?'+':'−'} ${Math.abs(fmt(c1))}`;
+  document.getElementById('eq2Text').textContent = `y = ${fmt(m2)}x ${c2>=0?'+':'−'} ${Math.abs(fmt(c2))}`;
+
+  let svgContent = buildGrid();
+
+  const seg1 = getLineEndpoints(m1, c1);
+  const seg2 = getLineEndpoints(m2, c2);
+
+  if(seg1){
+    svgContent += `<line x1="${toSvgX(seg1[0][0])}" y1="${toSvgY(seg1[0][1])}" x2="${toSvgX(seg1[1][0])}" y2="${toSvgY(seg1[1][1])}" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/>`;
+  }
+  if(seg2){
+    svgContent += `<line x1="${toSvgX(seg2[0][0])}" y1="${toSvgY(seg2[0][1])}" x2="${toSvgX(seg2[1][0])}" y2="${toSvgY(seg2[1][1])}" stroke="var(--text-secondary)" stroke-width="3" stroke-dasharray="8,6" stroke-linecap="round"/>`;
+  }
+
+  const statusBox = document.getElementById('statusBox');
+  statusBox.className = 'status-box';
+
+  if(m1 === m2){
+    if(c1 === c2){
+      statusBox.classList.add('status-c');
+      statusBox.textContent = 'Berimpit — kedua garis jadi satu';
+    } else {
+      statusBox.classList.add('status-b');
+      statusBox.textContent = 'Sejajar — tidak pernah bertemu';
+    }
+  } else {
+    const x = (c2 - c1) / (m1 - m2);
+    const y = m1*x + c1;
+    statusBox.classList.add('status-a');
+    if(Math.abs(x) <= RANGE && Math.abs(y) <= RANGE){
+      svgContent += `<circle cx="${toSvgX(x)}" cy="${toSvgY(y)}" r="6" fill="var(--primary-hover)" stroke="#fff" stroke-width="2"/>`;
+    }
+    statusBox.textContent = `Berpotongan di satu titik: (${fmt(x)}, ${fmt(y)})`;
+  }
+
+  svg.innerHTML = svgContent;
+}
+
+['m1Slider','c1Slider','m2Slider','c2Slider'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', render);
+});
+
+document.getElementById('randomBtn').addEventListener('click', ()=>{
+  const mOptions = [-3,-2.5,-2,-1.5,-1,-0.5,0,0.5,1,1.5,2,2.5,3];
+  const cOptions = [-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8];
+  const pick = (arr)=> arr[Math.floor(Math.random()*arr.length)];
+
+  const roll = Math.random();
+  let m1 = pick(mOptions), c1 = pick(cOptions), m2, c2;
+  if(roll < 0.25){
+    m2 = m1;
+    c2 = (roll < 0.1) ? c1 : pick(cOptions.filter(v=>v!==c1));
+  } else {
+    m2 = pick(mOptions.filter(v=>v!==m1));
+    c2 = pick(cOptions);
+  }
+
+  document.getElementById('m1Slider').value = m1;
+  document.getElementById('c1Slider').value = c1;
+  document.getElementById('m2Slider').value = m2;
+  document.getElementById('c2Slider').value = c2;
+  render();
+});
+
+render();
+</script>
+
+</body>
+</html>
