@@ -1,0 +1,950 @@
+<!--
+  NUMERA
+  Judul: Metode Gabungan (SPLDV)
+  Jenis Halaman: Modul Interaktif
+  Versi: 1.0
+  Dikembangkan oleh: Kiki Herdiansyah
+  Copyright © 2026 Numera. Seluruh hak cipta dilindungi.
+  Identitas Proyek: Numera - Media Belajar Matematika Interaktif (s.id/cakram)
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Metode Gabungan (SPLDV) — Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Numera. Dikembangkan oleh Kiki Herdiansyah.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --success-text:#047857;
+
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --warning-text:#B45309;
+
+  --error:#EF4444;
+  --error-bg:#FEE2E2;
+  --error-border:#FECACA;
+  --error-text:#B91C1C;
+
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 18px 60px;
+}
+img,svg{max-width:100%;}
+
+/* Topbar */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;
+  margin:0 auto;
+  padding:14px 18px;
+  font-weight:700;
+  font-size:14px;
+  letter-spacing:.2px;
+  color:var(--text);
+}
+.topbar-inner span{color:var(--primary);}
+.progress-track{
+  height:3px;
+  width:100%;
+  background:var(--border);
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:var(--primary);
+  transition:width .1s linear;
+}
+
+/* Sections */
+section{
+  margin-top:34px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  padding:26px 22px;
+}
+.fade-up{
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .55s ease, transform .55s ease;
+}
+.fade-up.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.eyebrow{
+  display:inline-block;
+  font-size:12px;
+  font-weight:700;
+  color:var(--primary);
+  background:var(--primary-light);
+  padding:4px 10px;
+  border-radius:999px;
+  margin-bottom:10px;
+  letter-spacing:.3px;
+}
+h1{font-size:26px; font-weight:800; margin:6px 0 8px; line-height:1.3;}
+h2{font-size:20px; font-weight:800; margin:0 0 14px;}
+h3{font-size:16px; font-weight:700; margin:22px 0 8px; color:var(--text);}
+h3:first-of-type{margin-top:0;}
+p{margin:0 0 12px; font-size:15px; color:var(--text);}
+.muted{color:var(--text-secondary); font-size:14px;}
+strong{font-weight:700;}
+mark{
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  padding:1px 5px;
+  border-radius:6px;
+  font-weight:600;
+}
+
+/* Header specifics */
+.header-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:14px 0 18px;
+}
+.meta-chip{
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  font-size:13px;
+  font-weight:600;
+  padding:6px 12px;
+  border-radius:999px;
+}
+.goals{
+  margin:0;
+  padding-left:18px;
+}
+.goals li{margin-bottom:6px; font-size:14.5px;}
+
+.identity-box{
+  margin-top:20px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+}
+.identity-box p.id-title{font-weight:700; margin-bottom:12px; font-size:14.5px;}
+.id-row{margin-bottom:12px;}
+.id-row label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text-secondary);
+  margin-bottom:5px;
+}
+.id-row input{
+  width:100%;
+  padding:11px 13px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-family:inherit;
+  font-size:15px;
+  background:var(--card);
+  color:var(--text);
+}
+.id-row input:focus{outline:2px solid var(--primary); outline-offset:1px;}
+.id-note{font-size:12.5px; color:var(--text-secondary); margin:6px 0 0;}
+
+/* Buttons */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:40px;
+  padding:0 18px;
+  border-radius:var(--radius-btn);
+  border:none;
+  font-family:inherit;
+  font-weight:600;
+  font-size:14.5px;
+  cursor:pointer;
+  transition:background .2s ease, transform .1s ease, opacity .2s ease;
+}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-primary:active{transform:scale(.98);}
+.btn-secondary{background:var(--primary-light); color:var(--primary-hover);}
+.btn-secondary:hover{background:#c7dcfb;}
+.btn:disabled{opacity:.45; cursor:not-allowed;}
+.btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+
+/* Konteks / cerita pembuka */
+.context-box{
+  background:linear-gradient(135deg, var(--primary-light), #eef4ff);
+  border-radius:14px;
+  padding:20px;
+  border:1px solid var(--primary-light);
+}
+
+/* Cara Kerjanya - stepper */
+.stepper-box{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px;
+}
+.stepper-system{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  font-weight:700;
+  font-size:15px;
+  text-align:center;
+  margin-bottom:14px;
+}
+.step-content{
+  min-height:110px;
+  font-size:15px;
+}
+.step-dots{
+  display:flex;
+  gap:7px;
+  justify-content:center;
+  margin-top:16px;
+}
+.dot{
+  width:8px; height:8px; border-radius:50%;
+  background:var(--border);
+  transition:background .2s ease, transform .2s ease;
+}
+.dot.active{background:var(--primary); transform:scale(1.25);}
+
+/* Coba sendiri */
+.sim-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:20px;
+}
+@media(min-width:640px){
+  .sim-grid{grid-template-columns:1fr 1fr;}
+}
+.eq-inputs{
+  background:var(--bg);
+  border-radius:14px;
+  padding:16px;
+  border:1px solid var(--border);
+}
+.eq-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+  font-weight:700;
+  font-size:15px;
+  margin-bottom:12px;
+}
+.eq-row input{
+  width:56px;
+  padding:8px 6px;
+  text-align:center;
+  border-radius:8px;
+  border:1px solid var(--border);
+  font-family:inherit;
+  font-weight:700;
+  font-size:15px;
+}
+.eq-row input:focus{outline:2px solid var(--primary); outline-offset:1px;}
+.eq-row.eq2 input{border-color:var(--warning);}
+.eq-legend{font-size:12.5px; color:var(--text-secondary); margin-top:2px;}
+
+.solution-box{
+  margin-top:14px;
+  background:var(--success-bg);
+  border:1px solid var(--success-border);
+  color:var(--success-text);
+  border-radius:12px;
+  padding:12px 14px;
+  font-weight:700;
+  font-size:15px;
+}
+.solution-box.warn{
+  background:var(--warning-bg);
+  border-color:#FDE68A;
+  color:var(--warning-text);
+}
+
+.graph-box{
+  background:var(--bg);
+  border-radius:14px;
+  border:1px solid var(--border);
+  padding:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.insight-box{
+  margin-top:14px;
+  background:var(--primary-light);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14px;
+  color:var(--primary-hover);
+  font-weight:600;
+  display:none;
+}
+.insight-box.show{display:block;}
+
+/* Challenge */
+.challenge-card{
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:18px;
+  background:var(--card);
+}
+.badge{
+  display:inline-block;
+  font-size:11.5px;
+  font-weight:800;
+  letter-spacing:.4px;
+  padding:5px 11px;
+  border-radius:999px;
+  margin-bottom:10px;
+}
+.badge-mudah{background:var(--success-bg); color:var(--success-text);}
+.badge-sedang{background:var(--warning-bg); color:var(--warning-text);}
+.badge-sulit{background:var(--error-bg); color:var(--error-text);}
+.q-text{font-size:15px; font-weight:600; margin-bottom:14px;}
+.answer-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-bottom:6px;
+}
+.answer-row label{font-size:14px; font-weight:600; color:var(--text-secondary);}
+.answer-row input{
+  width:90px;
+  padding:9px 10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-family:inherit;
+  font-size:15px;
+  text-align:center;
+}
+.answer-row input:focus{outline:2px solid var(--primary); outline-offset:1px;}
+.feedback{
+  margin-top:12px;
+  padding:12px 14px;
+  border-radius:12px;
+  font-size:14px;
+  display:none;
+}
+.feedback.show{display:block;}
+.feedback.correct{background:var(--success-bg); border:1px solid var(--success-border); color:var(--success-text);}
+.feedback.wrong{background:var(--error-bg); border:1px solid var(--error-border); color:var(--error-text);}
+.send-status{font-size:12.5px; color:var(--text-secondary); margin-top:8px; min-height:16px;}
+
+/* Kesalahan umum */
+.mistake{
+  border-left:3px solid var(--error);
+  background:var(--error-bg);
+  border-radius:0 12px 12px 0;
+  padding:14px 16px;
+  margin-bottom:14px;
+}
+.mistake h4{margin:0 0 6px; font-size:14.5px; color:var(--error-text); font-weight:700;}
+.mistake p{margin:0 0 4px; font-size:14px; color:var(--text);}
+.mistake .fix{color:var(--success-text); font-weight:600;}
+
+/* Ringkasan */
+.summary-list{margin:0; padding-left:0; list-style:none;}
+.summary-list li{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  margin-bottom:14px;
+  font-size:14.5px;
+}
+.summary-num{
+  flex:0 0 auto;
+  width:26px; height:26px;
+  border-radius:50%;
+  background:var(--primary);
+  color:#fff;
+  font-weight:800;
+  font-size:13px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* Refleksi */
+.reflect-row{margin-bottom:18px;}
+.reflect-row label{font-weight:600; font-size:14.5px; display:block; margin-bottom:8px;}
+.reflect-row textarea{
+  width:100%;
+  min-height:90px;
+  padding:12px 13px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  font-family:inherit;
+  font-size:14.5px;
+  resize:vertical;
+  color:var(--text);
+}
+.reflect-row textarea:focus{outline:2px solid var(--primary); outline-offset:1px;}
+
+/* Footer */
+footer{
+  margin-top:50px;
+  text-align:center;
+  padding:24px 18px 40px;
+  border-top:1px solid var(--border);
+}
+footer p{
+  margin:2px 0;
+  font-size:12.5px;
+  color:var(--text-secondary);
+}
+footer .brand{font-weight:800; color:var(--primary); font-size:14px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA <span>·</span> Metode Gabungan (SPLDV)</div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section id="sec-header">
+    <div class="card">
+      <span class="eyebrow">Modul Interaktif Numera</span>
+      <h1>Metode Gabungan (SPLDV)</h1>
+      <p class="muted">Cara paling cepat menyelesaikan Sistem Persamaan Linear Dua Variabel: gabungan eliminasi lalu substitusi.</p>
+
+      <div class="header-meta">
+        <span class="meta-chip">⏱️ 15–20 menit</span>
+        <span class="meta-chip">🎯 4 tujuan belajar</span>
+      </div>
+
+      <h3 style="margin-top:18px;">Setelah belajar ini, kamu akan bisa:</h3>
+      <ul class="goals">
+        <li>Menjelaskan kenapa metode gabungan lebih efisien daripada substitusi murni atau eliminasi murni.</li>
+        <li>Menghilangkan salah satu variabel dengan menyamakan koefisien, lengkap dengan aturan tandanya.</li>
+        <li>Mensubstitusi hasil eliminasi kembali ke salah satu persamaan untuk menemukan variabel kedua.</li>
+        <li>Mengenali kondisi khusus ketika sistem tidak punya solusi tunggal.</li>
+      </ul>
+
+      <div class="identity-box">
+        <p class="id-title">🧑‍🎓 Identitas Siswa</p>
+        <div class="id-row">
+          <label for="namaSiswa">Nama Lengkap</label>
+          <input type="text" id="namaSiswa" placeholder="Tulis namamu di sini">
+        </div>
+        <div class="id-row">
+          <label for="kelasSiswa">Kelas</label>
+          <input type="text" id="kelasSiswa" placeholder="Contoh: X-1">
+        </div>
+        <p class="id-note">Isi dulu ya, biar jawaban Challenge dan Refleksimu bisa dikirim ke gurumu.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR? -->
+  <section id="sec-hook" class="fade-up">
+    <h2>Pernahkah kamu berpikir?</h2>
+    <div class="context-box">
+      <p>Bayangkan kamu dan temanmu beli jajan bareng.</p>
+      <p>Kamu beli <strong>2 bakso + 1 es teh</strong>, totalnya <strong>Rp16.000</strong>.</p>
+      <p>Temanmu beli <strong>1 bakso + 1 es teh</strong>, totalnya <strong>Rp10.000</strong>.</p>
+      <p>Sekarang kamu penasaran: sebenarnya <strong>satu bakso berapa</strong>, dan <strong>satu es teh berapa</strong>?</p>
+      <p>Cuma dari dua kalimat itu saja, ternyata kamu bisa mencari harga masing-masing — tanpa harus nanya ke penjualnya. 😄</p>
+      <p><strong>Nah, itulah yang akan kita pelajari sekarang: cara mencari dua harga (dua variabel) dari dua informasi (dua persamaan), dengan cara yang paling cepat.</strong></p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section id="sec-explain" class="fade-up">
+    <div class="card">
+      <h2>Penjelasan Sederhana</h2>
+
+      <h3>Apa itu SPLDV?</h3>
+      <p>SPLDV artinya <strong>Sistem Persamaan Linear Dua Variabel</strong>. Nama panjangnya begitu, tapi maksudnya sederhana: ada <strong>dua persamaan</strong>, dan di dalamnya ada <strong>dua huruf yang belum diketahui</strong> — biasanya kita tulis x dan y.</p>
+      <p>Contoh soal bakso tadi, kalau ditulis dengan huruf, bentuknya jadi begini:</p>
+      <p style="text-align:center; font-weight:700; margin:14px 0;">2x + y = 16.000 <br>x + y = 10.000</p>
+      <p>Tugas kita: cari nilai x dan y yang <strong>sama-sama cocok</strong> untuk kedua persamaan itu.</p>
+
+      <h3>Kenapa perlu Metode Gabungan?</h3>
+      <p>Kamu mungkin sudah pernah belajar dua cara menyelesaikan SPLDV: <strong>substitusi</strong> (mengganti satu variabel dengan bentuk variabel lain) dan <strong>eliminasi</strong> (menghilangkan satu variabel dengan menjumlah atau mengurangkan persamaan).</p>
+      <p>Keduanya benar. Tapi kalau dipakai sendiri-sendiri, kadang jadi ribet. Substitusi murni bisa membuat pecahan yang berantakan di tengah jalan. Eliminasi murni kadang butuh dua kali proses eliminasi yang agak panjang.</p>
+      <p>Makanya, para matematikawan (dan gurumu) biasanya memakai <mark>Metode Gabungan</mark>: pakai eliminasi untuk bagian yang eliminasi lebih jago, lalu pakai substitusi untuk bagian yang substitusi lebih jago. Hasilnya, jalannya jadi jauh lebih pendek.</p>
+
+      <h3>Ide Inti Metode Gabungan</h3>
+      <p>Ide gabungan sebenarnya cuma dua langkah besar:</p>
+      <p><strong>Langkah 1 — Eliminasi:</strong> hilangkan salah satu variabel (misalnya y) supaya tersisa satu persamaan dengan satu variabel (x saja). Dari situ, x bisa langsung dihitung.</p>
+      <p><strong>Langkah 2 — Substitusi:</strong> nilai x yang sudah ketemu tadi, masukkan (substitusi) ke salah satu persamaan awal, untuk mencari y.</p>
+      <p>Sampai sini masih masuk akal? Intinya: <strong>eliminasi dulu untuk cari variabel pertama, substitusi untuk cari variabel kedua.</strong> Itu saja.</p>
+
+      <h3>Cara Menghilangkan Variabel (Eliminasi)</h3>
+      <p>Supaya sebuah variabel bisa "hilang" saat dua persamaan dijumlahkan atau dikurangkan, <strong>koefisiennya harus sama besar</strong> (boleh beda tanda, boleh sama tanda).</p>
+      <p>Kalau koefisiennya belum sama, kita kalikan salah satu (atau kedua) persamaan dengan angka tertentu, supaya jadi sama. Ingat: <strong>kalikan SELURUH persamaan</strong>, bukan cuma satu suku saja.</p>
+      <p>Setelah koefisiennya sama besar, perhatikan tandanya:</p>
+      <p>• Kalau <strong>tandanya sama</strong> (sama-sama positif atau sama-sama negatif) → <strong>kurangkan</strong> kedua persamaan.</p>
+      <p>• Kalau <strong>tandanya beda</strong> (satu positif, satu negatif) → <strong>jumlahkan</strong> kedua persamaan.</p>
+      <p>Aturan ini yang paling sering bikin siswa keliru, jadi nanti kita latihan pelan-pelan di bagian "Coba Sendiri" dan "Kesalahan yang Sering Terjadi".</p>
+
+      <h3>Substitusi Balik untuk Variabel Kedua</h3>
+      <p>Setelah satu variabel ketemu (misalnya x = 2), jangan berhenti di situ! Banyak siswa lupa langkah ini.</p>
+      <p>Masukkan nilai x itu ke <strong>salah satu persamaan awal</strong> (pilih yang paling sederhana bentuknya), lalu selesaikan seperti persamaan satu variabel biasa untuk mendapatkan y.</p>
+      <p>Terakhir, boleh dicek dengan memasukkan x dan y ke persamaan yang <strong>belum</strong> dipakai untuk substitusi. Kalau hasilnya cocok, jawabanmu benar.</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section id="sec-howitworks" class="fade-up">
+    <div class="card">
+      <h2>Lihat Cara Kerjanya</h2>
+      <p class="muted">Ikuti langkah demi langkah menyelesaikan satu contoh SPLDV dengan metode gabungan. Tekan <strong>Lanjut</strong> untuk lihat langkah berikutnya.</p>
+
+      <div class="stepper-box">
+        <div class="stepper-system">3x + 2y = 12 &nbsp;&nbsp;|&nbsp;&nbsp; 2x − y = 1</div>
+        <div class="step-content" id="stepContent"></div>
+        <div class="step-dots" id="stepDots"></div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="prevStep" onclick="changeStep(-1)">← Sebelumnya</button>
+          <button class="btn btn-primary" id="nextStep" onclick="changeStep(1)">Lanjut →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section id="sec-try" class="fade-up">
+    <div class="card">
+      <h2>Coba Sendiri</h2>
+      <p class="muted">Ubah-ubah angka pada dua persamaan di bawah. Perhatikan bagaimana grafik dan solusinya ikut berubah secara langsung.</p>
+
+      <div class="sim-grid">
+        <div>
+          <div class="eq-inputs">
+            <div class="eq-row">
+              <input type="number" id="a1" value="3"><span>x +</span>
+              <input type="number" id="b1" value="2"><span>y =</span>
+              <input type="number" id="c1" value="12">
+            </div>
+            <div class="eq-row eq2">
+              <input type="number" id="a2" value="2"><span>x +</span>
+              <input type="number" id="b2" value="-1"><span>y =</span>
+              <input type="number" id="c2" value="1">
+            </div>
+            <p class="eq-legend">🔵 Garis Persamaan 1 &nbsp;&nbsp; 🟠 Garis Persamaan 2</p>
+            <p class="eq-legend">Coba geser angka <strong>b2</strong> sampai kedua garis jadi sejajar. Apa yang terjadi pada solusinya?</p>
+          </div>
+          <div class="solution-box" id="solutionBox">Solusi: x = 2, y = 3</div>
+          <div class="insight-box" id="insightBox"></div>
+        </div>
+        <div class="graph-box">
+          <svg id="graphSvg" viewBox="0 0 320 320" width="280" height="280"></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section id="sec-challenge" class="fade-up">
+    <h2>Challenge</h2>
+    <p class="muted">Kerjakan ketiga soal berikut. Jawabanmu akan otomatis dikirim ke gurumu setiap kali kamu menekan "Cek Jawaban".</p>
+
+    <!-- Soal 1 -->
+    <div class="challenge-card">
+      <span class="badge badge-mudah">MUDAH</span>
+      <p class="q-text">Soal 1. Tentukan nilai x dan y dari sistem berikut dengan metode gabungan:<br><strong>x + y = 7</strong> &nbsp;dan&nbsp; <strong>x − y = 1</strong></p>
+      <div class="answer-row">
+        <label>x =</label><input type="number" id="q1x">
+        <label>y =</label><input type="number" id="q1y">
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal1()">Cek Jawaban</button>
+      <div class="feedback" id="fb1"></div>
+      <div class="send-status" id="status1"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="challenge-card">
+      <span class="badge badge-sedang">SEDANG</span>
+      <p class="q-text">Soal 2. Tentukan nilai x dan y dari sistem berikut:<br><strong>3x − 2y = 4</strong> &nbsp;dan&nbsp; <strong>x + 2y = 12</strong></p>
+      <p class="muted" style="margin-top:-6px;">Perhatikan baik-baik tanda koefisien y sebelum menentukan apakah kamu perlu menjumlahkan atau mengurangkan.</p>
+      <div class="answer-row">
+        <label>x =</label><input type="number" id="q2x">
+        <label>y =</label><input type="number" id="q2y">
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal2()">Cek Jawaban</button>
+      <div class="feedback" id="fb2"></div>
+      <div class="send-status" id="status2"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="challenge-card">
+      <span class="badge badge-sulit">SULIT</span>
+      <p class="q-text">Soal 3. Diberikan sistem persamaan dengan sebuah konstanta m:<br><strong>2x + my = 10</strong> &nbsp;dan&nbsp; <strong>4x + 6y = 20</strong><br>Kalau kamu coba eliminasi variabel x, ternyata variabel y juga ikut hilang untuk suatu nilai m tertentu — artinya sistem punya <strong>tak hingga banyak penyelesaian</strong>. Berapa nilai m tersebut?</p>
+      <div class="answer-row">
+        <label>m =</label><input type="number" id="q3m">
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal3()">Cek Jawaban</button>
+      <div class="feedback" id="fb3"></div>
+      <div class="send-status" id="status3"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section id="sec-mistakes" class="fade-up">
+    <div class="card">
+      <h2>Kesalahan yang Sering Terjadi</h2>
+
+      <div class="mistake">
+        <h4>1. Lupa membalik tanda saat mengurangkan persamaan</h4>
+        <p>Banyak siswa mengurangkan persamaan tapi lupa membalik tanda setiap suku pada persamaan kedua.</p>
+        <p class="fix">✅ Cara menghindarinya: tuliskan dulu tanda operasi (kurang) di depan SETIAP suku persamaan kedua sebelum menyederhanakan, jangan dikerjakan dalam kepala.</p>
+      </div>
+
+      <div class="mistake">
+        <h4>2. Hanya mengalikan satu suku, bukan seluruh persamaan</h4>
+        <p>Saat menyamakan koefisien, siswa kadang cuma mengalikan suku yang mau dihilangkan, dan lupa mengalikan suku lain serta ruas kanan.</p>
+        <p class="fix">✅ Cara menghindarinya: kalikan angka pengali ke SETIAP suku, termasuk angka di ruas kanan tanda "=".</p>
+      </div>
+
+      <div class="mistake">
+        <h4>3. Berhenti setelah menemukan satu variabel</h4>
+        <p>Setelah dapat x, siswa langsung menganggap soal selesai dan lupa mencari y lewat substitusi balik.</p>
+        <p class="fix">✅ Cara menghindarinya: selalu ingat, SPLDV dua variabel butuh DUA jawaban. Kalau baru dapat satu, berarti belum selesai.</p>
+      </div>
+
+      <div class="mistake">
+        <h4>4. Salah memilih variabel yang dieliminasi duluan</h4>
+        <p>Kadang siswa memilih menghilangkan variabel yang koefisiennya lebih rumit, sehingga perhitungan jadi panjang, padahal ada pilihan yang jauh lebih sederhana.</p>
+        <p class="fix">✅ Cara menghindarinya: sebelum mulai, lihat dulu koefisien mana yang paling gampang disamakan (misalnya sudah sama, atau kelipatan sederhana).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section id="sec-summary" class="fade-up">
+    <div class="card">
+      <h2>Ringkasan</h2>
+      <ul class="summary-list">
+        <li><span class="summary-num">1</span><span>SPLDV punya dua persamaan dan dua variabel; Metode Gabungan menyelesaikannya dengan menggabungkan eliminasi dan substitusi.</span></li>
+        <li><span class="summary-num">2</span><span>Eliminasi dipakai lebih dulu: samakan koefisien salah satu variabel, lalu jumlahkan atau kurangkan kedua persamaan supaya variabel itu hilang.</span></li>
+        <li><span class="summary-num">3</span><span>Setelah satu variabel ketemu, substitusikan nilainya ke salah satu persamaan awal untuk mencari variabel kedua.</span></li>
+        <li><span class="summary-num">4</span><span>Perhatikan tanda koefisien: tanda sama → kurangkan, tanda beda → jumlahkan. Ini bagian yang paling sering keliru.</span></li>
+        <li><span class="summary-num">5</span><span>Selalu cek jawaban akhir ke persamaan yang belum dipakai untuk substitusi, supaya yakin jawabannya benar.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section id="sec-reflect" class="fade-up">
+    <div class="card">
+      <h2>Refleksi</h2>
+      <p class="muted">Tidak ada jawaban benar/salah di bagian ini. Tulis saja dengan kata-katamu sendiri.</p>
+
+      <div class="reflect-row">
+        <label for="ref1">1. Kapan sebaiknya kamu pakai Metode Gabungan dibanding metode substitusi saja atau eliminasi saja?</label>
+        <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <div class="reflect-row">
+        <label for="ref2">2. Dari semua langkah Metode Gabungan tadi, bagian mana yang menurutmu paling gampang keliru? Kenapa?</label>
+        <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <button class="btn btn-primary" onclick="kirimRefleksi()">Kirim Refleksi</button>
+      <div class="send-status" id="statusRef"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p class="brand">NUMERA</p>
+  <p>Dikembangkan oleh Kiki Herdiansyah</p>
+  <p>Modul Interaktif · Versi 1.0</p>
+  <p>© 2026 Numera</p>
+</footer>
+
+<script>
+/* ================= KONFIGURASI ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec'; // isi dengan URL Google Apps Script sebelum publish
+const topik = 'Metode Gabungan (SPLDV)';
+
+/* ================= IDENTITAS SISWA ================= */
+function getIdentitas(){
+  return {
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim()
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  if(!id.nama || !id.kelas){
+    alert('Isi dulu Nama dan Kelas di bagian atas modul ya, sebelum mengecek jawaban.');
+    document.getElementById('sec-header').scrollIntoView({behavior:'smooth', block:'start'});
+    return false;
+  }
+  return true;
+}
+
+/* ================= KIRIM KE GURU ================= */
+function kirimKeGuru(nomor, jawaban1, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const statusEl = document.getElementById(statusElId);
+  if(statusEl) statusEl.textContent = 'Mengirim jawaban ke guru...';
+
+  const payload = {
+    topik: topik,
+    nama: id.nama,
+    kelas: id.kelas,
+    nomor: String(nomor),
+    jawaban1: String(jawaban1),
+    jawaban2: String(jawaban2 !== undefined ? jawaban2 : ''),
+    status: String(status),
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  if(!SCRIPT_URL){
+    if(statusEl) statusEl.textContent = 'Catatan: SCRIPT_URL belum diisi guru, jawaban belum benar-benar terkirim.';
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(statusEl) statusEl.textContent = '✓ Jawaban terkirim ke guru pada ' + payload.waktu;
+  }).catch(()=>{
+    if(statusEl) statusEl.textContent = 'Gagal mengirim jawaban. Periksa koneksi internetmu.';
+  });
+}
+
+/* ================= FADE UP ================= */
+const fadeEls = document.querySelectorAll('.fade-up');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, {threshold:0.12});
+fadeEls.forEach(el=>observer.observe(el));
+
+/* ================= PROGRESS BAR ================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressBar').style.width = (isFinite(scrolled)?scrolled:0) + '%';
+});
+
+/* ================= LIHAT CARA KERJANYA ================= */
+const steps = [
+  'Langkah 1 — Pilih variabel yang mau dihilangkan duluan.<br><br>Perhatikan koefisien y pada dua persamaan: <mark>2</mark> dan <mark>−1</mark>. Ini gampang disamakan, jadi kita eliminasi y duluan.',
+  'Langkah 2 — Samakan koefisien y.<br><br>Kalikan seluruh persamaan kedua dengan 2:<br><strong>2 × (2x − y) = 2 × (1) → 4x − 2y = 2</strong><br><br>Sekarang koefisien y di kedua persamaan adalah <mark>2</mark> dan <mark>−2</mark> — tandanya sudah beda, jadi nanti tinggal dijumlahkan.',
+  'Langkah 3 — Jumlahkan kedua persamaan (karena tanda koefisien y berbeda).<br><br>(3x + 2y) + (4x − 2y) = 12 + 2<br><strong>7x = 14</strong><br><strong>x = 2</strong>',
+  'Langkah 4 — Substitusi balik untuk mencari y.<br><br>Masukkan x = 2 ke persamaan kedua (yang paling sederhana):<br>2(2) − y = 1 → 4 − y = 1 → <strong>y = 3</strong><br><br>Jadi solusinya: <strong>x = 2, y = 3</strong>. Coba cek ke persamaan pertama: 3(2)+2(3) = 6+6 = 12 ✓'
+];
+let stepIndex = 0;
+function renderStep(){
+  document.getElementById('stepContent').innerHTML = steps[stepIndex];
+  document.getElementById('prevStep').disabled = stepIndex === 0;
+  document.getElementById('nextStep').textContent = stepIndex === steps.length-1 ? 'Selesai ✓' : 'Lanjut →';
+  document.getElementById('nextStep').disabled = stepIndex === steps.length-1;
+  const dotsWrap = document.getElementById('stepDots');
+  dotsWrap.innerHTML = '';
+  steps.forEach((_, i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===stepIndex ? ' active' : '');
+    dotsWrap.appendChild(d);
+  });
+}
+function changeStep(dir){
+  stepIndex = Math.min(steps.length-1, Math.max(0, stepIndex+dir));
+  renderStep();
+}
+renderStep();
+
+/* ================= COBA SENDIRI: GRAFIK & SOLUSI ================= */
+const SCALE = 14, ORIGIN = 160, RANGE = 11;
+
+function lineToPath(a,b,c,color){
+  let p1, p2;
+  if(Math.abs(b) > 1e-9){
+    const y1 = (c - a*(-RANGE))/b;
+    const y2 = (c - a*(RANGE))/b;
+    p1 = [-RANGE, y1]; p2 = [RANGE, y2];
+  } else if(Math.abs(a) > 1e-9){
+    const x = c/a;
+    p1 = [x, -RANGE]; p2 = [x, RANGE];
+  } else {
+    return '';
+  }
+  const sx1 = ORIGIN + p1[0]*SCALE, sy1 = ORIGIN - p1[1]*SCALE;
+  const sx2 = ORIGIN + p2[0]*SCALE, sy2 = ORIGIN - p2[1]*SCALE;
+  return `<line x1="${sx1}" y1="${sy1}" x2="${sx2}" y2="${sy2}" stroke="${color}" stroke-width="3" stroke-linecap="round"/>`;
+}
+
+function updateGraph(){
+  const a1 = parseFloat(document.getElementById('a1').value)||0;
+  const b1 = parseFloat(document.getElementById('b1').value)||0;
+  const c1 = parseFloat(document.getElementById('c1').value)||0;
+  const a2 = parseFloat(document.getElementById('a2').value)||0;
+  const b2 = parseFloat(document.getElementById('b2').value)||0;
+  const c2 = parseFloat(document.getElementById('c2').value)||0;
+
+  let svg = '';
+  // grid + axes
+  for(let i=-RANGE; i<=RANGE; i++){
+    const pos = ORIGIN + i*SCALE;
+    svg += `<line x1="0" y1="${pos}" x2="320" y2="${pos}" stroke="#E2E8F0" stroke-width="1"/>`;
+    svg += `<line x1="${pos}" y1="0" x2="${pos}" y2="320" stroke="#E2E8F0" stroke-width="1"/>`;
+  }
+  svg += `<line x1="0" y1="${ORIGIN}" x2="320" y2="${ORIGIN}" stroke="#94A3B8" stroke-width="1.5"/>`;
+  svg += `<line x1="${ORIGIN}" y1="0" x2="${ORIGIN}" y2="320" stroke="#94A3B8" stroke-width="1.5"/>`;
+
+  svg += lineToPath(a1,b1,c1,'#2563EB');
+  svg += lineToPath(a2,b2,c2,'#F59E0B');
+
+  const det = a1*b2 - a2*b1;
+  const solutionBox = document.getElementById('solutionBox');
+  const insightBox = document.getElementById('insightBox');
+
+  if(Math.abs(det) < 1e-6){
+    solutionBox.className = 'solution-box warn';
+    solutionBox.textContent = 'Kedua garis sejajar — sistem tidak punya satu solusi tunggal.';
+    insightBox.className = 'insight-box show';
+    insightBox.innerHTML = '💡 Perhatikan! Ketika hasil kali silang koefisiennya sama, garisnya jadi sejajar dan sistem tidak punya solusi tunggal — persis seperti yang akan kamu temui di Challenge nomor 3.';
+  } else {
+    const x = (c1*b2 - c2*b1)/det;
+    const y = (a1*c2 - a2*c1)/det;
+    solutionBox.className = 'solution-box';
+    solutionBox.textContent = `Solusi: x = ${round2(x)}, y = ${round2(y)}`;
+    insightBox.className = 'insight-box';
+    const sx = ORIGIN + x*SCALE, sy = ORIGIN - y*SCALE;
+    if(sx > -20 && sx < 340 && sy > -20 && sy < 340){
+      svg += `<circle cx="${sx}" cy="${sy}" r="6" fill="#10B981" stroke="#fff" stroke-width="2"/>`;
+    }
+  }
+
+  document.getElementById('graphSvg').innerHTML = svg;
+}
+function round2(n){
+  return Math.round(n*100)/100;
+}
+['a1','b1','c1','a2','b2','c2'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateGraph);
+});
+updateGraph();
+
+/* ================= CHALLENGE ================= */
+function tampilkanFeedback(elId, benar, htmlBenar, htmlSalah){
+  const el = document.getElementById(elId);
+  el.className = 'feedback show ' + (benar ? 'correct' : 'wrong');
+  el.innerHTML = benar ? htmlBenar : htmlSalah;
+}
+
+function cekSoal1(){
+  if(!identitasLengkap()) return;
+  const x = parseFloat(document.getElementById('q1x').value);
+  const y = parseFloat(document.getElementById('q1y').value);
+  const benar = (x===4 && y===3);
+  tampilkanFeedback('fb1', benar,
+    '✓ Betul! x = 4, y = 3. Eliminasi x + y = 7 dan x − y = 1 (kurangkan, karena tanda x sama) → 2y = 6 → y = 3, lalu substitusi ke x+y=7 → x=4.',
+    '✗ Belum tepat. Coba eliminasi dulu: karena koefisien x sama-sama 1 (tanda sama), kurangkan kedua persamaan untuk menghilangkan x, lalu cari y duluan, baru substitusi balik untuk mencari x.'
+  );
+  const status = benar ? 'Benar' : 'Salah';
+  kirimKeGuru(1, `x=${x}, y=${y}`, '', status, 'status1');
+}
+
+function cekSoal2(){
+  if(!identitasLengkap()) return;
+  const x = parseFloat(document.getElementById('q2x').value);
+  const y = parseFloat(document.getElementById('q2y').value);
+  const benar = (x===4 && y===4);
+  tampilkanFeedback('fb2', benar,
+    '✓ Betul! x = 4, y = 4. Koefisien y sudah −2 dan +2 (tanda berbeda), jadi langsung dijumlahkan: 4x = 16 → x = 4, lalu substitusi ke x+2y=12 → y=4.',
+    '✗ Belum tepat. Perhatikan tanda koefisien y: pada persamaan pertama −2y, pada persamaan kedua +2y. Karena tandanya BERBEDA, kamu harus MENJUMLAHKAN kedua persamaan, bukan mengurangkan. Kalau kamu mengurangkan, y tidak akan hilang.'
+  );
+  const status = benar ? 'Benar' : 'Salah';
+  kirimKeGuru(2, `x=${x}, y=${y}`, '', status, 'status2');
+}
+
+function cekSoal3(){
+  if(!identitasLengkap()) return;
+  const m = parseFloat(document.getElementById('q3m').value);
+  const benar = (m===3);
+  tampilkanFeedback('fb3', benar,
+    '✓ Betul! m = 3. Kalikan persamaan pertama dengan 2: 4x + 2my = 20. Supaya x hilang saat dikurangkan dengan 4x+6y=20, dibutuhkan 2m = 6, jadi m = 3. Saat m=3, kedua persamaan sebenarnya persis sama (kelipatan), makanya solusinya tak hingga.',
+    '✗ Belum tepat. Coba kalikan persamaan pertama dengan 2 supaya koefisien x sama (4x), yaitu 4x + 2my = 20. Supaya y JUGA ikut hilang seperti x, koefisien y harus sama juga: 2m harus sama dengan 6. Dari situ, cari nilai m.'
+  );
+  const status = benar ? 'Benar' : 'Salah';
+  kirimKeGuru(3, `m=${m}`, '', status, 'status3');
+}
+
+/* ================= REFLEKSI ================= */
+function kirimRefleksi(){
+  if(!identitasLengkap()) return;
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  const statusEl = document.getElementById('statusRef');
+  if(!r1 || !r2){
+    statusEl.textContent = 'Isi dulu kedua kolom refleksi sebelum dikirim ya.';
+    return;
+  }
+  kirimKeGuru('Refleksi', r1, r2, '-', 'statusRef');
+}
+</script>
+</body>
+</html>

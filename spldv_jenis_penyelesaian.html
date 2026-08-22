@@ -1,0 +1,867 @@
+<!--
+  NUMERA
+  Judul: Jenis-Jenis Penyelesaian SPLDV
+  Jenis Halaman: Modul Interaktif
+  Versi: 1.0
+  Dikembangkan oleh: Kiki Herdiansyah
+  Copyright © 2026 Numera. Seluruh hak cipta dilindungi.
+  Identitas Proyek: Numera - Media Belajar Matematika Interaktif (s.id/cakram)
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Jenis-Jenis Penyelesaian SPLDV — Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Numera. Dikembangkan oleh Kiki Herdiansyah.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --success-text:#047857;
+
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --warning-text:#B45309;
+
+  --error:#EF4444;
+  --error-bg:#FEE2E2;
+  --error-border:#FECACA;
+  --error-text:#B91C1C;
+
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 18px 60px;
+}
+img,svg{max-width:100%;}
+
+/* Topbar */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topbar-inner{
+  max-width:900px;
+  margin:0 auto;
+  padding:14px 18px;
+  font-weight:700;
+  font-size:14px;
+  letter-spacing:.2px;
+  color:var(--text);
+}
+.topbar-inner span{color:var(--primary);}
+.progress-track{
+  height:3px;
+  width:100%;
+  background:var(--border);
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:var(--primary);
+  transition:width .1s linear;
+}
+
+/* Sections */
+section{margin-top:34px;}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  padding:26px 22px;
+}
+.fade-up{
+  opacity:0;
+  transform:translateY(16px);
+  transition:opacity .55s ease, transform .55s ease;
+}
+.fade-up.visible{opacity:1; transform:translateY(0);}
+
+.eyebrow{
+  display:inline-block;
+  font-size:12px;
+  font-weight:700;
+  color:var(--primary);
+  background:var(--primary-light);
+  padding:4px 10px;
+  border-radius:999px;
+  margin-bottom:10px;
+  letter-spacing:.3px;
+}
+h1{font-size:26px; font-weight:800; margin:6px 0 8px; line-height:1.3;}
+h2{font-size:20px; font-weight:800; margin:0 0 14px;}
+h3{font-size:16px; font-weight:700; margin:22px 0 8px; color:var(--text);}
+h3:first-of-type{margin-top:0;}
+p{margin:0 0 12px; font-size:15px; color:var(--text);}
+.muted{color:var(--text-secondary); font-size:14px;}
+strong{font-weight:700;}
+mark{
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  padding:1px 5px;
+  border-radius:6px;
+  font-weight:600;
+}
+
+/* Header specifics */
+.header-meta{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 18px;}
+.meta-chip{
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  font-size:13px;
+  font-weight:600;
+  padding:6px 12px;
+  border-radius:999px;
+}
+.goals{margin:0; padding-left:18px;}
+.goals li{margin-bottom:6px; font-size:14.5px;}
+
+.identity-box{
+  margin-top:20px;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+}
+.identity-box p.id-title{font-weight:700; margin-bottom:12px; font-size:14.5px;}
+.id-row{margin-bottom:12px;}
+.id-row label{display:block; font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:5px;}
+.id-row input{
+  width:100%;
+  padding:11px 13px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-family:inherit;
+  font-size:15px;
+  background:var(--card);
+  color:var(--text);
+}
+.id-row input:focus{outline:2px solid var(--primary); outline-offset:1px;}
+.id-note{font-size:12.5px; color:var(--text-secondary); margin:6px 0 0;}
+
+/* Buttons */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-height:40px;
+  padding:0 18px;
+  border-radius:var(--radius-btn);
+  border:none;
+  font-family:inherit;
+  font-weight:600;
+  font-size:14.5px;
+  cursor:pointer;
+  transition:background .2s ease, transform .1s ease, opacity .2s ease;
+}
+.btn-primary{background:var(--primary); color:#fff;}
+.btn-primary:hover{background:var(--primary-hover);}
+.btn-primary:active{transform:scale(.98);}
+.btn-secondary{background:var(--primary-light); color:var(--primary-hover);}
+.btn-secondary:hover{background:#c7dcfb;}
+.btn:disabled{opacity:.45; cursor:not-allowed;}
+.btn-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+
+/* Konteks pembuka */
+.context-box{
+  background:linear-gradient(135deg, var(--primary-light), #eef4ff);
+  border-radius:14px;
+  padding:20px;
+  border:1px solid var(--primary-light);
+}
+
+/* Stepper */
+.stepper-box{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px;
+}
+.stepper-system{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  font-weight:700;
+  font-size:15px;
+  text-align:center;
+  margin-bottom:14px;
+}
+.step-content{min-height:130px; font-size:15px;}
+.step-dots{display:flex; gap:7px; justify-content:center; margin-top:16px;}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--border); transition:background .2s ease, transform .2s ease;}
+.dot.active{background:var(--primary); transform:scale(1.25);}
+
+/* Coba sendiri */
+.sim-grid{display:grid; grid-template-columns:1fr; gap:20px;}
+@media(min-width:640px){.sim-grid{grid-template-columns:1fr 1fr;}}
+.eq-inputs{background:var(--bg); border-radius:14px; padding:16px; border:1px solid var(--border);}
+.eq-row{display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-weight:700; font-size:15px; margin-bottom:12px;}
+.eq-row input{
+  width:56px; padding:8px 6px; text-align:center;
+  border-radius:8px; border:1px solid var(--border);
+  font-family:inherit; font-weight:700; font-size:15px;
+}
+.eq-row input:focus{outline:2px solid var(--primary); outline-offset:1px;}
+.eq-row.eq2 input{border-color:var(--warning);}
+.eq-legend{font-size:12.5px; color:var(--text-secondary); margin-top:2px;}
+
+.ratio-table{
+  margin-top:14px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14px;
+}
+.ratio-table div{display:flex; justify-content:space-between; padding:4px 0;}
+.ratio-table .val{font-weight:700;}
+
+.classify-badge{
+  margin-top:14px;
+  border-radius:12px;
+  padding:13px 15px;
+  font-weight:700;
+  font-size:15px;
+}
+.classify-berpotongan{background:var(--success-bg); border:1px solid var(--success-border); color:var(--success-text);}
+.classify-sejajar{background:var(--error-bg); border:1px solid var(--error-border); color:var(--error-text);}
+.classify-berhimpit{background:var(--warning-bg); border:1px solid #FDE68A; color:var(--warning-text);}
+
+.graph-box{
+  background:var(--bg);
+  border-radius:14px;
+  border:1px solid var(--border);
+  padding:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.insight-box{
+  margin-top:14px;
+  background:var(--primary-light);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:14px;
+  color:var(--primary-hover);
+  font-weight:600;
+  display:none;
+}
+.insight-box.show{display:block;}
+
+
+/* Challenge */
+.challenge-card{border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:18px; background:var(--card);}
+.badge{display:inline-block; font-size:11.5px; font-weight:800; letter-spacing:.4px; padding:5px 11px; border-radius:999px; margin-bottom:10px;}
+.badge-mudah{background:var(--success-bg); color:var(--success-text);}
+.badge-sedang{background:var(--warning-bg); color:var(--warning-text);}
+.badge-sulit{background:var(--error-bg); color:var(--error-text);}
+.q-text{font-size:15px; font-weight:600; margin-bottom:14px;}
+.answer-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:6px;}
+.answer-row label{font-size:14px; font-weight:600; color:var(--text-secondary);}
+.answer-row input{
+  width:90px; padding:9px 10px; border-radius:10px; border:1px solid var(--border);
+  font-family:inherit; font-size:15px; text-align:center;
+}
+.answer-row input:focus{outline:2px solid var(--primary); outline-offset:1px;}
+.answer-row select{
+  padding:9px 10px; border-radius:10px; border:1px solid var(--border);
+  font-family:inherit; font-size:14.5px; background:var(--card); color:var(--text);
+}
+.answer-row select:focus{outline:2px solid var(--primary); outline-offset:1px;}
+.feedback{margin-top:12px; padding:12px 14px; border-radius:12px; font-size:14px; display:none;}
+.feedback.show{display:block;}
+.feedback.correct{background:var(--success-bg); border:1px solid var(--success-border); color:var(--success-text);}
+.feedback.wrong{background:var(--error-bg); border:1px solid var(--error-border); color:var(--error-text);}
+.send-status{font-size:12.5px; color:var(--text-secondary); margin-top:8px; min-height:16px;}
+
+/* Kesalahan umum */
+.mistake{border-left:3px solid var(--error); background:var(--error-bg); border-radius:0 12px 12px 0; padding:14px 16px; margin-bottom:14px;}
+.mistake h4{margin:0 0 6px; font-size:14.5px; color:var(--error-text); font-weight:700;}
+.mistake p{margin:0 0 4px; font-size:14px; color:var(--text);}
+.mistake .fix{color:var(--success-text); font-weight:600;}
+
+/* Ringkasan */
+.summary-list{margin:0; padding-left:0; list-style:none;}
+.summary-list li{display:flex; gap:12px; align-items:flex-start; margin-bottom:14px; font-size:14.5px;}
+.summary-num{
+  flex:0 0 auto; width:26px; height:26px; border-radius:50%;
+  background:var(--primary); color:#fff; font-weight:800; font-size:13px;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* Refleksi */
+.reflect-row{margin-bottom:18px;}
+.reflect-row label{font-weight:600; font-size:14.5px; display:block; margin-bottom:8px;}
+.reflect-row textarea{
+  width:100%; min-height:90px; padding:12px 13px; border-radius:12px;
+  border:1px solid var(--border); font-family:inherit; font-size:14.5px;
+  resize:vertical; color:var(--text);
+}
+.reflect-row textarea:focus{outline:2px solid var(--primary); outline-offset:1px;}
+
+/* Footer */
+footer{margin-top:50px; text-align:center; padding:24px 18px 40px; border-top:1px solid var(--border);}
+footer p{margin:2px 0; font-size:12.5px; color:var(--text-secondary);}
+footer .brand{font-weight:800; color:var(--primary); font-size:14px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA <span>·</span> Jenis-Jenis Penyelesaian SPLDV</div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <section id="sec-header">
+    <div class="card">
+      <span class="eyebrow">Modul Interaktif Numera</span>
+      <h1>Jenis-Jenis Penyelesaian SPLDV</h1>
+      <p class="muted">Kenapa ada sistem persamaan yang punya satu jawaban, ada yang enggak punya jawaban sama sekali, dan ada yang jawabannya tak terhingga? Yuk cari tahu lewat grafik.</p>
+
+      <div class="header-meta">
+        <span class="meta-chip">⏱️ 15–20 menit</span>
+        <span class="meta-chip">🎯 4 tujuan belajar</span>
+      </div>
+
+      <h3 style="margin-top:18px;">Setelah belajar ini, kamu akan bisa:</h3>
+      <ul class="goals">
+        <li>Menjelaskan tiga jenis penyelesaian SPLDV: berpotongan, sejajar, dan berhimpit.</li>
+        <li>Mengenali ciri masing-masing jenis lewat bentuk grafiknya.</li>
+        <li>Menentukan jenis penyelesaian dari koefisien persamaan, tanpa harus menggambar grafik.</li>
+        <li>Menjelaskan hubungan antara gradien (kemiringan) dua garis dengan jenis penyelesaian yang terbentuk.</li>
+      </ul>
+
+      <div class="identity-box">
+        <p class="id-title">🧑‍🎓 Identitas Siswa</p>
+        <div class="id-row">
+          <label for="namaSiswa">Nama Lengkap</label>
+          <input type="text" id="namaSiswa" placeholder="Tulis namamu di sini">
+        </div>
+        <div class="id-row">
+          <label for="kelasSiswa">Kelas</label>
+          <input type="text" id="kelasSiswa" placeholder="Contoh: X-1">
+        </div>
+        <p class="id-note">Isi dulu ya, biar jawaban Challenge dan Refleksimu bisa dikirim ke gurumu.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR? -->
+  <section id="sec-hook" class="fade-up">
+    <h2>Pernahkah kamu berpikir?</h2>
+    <div class="context-box">
+      <p>Pernah lihat dua jalan yang bertemu di satu persimpangan? Di situ, cuma ada <strong>satu titik</strong> tempat kedua jalan itu ketemu.</p>
+      <p>Sekarang bandingkan dengan <strong>rel kereta api</strong>. Dua relnya sejajar terus, sepanjang apa pun kamu ikuti — enggak akan pernah ketemu sama sekali.</p>
+      <p>Nah, ada juga situasi lain: dua jalan yang sebenarnya adalah <strong>jalan yang sama persis</strong>, cuma disebut dengan nama berbeda di peta.</p>
+      <p>Ternyata, tiga situasi itu — bertemu di satu titik, sejajar tanpa pernah ketemu, dan jalan yang sama persis — juga terjadi pada dua persamaan garis dalam SPLDV. Dan masing-masing punya arti yang berbeda untuk penyelesaiannya!</p>
+    </div>
+  </section>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <section id="sec-explain" class="fade-up">
+    <div class="card">
+      <h2>Penjelasan Sederhana</h2>
+
+      <h3>Solusi SPLDV = Titik Potong Dua Garis</h3>
+      <p>Setiap persamaan seperti <strong>ax + by = c</strong> itu sebenarnya kalau digambar, bentuknya adalah sebuah <strong>garis lurus</strong>.</p>
+      <p>Karena SPLDV punya dua persamaan, artinya kita punya <strong>dua garis</strong> sekaligus di satu bidang gambar. Nilai x dan y yang jadi solusi SPLDV adalah <mark>titik tempat kedua garis itu bertemu</mark>.</p>
+      <p>Sampai sini masih masuk akal? Nah, pertanyaannya: dua garis itu selalu bertemu di satu titik saja, atau bisa jadi lain?</p>
+
+      <h3>Jenis 1: Berpotongan di Satu Titik (Solusi Tunggal)</h3>
+      <p>Ini yang paling sering kamu temui. Dua garis saling menyilang, seperti dua jalan di persimpangan tadi. Mereka bertemu tepat di <strong>satu titik</strong>.</p>
+      <p>Karena cuma ada satu titik pertemuan, artinya SPLDV ini <strong>punya tepat satu solusi (x, y)</strong>. Inilah jenis yang biasa kamu selesaikan dengan substitusi atau eliminasi.</p>
+
+      <h3>Jenis 2: Sejajar (Tidak Ada Solusi)</h3>
+      <p>Kadang dua garis punya <strong>kemiringan (gradien) yang sama persis</strong>, tapi posisinya berbeda — seperti dua rel kereta. Keduanya berjalan ke arah yang sama, tapi enggak akan pernah bersinggungan.</p>
+      <p>Karena enggak pernah bertemu, artinya SPLDV ini <strong>tidak punya solusi sama sekali</strong>. Bukan berarti soalnya salah — ini memang jenis jawaban yang valid dalam matematika!</p>
+
+      <h3>Jenis 3: Berhimpit (Tak Hingga Banyak Solusi)</h3>
+      <p>Ini yang paling jarang disadari siswa. Kadang dua persamaan yang kelihatannya berbeda, kalau digambar, ternyata jadi <strong>garis yang sama persis</strong> — cuma ditulis dengan bentuk berbeda.</p>
+      <p>Karena garisnya berimpit sempurna, <strong>setiap titik di garis itu jadi solusi</strong>. Itu artinya SPLDV ini punya <strong>tak hingga banyak solusi</strong>.</p>
+
+      <h3>Cara Mengetahui Jenis Penyelesaian Tanpa Menggambar Grafik</h3>
+      <p>Menggambar grafik itu makan waktu. Untungnya, kita bisa tahu jenis penyelesaiannya cuma dengan membandingkan koefisien dua persamaan berbentuk <strong>a₁x + b₁y = c₁</strong> dan <strong>a₂x + b₂y = c₂</strong>.</p>
+      <p>Caranya, bandingkan tiga rasio ini: <strong>a₁/a₂</strong>, <strong>b₁/b₂</strong>, dan <strong>c₁/c₂</strong>.</p>
+      <p>• Kalau <strong>a₁/a₂ ≠ b₁/b₂</strong> → dua garis pasti <mark>berpotongan</mark> (solusi tunggal).</p>
+      <p>• Kalau <strong>a₁/a₂ = b₁/b₂</strong> tapi <strong>≠ c₁/c₂</strong> → dua garis <mark>sejajar</mark> (tidak ada solusi).</p>
+      <p>• Kalau <strong>a₁/a₂ = b₁/b₂ = c₁/c₂</strong> → dua garis <mark>berhimpit</mark> (tak hingga solusi).</p>
+      <p>Kenapa begini? Karena a₁/a₂ = b₁/b₂ itu sebenarnya tanda bahwa <strong>gradien kedua garis sama</strong> — makanya sejajar atau berhimpit. Rasio c yang menentukan apakah posisinya sama (berhimpit) atau cuma sejajar geser (sejajar biasa).</p>
+    </div>
+  </section>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <section id="sec-howitworks" class="fade-up">
+    <div class="card">
+      <h2>Lihat Cara Kerjanya</h2>
+      <p class="muted">Ikuti langkah demi langkah menentukan jenis penyelesaian sebuah SPLDV, tanpa menggambar grafik. Tekan <strong>Lanjut</strong> untuk lihat langkah berikutnya.</p>
+
+      <div class="stepper-box">
+        <div class="stepper-system">2x + y = 4 &nbsp;&nbsp;|&nbsp;&nbsp; 4x + 2y = 8</div>
+        <div class="step-content" id="stepContent"></div>
+        <div class="step-dots" id="stepDots"></div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" id="prevStep" onclick="changeStep(-1)">← Sebelumnya</button>
+          <button class="btn btn-primary" id="nextStep" onclick="changeStep(1)">Lanjut →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. COBA SENDIRI -->
+  <section id="sec-try" class="fade-up">
+    <div class="card">
+      <h2>Coba Sendiri</h2>
+      <p class="muted">Ubah-ubah angka pada dua persamaan di bawah. Perhatikan bagaimana grafik, rasio koefisien, dan jenis penyelesaiannya berubah secara langsung.</p>
+
+      <div class="sim-grid">
+        <div>
+          <div class="eq-inputs">
+            <div class="eq-row">
+              <input type="number" id="a1" value="1"><span>x +</span>
+              <input type="number" id="b1" value="1"><span>y =</span>
+              <input type="number" id="c1" value="5">
+            </div>
+            <div class="eq-row eq2">
+              <input type="number" id="a2" value="1"><span>x +</span>
+              <input type="number" id="b2" value="-1"><span>y =</span>
+              <input type="number" id="c2" value="1">
+            </div>
+            <p class="eq-legend">🔵 Garis Persamaan 1 &nbsp;&nbsp; 🟠 Garis Persamaan 2</p>
+            <p class="eq-legend">Coba ubah persamaan kedua jadi <strong>2x + 2y = 10</strong>. Apa yang terjadi pada grafik dan jenisnya?</p>
+          </div>
+          <div class="ratio-table">
+            <div><span>a₁/a₂</span><span class="val" id="ratioA">–</span></div>
+            <div><span>b₁/b₂</span><span class="val" id="ratioB">–</span></div>
+            <div><span>c₁/c₂</span><span class="val" id="ratioC">–</span></div>
+          </div>
+          <div class="classify-badge" id="classifyBadge">Berpotongan — Solusi Tunggal</div>
+          <div class="insight-box" id="insightBox"></div>
+        </div>
+        <div class="graph-box">
+          <svg id="graphSvg" viewBox="0 0 320 320" width="280" height="280"></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. CHALLENGE -->
+  <section id="sec-challenge" class="fade-up">
+    <h2>Challenge</h2>
+    <p class="muted">Kerjakan ketiga soal berikut. Jawabanmu akan otomatis dikirim ke gurumu setiap kali kamu menekan "Cek Jawaban".</p>
+
+    <!-- Soal 1 -->
+    <div class="challenge-card">
+      <span class="badge badge-mudah">MUDAH</span>
+      <p class="q-text">Soal 1. Perhatikan sistem berikut:<br><strong>x + y = 5</strong> &nbsp;dan&nbsp; <strong>x − y = 1</strong><br>Termasuk jenis penyelesaian apa sistem ini?</p>
+      <div class="answer-row">
+        <label>Jenis:</label>
+        <select id="q1jenis">
+          <option value="">— Pilih —</option>
+          <option value="berpotongan">Berpotongan (solusi tunggal)</option>
+          <option value="sejajar">Sejajar (tidak ada solusi)</option>
+          <option value="berhimpit">Berhimpit (tak hingga solusi)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal1()">Cek Jawaban</button>
+      <div class="feedback" id="fb1"></div>
+      <div class="send-status" id="status1"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="challenge-card">
+      <span class="badge badge-sedang">SEDANG</span>
+      <p class="q-text">Soal 2. Perhatikan sistem berikut:<br><strong>−2x + 4y = 8</strong> &nbsp;dan&nbsp; <strong>x − 2y = −4</strong><br>Termasuk jenis penyelesaian apa sistem ini?</p>
+      <p class="muted" style="margin-top:-6px;">Hati-hati dengan tanda negatif saat menghitung rasio a, b, dan c.</p>
+      <div class="answer-row">
+        <label>Jenis:</label>
+        <select id="q2jenis">
+          <option value="">— Pilih —</option>
+          <option value="berpotongan">Berpotongan (solusi tunggal)</option>
+          <option value="sejajar">Sejajar (tidak ada solusi)</option>
+          <option value="berhimpit">Berhimpit (tak hingga solusi)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal2()">Cek Jawaban</button>
+      <div class="feedback" id="fb2"></div>
+      <div class="send-status" id="status2"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="challenge-card">
+      <span class="badge badge-sulit">SULIT</span>
+      <p class="q-text">Soal 3. Diberikan sistem persamaan dengan sebuah konstanta k:<br><strong>kx + 6y = 9</strong> &nbsp;dan&nbsp; <strong>2x + 3y = 5</strong><br>Tentukan nilai k supaya sistem ini <strong>TIDAK PUNYA SOLUSI SAMA SEKALI</strong> (kedua garis sejajar).</p>
+      <div class="answer-row">
+        <label>k =</label><input type="number" id="q3k">
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal3()">Cek Jawaban</button>
+      <div class="feedback" id="fb3"></div>
+      <div class="send-status" id="status3"></div>
+    </div>
+  </section>
+
+  <!-- 7. KESALAHAN YANG SERING TERJADI -->
+  <section id="sec-mistakes" class="fade-up">
+    <div class="card">
+      <h2>Kesalahan yang Sering Terjadi</h2>
+
+      <div class="mistake">
+        <h4>1. Mengira gradien sama pasti berarti "sejajar"</h4>
+        <p>Banyak siswa langsung menyimpulkan "sejajar" begitu melihat a₁/a₂ = b₁/b₂, padahal itu baru tanda kedua garis punya kemiringan sama. Bisa jadi keduanya malah garis yang sama persis (berhimpit).</p>
+        <p class="fix">✅ Cara menghindarinya: setelah a₁/a₂ = b₁/b₂, WAJIB lanjut cek rasio c₁/c₂ juga, untuk memastikan sejajar biasa atau berhimpit.</p>
+      </div>
+
+      <div class="mistake">
+        <h4>2. Salah menghitung rasio karena tertukar urutan</h4>
+        <p>Siswa kadang membandingkan a₁/a₂ dengan b₂/b₁ (urutannya kebalik), sehingga kesimpulannya jadi salah.</p>
+        <p class="fix">✅ Cara menghindarinya: pastikan urutan pembilang dan penyebutnya konsisten. Kalau persamaan 1 di atas, persamaan 2 di bawah, maka semua rasio harus "atas per bawah".</p>
+      </div>
+
+      <div class="mistake">
+        <h4>3. Lupa mengecek rasio c sehingga salah simpulkan berhimpit</h4>
+        <p>Karena rasio a dan b sudah sama, siswa terburu-buru menyimpulkan "berhimpit, tak hingga solusi", padahal rasio c-nya beda sehingga sebenarnya sejajar tanpa solusi.</p>
+        <p class="fix">✅ Cara menghindarinya: jangan berhenti setelah 2 rasio. Tiga rasio (a, b, c) harus dicek semua sebelum menyimpulkan.</p>
+      </div>
+
+      <div class="mistake">
+        <h4>4. Menganggap "tidak ada solusi" berarti soal salah</h4>
+        <p>Ketika hasil akhirnya "tidak ada solusi", sebagian siswa mengira mereka salah hitung, lalu mengulang-ulang perhitungan yang sebenarnya sudah benar.</p>
+        <p class="fix">✅ Cara menghindarinya: ingat, "tidak ada solusi" dan "tak hingga solusi" adalah jawaban yang sah dalam SPLDV, bukan tanda kesalahan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. RINGKASAN -->
+  <section id="sec-summary" class="fade-up">
+    <div class="card">
+      <h2>Ringkasan</h2>
+      <ul class="summary-list">
+        <li><span class="summary-num">1</span><span>Secara grafis, solusi SPLDV adalah titik potong dua garis dari kedua persamaan.</span></li>
+        <li><span class="summary-num">2</span><span>Ada tiga jenis penyelesaian: berpotongan (satu solusi), sejajar (tidak ada solusi), dan berhimpit (tak hingga solusi).</span></li>
+        <li><span class="summary-num">3</span><span>Jenis penyelesaian bisa ditentukan tanpa menggambar, dengan membandingkan rasio a₁/a₂, b₁/b₂, dan c₁/c₂.</span></li>
+        <li><span class="summary-num">4</span><span>Kalau rasio a dan b beda → berpotongan. Kalau rasio a dan b sama tapi c beda → sejajar. Kalau ketiganya sama → berhimpit.</span></li>
+        <li><span class="summary-num">5</span><span>Rasio a₁/a₂ = b₁/b₂ menandakan dua garis punya gradien (kemiringan) yang sama — itulah sebabnya keduanya sejajar atau berhimpit.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 9. REFLEKSI -->
+  <section id="sec-reflect" class="fade-up">
+    <div class="card">
+      <h2>Refleksi</h2>
+      <p class="muted">Tidak ada jawaban benar/salah di bagian ini. Tulis saja dengan kata-katamu sendiri.</p>
+
+      <div class="reflect-row">
+        <label for="ref1">1. Dengan kata-katamu sendiri, apa bedanya sistem yang "sejajar" dengan yang "berhimpit", padahal sama-sama bukan solusi tunggal?</label>
+        <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <div class="reflect-row">
+        <label for="ref2">2. Menurutmu, kenapa membandingkan rasio koefisien bisa membantu kita mengetahui jenis penyelesaian tanpa harus menggambar grafik?</label>
+        <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <button class="btn btn-primary" onclick="kirimRefleksi()">Kirim Refleksi</button>
+      <div class="send-status" id="statusRef"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p class="brand">NUMERA</p>
+  <p>Dikembangkan oleh Kiki Herdiansyah</p>
+  <p>Modul Interaktif · Versi 1.0</p>
+  <p>© 2026 Numera</p>
+</footer>
+
+<script>
+/* ================= KONFIGURASI ================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec'; // isi dengan URL Google Apps Script sebelum publish
+const topik = 'Jenis-Jenis Penyelesaian SPLDV';
+
+/* ================= IDENTITAS SISWA ================= */
+function getIdentitas(){
+  return {
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim()
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  if(!id.nama || !id.kelas){
+    alert('Isi dulu Nama dan Kelas di bagian atas modul ya, sebelum mengecek jawaban.');
+    document.getElementById('sec-header').scrollIntoView({behavior:'smooth', block:'start'});
+    return false;
+  }
+  return true;
+}
+
+/* ================= KIRIM KE GURU ================= */
+function kirimKeGuru(nomor, jawaban1, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const statusEl = document.getElementById(statusElId);
+  if(statusEl) statusEl.textContent = 'Mengirim jawaban ke guru...';
+
+  const payload = {
+    topik: topik,
+    nama: id.nama,
+    kelas: id.kelas,
+    nomor: String(nomor),
+    jawaban1: String(jawaban1),
+    jawaban2: String(jawaban2 !== undefined ? jawaban2 : ''),
+    status: String(status),
+    waktu: new Date().toLocaleString('id-ID')
+  };
+
+  if(!SCRIPT_URL){
+    if(statusEl) statusEl.textContent = 'Catatan: SCRIPT_URL belum diisi guru, jawaban belum benar-benar terkirim.';
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    if(statusEl) statusEl.textContent = '✓ Jawaban terkirim ke guru pada ' + payload.waktu;
+  }).catch(()=>{
+    if(statusEl) statusEl.textContent = 'Gagal mengirim jawaban. Periksa koneksi internetmu.';
+  });
+}
+
+/* ================= FADE UP ================= */
+const fadeEls = document.querySelectorAll('.fade-up');
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, {threshold:0.12});
+fadeEls.forEach(el=>observer.observe(el));
+
+/* ================= PROGRESS BAR ================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressBar').style.width = (isFinite(scrolled)?scrolled:0) + '%';
+});
+
+/* ================= LIHAT CARA KERJANYA ================= */
+const steps = [
+  'Langkah 1 — Catat koefisien tiap persamaan.<br><br>Persamaan 1: <mark>a₁ = 2, b₁ = 1, c₁ = 4</mark><br>Persamaan 2: <mark>a₂ = 4, b₂ = 2, c₂ = 8</mark>',
+  'Langkah 2 — Bandingkan rasio a dan b.<br><br>a₁/a₂ = 2/4 = <strong>1/2</strong><br>b₁/b₂ = 1/2 = <strong>1/2</strong><br><br>Keduanya SAMA, berarti kedua garis punya gradien yang sama — pasti sejajar atau berhimpit, bukan berpotongan.',
+  'Langkah 3 — Jangan berhenti dulu! Lanjut cek rasio c.<br><br>c₁/c₂ = 4/8 = <strong>1/2</strong><br><br>Ternyata rasio c JUGA sama dengan rasio a dan b tadi (sama-sama 1/2).',
+  'Langkah 4 — Simpulkan jenis penyelesaiannya.<br><br>Karena a₁/a₂ = b₁/b₂ = c₁/c₂ = 1/2, artinya dua persamaan ini sebenarnya menggambarkan <strong>garis yang sama persis</strong>.<br><br>Jadi sistem ini <strong>berhimpit</strong>, dengan <strong>tak hingga banyak penyelesaian</strong>.'
+];
+let stepIndex = 0;
+function renderStep(){
+  document.getElementById('stepContent').innerHTML = steps[stepIndex];
+  document.getElementById('prevStep').disabled = stepIndex === 0;
+  document.getElementById('nextStep').textContent = stepIndex === steps.length-1 ? 'Selesai ✓' : 'Lanjut →';
+  document.getElementById('nextStep').disabled = stepIndex === steps.length-1;
+  const dotsWrap = document.getElementById('stepDots');
+  dotsWrap.innerHTML = '';
+  steps.forEach((_, i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===stepIndex ? ' active' : '');
+    dotsWrap.appendChild(d);
+  });
+}
+function changeStep(dir){
+  stepIndex = Math.min(steps.length-1, Math.max(0, stepIndex+dir));
+  renderStep();
+}
+renderStep();
+
+/* ================= COBA SENDIRI: GRAFIK, RASIO & KLASIFIKASI ================= */
+const SCALE = 14, ORIGIN = 160, RANGE = 11;
+
+function lineToPath(a,b,c,color){
+  let p1, p2;
+  if(Math.abs(b) > 1e-9){
+    const y1 = (c - a*(-RANGE))/b;
+    const y2 = (c - a*(RANGE))/b;
+    p1 = [-RANGE, y1]; p2 = [RANGE, y2];
+  } else if(Math.abs(a) > 1e-9){
+    const x = c/a;
+    p1 = [x, -RANGE]; p2 = [x, RANGE];
+  } else {
+    return '';
+  }
+  const sx1 = ORIGIN + p1[0]*SCALE, sy1 = ORIGIN - p1[1]*SCALE;
+  const sx2 = ORIGIN + p2[0]*SCALE, sy2 = ORIGIN - p2[1]*SCALE;
+  return `<line x1="${sx1}" y1="${sy1}" x2="${sx2}" y2="${sy2}" stroke="${color}" stroke-width="3" stroke-linecap="round"/>`;
+}
+
+function fmtRatio(n,d){
+  if(Math.abs(d) < 1e-9) return '–';
+  return round2(n/d);
+}
+function round2(n){ return Math.round(n*100)/100; }
+
+function updateGraph(){
+  const a1 = parseFloat(document.getElementById('a1').value)||0;
+  const b1 = parseFloat(document.getElementById('b1').value)||0;
+  const c1 = parseFloat(document.getElementById('c1').value)||0;
+  const a2 = parseFloat(document.getElementById('a2').value)||0;
+  const b2 = parseFloat(document.getElementById('b2').value)||0;
+  const c2 = parseFloat(document.getElementById('c2').value)||0;
+
+  document.getElementById('ratioA').textContent = fmtRatio(a1,a2);
+  document.getElementById('ratioB').textContent = fmtRatio(b1,b2);
+  document.getElementById('ratioC').textContent = fmtRatio(c1,c2);
+
+  let svg = '';
+  for(let i=-RANGE; i<=RANGE; i++){
+    const pos = ORIGIN + i*SCALE;
+    svg += `<line x1="0" y1="${pos}" x2="320" y2="${pos}" stroke="#E2E8F0" stroke-width="1"/>`;
+    svg += `<line x1="${pos}" y1="0" x2="${pos}" y2="320" stroke="#E2E8F0" stroke-width="1"/>`;
+  }
+  svg += `<line x1="0" y1="${ORIGIN}" x2="320" y2="${ORIGIN}" stroke="#94A3B8" stroke-width="1.5"/>`;
+  svg += `<line x1="${ORIGIN}" y1="0" x2="${ORIGIN}" y2="320" stroke="#94A3B8" stroke-width="1.5"/>`;
+
+  svg += lineToPath(a1,b1,c1,'#2563EB');
+  svg += lineToPath(a2,b2,c2,'#F59E0B');
+
+  const detAB = a1*b2 - a2*b1;
+  const badge = document.getElementById('classifyBadge');
+  const insightBox = document.getElementById('insightBox');
+
+  if(Math.abs(detAB) > 1e-6){
+    // Berpotongan
+    const x = (c1*b2 - c2*b1)/detAB;
+    const y = (a1*c2 - a2*c1)/detAB;
+    badge.className = 'classify-badge classify-berpotongan';
+    badge.textContent = `Berpotongan — Solusi Tunggal (x=${round2(x)}, y=${round2(y)})`;
+    insightBox.className = 'insight-box';
+    const sx = ORIGIN + x*SCALE, sy = ORIGIN - y*SCALE;
+    if(sx > -20 && sx < 340 && sy > -20 && sy < 340){
+      svg += `<circle cx="${sx}" cy="${sy}" r="6" fill="#10B981" stroke="#fff" stroke-width="2"/>`;
+    }
+  } else {
+    // Gradien sama -> cek berhimpit vs sejajar via cross product dengan c
+    const detAC = a1*c2 - a2*c1;
+    const detBC = b1*c2 - b2*c1;
+    if(Math.abs(detAC) < 1e-6 && Math.abs(detBC) < 1e-6){
+      badge.className = 'classify-badge classify-berhimpit';
+      badge.textContent = 'Berhimpit — Tak Hingga Banyak Solusi';
+      insightBox.className = 'insight-box show';
+      insightBox.innerHTML = '💡 Perhatikan! Rasio a, b, DAN c semuanya sama — dua garis ini sebenarnya garis yang sama persis, cuma ditulis dengan bentuk berbeda.';
+    } else {
+      badge.className = 'classify-badge classify-sejajar';
+      badge.textContent = 'Sejajar — Tidak Ada Solusi';
+      insightBox.className = 'insight-box show';
+      insightBox.innerHTML = '💡 Perhatikan! Rasio a dan b sama (gradien sama), tapi rasio c berbeda — kedua garis sejajar dan tidak akan pernah bertemu.';
+    }
+  }
+
+  document.getElementById('graphSvg').innerHTML = svg;
+}
+['a1','b1','c1','a2','b2','c2'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', updateGraph);
+});
+updateGraph();
+
+/* ================= CHALLENGE ================= */
+function tampilkanFeedback(elId, benar, htmlBenar, htmlSalah){
+  const el = document.getElementById(elId);
+  el.className = 'feedback show ' + (benar ? 'correct' : 'wrong');
+  el.innerHTML = benar ? htmlBenar : htmlSalah;
+}
+
+function cekSoal1(){
+  if(!identitasLengkap()) return;
+  const jawaban = document.getElementById('q1jenis').value;
+  const benar = (jawaban === 'berpotongan');
+  tampilkanFeedback('fb1', benar,
+    '✓ Betul! a₁/a₂ = 1/1 = 1, sedangkan b₁/b₂ = 1/(−1) = −1. Karena rasio a dan b BEDA, dua garis ini berpotongan di satu titik (x=3, y=2).',
+    '✗ Belum tepat. Coba hitung a₁/a₂ dan b₁/b₂. Persamaan pertama: a₁=1, b₁=1. Persamaan kedua: a₂=1, b₂=−1. Karena rasionya beda (1 ≠ −1), dua garis ini pasti berpotongan, bukan sejajar atau berhimpit.'
+  );
+  const status = benar ? 'Benar' : 'Salah';
+  kirimKeGuru(1, jawaban || '(kosong)', '', status, 'status1');
+}
+
+function cekSoal2(){
+  if(!identitasLengkap()) return;
+  const jawaban = document.getElementById('q2jenis').value;
+  const benar = (jawaban === 'berhimpit');
+  tampilkanFeedback('fb2', benar,
+    '✓ Betul! a₁/a₂ = −2/1 = −2, b₁/b₂ = 4/(−2) = −2, dan c₁/c₂ = 8/(−4) = −2. Ketiga rasio SAMA, jadi sistem ini berhimpit dengan tak hingga banyak solusi.',
+    '✗ Belum tepat. Hati-hati dengan tanda minus! Hitung ulang: a₁/a₂ = −2/1 = −2, b₁/b₂ = 4/(−2) = −2, c₁/c₂ = 8/(−4) = −2. Karena ketiganya sama persis, ini bukan sekadar sejajar, tapi berhimpit.'
+  );
+  const status = benar ? 'Benar' : 'Salah';
+  kirimKeGuru(2, jawaban || '(kosong)', '', status, 'status2');
+}
+
+function cekSoal3(){
+  if(!identitasLengkap()) return;
+  const k = parseFloat(document.getElementById('q3k').value);
+  const benar = (k===4);
+  tampilkanFeedback('fb3', benar,
+    '✓ Betul! k = 4. Supaya sejajar, a₁/a₂ harus sama dengan b₁/b₂ = 6/3 = 2, jadi k/2 = 2 → k = 4. Cek rasio c: c₁/c₂ = 9/5 = 1,8, yang TIDAK sama dengan 2 — jadi benar-benar sejajar (tanpa solusi), bukan berhimpit.',
+    '✗ Belum tepat. Hitung dulu b₁/b₂ = 6/3 = 2. Supaya sejajar, a₁/a₂ harus sama dengan angka itu juga, yaitu k/2 = 2. Dari situ, cari nilai k.'
+  );
+  const status = benar ? 'Benar' : 'Salah';
+  kirimKeGuru(3, `k=${k}`, '', status, 'status3');
+}
+
+/* ================= REFLEKSI ================= */
+function kirimRefleksi(){
+  if(!identitasLengkap()) return;
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  const statusEl = document.getElementById('statusRef');
+  if(!r1 || !r2){
+    statusEl.textContent = 'Isi dulu kedua kolom refleksi sebelum dikirim ya.';
+    return;
+  }
+  kirimKeGuru('Refleksi', r1, r2, '-', 'statusRef');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,997 @@
+<!--
+  NUMERA
+  Modul Interaktif (pakai KaTeX)
+  Materi: Penyelesaian SPLDV dengan Grafik
+  Versi: 1.0
+  Dikembangkan oleh Kiki Herdiansyah
+  Copyright © 2026
+  Bagian dari proyek NUMERA — platform belajar matematika interaktif.
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Metode Grafik — Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Numera. Dikembangkan oleh Kiki Herdiansyah.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-sec:#64748B;
+    --border:#E2E8F0;
+
+    --success:#10B981;
+    --success-bg:#ECFDF5;
+    --success-border:#A7F3D0;
+    --success-text:#047857;
+
+    --warning:#F59E0B;
+    --warning-bg:#FEF3C7;
+    --warning-text:#B45309;
+
+    --error:#EF4444;
+    --error-bg:#FEE2E2;
+    --error-border:#FECACA;
+    --error-text:#B91C1C;
+
+    --radius-card:18px;
+    --radius-btn:12px;
+    --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{ max-width:900px; margin:0 auto; padding:0 18px 60px; }
+
+  /* ---------- topbar ---------- */
+  #topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(248,250,252,.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  #topbar .inner{
+    max-width:900px; margin:0 auto; padding:12px 18px;
+    display:flex; align-items:center; gap:10px;
+    font-weight:700; font-size:14px; letter-spacing:.2px;
+  }
+  #topbar .logo{
+    width:26px; height:26px; border-radius:8px; flex:none;
+    background:linear-gradient(145deg,var(--primary),var(--primary-hover));
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:800;
+  }
+  #topbar .mat{ color:var(--text-sec); font-weight:600; }
+  #progress-track{ height:3px; background:var(--border); }
+  #progress-bar{ height:100%; width:0%; background:var(--primary); transition:width .1s linear; }
+
+  /* ---------- generic section ---------- */
+  section{ margin:38px 0; opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+  section.show{ opacity:1; transform:translateY(0); }
+  .sec-num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:8px; background:var(--primary-light);
+    color:var(--primary); font-weight:800; font-size:12.5px; margin-right:8px;
+  }
+  h2.sec-title{ font-size:20px; margin:0 0 14px; display:flex; align-items:center; }
+  h3.sub-title{ font-size:16px; margin:22px 0 8px; color:var(--primary); }
+  p{ margin:0 0 12px; font-size:15px; }
+  .card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius-card); box-shadow:var(--shadow-card);
+    padding:20px;
+  }
+
+  /* ---------- header ---------- */
+  #header-hero{ padding-top:26px; }
+  #header-hero h1{ font-size:26px; margin:4px 0 10px; line-height:1.3; }
+  .meta-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+  .meta-chip{
+    background:var(--primary-light); color:var(--primary); font-weight:700; font-size:12.5px;
+    padding:6px 12px; border-radius:20px; display:flex; align-items:center; gap:6px;
+  }
+  .tujuan-list{ margin:0; padding-left:20px; }
+  .tujuan-list li{ margin-bottom:6px; font-size:14.5px; }
+
+  .identitas-card{ margin-top:18px; }
+  .identitas-card h3{ margin:0 0 4px; font-size:15px; }
+  .identitas-card .hint{ color:var(--text-sec); font-size:13px; margin-bottom:14px; }
+  .field-row{ display:flex; gap:12px; flex-wrap:wrap; }
+  .field{ flex:1; min-width:150px; }
+  .field label{ display:block; font-size:12.5px; font-weight:700; color:var(--text-sec); margin-bottom:6px; }
+  .field input{
+    width:100%; padding:11px 13px; border-radius:var(--radius-btn); border:1px solid var(--border);
+    font-size:14.5px; font-family:inherit; background:#fff; color:var(--text);
+  }
+  .field input:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  #identitas-status{ margin-top:10px; font-size:13px; font-weight:600; }
+  #identitas-status.ok{ color:var(--success-text); }
+
+  /* ---------- hook ---------- */
+  .hook-card{ background:linear-gradient(160deg,#fff,var(--primary-light) 220%); }
+  .hook-card p{ font-size:15.5px; }
+
+  /* ---------- rumus box ---------- */
+  .rumus-box{
+    background:var(--primary-light); border:1px solid #bfd7fb; border-radius:14px;
+    padding:14px 16px; margin:12px 0; overflow-x:auto;
+  }
+  .katex-display{ margin:4px 0; }
+
+  mark{ background:#FEF3C7; color:var(--text); padding:1px 4px; border-radius:4px; }
+
+  /* ---------- lihat cara kerjanya ---------- */
+  .stepper-card{ }
+  .step-nav{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px; }
+  .step-dots{ display:flex; gap:6px; }
+  .step-dot{ width:8px; height:8px; border-radius:50%; background:var(--border); }
+  .step-dot.active{ background:var(--primary); width:18px; border-radius:6px; transition:all .25s ease; }
+  .btn{
+    border:none; border-radius:var(--radius-btn); padding:11px 18px; font-family:inherit;
+    font-weight:700; font-size:14px; cursor:pointer; transition:background .2s ease, opacity .2s ease;
+  }
+  .btn-primary{ background:var(--primary); color:#fff; }
+  .btn-primary:hover{ background:var(--primary-hover); }
+  .btn-primary:disabled{ opacity:.4; cursor:not-allowed; }
+  .btn-ghost{ background:var(--primary-light); color:var(--primary); }
+  .btn-ghost:hover{ background:#c7ddfb; }
+  .btn-sm{ padding:8px 14px; font-size:13px; }
+  #step-content{ min-height:130px; font-size:14.5px; }
+  #step-content .step-title{ font-weight:800; margin-bottom:8px; color:var(--text); }
+
+  .play-row{ display:flex; align-items:center; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  #graf-anim-wrap{ margin-top:14px; }
+  svg text{ font-family:'Inter', sans-serif; }
+
+  /* ---------- coba sendiri ---------- */
+  .slider-group{ margin-bottom:16px; }
+  .slider-group .persamaan-label{
+    font-weight:800; font-size:13.5px; margin-bottom:8px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .swatch{ width:12px; height:12px; border-radius:3px; display:inline-block; }
+  .slider-row{ display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .slider-row label{ width:56px; font-size:13px; color:var(--text-sec); font-weight:700; flex:none; }
+  .slider-row input[type=range]{ flex:1; accent-color:var(--primary); }
+  .slider-row .val{
+    width:40px; text-align:center; font-weight:700; font-size:13px;
+    background:var(--bg); border-radius:8px; padding:4px 0; flex:none;
+  }
+  .persamaan-teks{ font-size:14px; color:var(--text-sec); margin:-2px 0 4px; }
+  .intercept-teks{ font-size:12.5px; color:var(--primary); margin:0 0 12px; font-weight:600; }
+
+  #insight-box{
+    margin-top:14px; padding:14px 16px; border-radius:12px; font-size:14px; font-weight:600;
+    display:none;
+  }
+  #insight-box.tampil{ display:block; }
+  #insight-box.satu{ background:var(--success-bg); border:1px solid var(--success-border); color:var(--success-text); }
+  #insight-box.sejajar{ background:var(--error-bg); border:1px solid var(--error-border); color:var(--error-text); }
+  #insight-box.berimpit{ background:var(--warning-bg); border:1px solid #fde3a7; color:var(--warning-text); }
+
+  /* ---------- challenge ---------- */
+  .challenge-card{ margin-bottom:18px; }
+  .badge{
+    display:inline-block; font-size:11.5px; font-weight:800; letter-spacing:.4px;
+    padding:4px 10px; border-radius:20px; margin-bottom:10px;
+  }
+  .badge.mudah{ background:var(--success-bg); color:var(--success-text); }
+  .badge.sedang{ background:var(--warning-bg); color:var(--warning-text); }
+  .badge.sulit{ background:var(--error-bg); color:var(--error-text); }
+  .jawab-row{ display:flex; gap:12px; flex-wrap:wrap; margin:14px 0; }
+  .jawab-row .field{ min-width:120px; }
+  .feedback{
+    margin-top:12px; padding:12px 14px; border-radius:12px; font-size:13.5px; font-weight:600;
+    display:none;
+  }
+  .feedback.tampil{ display:block; }
+  .feedback.benar{ background:var(--success-bg); border:1px solid var(--success-border); color:var(--success-text); }
+  .feedback.salah{ background:var(--error-bg); border:1px solid var(--error-border); color:var(--error-text); }
+  .status-kirim{ font-size:12px; color:var(--text-sec); margin-top:8px; min-height:16px; }
+
+  /* ---------- kesalahan umum ---------- */
+  .miskon-item{ display:flex; gap:12px; margin-bottom:16px; }
+  .miskon-item .ic{
+    flex:none; width:34px; height:34px; border-radius:10px; background:var(--error-bg);
+    color:var(--error-text); display:flex; align-items:center; justify-content:center; font-weight:800;
+  }
+  .miskon-item h4{ margin:0 0 4px; font-size:14.5px; }
+  .miskon-item p{ margin:0 0 4px; font-size:13.5px; color:var(--text-sec); }
+  .miskon-item .fix{ font-size:13.5px; color:var(--success-text); font-weight:600; }
+
+  /* ---------- ringkasan ---------- */
+  .ringkasan-list{ display:grid; gap:10px; }
+  .ringkasan-item{ display:flex; gap:12px; align-items:flex-start; }
+  .ringkasan-item .num{
+    flex:none; width:26px; height:26px; border-radius:50%; background:var(--primary);
+    color:#fff; font-weight:800; font-size:12.5px; display:flex; align-items:center; justify-content:center;
+  }
+  .ringkasan-item p{ margin:0; font-size:14.5px; }
+
+  /* ---------- refleksi ---------- */
+  .refleksi-q{ margin-bottom:16px; }
+  .refleksi-q label{ display:block; font-weight:700; font-size:14px; margin-bottom:8px; }
+  textarea{
+    width:100%; min-height:90px; padding:12px 13px; border-radius:var(--radius-btn);
+    border:1px solid var(--border); font-family:inherit; font-size:14px; resize:vertical; color:var(--text);
+  }
+  textarea:focus{ outline:none; border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+
+  /* ---------- footer ---------- */
+  footer{
+    text-align:center; padding:26px 18px 40px; color:var(--text-sec); font-size:12.5px;
+    border-top:1px solid var(--border); margin-top:40px;
+  }
+  footer b{ color:var(--text); }
+
+  @media (max-width:480px){
+    #header-hero h1{ font-size:22px; }
+    .card{ padding:16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="inner">
+    <div class="logo">N</div>
+    <div>NUMERA <span class="mat">· Penyelesaian SPLDV dengan Grafik</span></div>
+  </div>
+</div>
+<div id="progress-track"><div id="progress-bar"></div></div>
+
+<div class="wrap">
+
+  <!-- ================= 1. HEADER ================= -->
+  <section id="header-hero" class="show">
+    <div class="meta-row">
+      <div class="meta-chip">⏱ 15–20 menit</div>
+      <div class="meta-chip">🔵 SPLDV — Metode Grafik</div>
+    </div>
+    <h1>Penyelesaian SPLDV dengan Grafik</h1>
+    <p>Belajar mengubah persamaan menjadi bentuk yang gampang digambar, lalu memakai gambar dua garis itu untuk menemukan penyelesaian SPLDV — tanpa perlu menghitung rumit dulu.</p>
+
+    <div class="card">
+      <h3 style="margin-top:0; font-size:14px; color:var(--text-sec); letter-spacing:.3px;">TUJUAN BELAJAR</h3>
+      <ul class="tujuan-list">
+        <li>Memahami kenapa gambar (grafik) bisa dipakai untuk mencari penyelesaian SPLDV.</li>
+        <li>Bisa mengubah persamaan linear dua variabel ke bentuk yang mudah digambar, lewat titik potong sumbu.</li>
+        <li>Bisa menggambar garis dari sebuah persamaan linear dua variabel.</li>
+        <li>Bisa membaca titik potong dua garis sebagai penyelesaian sistem.</li>
+        <li>Bisa mengenali dari bentuk grafik apakah sistem punya satu, tidak ada, atau tak hingga penyelesaian.</li>
+        <li>Memahami kapan metode grafik pas dipakai, dan kapan sebaiknya tidak.</li>
+      </ul>
+    </div>
+
+    <div class="card identitas-card">
+      <h3>Identitas Siswa</h3>
+      <div class="hint">Isi dulu sebelum mengerjakan Challenge & Refleksi — jawabanmu akan dikirim ke gurumu.</div>
+      <div class="field-row">
+        <div class="field">
+          <label>NAMA LENGKAP</label>
+          <input type="text" id="nama-siswa" placeholder="Tulis namamu" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>KELAS</label>
+          <input type="text" id="kelas-siswa" placeholder="Contoh: X IPA 1" autocomplete="off">
+        </div>
+      </div>
+      <div id="identitas-status"></div>
+    </div>
+  </section>
+
+  <!-- ================= 2. PERNAHKAH KAMU BERPIKIR? ================= -->
+  <section id="sec-hook">
+    <h2 class="sec-title"><span class="sec-num">2</span>Pernahkah Kamu Berpikir?</h2>
+    <div class="card hook-card">
+      <p>Bayangkan kamu sedang main cari harta karun.</p>
+      <p>Petunjuk pertama bilang: <b>"Jalan lurus mengikuti garis ini, dari titik A."</b> Petunjuk kedua kasih garis lurus lain, dari arah yang berbeda.</p>
+      <p>Kalau kamu gambar dua garis petunjuk itu di atas peta yang sama, harta karunnya ada tepat di titik di mana kedua garis itu... <b>bertemu ✕</b>.</p>
+      <p>Kamu tidak perlu menghitung apa-apa untuk menemukannya — cukup gambar dua garisnya, lalu lihat di mana keduanya berpotongan.</p>
+      <p><b>Ternyata, ide sesederhana itu juga bisa dipakai untuk menyelesaikan SPLDV.</b> Di modul ini kamu akan belajar caranya.</p>
+    </div>
+  </section>
+
+  <!-- ================= 3. PENJELASAN SEDERHANA ================= -->
+  <section id="sec-penjelasan">
+    <h2 class="sec-title"><span class="sec-num">3</span>Penjelasan Sederhana</h2>
+    <div class="card">
+
+      <h3 class="sub-title">Kenapa Grafik Bisa Dipakai untuk SPLDV?</h3>
+      <p>Coba ingat lagi: satu persamaan linear dua variabel, misalnya <i>x + y = 6</i>, punya banyak sekali pasangan (x, y) yang cocok — (1,5), (2,4), (6,0), dan seterusnya.</p>
+      <p>Nah, kalau SEMUA pasangan itu kamu titikkan di bidang koordinat, ternyata titik-titiknya membentuk sebuah <b>garis lurus</b>. Jadi, satu garis = kumpulan semua jawaban yang cocok untuk satu persamaan.</p>
+      <p>Karena SPLDV punya dua persamaan, artinya ada <b>dua garis</b>. Titik yang berada <i>di garis pertama, dan juga di garis kedua</i> — itulah satu-satunya pasangan (x, y) yang cocok untuk kedua persamaan sekaligus. Titik itu tidak lain adalah <b>titik potong kedua garis</b>.</p>
+
+      <h3 class="sub-title">Mengubah Persamaan ke Bentuk yang Gampang Digambar</h3>
+      <p>Sampai sini masih masuk akal? Sekarang pertanyaannya: gimana caranya menggambar garis dari sebuah persamaan, secepat dan semudah mungkin?</p>
+      <p>Untuk menggambar garis lurus, sebenarnya kamu cuma butuh <b>dua titik saja</b>. Titik yang paling gampang dicari adalah titik saat garis itu <b>memotong sumbu-x</b> dan titik saat garis itu <b>memotong sumbu-y</b>.</p>
+      <p>Triknya sederhana:</p>
+      <ul class="tujuan-list">
+        <li>Untuk cari <b>titik potong sumbu-x</b>: anggap <i>y = 0</i>, lalu cari nilai <i>x</i>.</li>
+        <li>Untuk cari <b>titik potong sumbu-y</b>: anggap <i>x = 0</i>, lalu cari nilai <i>y</i>.</li>
+      </ul>
+      <p>Contoh untuk <i>2x + y = 8</i>:</p>
+      <div class="rumus-box">\[ y=0 \Rightarrow 2x = 8 \Rightarrow x = 4 \quad\text{(titik }(4,0)\text{)} \]\[ x=0 \Rightarrow y = 8 \quad\text{(titik }(0,8)\text{)} \]</div>
+      <p>Dua titik itu — (4, 0) dan (0, 8) — sudah cukup untuk menggambar seluruh garisnya.</p>
+
+      <h3 class="sub-title">Menggambar Garis dari Dua Titik</h3>
+      <p>Setelah dapat dua titik potong sumbu, langkahnya tinggal: tandai kedua titik itu di bidang koordinat, lalu tarik garis lurus yang melewati keduanya — dan boleh diperpanjang ke dua arah, karena garis memang tidak berhenti.</p>
+      <p>Lakukan hal yang sama untuk persamaan kedua, di bidang koordinat yang sama.</p>
+
+      <h3 class="sub-title">Membaca Titik Potong sebagai Penyelesaian</h3>
+      <p>Setelah kedua garis tergambar, tinggal cari <b>di mana kedua garis itu berpotongan</b>. Koordinat (x, y) di titik potong itulah <b>penyelesaian SPLDV</b>-nya.</p>
+      <p>Sebelum yakin, selalu cek: masukkan koordinat itu ke kedua persamaan awal — kalau dua-duanya menghasilkan kalimat yang benar, berarti pembacaanmu dari grafik sudah tepat.</p>
+
+      <h3 class="sub-title">Tiga Kemungkinan yang Bisa Terlihat di Grafik</h3>
+      <p>Pernah kepikiran tidak, kenapa kadang dua garis pasti bertemu, tapi kadang tidak pernah bertemu sama sekali?</p>
+      <p>Rahasianya ada di <b>kemiringan garis</b>, atau biasa disebut <b>gradien</b>. Untuk persamaan <i>ax + by = c</i>, gradiennya adalah <i>m = -a/b</i>.</p>
+      <ul class="tujuan-list">
+        <li><b>Gradien berbeda</b> → dua garis pasti akan <b>berpotongan di satu titik</b> → SPLDV punya <b>satu</b> penyelesaian.</li>
+        <li><b>Gradien sama, tapi garisnya beda</b> → dua garis <b>sejajar</b>, tidak pernah bertemu → SPLDV <b>tidak punya</b> penyelesaian.</li>
+        <li><b>Gradien sama, dan garisnya sebenarnya sama persis</b> → garis <b>berimpit</b> → SPLDV punya <b>tak hingga</b> penyelesaian.</li>
+      </ul>
+      <p>Nanti di bagian "Coba Sendiri", kamu bisa mengubah-ubah angka pada dua persamaan dan langsung melihat sendiri ketiga kemungkinan ini terjadi.</p>
+
+      <h3 class="sub-title">Kelebihan dan Keterbatasan Metode Grafik</h3>
+      <p>Metode grafik itu enak karena kelihatan — kamu langsung bisa "melihat" hubungan dua persamaan, bukan cuma angka-angka di atas kertas.</p>
+      <p>Tapi metode ini juga ada batasnya: kalau penyelesaiannya berupa pecahan atau desimal (misalnya x = 3,5), akan susah dibaca tepat dari gambar. Untuk kasus seperti itu, metode substitusi atau eliminasi jauh lebih akurat. Jadi, metode grafik paling cocok dipakai untuk <b>memahami konsepnya</b> dan <b>memperkirakan</b> jawaban, bukan untuk mencari jawaban yang butuh ketelitian tinggi.</p>
+    </div>
+  </section>
+
+  <!-- ================= 4. LIHAT CARA KERJANYA ================= -->
+  <section id="sec-cara">
+    <h2 class="sec-title"><span class="sec-num">4</span>Lihat Cara Kerjanya</h2>
+    <div class="card stepper-card">
+      <p style="margin-top:0;">Sekarang kita coba selesaikan sistem berikut memakai metode grafik, langkah demi langkah:</p>
+      <div class="rumus-box">\[ \begin{cases} x + 2y = 8 \\ x - y = 2 \end{cases} \]</div>
+
+      <div class="step-nav">
+        <button class="btn btn-ghost btn-sm" id="btn-prev-step">← Sebelumnya</button>
+        <div class="step-dots" id="step-dots"></div>
+        <button class="btn btn-primary btn-sm" id="btn-next-step">Selanjutnya →</button>
+      </div>
+
+      <div id="step-content"></div>
+
+      <div class="play-row">
+        <button class="btn btn-ghost btn-sm" id="btn-play-graf">▶ Putar Animasi Grafik</button>
+        <button class="btn btn-ghost btn-sm" id="btn-reset-graf" style="display:none;">↻ Ulangi</button>
+        <span style="font-size:12.5px; color:var(--text-sec);">Lihat titik-titik potong sumbu ditandai, lalu kedua garis terbentuk dan bertemu.</span>
+      </div>
+      <div id="graf-anim-wrap">
+        <svg id="svg-anim" viewBox="0 0 300 220" style="width:100%; max-width:320px; background:#fff; border:1px solid var(--border); border-radius:12px;"></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 5. COBA SENDIRI ================= -->
+  <section id="sec-coba">
+    <h2 class="sec-title"><span class="sec-num">5</span>Coba Sendiri</h2>
+    <div class="card">
+      <p style="margin-top:0;">Geser koefisien di bawah ini. Perhatikan titik potong sumbu-x dan sumbu-y-nya ikut berubah, garisnya ikut berubah, dan titik penyelesaiannya ikut berubah — semua <b>secara langsung</b>.</p>
+
+      <div class="slider-group">
+        <div class="persamaan-label"><span class="swatch" style="background:var(--primary);"></span>Persamaan 1</div>
+        <div class="slider-row"><label>a₁ (x)</label><input type="range" id="s-a1" min="-5" max="5" value="1"><span class="val" id="v-a1">1</span></div>
+        <div class="slider-row"><label>b₁ (y)</label><input type="range" id="s-b1" min="-5" max="5" value="2"><span class="val" id="v-b1">2</span></div>
+        <div class="slider-row"><label>c₁</label><input type="range" id="s-c1" min="-15" max="15" value="8"><span class="val" id="v-c1">8</span></div>
+        <div class="persamaan-teks" id="teks-p1"></div>
+        <div class="intercept-teks" id="int-p1"></div>
+      </div>
+
+      <div class="slider-group">
+        <div class="persamaan-label"><span class="swatch" style="background:var(--text);"></span>Persamaan 2</div>
+        <div class="slider-row"><label>a₂ (x)</label><input type="range" id="s-a2" min="-5" max="5" value="1"><span class="val" id="v-a2">1</span></div>
+        <div class="slider-row"><label>b₂ (y)</label><input type="range" id="s-b2" min="-5" max="5" value="-1"><span class="val" id="v-b2">-1</span></div>
+        <div class="slider-row"><label>c₂</label><input type="range" id="s-c2" min="-15" max="15" value="2"><span class="val" id="v-c2">2</span></div>
+        <div class="persamaan-teks" id="teks-p2"></div>
+        <div class="intercept-teks" id="int-p2"></div>
+      </div>
+
+      <svg id="svg-interaktif" viewBox="0 0 320 320" style="width:100%; max-width:340px; display:block; margin:0 auto; background:#fff; border:1px solid var(--border); border-radius:12px;"></svg>
+
+      <div id="insight-box"></div>
+    </div>
+  </section>
+
+  <!-- ================= 6. CHALLENGE ================= -->
+  <section id="sec-challenge">
+    <h2 class="sec-title"><span class="sec-num">6</span>Challenge</h2>
+
+    <div class="card challenge-card">
+      <span class="badge mudah">MUDAH</span>
+      <p><b>Soal 1.</b> Diketahui persamaan garis:</p>
+      <div class="rumus-box">\[ x + y = 6 \]</div>
+      <p>Berapa nilai <i>x</i> saat garis ini memotong sumbu-x (y = 0)? Dan berapa nilai <i>y</i> saat garis ini memotong sumbu-y (x = 0)?</p>
+      <div class="jawab-row">
+        <div class="field"><label>x saat y=0</label><input type="number" id="jwb1x" step="any"></div>
+        <div class="field"><label>y saat x=0</label><input type="number" id="jwb1y" step="any"></div>
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal1()">Cek Jawaban</button>
+      <div class="feedback" id="fb1"></div>
+      <div class="status-kirim" id="status1"></div>
+    </div>
+
+    <div class="card challenge-card">
+      <span class="badge sedang">SEDANG</span>
+      <p><b>Soal 2.</b> Garis 1 melalui titik (0, 4) dan (4, 0). Garis 2 melalui titik (0, −2) dan (2, 0).</p>
+      <p>Di titik manakah kedua garis itu berpotongan? <span style="color:var(--text-sec); font-size:13px;">(Ingat: dari dua titik itu, kamu bisa menyusun dulu persamaan tiap garis, baru cari titik potongnya.)</span></p>
+      <div class="jawab-row">
+        <div class="field"><label>x = </label><input type="number" id="jwb2x" step="any"></div>
+        <div class="field"><label>y = </label><input type="number" id="jwb2y" step="any"></div>
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal2()">Cek Jawaban</button>
+      <div class="feedback" id="fb2"></div>
+      <div class="status-kirim" id="status2"></div>
+    </div>
+
+    <div class="card challenge-card">
+      <span class="badge sulit">SULIT</span>
+      <p><b>Soal 3.</b> Sebuah garis melewati titik (6, 0), dan garis ini <b>sejajar</b> dengan garis:</p>
+      <div class="rumus-box">\[ 2x + 3y = 12 \]</div>
+      <p>Tentukan nilai <i>y</i> saat garis tersebut memotong sumbu-y (x = 0).</p>
+      <div class="jawab-row">
+        <div class="field"><label>y = </label><input type="number" id="jwb3y" step="any"></div>
+      </div>
+      <button class="btn btn-primary" onclick="cekSoal3()">Cek Jawaban</button>
+      <div class="feedback" id="fb3"></div>
+      <div class="status-kirim" id="status3"></div>
+    </div>
+  </section>
+
+  <!-- ================= 7. KESALAHAN YANG SERING TERJADI ================= -->
+  <section id="sec-kesalahan">
+    <h2 class="sec-title"><span class="sec-num">7</span>Kesalahan yang Sering Terjadi</h2>
+    <div class="card">
+
+      <div class="miskon-item">
+        <div class="ic">1</div>
+        <div>
+          <h4>Lupa membagi dengan koefisien saat mencari titik potong</h4>
+          <p>Untuk <i>3x = 12</i>, sebagian siswa langsung menulis <i>x = 12</i>, padahal seharusnya dibagi 3 dulu sehingga <i>x = 4</i>.</p>
+          <p class="fix">✓ Setelah salah satu huruf dianggap 0, selesaikan persamaan satu variabel itu sampai tuntas — jangan berhenti sebelum huruf yang dicari benar-benar sendirian.</p>
+        </div>
+      </div>
+
+      <div class="miskon-item">
+        <div class="ic">2</div>
+        <div>
+          <h4>Menggambar garis hanya dari satu titik</h4>
+          <p>Satu titik saja tidak cukup untuk menentukan arah sebuah garis — banyak sekali garis berbeda yang bisa melewati satu titik yang sama.</p>
+          <p class="fix">✓ Selalu cari MINIMAL dua titik (biasanya titik potong sumbu-x dan sumbu-y) sebelum menarik garis.</p>
+        </div>
+      </div>
+
+      <div class="miskon-item">
+        <div class="ic">3</div>
+        <div>
+          <h4>Tertukar antara koordinat x dan y saat membaca titik potong</h4>
+          <p>Titik potong (3, 5) kadang malah dibaca "x = 5, y = 3" — urutannya terbalik.</p>
+          <p class="fix">✓ Koordinat selalu ditulis (x, y) — angka pertama untuk sumbu mendatar (x), angka kedua untuk sumbu tegak (y).</p>
+        </div>
+      </div>
+
+      <div class="miskon-item">
+        <div class="ic">4</div>
+        <div>
+          <h4>Terburu-buru menyimpulkan "sejajar" padahal gambarnya belum cukup panjang</h4>
+          <p>Kalau dua garis digambar dalam area yang kecil dan belum kelihatan bertemu, bukan berarti keduanya pasti sejajar — bisa jadi titik potongnya ada jauh di luar area yang digambar.</p>
+          <p class="fix">✓ Untuk memastikan dua garis benar-benar sejajar, bandingkan gradiennya (m = -a/b) secara hitungan, jangan cuma mengandalkan tampilan gambar yang terbatas.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 8. RINGKASAN ================= -->
+  <section id="sec-ringkasan">
+    <h2 class="sec-title"><span class="sec-num">8</span>Ringkasan</h2>
+    <div class="card">
+      <div class="ringkasan-list">
+        <div class="ringkasan-item"><div class="num">1</div><p>Setiap persamaan linear dua variabel, kalau digambar, bentuknya adalah <b>garis lurus</b>.</p></div>
+        <div class="ringkasan-item"><div class="num">2</div><p>Cara tercepat menggambar garis: cari <b>titik potong sumbu-x</b> (anggap y=0) dan <b>titik potong sumbu-y</b> (anggap x=0), lalu hubungkan.</p></div>
+        <div class="ringkasan-item"><div class="num">3</div><p>Penyelesaian SPLDV secara grafis adalah <b>titik potong kedua garis</b>.</p></div>
+        <div class="ringkasan-item"><div class="num">4</div><p>Dari <b>gradien</b> (m = -a/b), kita bisa menebak hasilnya: gradien beda → satu penyelesaian; gradien sama tapi garis beda → sejajar (tidak ada penyelesaian); garis sama persis → berimpit (tak hingga penyelesaian).</p></div>
+        <div class="ringkasan-item"><div class="num">5</div><p>Metode grafik bagus untuk memahami konsep dan memperkirakan jawaban, tapi kurang presisi untuk solusi berupa pecahan/desimal — untuk itu, substitusi atau eliminasi lebih akurat.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 9. REFLEKSI ================= -->
+  <section id="sec-refleksi">
+    <h2 class="sec-title"><span class="sec-num">9</span>Refleksi</h2>
+    <div class="card">
+      <p style="margin-top:0; color:var(--text-sec); font-size:13.5px;">Tidak ada jawaban benar/salah di bagian ini. Jawab sejujurnya dengan kata-katamu sendiri.</p>
+
+      <div class="refleksi-q">
+        <label>1. Menurutmu, kenapa mencari titik potong sumbu-x dan sumbu-y bisa membantu kita menggambar garis dengan cepat, dibanding menandai titik-titik sembarang lainnya?</label>
+        <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <div class="refleksi-q">
+        <label>2. Kapan sebaiknya kamu pakai metode grafik untuk menyelesaikan SPLDV, dan kapan sebaiknya kamu pakai metode substitusi/eliminasi saja? Jelaskan dengan kata-katamu sendiri.</label>
+        <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>
+
+      <button class="btn btn-primary" onclick="kirimRefleksi()">Kirim Refleksi</button>
+      <div class="status-kirim" id="status-refleksi"></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <b>NUMERA</b><br>
+  Dikembangkan oleh Kiki Herdiansyah<br>
+  Versi 1.0 · © 2026
+</footer>
+
+<script>
+/* ===================================================================
+   KONFIGURASI PENGIRIMAN JAWABAN
+   =================================================================== */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec'; // guru mengisi URL Google Apps Script di sini sebelum publish
+const topik = 'Penyelesaian SPLDV dengan Grafik';
+
+function getIdentitas(){
+  return {
+    nama: document.getElementById('nama-siswa').value.trim(),
+    kelas: document.getElementById('kelas-siswa').value.trim(),
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  const statusEl = document.getElementById('identitas-status');
+  if (!id.nama || !id.kelas){
+    statusEl.textContent = 'Isi dulu Nama dan Kelas di bagian atas sebelum mengerjakan.';
+    statusEl.classList.remove('ok');
+    document.getElementById('header-hero').scrollIntoView({behavior:'smooth', block:'start'});
+    return false;
+  }
+  statusEl.textContent = '✓ Identitas lengkap: ' + id.nama + ' — ' + id.kelas;
+  statusEl.classList.add('ok');
+  return true;
+}
+
+function kirimKeGuru(nomor, jawaban1, jawaban2, status, statusElId){
+  const id = getIdentitas();
+  const statusEl = document.getElementById(statusElId);
+  if (statusEl) statusEl.textContent = '⏳ Mengirim ke guru...';
+
+  const payload = {
+    topik: topik,
+    nama: id.nama,
+    kelas: id.kelas,
+    nomor: nomor,
+    jawaban1: String(jawaban1),
+    jawaban2: String(jawaban2 == null ? '' : jawaban2),
+    status: status,
+    waktu: new Date().toISOString(),
+  };
+
+  if (!SCRIPT_URL){
+    if (statusEl) statusEl.textContent = '(SCRIPT_URL belum diisi guru — jawaban belum benar-benar terkirim)';
+    return;
+  }
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload),
+  }).then(() => {
+    if (statusEl) statusEl.textContent = '✅ Terkirim ke guru.';
+  }).catch(() => {
+    if (statusEl) statusEl.textContent = '⚠️ Gagal mengirim, cek koneksi internetmu.';
+  });
+}
+
+document.getElementById('nama-siswa').addEventListener('input', identitasLengkap);
+document.getElementById('kelas-siswa').addEventListener('input', identitasLengkap);
+
+/* ===================================================================
+   FADE-UP SECTION SAAT SCROLL
+   =================================================================== */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('section').forEach(s => io.observe(s));
+
+/* ===================================================================
+   PROGRESS BAR SCROLL
+   =================================================================== */
+function updateProgress(){
+  const h = document.documentElement;
+  const scrolled = h.scrollTop;
+  const max = h.scrollHeight - h.clientHeight;
+  const pct = max > 0 ? (scrolled/max*100) : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+window.addEventListener('scroll', updateProgress);
+updateProgress();
+
+/* ===================================================================
+   RENDER KaTeX
+   =================================================================== */
+function renderMath(){
+  if (typeof renderMathInElement !== 'function'){ setTimeout(renderMath, 200); return; }
+  renderMathInElement(document.body, {
+    delimiters: [
+      { left: '\\[', right: '\\]', display: true },
+      { left: '\\(', right: '\\)', display: false },
+    ],
+    throwOnError: false,
+  });
+}
+window.addEventListener('load', renderMath);
+
+/* ===================================================================
+   4. LIHAT CARA KERJANYA — STEPPER
+   Sistem: x + 2y = 8 ; x - y = 2
+   Titik potong P1: (0,4) dan (8,0)
+   Titik potong P2: (0,-2) dan (2,0)
+   Solusi: (4,2)
+   =================================================================== */
+const steps = [
+  {
+    title: 'Langkah 0 — Sistem yang mau digambar',
+    html: `<p>Kita punya sistem:</p>
+           <p><mark>x + 2y = 8</mark> (persamaan 1)</p>
+           <p><mark>x − y = 2</mark> (persamaan 2)</p>
+           <p>Tujuannya: gambar kedua garis ini di bidang koordinat yang sama, lalu baca titik potongnya.</p>`
+  },
+  {
+    title: 'Langkah 1 — Cari titik potong sumbu untuk persamaan 1',
+    html: `<p>Persamaan 1: x + 2y = 8</p>
+           <p>Anggap y = 0 → x = 8 → titik <b>(8, 0)</b></p>
+           <p>Anggap x = 0 → 2y = 8 → y = 4 → titik <b>(0, 4)</b></p>
+           <p>Dua titik ini cukup untuk menggambar garis pertama.</p>`
+  },
+  {
+    title: 'Langkah 2 — Cari titik potong sumbu untuk persamaan 2',
+    html: `<p>Persamaan 2: x − y = 2</p>
+           <p>Anggap y = 0 → x = 2 → titik <b>(2, 0)</b></p>
+           <p>Anggap x = 0 → −y = 2 → y = −2 → titik <b>(0, −2)</b></p>
+           <p>Dua titik ini cukup untuk menggambar garis kedua.</p>`
+  },
+  {
+    title: 'Langkah 3 — Gambar kedua garis, lalu baca titik potongnya',
+    html: `<p>Tandai keempat titik tadi, lalu tarik dua garis lurus yang melewatinya.</p>
+           <p>Kalau digambar dengan rapi, kedua garis itu akan berpotongan di titik <b>(4, 2)</b>. Tekan tombol "Putar Animasi Grafik" di bawah untuk melihat prosesnya.</p>`
+  },
+  {
+    title: 'Langkah 4 — Cek ke kedua persamaan awal',
+    html: `<p>Cek persamaan 1: 4 + 2(2) = 4 + 4 = 8 ✓</p>
+           <p>Cek persamaan 2: 4 − 2 = 2 ✓</p>
+           <p>Dua-duanya cocok, jadi penyelesaian sistem ini adalah <b>x = 4, y = 2</b>.</p>`
+  },
+];
+let curStep = 0;
+function renderStep(){
+  const s = steps[curStep];
+  document.getElementById('step-content').innerHTML =
+    '<div class="step-title">' + s.title + '</div>' + s.html;
+  const dotsWrap = document.getElementById('step-dots');
+  dotsWrap.innerHTML = '';
+  steps.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i === curStep ? ' active' : '');
+    dotsWrap.appendChild(d);
+  });
+  document.getElementById('btn-prev-step').disabled = curStep === 0;
+  document.getElementById('btn-next-step').disabled = curStep === steps.length - 1;
+}
+document.getElementById('btn-prev-step').addEventListener('click', () => {
+  if (curStep > 0){ curStep--; renderStep(); }
+});
+document.getElementById('btn-next-step').addEventListener('click', () => {
+  if (curStep < steps.length - 1){ curStep++; renderStep(); }
+});
+renderStep();
+
+/* ---- animasi grafik: titik potong sumbu muncul dulu, baru garis terbentuk ---- */
+const svgAnim = document.getElementById('svg-anim');
+const animScale = 22; // px per satuan
+const animOriginX = 40, animOriginY = 190;
+function animToXY(x, y){ return { x: animOriginX + x*animScale, y: animOriginY - y*animScale }; }
+
+function drawAnimGrid(){
+  let out = '';
+  for (let i = -1; i <= 8; i++){
+    const gx = animOriginX + i*animScale;
+    out += `<line x1="${gx}" y1="10" x2="${gx}" y2="${animOriginY}" stroke="#EEF2F7" stroke-width="1"/>`;
+  }
+  for (let j = -2; j <= 4; j++){
+    const gy = animOriginY - j*animScale;
+    out += `<line x1="10" y1="${gy}" x2="280" y2="${gy}" stroke="#EEF2F7" stroke-width="1"/>`;
+  }
+  out += `<line x1="10" y1="${animOriginY}" x2="280" y2="${animOriginY}" stroke="#94A3B8" stroke-width="1.5"/>`;
+  out += `<line x1="${animOriginX}" y1="10" x2="${animOriginX}" y2="210" stroke="#94A3B8" stroke-width="1.5"/>`;
+  out += `<text x="282" y="${animOriginY+4}" font-size="9" fill="#64748B">x</text>`;
+  out += `<text x="${animOriginX-14}" y="14" font-size="9" fill="#64748B">y</text>`;
+  return out;
+}
+
+function addDot(x, y, color){
+  const p = animToXY(x,y);
+  const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', 3.5);
+  c.setAttribute('fill', color);
+  svgAnim.appendChild(c);
+  return c;
+}
+function addLabel(x, y, txt, color, dx, dy){
+  const p = animToXY(x,y);
+  const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+  t.setAttribute('x', p.x+(dx||6)); t.setAttribute('y', p.y+(dy||-6));
+  t.setAttribute('font-size','9'); t.setAttribute('fill', color); t.setAttribute('font-weight','700');
+  t.textContent = txt;
+  svgAnim.appendChild(t);
+}
+function animLine(x1,y1,x2,y2,color,dur,onDone){
+  const p1 = animToXY(x1,y1), p2 = animToXY(x2,y2);
+  const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1', p1.x); line.setAttribute('y1', p1.y);
+  line.setAttribute('x2', p1.x); line.setAttribute('y2', p1.y);
+  line.setAttribute('stroke', color); line.setAttribute('stroke-width', '2.5');
+  svgAnim.appendChild(line);
+  const t0 = performance.now();
+  function step(ts){
+    const t = Math.min(1, (ts-t0)/dur);
+    line.setAttribute('x2', p1.x + (p2.x-p1.x)*t);
+    line.setAttribute('y2', p1.y + (p2.y-p1.y)*t);
+    if (t < 1){ requestAnimationFrame(step); } else if (onDone){ onDone(); }
+  }
+  requestAnimationFrame(step);
+}
+
+let animPlaying = false;
+function playGrafAnim(){
+  if (animPlaying) return;
+  animPlaying = true;
+  document.getElementById('btn-reset-graf').style.display = 'inline-block';
+  svgAnim.innerHTML = drawAnimGrid();
+
+  setTimeout(() => {
+    addDot(8,0,'#2563EB'); addLabel(8,0,'(8,0)','#2563EB');
+    setTimeout(() => {
+      addDot(0,4,'#2563EB'); addLabel(0,4,'(0,4)','#2563EB');
+      setTimeout(() => {
+        animLine(0,4, 8,0, '#2563EB', 600, () => {
+          addDot(2,0,'#0F172A'); addLabel(2,0,'(2,0)','#0F172A',6,14);
+          setTimeout(() => {
+            addDot(0,-2,'#0F172A'); addLabel(0,-2,'(0,-2)','#0F172A',6,14);
+            setTimeout(() => {
+              animLine(0,-2, 6,4, '#0F172A', 600, () => {
+                const dot = addDot(4,2,'#10B981');
+                dot.setAttribute('r', 0);
+                addLabel(4,2,'(4, 2)','#047857',8,-8);
+                let r = 0;
+                const grow = setInterval(() => {
+                  r += 0.6;
+                  dot.setAttribute('r', Math.min(r,5));
+                  if (r >= 5){ clearInterval(grow); animPlaying = false; }
+                }, 16);
+              });
+            }, 350);
+          }, 350);
+        });
+      }, 300);
+    }, 350);
+  }, 200);
+}
+document.getElementById('btn-play-graf').addEventListener('click', playGrafAnim);
+document.getElementById('btn-reset-graf').addEventListener('click', () => {
+  svgAnim.innerHTML = drawAnimGrid();
+  document.getElementById('btn-reset-graf').style.display = 'none';
+  animPlaying = false;
+});
+svgAnim.innerHTML = drawAnimGrid();
+
+/* ===================================================================
+   5. COBA SENDIRI — GRAFIK INTERAKTIF DUA GARIS + TITIK POTONG SUMBU
+   =================================================================== */
+const svgI = document.getElementById('svg-interaktif');
+const iScale = 14, iRange = 11; // sumbu -11..11
+const iOriginX = 160, iOriginY = 160;
+function iToXY(x, y){ return { x: iOriginX + x*iScale, y: iOriginY - y*iScale }; }
+
+function drawIGrid(){
+  let out = '';
+  for (let i = -iRange; i <= iRange; i++){
+    const gx = iOriginX + i*iScale;
+    out += `<line x1="${gx}" y1="0" x2="${gx}" y2="320" stroke="#F1F5F9" stroke-width="1"/>`;
+  }
+  for (let j = -iRange; j <= iRange; j++){
+    const gy = iOriginY - j*iScale;
+    out += `<line x1="0" y1="${gy}" x2="320" y2="${gy}" stroke="#F1F5F9" stroke-width="1"/>`;
+  }
+  out += `<line x1="0" y1="${iOriginY}" x2="320" y2="${iOriginY}" stroke="#94A3B8" stroke-width="1.5"/>`;
+  out += `<line x1="${iOriginX}" y1="0" x2="${iOriginX}" y2="320" stroke="#94A3B8" stroke-width="1.5"/>`;
+  out += `<text x="302" y="${iOriginY-4}" font-size="9" fill="#64748B">x</text>`;
+  out += `<text x="${iOriginX+4}" y="12" font-size="9" fill="#64748B">y</text>`;
+  return out;
+}
+
+function garisPoints(a, b, c){
+  const R = iRange;
+  const pts = [];
+  if (b !== 0){
+    [-R, R].forEach(x => { const y = (c - a*x)/b; if (y >= -R-0.01 && y <= R+0.01) pts.push([x,y]); });
+  }
+  if (a !== 0){
+    [-R, R].forEach(y => { const x = (c - b*y)/a; if (x >= -R-0.01 && x <= R+0.01) pts.push([x,y]); });
+  }
+  if (pts.length < 2) return null;
+  pts.sort((p,q) => p[0]-q[0] || p[1]-q[1]);
+  return [pts[0], pts[pts.length-1]];
+}
+
+function round2(n){ return Math.round(n*100)/100; }
+
+function interceptText(a,b,c){
+  let sx = (a !== 0) ? ('x = ' + round2(c/a)) : 'tidak ada (garis mendatar)';
+  let sy = (b !== 0) ? ('y = ' + round2(c/b)) : 'tidak ada (garis tegak)';
+  return 'Potong sumbu-x saat ' + sx + '  ·  Potong sumbu-y saat ' + sy;
+}
+
+function updateInteraktif(){
+  const a1 = +document.getElementById('s-a1').value;
+  const b1 = +document.getElementById('s-b1').value;
+  const c1 = +document.getElementById('s-c1').value;
+  const a2 = +document.getElementById('s-a2').value;
+  const b2 = +document.getElementById('s-b2').value;
+  const c2 = +document.getElementById('s-c2').value;
+
+  ['a1','b1','c1','a2','b2','c2'].forEach(k => {
+    document.getElementById('v-'+k).textContent = eval(k);
+  });
+
+  const fmtEq = (a,b,c) => a + 'x ' + (b>=0 ? '+ ' : '- ') + Math.abs(b) + 'y = ' + c;
+  document.getElementById('teks-p1').textContent = fmtEq(a1,b1,c1);
+  document.getElementById('teks-p2').textContent = fmtEq(a2,b2,c2);
+  document.getElementById('int-p1').textContent = interceptText(a1,b1,c1);
+  document.getElementById('int-p2').textContent = interceptText(a2,b2,c2);
+
+  let svgContent = drawIGrid();
+  const insightEl = document.getElementById('insight-box');
+  insightEl.classList.add('tampil');
+
+  const valid1 = !(a1===0 && b1===0);
+  const valid2 = !(a2===0 && b2===0);
+  if (!valid1 || !valid2){
+    insightEl.className = 'insight-box tampil sejajar';
+    insightEl.textContent = 'Koefisien x dan y tidak boleh sama-sama 0 pada satu persamaan — itu bukan garis.';
+    svgI.innerHTML = svgContent;
+    return;
+  }
+
+  const g1 = garisPoints(a1,b1,c1);
+  const g2 = garisPoints(a2,b2,c2);
+  if (g1){
+    const p1 = iToXY(g1[0][0], g1[0][1]), p2 = iToXY(g1[1][0], g1[1][1]);
+    svgContent += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#2563EB" stroke-width="2.5"/>`;
+  }
+  if (g2){
+    const p1 = iToXY(g2[0][0], g2[0][1]), p2 = iToXY(g2[1][0], g2[1][1]);
+    svgContent += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#0F172A" stroke-width="2.5"/>`;
+  }
+
+  // tandai titik potong sumbu tiap garis (kalau masih dalam jangkauan)
+  if (a1 !== 0 && Math.abs(c1/a1) <= iRange){ const p = iToXY(c1/a1, 0); svgContent += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#2563EB"/>`; }
+  if (b1 !== 0 && Math.abs(c1/b1) <= iRange){ const p = iToXY(0, c1/b1); svgContent += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#2563EB"/>`; }
+  if (a2 !== 0 && Math.abs(c2/a2) <= iRange){ const p = iToXY(c2/a2, 0); svgContent += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#0F172A"/>`; }
+  if (b2 !== 0 && Math.abs(c2/b2) <= iRange){ const p = iToXY(0, c2/b2); svgContent += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#0F172A"/>`; }
+
+  const D = a1*b2 - a2*b1;
+  if (Math.abs(D) > 1e-9){
+    const x = (c1*b2 - c2*b1)/D;
+    const y = (a1*c2 - a2*c1)/D;
+    if (Math.abs(x) <= iRange && Math.abs(y) <= iRange){
+      const sp = iToXY(x,y);
+      svgContent += `<circle cx="${sp.x}" cy="${sp.y}" r="5" fill="#10B981"/>`;
+      svgContent += `<text x="${sp.x+8}" y="${sp.y-8}" font-size="10" fill="#047857" font-weight="700">(${round2(x)}, ${round2(y)})</text>`;
+    }
+    insightEl.className = 'insight-box tampil satu';
+    insightEl.innerHTML = `🎯 Kedua garis <b>berpotongan</b> di satu titik: <b>x = ${round2(x)}, y = ${round2(y)}</b>. Sistem ini punya <b>tepat satu</b> penyelesaian.`;
+  } else {
+    const samaC = Math.abs(a1*c2 - a2*c1) < 1e-9 && Math.abs(b1*c2 - b2*c1) < 1e-9;
+    if (samaC){
+      insightEl.className = 'insight-box tampil berimpit';
+      insightEl.innerHTML = `♾️ Kedua garis <b>berimpit</b> (gradien dan garisnya sebenarnya sama). Sistem ini punya <b>tak hingga</b> penyelesaian.`;
+    } else {
+      insightEl.className = 'insight-box tampil sejajar';
+      insightEl.innerHTML = `🚫 Kedua garis punya <b>gradien sama tapi posisinya beda</b>, jadi <b>sejajar</b> dan tidak pernah bertemu. Sistem ini <b>tidak punya</b> penyelesaian.`;
+    }
+  }
+
+  svgI.innerHTML = svgContent;
+}
+['s-a1','s-b1','s-c1','s-a2','s-b2','s-c2'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updateInteraktif);
+});
+updateInteraktif();
+
+/* ===================================================================
+   6. CHALLENGE — VALIDASI JAWABAN
+   =================================================================== */
+function tampilFeedback(elId, benar, htmlBenar, htmlSalah){
+  const el = document.getElementById(elId);
+  el.classList.add('tampil');
+  el.classList.toggle('benar', benar);
+  el.classList.toggle('salah', !benar);
+  el.innerHTML = benar ? htmlBenar : htmlSalah;
+}
+
+function cekSoal1(){
+  if (!identitasLengkap()) return;
+  const x = parseFloat(document.getElementById('jwb1x').value);
+  const y = parseFloat(document.getElementById('jwb1y').value);
+  const benar = Math.abs(x-6) < 0.01 && Math.abs(y-6) < 0.01;
+  tampilFeedback('fb1', benar,
+    '✓ Benar! Saat y=0: x=6 → titik (6,0). Saat x=0: y=6 → titik (0,6).',
+    (isNaN(x)||isNaN(y)) ? 'Isi dulu kedua kotak jawaban ya.' :
+    '✗ Belum tepat. Untuk titik potong sumbu-x, ganti y dengan 0 di persamaan x+y=6, lalu selesaikan untuk x. Untuk titik potong sumbu-y, ganti x dengan 0, lalu selesaikan untuk y.');
+  kirimKeGuru(1, x, y, benar ? 'Benar' : 'Salah', 'status1');
+}
+
+function cekSoal2(){
+  if (!identitasLengkap()) return;
+  const x = parseFloat(document.getElementById('jwb2x').value);
+  const y = parseFloat(document.getElementById('jwb2y').value);
+  const benar = Math.abs(x-3) < 0.01 && Math.abs(y-1) < 0.01;
+  tampilFeedback('fb2', benar,
+    '✓ Benar! Garis 1 (lewat (0,4) dan (4,0)) persamaannya x+y=4. Garis 2 (lewat (0,-2) dan (2,0)) persamaannya x-y=2. Titik potongnya (3, 1) — cek: 3+1=4 ✓ dan 3-1=2 ✓.',
+    (isNaN(x)||isNaN(y)) ? 'Isi dulu kedua kotak jawaban ya.' :
+    '✗ Belum tepat. Coba susun dulu persamaan tiap garis dari dua titiknya (pakai cara titik potong sumbu yang sudah dipelajari, dibalik), baru selesaikan sistemnya dengan substitusi/eliminasi untuk memastikan titik potongnya presisi.');
+  kirimKeGuru(2, x, y, benar ? 'Benar' : 'Salah', 'status2');
+}
+
+function cekSoal3(){
+  if (!identitasLengkap()) return;
+  const y = parseFloat(document.getElementById('jwb3y').value);
+  const benar = Math.abs(y-4) < 0.01;
+  tampilFeedback('fb3', benar,
+    '✓ Benar! Gradien 2x+3y=12 adalah m=-2/3. Garis baru: y-0 = -2/3(x-6) → y = -2/3x+4. Saat x=0, y=4.',
+    isNaN(y) ? 'Isi dulu kotak jawaban ya.' :
+    '✗ Belum tepat. Ingat: garis sejajar punya gradien SAMA. Cari dulu gradien dari 2x+3y=12 (m=-a/b=-2/3), lalu pakai gradien itu bersama titik (6,0) untuk menyusun persamaan garis barunya, baru cari nilai y saat x=0.');
+  kirimKeGuru(3, y, '', benar ? 'Benar' : 'Salah', 'status3');
+}
+
+/* ===================================================================
+   9. REFLEKSI
+   =================================================================== */
+function kirimRefleksi(){
+  if (!identitasLengkap()) return;
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  const statusEl = document.getElementById('status-refleksi');
+  if (!r1 || !r2){
+    statusEl.textContent = 'Isi dulu kedua kolom refleksi sebelum dikirim ya.';
+    statusEl.style.color = 'var(--error-text)';
+    return;
+  }
+  statusEl.style.color = 'var(--text-sec)';
+  kirimKeGuru('Refleksi', r1, r2, '-', 'status-refleksi');
+}
+</script>
+</body>
+</html>
