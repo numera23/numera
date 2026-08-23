@@ -18,6 +18,12 @@
    materi     : nama materi/bab terkait, tampil sebagai label kecil
                 di kartu
    deskripsi  : deskripsi singkat 1 kalimat
+   tags       : kata kunci materi untuk pencarian. Gunakan array
+                huruf kecil. Satu game boleh memiliki beberapa tag.
+                Tags digunakan HANYA untuk pencarian dan TIDAK
+                ditampilkan pada kartu. Aman dikosongkan ([]) atau
+                dihapus untuk game lama — sistem pencarian tetap
+                berjalan tanpa error.
    link       : nama file HTML game (kalau satu folder dengan halaman
                 arena) atau URL lengkap kalau di-hosting terpisah.
                 Boleh dibiarkan "TEMPEL LINK GAME DI SINI" kalau belum
@@ -44,6 +50,12 @@
    platform   : HARUS salah satu dari "Blooket", "Kahoot", "ZEP",
                 "Quizizz" — selain itu otomatis masuk "Lainnya"
    deskripsi  : deskripsi singkat 1 kalimat
+   tags       : kata kunci materi untuk pencarian. Gunakan array
+                huruf kecil. Satu game boleh memiliki beberapa tag.
+                Tags digunakan HANYA untuk pencarian dan TIDAK
+                ditampilkan pada kartu. Aman dikosongkan ([]) atau
+                dihapus untuk game lama — sistem pencarian tetap
+                berjalan tanpa error.
    link       : URL lengkap game/kuis tsb (link untuk dimainkan siswa),
                 mis. "https://play.blooket.com/play/xxxxxxx"
    ------------------------------------------------------------
@@ -54,6 +66,7 @@ const NUMERA_GAMES = [
         nama: "⚙ Mesin Matematika",
         materi: "Penjumlahan Pengurangan Komposisi Fungsi",
         deskripsi: "Masukkan angka agar mesin berjalan.",
+        tags: ["fungsi", "operasi fungsi", "komposisi fungsi"],
         link: "game_mesin_jumlah_kurang_komposisi.html",
         tanggal: "2026-08-20",
         thumbnail: "",
@@ -65,6 +78,7 @@ const NUMERA_GAMES = [
         nama: "🧩 Susun Langkah",
         materi: "Fungsi Invers",
         deskripsi: "Urutkan langkahnya, pecahkan masalahnya.",
+        tags: ["fungsi", "fungsi invers"],
         link: "game_susunlangkah_fungsiinvers.html",
         tanggal: "2026-08-21",
         thumbnail: "",
@@ -76,10 +90,11 @@ const NUMERA_GAMES = [
         nama: "🧩 Susun Langkah",
         materi: "Substitusi SPLDV",
         deskripsi: "Urutkan tahapannya.",
+        tags: ["spldv", "substitusi", "sistem persamaan linear dua variabel"],
         link: "game_susunlangkah_SPLDV_substitusi.html",
         tanggal: "2026-08-23",
         thumbnail: "",
-        warna: "#EC4899",
+        warna: "##EC4899",
         emoji: "🧩",
         badge: "Baru"
     },
@@ -87,6 +102,7 @@ const NUMERA_GAMES = [
         nama: "🔐 Escape Room",
         materi: "Polinomial (Semua Materi)",
         deskripsi: "Pecahkan soal matematika dan buka jalan keluar.",
+        tags: ["polinomial", "teorema sisa", "pembagian polinom", "akar polinomial", "faktor polinomial"],
         link: "game_escape_room_polinomial.html",
         tanggal: "2026-08-22",
         thumbnail: "",
@@ -98,6 +114,7 @@ const NUMERA_GAMES = [
         nama: "🎯 Tembak Target",
         materi: "Kedudukan Titik Terhadap Lingkaran",
         deskripsi: "Bidik target sesuai jawaban yang benar.",
+        tags: ["lingkaran", "kedudukan titik", "persamaan lingkaran"],
         link: "game_tembak_target_kedudukan_titik.html",
         tanggal: "2026-08-22",
         thumbnail: "",
@@ -114,6 +131,7 @@ const GAMES = [
         materi: "Polinomial",
         platform: "Blooket",
         deskripsi: "Uji pemahamanmu tentang akar dan faktor polinomial melalui kuis seru.",
+        tags: ["polinomial", "akar polinomial", "faktor polinomial"],
         link: "TEMPEL LINK GAME DI SINI"
     },
     {
@@ -121,6 +139,7 @@ const GAMES = [
         materi: "Polinomial",
         platform: "Kahoot",
         deskripsi: "Kuis cepat seputar penjumlahan, pengurangan, dan perkalian polinomial.",
+        tags: ["polinomial", "operasi polinomial", "penjumlahan polinomial", "pengurangan polinomial", "perkalian polinomial"],
         link: "TEMPEL LINK GAME DI SINI"
     },
     {
@@ -128,6 +147,7 @@ const GAMES = [
         materi: "Polinomial",
         platform: "ZEP",
         deskripsi: "Jelajahi dunia ZEP sambil menjawab soal-soal polinomial.",
+        tags: ["polinomial", "sifat polinomial"],
         link: "TEMPEL LINK GAME DI SINI"
     },
     {
@@ -135,6 +155,7 @@ const GAMES = [
         materi: "Persamaan Lingkaran",
         platform: "Kahoot",
         deskripsi: "Kuis interaktif seputar persamaan lingkaran.",
+        tags: ["lingkaran", "persamaan lingkaran"],
         link: "TEMPEL LINK GAME DI SINI"
     },
     {
@@ -142,6 +163,7 @@ const GAMES = [
         materi: "Persamaan Lingkaran",
         platform: "ZEP",
         deskripsi: "Jelajahi konsep pusat dan jari-jari melalui permainan interaktif.",
+        tags: ["lingkaran", "pusat lingkaran", "jari-jari", "persamaan lingkaran"],
         link: "TEMPEL LINK GAME DI SINI"
     },
     {
@@ -149,6 +171,7 @@ const GAMES = [
         materi: "Aljabar",
         platform: "Quizizz",
         deskripsi: "Latihan cepat operasi aljabar.",
+        tags: ["aljabar", "operasi aljabar"],
         link: "TEMPEL LINK GAME DI SINI"
     },
     {
@@ -156,6 +179,7 @@ const GAMES = [
         materi: "Campuran",
         platform: "Quizizz",
         deskripsi: "Kuis seru yang mencakup berbagai materi matematika.",
+        tags: ["campuran", "matematika umum"],
         link: "TEMPEL LINK GAME DI SINI"
     }
 ];
