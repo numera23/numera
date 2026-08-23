@@ -111,6 +111,18 @@ const NUMERA_GAMES = [
         badge: ""
     },
    {
+        nama: "🕵️‍♀️ Detektif Matematika",
+        materi: "SPLDV",
+        deskripsi: "Kumpulkan petunjuk, hubungkan angka-angkanya, dan temukan kesimpulan yang benar.",
+        tags: ["sistem persamaan linear dua variabel", "spldv", "penerapan spldv", "kasus", "SPLDV"],
+        link: "game_detektif_penerapanspldv.html",
+        tanggal: "2026-08-23",
+        thumbnail: "",
+        warna: "#F97316",
+        emoji: "🕵️‍♀️",
+        badge: ""
+    },
+   {
         nama: "🎯 Tembak Target",
         materi: "Kedudukan Titik",
         deskripsi: "Bidik target sesuai jawaban persamaan lingkaran yang benar.",
