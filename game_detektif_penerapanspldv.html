@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>🕵️ Detektif Matematika — NUMERA</title>
+<style>
+  :root{
+    --blue:#2563EB;
+    --blue-dark:#1D4ED8;
+    --blue-light:#DBEAFE;
+    --navy-900:#0B1220;
+    --navy-800:#111a2e;
+    --navy-700:#1a2540;
+    --cream:#FBF7EE;
+    --cream-dim:#F1EAD9;
+    --ink:#1E293B;
+    --ink-soft:#475569;
+    --gray:#8A93A6;
+    --green:#16A34A;
+    --green-light:#DCFCE7;
+    --red:#DC2626;
+    --red-light:#FEE2E2;
+    --gold:#F5B942;
+    --gold-dark:#B4790A;
+    --radius-lg:20px;
+    --radius-md:14px;
+    --radius-sm:10px;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0; padding:0; width:100%; min-height:100%;
+    background:var(--navy-900);
+    overflow-x:hidden; overflow-y:auto;
+    -webkit-text-size-adjust:100%;
+  }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);
+    display:flex; justify-content:center;
+  }
+  #app{ width:100%; max-width:520px; min-height:100vh; position:relative; background:var(--cream); }
+
+  button{ font-family:inherit; border:none; cursor:pointer; -webkit-appearance:none; touch-action:manipulation; }
+  input{ font-family:inherit; }
+
+  .screen{ display:none; min-height:100vh; flex-direction:column; }
+  .screen.active{ display:flex; }
+
+  /* ---------- decorative corkboard texture ---------- */
+  .corkboard{
+    position:relative; background:
+      radial-gradient(circle at 20% 20%, rgba(37,99,235,0.18), transparent 45%),
+      radial-gradient(circle at 80% 0%, rgba(245,185,66,0.10), transparent 40%),
+      var(--navy-900);
+    color:#EAF0FF;
+    padding:28px 22px 26px;
+    overflow:hidden;
+  }
+  .corkboard::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:26px 26px;
+    opacity:0.5;
+  }
+  .lamp-glow{
+    position:absolute; top:-60px; left:50%; transform:translateX(-50%);
+    width:260px; height:260px; border-radius:50%;
+    background:radial-gradient(circle, rgba(245,185,66,0.35), transparent 65%);
+    pointer-events:none;
+  }
+
+  /* ---------- start screen ---------- */
+  #screen-start .top{ text-align:center; padding-top:calc(18px + var(--safe-top)); position:relative; z-index:1; }
+  .badge-eyebrow{
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(37,99,235,0.18); border:1px solid rgba(59,130,246,0.4);
+    color:#BFD3FF; font-size:12px; font-weight:700; letter-spacing:0.08em;
+    padding:6px 12px; border-radius:999px; text-transform:uppercase;
+  }
+  .title-hero{ font-size:30px; font-weight:800; margin:14px 0 6px; line-height:1.15; color:#fff; }
+  .title-hero .accent{ color:var(--gold); }
+  .subtitle-hero{ font-size:14.5px; color:#AFC0E0; line-height:1.55; margin:0 auto; max-width:340px; }
+
+  .magnifier-scene{
+    position:relative; height:150px; margin:22px auto 6px; width:100%;
+    display:flex; align-items:center; justify-content:center; z-index:1;
+  }
+  .magnifier-scene svg{ width:150px; height:150px; }
+
+  .form-card{
+    background:var(--cream); border-radius:26px 26px 0 0;
+    margin-top:18px; padding:26px 22px calc(26px + var(--safe-bottom));
+    flex:1; position:relative; z-index:1;
+    box-shadow:0 -12px 30px rgba(0,0,0,0.25);
+  }
+  .field-label{ font-size:13px; font-weight:700; color:var(--ink-soft); margin:0 0 8px; display:block; }
+  .field-input{
+    width:100%; padding:15px 16px; border-radius:var(--radius-md);
+    border:1.5px solid #E4DCC8; background:#fff; font-size:16px; color:var(--ink);
+    margin-bottom:18px; outline:none;
+  }
+  .field-input:focus{ border-color:var(--blue); box-shadow:0 0 0 4px var(--blue-light); }
+
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:16px 18px; border-radius:16px;
+    font-size:16px; font-weight:800; letter-spacing:0.01em;
+    min-height:54px; transition:transform .12s ease, opacity .12s ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{ background:var(--blue); color:#fff; box-shadow:0 8px 20px rgba(37,99,235,0.35); }
+  .btn-primary[disabled]{ opacity:0.45; box-shadow:none; }
+  .btn-ghost{ background:#fff; color:var(--blue); border:1.5px solid var(--blue-light); }
+  .btn-dark{ background:var(--navy-900); color:#fff; }
+  .btn-success{ background:var(--green); color:#fff; box-shadow:0 8px 20px rgba(22,163,74,0.3); }
+
+  .credit-line{ text-align:center; font-size:11.5px; color:var(--gray); margin-top:16px; }
+
+  /* ---------- game screen ---------- */
+  #screen-game{ min-height:100vh; }
+  .game-header{
+    background:var(--navy-900); color:#fff;
+    padding:calc(14px + var(--safe-top)) 16px 14px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    position:sticky; top:0; z-index:20;
+  }
+  .header-left{ display:flex; flex-direction:column; gap:6px; flex:1; min-width:0; }
+  .case-counter{ font-size:12.5px; font-weight:700; color:#9FB3DD; }
+  .progress-track{ height:6px; border-radius:99px; background:rgba(255,255,255,0.12); overflow:hidden; }
+  .progress-fill{ height:100%; background:linear-gradient(90deg,var(--blue),#60A5FA); border-radius:99px; transition:width .4s ease; }
+  .header-right{ display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .score-chip{
+    display:flex; align-items:center; gap:5px;
+    background:rgba(245,185,66,0.16); border:1px solid rgba(245,185,66,0.4);
+    color:var(--gold); font-weight:800; font-size:13.5px;
+    padding:7px 11px; border-radius:999px;
+  }
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%;
+    background:rgba(255,255,255,0.09); color:#fff; font-size:16px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+
+  #game-content{ flex:1; padding:18px 16px calc(110px + var(--safe-bottom)); }
+
+  .story-card{
+    background:var(--navy-800); color:#EAF0FF; border-radius:var(--radius-lg);
+    padding:18px 18px 20px; margin-bottom:16px; position:relative; overflow:hidden;
+  }
+  .story-card::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(circle at 90% -10%, rgba(37,99,235,0.35), transparent 55%);
+  }
+  .story-kicker{ font-size:11.5px; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; position:relative; }
+  .story-title{ font-size:19px; font-weight:800; margin:0 0 8px; position:relative; }
+  .story-text{ font-size:14px; line-height:1.6; color:#C6D2EE; margin:0; position:relative; }
+
+  .section-label{
+    font-size:13px; font-weight:800; color:var(--ink-soft);
+    text-transform:uppercase; letter-spacing:0.05em;
+    margin:4px 2px 10px; display:flex; align-items:center; justify-content:space-between;
+  }
+  .section-label .count{ color:var(--blue); font-weight:800; }
+
+  .clue-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px; }
+  .clue-card{
+    background:#fff; border:1.5px solid #ECE4D0; border-radius:var(--radius-md);
+    padding:16px 12px; text-align:center; position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    min-height:108px; justify-content:center;
+  }
+  .clue-card .emoji{ font-size:30px; }
+  .clue-card .name{ font-size:13px; font-weight:700; color:var(--ink); line-height:1.3; }
+  .clue-card.revealed{ border-color:var(--green); background:var(--green-light); }
+  .clue-card .check{
+    position:absolute; top:8px; right:8px; width:20px; height:20px; border-radius:50%;
+    background:var(--green); color:#fff; font-size:12px; display:flex; align-items:center; justify-content:center;
+  }
+  .clue-card .lens{
+    position:absolute; top:8px; right:8px; width:22px; height:22px; border-radius:50%;
+    background:var(--blue-light); color:var(--blue); font-size:12px; display:flex; align-items:center; justify-content:center;
+  }
+
+  .cta-sticky-wrap{ margin-top:6px; }
+  .hint-note{
+    background:var(--cream-dim); border:1px dashed #D8CBA8; border-radius:var(--radius-md);
+    padding:12px 14px; font-size:12.5px; color:var(--ink-soft); margin-bottom:14px; line-height:1.5;
+  }
+
+  .question-card{
+    background:#fff; border:1.5px solid #ECE4D0; border-radius:var(--radius-lg);
+    padding:18px; margin-bottom:16px;
+  }
+  .question-eyebrow{ font-size:12px; font-weight:800; color:var(--blue); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; }
+  .question-text{ font-size:16px; font-weight:700; line-height:1.5; color:var(--ink); margin:0; }
+
+  .answer-display{
+    background:var(--navy-900); color:#fff; border-radius:var(--radius-md);
+    padding:16px; font-size:24px; font-weight:800; text-align:right;
+    letter-spacing:0.02em; margin-bottom:14px; min-height:58px;
+    display:flex; align-items:center; justify-content:flex-end;
+  }
+  .answer-display .placeholder{ color:#5B6785; font-size:15px; font-weight:600; }
+
+  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+  .keypad button{
+    background:#fff; border:1.5px solid #ECE4D0; border-radius:var(--radius-md);
+    font-size:19px; font-weight:700; color:var(--ink); padding:16px 0; min-height:52px;
+  }
+  .keypad button:active{ background:var(--blue-light); }
+  .keypad button.key-action{ background:var(--navy-900); color:#fff; border-color:var(--navy-900); }
+  .keypad button.key-submit{ background:var(--blue); color:#fff; border-color:var(--blue); grid-column:span 3; font-size:16px; }
+  .keypad button.key-submit[disabled]{ opacity:0.4; }
+
+  .suspect-grid{ display:flex; flex-direction:column; gap:12px; margin-bottom:10px; }
+  .suspect-card{
+    background:#fff; border:1.5px solid #ECE4D0; border-radius:var(--radius-md);
+    padding:14px 16px; display:flex; align-items:center; gap:12px; text-align:left;
+    min-height:60px;
+  }
+  .suspect-card .avatar{
+    width:44px; height:44px; border-radius:50%; background:var(--blue-light); color:var(--blue);
+    display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;
+  }
+  .suspect-card .info{ flex:1; min-width:0; }
+  .suspect-card .name{ font-size:14.5px; font-weight:800; color:var(--ink); }
+  .suspect-card .detail{ font-size:12.5px; color:var(--ink-soft); margin-top:2px; line-height:1.4; }
+  .suspect-card:active{ background:var(--blue-light); }
+
+  /* ---------- feedback ---------- */
+  .feedback-wrap{ text-align:center; padding:10px 4px 6px; }
+  .feedback-icon{
+    width:96px; height:96px; border-radius:50%; margin:6px auto 18px;
+    display:flex; align-items:center; justify-content:center; font-size:44px;
+    animation:pop .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  .feedback-icon.correct{ background:var(--green-light); color:var(--green); }
+  .feedback-icon.wrong{ background:var(--red-light); color:var(--red); animation:shake .45s ease; }
+  @keyframes pop{ 0%{transform:scale(0);opacity:0;} 70%{transform:scale(1.12);opacity:1;} 100%{transform:scale(1);} }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);} 40%{transform:translateX(8px);} 60%{transform:translateX(-6px);} 80%{transform:translateX(6px);} }
+  .feedback-title{ font-size:21px; font-weight:800; margin:0 0 6px; }
+  .feedback-title.correct{ color:var(--green); }
+  .feedback-title.wrong{ color:var(--red); }
+  .feedback-points{ font-size:14px; font-weight:800; color:var(--gold-dark); margin-bottom:16px; }
+  .explain-card{
+    background:var(--cream-dim); border-radius:var(--radius-md); padding:16px;
+    text-align:left; font-size:13.5px; line-height:1.65; color:var(--ink); margin-bottom:18px;
+    white-space:pre-line;
+  }
+  .explain-card b{ color:var(--blue); }
+
+  /* ---------- notebook (catatan tab) ---------- */
+  .notebook-card{
+    background:#FFF6D6; border:1px solid #EAD98A; border-radius:var(--radius-lg);
+    padding:18px; margin-bottom:16px; position:relative;
+    box-shadow:0 6px 14px rgba(0,0,0,0.06);
+  }
+  .notebook-title{ font-size:15px; font-weight:800; color:#5B4A0E; margin:0 0 10px; }
+  .notebook-line{ font-size:13.5px; line-height:1.6; color:#5B4A0E; padding:7px 0; border-bottom:1px dashed #E3D08C; }
+  .notebook-line:last-child{ border-bottom:none; }
+  .notebook-empty{ font-size:13px; color:#9A8536; font-style:italic; }
+
+  /* ---------- profile tab ---------- */
+  .profile-card{
+    background:#fff; border:1.5px solid #ECE4D0; border-radius:var(--radius-lg);
+    padding:20px; text-align:center; margin-bottom:16px;
+  }
+  .profile-avatar{
+    width:66px; height:66px; border-radius:50%; background:var(--blue-light); color:var(--blue);
+    font-size:28px; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;
+  }
+  .profile-name{ font-size:17px; font-weight:800; color:var(--ink); }
+  .profile-class{ font-size:13px; color:var(--ink-soft); margin-top:2px; }
+  .stat-row{ display:flex; gap:10px; margin-top:18px; }
+  .stat-box{ flex:1; background:var(--cream-dim); border-radius:var(--radius-md); padding:12px 6px; }
+  .stat-box .num{ font-size:19px; font-weight:800; color:var(--ink); }
+  .stat-box .lbl{ font-size:10.5px; color:var(--ink-soft); font-weight:700; text-transform:uppercase; margin-top:2px; }
+
+  /* ---------- bottom nav ---------- */
+  .bottom-nav{
+    position:fixed; left:50%; transform:translateX(-50%); bottom:0; width:100%; max-width:520px;
+    background:#fff; border-top:1px solid #ECE4D0;
+    display:flex; padding:8px 6px calc(8px + var(--safe-bottom));
+    z-index:25;
+  }
+  .nav-item{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:none; padding:6px 2px; color:var(--gray); font-size:10.5px; font-weight:700;
+    min-height:48px; justify-content:center;
+  }
+  .nav-item .nav-icon{ font-size:19px; }
+  .nav-item.active{ color:var(--blue); }
+
+  /* ---------- end screen ---------- */
+  #screen-end .corkboard{ flex:1; display:flex; flex-direction:column; padding-top:calc(34px + var(--safe-top)); }
+  .trophy-wrap{ text-align:center; margin-bottom:6px; position:relative; z-index:1; }
+  .trophy-emoji{ font-size:64px; display:block; margin-bottom:10px; }
+  .end-title{ font-size:24px; font-weight:800; color:#fff; margin:0 0 6px; }
+  .end-sub{ font-size:13.5px; color:#AFC0E0; margin:0 0 24px; }
+  .end-card{
+    background:var(--cream); border-radius:22px; padding:22px; position:relative; z-index:1;
+    margin-bottom:16px;
+  }
+  .end-stat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px; }
+  .end-stat{ background:var(--cream-dim); border-radius:var(--radius-md); padding:14px; display:flex; align-items:center; gap:10px; }
+  .end-stat .ico{ font-size:20px; }
+  .end-stat .val{ font-size:16px; font-weight:800; color:var(--ink); }
+  .end-stat .lbl{ font-size:11px; color:var(--ink-soft); font-weight:700; }
+  .end-case-title{ font-size:16px; font-weight:800; color:var(--ink); margin:0 0 4px; }
+  .end-case-sub{ font-size:12.5px; color:var(--ink-soft); margin:0; }
+  .end-actions{ padding:0 22px calc(24px + var(--safe-bottom)); position:relative; z-index:1; display:flex; flex-direction:column; gap:10px; }
+
+  .review-list{ display:flex; flex-direction:column; gap:8px; margin-top:8px; }
+  .review-row{ display:flex; align-items:center; gap:10px; font-size:12.5px; padding:8px 0; border-bottom:1px solid #EFE7D2; }
+  .review-row:last-child{ border-bottom:none; }
+  .review-row .dot{ width:22px; height:22px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; color:#fff; }
+  .review-row .dot.ok{ background:var(--green); }
+  .review-row .dot.no{ background:var(--red); }
+  .review-row .rname{ flex:1; color:var(--ink); font-weight:600; }
+
+  .hidden{ display:none !important; }
+
+  @media (max-width:360px){
+    .title-hero{ font-size:26px; }
+    .clue-card .emoji{ font-size:26px; }
+    .story-title{ font-size:17.5px; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- =================== SCREEN 1: START =================== -->
+  <section id="screen-start" class="screen active corkboard">
+    <div class="lamp-glow"></div>
+    <div class="top">
+      <span class="badge-eyebrow">🔎 Numera Investigation Unit</span>
+      <h1 class="title-hero">Detektif<br><span class="accent">Matematika</span></h1>
+      <p class="subtitle-hero">Ada kasus yang harus dipecahkan. Kumpulkan petunjuk, hubungkan angka-angkanya, dan temukan kesimpulan yang benar.</p>
+    </div>
+    <div class="magnifier-scene">
+      <svg viewBox="0 0 150 150" fill="none">
+        <circle cx="62" cy="62" r="38" stroke="#F5B942" stroke-width="6"/>
+        <line x1="88" y1="88" x2="128" y2="128" stroke="#F5B942" stroke-width="9" stroke-linecap="round"/>
+        <circle cx="62" cy="62" r="38" fill="#2563EB" fill-opacity="0.12"/>
+        <text x="62" y="72" font-size="30" text-anchor="middle" fill="#EAF0FF" font-family="inherit">?</text>
+      </svg>
+    </div>
+    <div class="form-card">
+      <label class="field-label" for="input-name">Nama Kamu</label>
+      <input id="input-name" class="field-input" type="text" placeholder="Tulis nama lengkap..." maxlength="40" autocomplete="off">
+      <label class="field-label" for="input-class">Kelas</label>
+      <input id="input-class" class="field-input" type="text" placeholder="Contoh: XI IPA 2" maxlength="20" autocomplete="off">
+      <button id="btn-start" class="btn btn-primary">🕵️ MULAI INVESTIGASI</button>
+      <p class="credit-line">10 kasus menanti · Numera Math Detective</p>
+    </div>
+  </section>
+
+  <!-- =================== SCREEN 2: GAME =================== -->
+  <section id="screen-game" class="screen">
+    <header class="game-header">
+      <div class="header-left">
+        <span class="case-counter" id="hdr-case-counter">Kasus 1/10</span>
+        <div class="progress-track"><div class="progress-fill" id="hdr-progress" style="width:0%"></div></div>
+      </div>
+      <div class="header-right">
+        <span class="score-chip">⭐ <span id="hdr-score">0</span></span>
+        <button class="icon-btn" id="btn-mute" aria-label="Mute">🔊</button>
+      </div>
+    </header>
+
+    <main id="game-content"></main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-tab="kasus"><span class="nav-icon">📁</span>Kasus</button>
+      <button class="nav-item" data-tab="petunjuk"><span class="nav-icon">💡</span>Petunjuk</button>
+      <button class="nav-item" data-tab="catatan"><span class="nav-icon">📝</span>Catatan</button>
+      <button class="nav-item" data-tab="profil"><span class="nav-icon">🧑</span>Profil</button>
+    </nav>
+  </section>
+
+  <!-- =================== SCREEN 3: END =================== -->
+  <section id="screen-end" class="screen corkboard">
+    <div class="lamp-glow"></div>
+    <div class="trophy-wrap">
+      <span class="trophy-emoji" id="end-emoji">🏆</span>
+      <h2 class="end-title" id="end-title">KASUS TERPECAHKAN!</h2>
+      <p class="end-sub" id="end-subtitle">Semua petunjuk berhasil kamu hubungkan.</p>
+    </div>
+    <div class="end-card">
+      <p class="end-case-title">Ringkasan Investigasi</p>
+      <p class="end-case-sub" id="end-player-line">—</p>
+      <div class="end-stat-grid">
+        <div class="end-stat"><span class="ico">⭐</span><div><div class="val" id="end-score">0</div><div class="lbl">Skor Akhir</div></div></div>
+        <div class="end-stat"><span class="ico">✅</span><div><div class="val" id="end-correct">0/10</div><div class="lbl">Kasus Benar</div></div></div>
+      </div>
+      <div class="review-list" id="end-review"></div>
+    </div>
+    <div class="end-actions">
+      <button class="btn btn-primary" id="btn-restart">🔁 MAIN LAGI</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================================
+   BANK KASUS
+   EDIT BAGIAN INI UNTUK MENGGANTI SOAL
+   Setiap kasus: { id, title, story, locations:[{id,name,icon,clue}],
+                    type:'numeric'|'choice', question, options?, answer,
+                    tolerance?, explainCorrect, explainWrong, points }
+   Untuk type 'numeric': answer berupa angka, tolerance opsional (default 0.01)
+   Untuk type 'choice': options = [{id,name,icon,detail}], answer = id opsi benar
+   ========================================================================= */
+const CASES = [
+  {
+    id:"c1",
+    title:"Selisih Kembalian Toko Alat Tulis",
+    story:"Kasir toko alat tulis sekolah bingung karena catatan pembelian sore ini tidak cocok dengan uang di laci kasir. Selidiki dua nota pembelian untuk menemukan harga sebenarnya tiap barang.",
+    locations:[
+      {id:"nota1", name:"Nota Pembeli A", icon:"🧾", clue:"Nota pertama: 2 pensil + 3 buku tulis = Rp16.000."},
+      {id:"nota2", name:"Nota Pembeli B", icon:"🧾", clue:"Nota kedua: 1 pensil + 1 buku tulis = Rp6.000."},
+      {id:"kasir", name:"Catatan Kasir", icon:"💳", clue:"\"Kita perlu tahu harga satu buku tulis untuk mencocokkan laci kasir.\""}
+    ],
+    type:"numeric",
+    question:"Berapa harga satu buku tulis (dalam rupiah)?",
+    answer:4000,
+    explainCorrect:"Misalkan pensil = p, buku = b.\n2p + 3b = 16.000\np + b = 6.000 → p = 6.000 − b\nSubstitusi: 2(6.000−b) + 3b = 16.000\n12.000 − 2b + 3b = 16.000\nb = <b>Rp4.000</b>",
+    explainWrong:"p + b = 6.000 → p = 6.000−b. Substitusi ke persamaan pertama:\n2(6.000−b)+3b = 16.000 → b = <b>Rp4.000</b>",
+    points:10
+  },
+  {
+    id:"c2",
+    title:"Selisih Usia di Kartu Keluarga",
+    story:"Sebuah kartu keluarga yang tercecer menjadi petunjuk penting kasus hari ini. Cocokkan dua informasi usia untuk mengungkap usia sang anak.",
+    locations:[
+      {id:"kartu", name:"Kartu Keluarga", icon:"🪪", clue:"Jumlah usia ayah dan anak adalah 50 tahun."},
+      {id:"buku-tabungan", name:"Buku Tabungan", icon:"📔", clue:"Selisih usia ayah dan anak adalah 24 tahun."},
+      {id:"catatan-detektif", name:"Catatan Detektif", icon:"🕵️", clue:"\"Kita hanya perlu tahu usia anak untuk melengkapi laporan.\""}
+    ],
+    type:"numeric",
+    question:"Berapa usia anak tersebut?",
+    answer:13,
+    explainCorrect:"Misalkan usia ayah = A, usia anak = N.\nA + N = 50\nA − N = 24\nJumlahkan kedua persamaan: 2A = 74 → A = 37\nN = 50 − 37 = <b>13 tahun</b>",
+    explainWrong:"A + N = 50 dan A − N = 24 → 2A = 74 → A = 37 → N = 50−37 = <b>13 tahun</b>",
+    points:10
+  },
+  {
+    id:"c3",
+    title:"Tiket Bioskop yang Tertukar",
+    story:"Panitia study tour salah mencatat total pembayaran tiket bioskop. Gunakan dua struk pembayaran untuk menemukan harga tiket dewasa.",
+    locations:[
+      {id:"struk1", name:"Struk Rombongan 1", icon:"🎫", clue:"Struk pertama: 3 tiket dewasa + 2 tiket anak = Rp130.000."},
+      {id:"struk2", name:"Struk Rombongan 2", icon:"🎟️", clue:"Struk kedua: 1 tiket dewasa + 1 tiket anak = Rp50.000."},
+      {id:"panitia", name:"Catatan Panitia", icon:"📋", clue:"\"Kita perlu tahu harga satu tiket dewasa untuk laporan keuangan.\""}
+    ],
+    type:"numeric",
+    question:"Berapa harga satu tiket dewasa?",
+    answer:30000,
+    explainCorrect:"Misalkan tiket dewasa = d, tiket anak = a.\nd + a = 50.000 → a = 50.000 − d\n3d + 2a = 130.000\n3d + 2(50.000−d) = 130.000\n3d + 100.000 − 2d = 130.000\nd = <b>Rp30.000</b>",
+    explainWrong:"a = 50.000−d. Substitusi: 3d + 2(50.000−d) = 130.000 → d = <b>Rp30.000</b>",
+    points:10
+  },
+  {
+    id:"c4",
+    title:"Parkiran Sekolah yang Penuh Sesak",
+    story:"Petugas parkir kebingungan menghitung jumlah motor dan mobil yang terparkir hari ini. Hitung dari total kendaraan dan total roda yang tercatat.",
+    locations:[
+      {id:"karcis", name:"Karcis Parkir", icon:"🎫", clue:"Total kendaraan yang masuk hari ini adalah 60."},
+      {id:"laporan-roda", name:"Laporan Petugas", icon:"🛞", clue:"Total roda seluruh kendaraan yang terparkir adalah 176 (motor beroda 2, mobil beroda 4)."},
+      {id:"papan-parkir", name:"Papan Info Parkir", icon:"🅿️", clue:"\"Kami perlu tahu ada berapa mobil yang terparkir hari ini.\""}
+    ],
+    type:"numeric",
+    question:"Berapa jumlah mobil yang terparkir?",
+    answer:28,
+    explainCorrect:"Misalkan motor = m, mobil = c.\nm + c = 60 → m = 60 − c\n2m + 4c = 176\n2(60−c) + 4c = 176\n120 − 2c + 4c = 176\n2c = 56 → c = <b>28</b>",
+    explainWrong:"m = 60−c. Substitusi: 2(60−c)+4c = 176 → 2c = 56 → c = <b>28</b>",
+    points:10
+  },
+  {
+    id:"c5",
+    title:"Nota Kantin yang Basah Kehujanan",
+    story:"Nota pembelian di kantin basah terkena hujan dan sebagian angkanya luntur. Untungnya masih ada dua transaksi yang bisa dibaca.",
+    locations:[
+      {id:"nota-a", name:"Nota Meja A", icon:"🧾", clue:"Meja A membeli 2 nasi goreng + 1 es teh seharga Rp27.000."},
+      {id:"nota-b", name:"Nota Meja B", icon:"🧾", clue:"Meja B membeli 1 nasi goreng + 2 es teh seharga Rp21.000."},
+      {id:"penjual", name:"Ibu Kantin", icon:"👩‍🍳", clue:"\"Coba dicek dulu, harga satu es teh itu berapa ya?\""}
+    ],
+    type:"numeric",
+    question:"Berapa harga satu es teh?",
+    answer:5000,
+    explainCorrect:"Misalkan nasi goreng = n, es teh = e.\n2n + e = 27.000 ...(1)\nn + 2e = 21.000 ...(2)\nKalikan (1) ×2: 4n+2e=54.000\nKurangi dengan (2): 3n = 33.000 → n = 11.000\ne = 27.000 − 2(11.000) = <b>Rp5.000</b>",
+    explainWrong:"Dari eliminasi: 3n=33.000 → n=11.000, lalu e = 27.000−22.000 = <b>Rp5.000</b>",
+    points:10
+  },
+  {
+    id:"c6",
+    title:"Coretan Hitungan yang Meragukan",
+    story:"Seorang siswa memberikan hasil hitungannya sendiri soal harga alat tulis, tapi wali kelas curiga ada langkah yang keliru. Periksa ulang dari nota asli.",
+    locations:[
+      {id:"nota-asli1", name:"Nota Asli 1", icon:"🧾", clue:"2 buku tulis + 1 pulpen = Rp17.000."},
+      {id:"nota-asli2", name:"Nota Asli 2", icon:"🧾", clue:"1 buku tulis + 3 pulpen = Rp21.000."},
+      {id:"coretan", name:"Coretan Siswa", icon:"✏️", clue:"Siswa itu menulis hasil akhirnya: \"harga satu pulpen = Rp8.000\", tapi ia sendiri tidak yakin dengan hitungannya."}
+    ],
+    type:"numeric",
+    question:"Berapa harga satu pulpen yang sebenarnya (hasil hitungan yang benar)?",
+    answer:5000,
+    explainCorrect:"Misalkan buku = b, pulpen = p.\n2b + p = 17.000 → p = 17.000 − 2b\nb + 3p = 21.000\nb + 3(17.000−2b) = 21.000\nb + 51.000 − 6b = 21.000\n−5b = −30.000 → b = 6.000\np = 17.000 − 12.000 = <b>Rp5.000</b> (coretan siswa keliru, bukan Rp8.000)",
+    explainWrong:"b = 6.000 (dari eliminasi), maka p = 17.000 − 2(6.000) = <b>Rp5.000</b>, bukan Rp8.000 seperti coretan siswa.",
+    points:10
+  },
+  {
+    id:"c7",
+    title:"Selisih Harga di Kantin Baru",
+    story:"Kantin baru sekolah punya menu paket nasi dan paket mie. Dua nota pembelian rombongan kelas bisa membantu menghitung selisih harganya.",
+    locations:[
+      {id:"nota-x", name:"Nota Kelas X", icon:"🧾", clue:"Kelas X membeli 2 paket nasi + 3 paket mie seharga Rp54.000."},
+      {id:"nota-xi", name:"Nota Kelas XI", icon:"🧾", clue:"Kelas XI membeli 4 paket nasi + 1 paket mie seharga Rp58.000."},
+      {id:"osis", name:"Pengurus OSIS", icon:"🧑‍💼", clue:"\"Kami ingin tahu, berapa selisih harga satu paket nasi dan satu paket mie?\""}
+    ],
+    type:"numeric",
+    question:"Berapa selisih harga satu paket nasi dan satu paket mie?",
+    answer:2000,
+    explainCorrect:"Misalkan nasi = n, mie = m.\n2n + 3m = 54.000 ...(1)\n4n + m = 58.000 → m = 58.000 − 4n ...(2)\nSubstitusi ke (1): 2n + 3(58.000−4n) = 54.000\n2n + 174.000 − 12n = 54.000\n−10n = −120.000 → n = 12.000\nm = 58.000 − 48.000 = 10.000\nSelisih = 12.000 − 10.000 = <b>Rp2.000</b>",
+    explainWrong:"n = 12.000, m = 10.000 → selisih = <b>Rp2.000</b>",
+    points:10
+  },
+  {
+    id:"c8",
+    title:"Tiga Klaim Usia yang Membingungkan",
+    story:"Tiga orang bersaudara memberi klaim usia kakak dan adik yang berbeda-beda. Hanya satu klaim yang benar-benar cocok dengan kedua petunjuk usia yang ditemukan.",
+    locations:[
+      {id:"petunjuk-jumlah", name:"Petunjuk Jumlah Usia", icon:"➕", clue:"Jumlah usia kakak dan adik adalah 27 tahun."},
+      {id:"petunjuk-hubungan", name:"Petunjuk Hubungan Usia", icon:"🔗", clue:"Usia kakak sama dengan dua kali usia adik dikurangi 3 tahun."},
+      {id:"tiga-klaim", name:"Tiga Klaim Bersaudara", icon:"👨‍👩‍👧", clue:"Bima: kakak 15, adik 12  |  Citra: kakak 17, adik 10  |  Dewi: kakak 19, adik 8"}
+    ],
+    type:"choice",
+    question:"Klaim siapa yang memenuhi KEDUA petunjuk usia sekaligus?",
+    options:[
+      {id:"bima", name:"Bima", icon:"🧑", detail:"Kakak 15, Adik 12 → 2(12)−3 = 21 ≠ 15"},
+      {id:"citra", name:"Citra", icon:"👧", detail:"Kakak 17, Adik 10 → 2(10)−3 = 17 ✓"},
+      {id:"dewi", name:"Dewi", icon:"👩", detail:"Kakak 19, Adik 8 → 2(8)−3 = 13 ≠ 19"}
+    ],
+    answer:"citra",
+    explainCorrect:"Ketiga klaim sama-sama memenuhi K+D=27. Cek juga K = 2D−3:\nBima: 2(12)−3=21≠15\nCitra: 2(10)−3=17=17 ✓\nDewi: 2(8)−3=13≠19\nJawaban yang benar adalah <b>Citra</b>.",
+    explainWrong:"Hanya klaim Citra (kakak 17, adik 10) yang memenuhi K+D=27 DAN K=2D−3 sekaligus.",
+    points:10
+  },
+  {
+    id:"c9",
+    title:"Sepeda Roda Dua dan Roda Tiga",
+    story:"Toko sepeda mencatat total penjualan hari ini tapi lupa memisahkan jumlah sepeda roda dua dan roda tiga. Untung tercatat juga total rodanya.",
+    locations:[
+      {id:"nota-toko", name:"Nota Penjualan", icon:"🧾", clue:"Total sepeda yang terjual hari ini adalah 40 unit."},
+      {id:"catatan-gudang", name:"Catatan Gudang", icon:"📦", clue:"Total roda dari semua sepeda yang terjual adalah 96 (sepeda roda dua = 2 roda, sepeda roda tiga = 3 roda)."},
+      {id:"pemilik-toko", name:"Pemilik Toko", icon:"🧑‍💼", clue:"\"Saya perlu tahu berapa sepeda roda tiga yang terjual untuk pemesanan ulang stok.\""}
+    ],
+    type:"numeric",
+    question:"Berapa banyak sepeda roda tiga yang terjual?",
+    answer:16,
+    explainCorrect:"Misalkan roda dua = m, roda tiga = t.\nm + t = 40 → m = 40 − t\n2m + 3t = 96\n2(40−t) + 3t = 96\n80 − 2t + 3t = 96\nt = <b>16</b>",
+    explainWrong:"m = 40−t. Substitusi: 2(40−t)+3t = 96 → t = <b>16</b>",
+    points:10
+  },
+  {
+    id:"c10",
+    title:"Dalang Souvenir Sekolah",
+    story:"Kasus terakhir! Toko souvenir sekolah menjadi pusat penyelidikan. Gunakan dua transaksi terakhir untuk mengungkap total pendapatan yang harus dilaporkan bendahara minggu depan.",
+    locations:[
+      {id:"transaksi-1", name:"Transaksi Pertama", icon:"🧾", clue:"3 gantungan kunci + 2 stiker terjual seharga Rp26.000."},
+      {id:"transaksi-2", name:"Transaksi Kedua", icon:"🧾", clue:"5 gantungan kunci + 4 stiker terjual seharga Rp46.000."},
+      {id:"bendahara", name:"Bendahara OSIS", icon:"🧑‍💼", clue:"\"Kalau minggu depan terjual 10 gantungan kunci dan 15 stiker, berapa total pendapatannya?\""}
+    ],
+    type:"numeric",
+    question:"Berapa total pendapatan dari 10 gantungan kunci dan 15 stiker (dengan harga satuan yang sama)?",
+    answer:120000,
+    explainCorrect:"Misalkan gantungan kunci = g, stiker = s.\n3g + 2s = 26.000 ...(1)\n5g + 4s = 46.000 ...(2)\nKalikan (1)×2: 6g+4s=52.000\nKurangi (2): g = 6.000\nDari (1): 3(6.000)+2s=26.000 → s = 4.000\nTotal = 10(6.000) + 15(4.000) = 60.000+60.000 = <b>Rp120.000</b>",
+    explainWrong:"g = 6.000, s = 4.000 → total = 10(6.000)+15(4.000) = <b>Rp120.000</b>",
+    points:10
+  }
+];
+/* ===================== AKHIR BANK KASUS ===================== */
+
+const RATING_TIERS = [
+  {min:90, emoji:"🕵️", title:"DETEKTIF MASTER", sub:"Semua petunjuk berhasil kamu hubungkan."},
+  {min:70, emoji:"🔍", title:"DETEKTIF HANDAL", sub:"Sebagian besar kasus berhasil kamu pecahkan dengan baik."},
+  {min:50, emoji:"📋", title:"DETEKTIF PEMULA", sub:"Instingmu mulai terasah. Teruslah berlatih!"},
+  {min:0,  emoji:"🧩", title:"ASISTEN DETEKTIF", sub:"Masih perlu banyak latihan sebelum jadi detektif sejati."}
+];
+
+const GFORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse";
+const GFORM_ENTRIES = { nama:"entry.1128873320", kelas:"entry.1715675447", game:"entry.339753918", skor:"entry.1119427673" };
+
+/* ============================ STATE ============================ */
+const state = {
+  playerName:"", playerClass:"",
+  caseIndex:0, score:0, correctCount:0, wrongCount:0,
+  revealed:{}, // {caseIdx: Set of location ids}
+  results:[], // {title, correct:bool}
+  notesLog:[], // strings for notebook
+  numericInput:"",
+  answered:false,
+  selectedChoice:null,
+  substate:"investigate", // investigate | challenge | feedback
+  activeTab:"kasus"
+};
+CASES.forEach((c,i)=>{ state.revealed[i] = new Set(); });
+
+/* ============================ AUDIO ============================ */
+let ctx=null, masterGain=null, musicGain=null, sfxGain=null, muted=false, musicTimer=null;
+
+function initAudio(){
+  if(ctx) return;
+  ctx = new (window.AudioContext||window.webkitAudioContext)();
+  masterGain = ctx.createGain(); masterGain.gain.value = 0.9; masterGain.connect(ctx.destination);
+  musicGain = ctx.createGain(); musicGain.gain.value = 0.28; musicGain.connect(masterGain);
+  sfxGain = ctx.createGain(); sfxGain.gain.value = 0.55; sfxGain.connect(masterGain);
+}
+
+function noteFreq(note){
+  const map = {C:-9,"C#":-8,D:-7,"D#":-6,E:-5,F:-4,"F#":-3,G:-2,"G#":-1,A:0,"A#":1,B:2};
+  const m = note.match(/^([A-G]#?)(\d)$/);
+  const semis = map[m[1]] + (parseInt(m[2],10)-4)*12;
+  return 440 * Math.pow(2, semis/12);
+}
+
+function envGain(gainNode, t0, attack, sustainLevel, dur, release){
+  gainNode.gain.setValueAtTime(0.0001, t0);
+  gainNode.gain.exponentialRampToValueAtTime(Math.max(sustainLevel,0.0001), t0+attack);
+  gainNode.gain.setValueAtTime(sustainLevel, t0+dur-release);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+}
+
+function playTone(freq, t0, dur, type, dest, peak, attack, release){
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type; osc.frequency.setValueAtTime(freq, t0);
+  osc.connect(g); g.connect(dest);
+  envGain(g, t0, attack||0.02, peak||0.3, dur, release||Math.min(0.3,dur*0.4));
+  osc.start(t0); osc.stop(t0+dur+0.05);
+}
+
+/* ---- background music: pad + bass + melody + soft rhythm, mystery mood ---- */
+const CHORDS = [
+  ["A3","C4","E4"],
+  ["F3","A3","C4"],
+  ["C3","E3","G3"],
+  ["E3","G#3","B3"]
+];
+const BASS_ROOT = ["A2","F2","C2","E2"];
+const MELODY_PATTERNS = [
+  ["E4","C4","A3",null,"C4","E4",null,"A4"],
+  ["A3","C4","F4",null,"A3",null,"C4","A3"],
+  ["G3","E3","C4",null,"G3","E3",null,"C4"],
+  ["B3","G#3","E4",null,null,"B3","G#3",null]
+];
+const BEAT = 0.62; // seconds per beat, ~97 bpm, unhurried
+let musicPlaying = false;
+let musicLoopHandle = null;
+
+function scheduleMusicLoop(){
+  if(!musicPlaying) return;
+  const t0 = ctx.currentTime + 0.05;
+  const barDur = BEAT*4;
+  CHORDS.forEach((chord, i)=>{
+    const barStart = t0 + i*barDur;
+    // pad
+    const filt = ctx.createBiquadFilter(); filt.type="lowpass"; filt.frequency.value=1400;
+    filt.connect(musicGain);
+    chord.forEach(n=>{
+      playTone(noteFreq(n), barStart, barDur*0.98, "triangle", filt, 0.09, 0.5, 0.9);
+    });
+    // bass
+    playTone(noteFreq(BASS_ROOT[i]), barStart, barDur*0.9, "sine", musicGain, 0.16, 0.05, 0.4);
+    // melody
+    const pattern = MELODY_PATTERNS[i];
+    const step = barDur/8;
+    pattern.forEach((n,k)=>{
+      if(!n) return;
+      playTone(noteFreq(n), barStart + k*step, step*0.85, "triangle", musicGain, 0.07, 0.02, 0.18);
+    });
+    // soft rhythm ticks (filtered noise, subtle)
+    for(let k=0;k<8;k+=2){
+      const tt = barStart + k*step + step*0.5;
+      const bufSize = ctx.sampleRate*0.05;
+      const buf = ctx.createBuffer(1,bufSize,ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for(let s=0;s<bufSize;s++){ data[s] = (Math.random()*2-1)*(1-s/bufSize); }
+      const src = ctx.createBufferSource(); src.buffer=buf;
+      const bp = ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=3000; bp.Q.value=0.7;
+      const g = ctx.createGain(); g.gain.value=0.025;
+      src.connect(bp); bp.connect(g); g.connect(musicGain);
+      src.start(tt);
+    }
+  });
+  const total = barDur*CHORDS.length;
+  musicLoopHandle = setTimeout(scheduleMusicLoop, total*1000);
+}
+
+function startMusic(){
+  initAudio();
+  if(ctx.state==="suspended") ctx.resume();
+  if(musicPlaying) return;
+  musicPlaying = true;
+  scheduleMusicLoop();
+}
+
+/* ---- sound effects ---- */
+function sfxReveal(){
+  if(!ctx) return;
+  playTone(720, ctx.currentTime, 0.09, "square", sfxGain, 0.12, 0.005, 0.06);
+}
+function sfxDiscovery(){
+  if(!ctx) return;
+  const t=ctx.currentTime;
+  playTone(660,t,0.18,"triangle",sfxGain,0.16,0.01,0.12);
+  playTone(990,t+0.07,0.22,"triangle",sfxGain,0.14,0.01,0.15);
+}
+function sfxCorrect(){
+  if(!ctx) return;
+  const t=ctx.currentTime;
+  [523.25,659.25,783.99,1046.5].forEach((f,i)=>playTone(f,t+i*0.09,0.28,"triangle",sfxGain,0.18,0.005,0.2));
+}
+function sfxWrong(){
+  if(!ctx) return;
+  const t=ctx.currentTime;
+  playTone(300,t,0.16,"sine",sfxGain,0.16,0.005,0.1);
+  playTone(220,t+0.1,0.22,"sine",sfxGain,0.14,0.005,0.16);
+}
+function sfxTransition(){
+  if(!ctx) return;
+  const t=ctx.currentTime;
+  playTone(440,t,0.12,"sawtooth",sfxGain,0.06,0.01,0.08);
+  playTone(587,t+0.06,0.14,"sawtooth",sfxGain,0.06,0.01,0.1);
+}
+function sfxVictory(){
+  if(!ctx) return;
+  const t=ctx.currentTime;
+  [523.25,659.25,783.99,1046.5,1318.5].forEach((f,i)=>playTone(f,t+i*0.1,0.35,"triangle",sfxGain,0.2,0.005,0.25));
+}
+
+function setMuted(v){
+  muted = v;
+  if(masterGain) masterGain.gain.value = muted ? 0 : 0.9;
+  document.getElementById("btn-mute").textContent = muted ? "🔇" : "🔊";
+}
+
+/* ============================ GOOGLE FORM ============================ */
+function sendResultsToForm(){
+  try{
+    const fd = new FormData();
+    fd.append(GFORM_ENTRIES.nama, state.playerName);
+    fd.append(GFORM_ENTRIES.kelas, state.playerClass);
+    fd.append(GFORM_ENTRIES.game, "Detektif Matematika");
+    fd.append(GFORM_ENTRIES.skor, String(state.score));
+    fetch(GFORM_URL, {method:"POST", mode:"no-cors", body:fd}).catch(function(){});
+  }catch(e){ /* ignore network issues silently */ }
+}
+
+/* ============================ NAVIGATION ============================ */
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+
+/* ============================ RENDER: HEADER ============================ */
+function renderHeader(){
+  document.getElementById("hdr-case-counter").textContent = "Kasus " + (state.caseIndex+1) + "/" + CASES.length;
+  document.getElementById("hdr-progress").style.width = Math.round((state.caseIndex/CASES.length)*100) + "%";
+  document.getElementById("hdr-score").textContent = state.score;
+}
+
+/* ============================ RENDER: TABS ============================ */
+function setActiveTab(tab){
+  state.activeTab = tab;
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active", b.dataset.tab===tab));
+  renderContent();
+}
+
+function renderContent(){
+  const el = document.getElementById("game-content");
+  el.innerHTML = "";
+  if(state.activeTab==="kasus"){
+    if(state.substate==="investigate") el.appendChild(buildInvestigateView());
+    else if(state.substate==="challenge") el.appendChild(buildChallengeView());
+    else el.appendChild(buildFeedbackView());
+  } else if(state.activeTab==="petunjuk"){
+    el.appendChild(buildPetunjukView());
+  } else if(state.activeTab==="catatan"){
+    el.appendChild(buildCatatanView());
+  } else if(state.activeTab==="profil"){
+    el.appendChild(buildProfilView());
+  }
+}
+
+/* ============================ VIEW: INVESTIGATE ============================ */
+function buildInvestigateView(){
+  const c = CASES[state.caseIndex];
+  const wrap = document.createElement("div");
+
+  const story = document.createElement("div");
+  story.className = "story-card";
+  story.innerHTML =
+    '<div class="story-kicker">Kasus Aktif</div>' +
+    '<h2 class="story-title">' + c.title + '</h2>' +
+    '<p class="story-text">' + c.story + '</p>';
+  wrap.appendChild(story);
+
+  const revealedSet = state.revealed[state.caseIndex];
+  const label = document.createElement("div");
+  label.className = "section-label";
+  label.innerHTML = '<span>🔎 Lokasi Petunjuk</span><span class="count">' + revealedSet.size + '/' + c.locations.length + '</span>';
+  wrap.appendChild(label);
+
+  const grid = document.createElement("div");
+  grid.className = "clue-grid";
+  c.locations.forEach(loc=>{
+    const revealed = revealedSet.has(loc.id);
+    const card = document.createElement("button");
+    card.className = "clue-card" + (revealed ? " revealed":"");
+    card.innerHTML =
+      '<span class="' + (revealed?'check':'lens') + '">' + (revealed?'✓':'🔍') + '</span>' +
+      '<span class="emoji">' + loc.icon + '</span>' +
+      '<span class="name">' + loc.name + '</span>';
+    card.addEventListener("click", ()=>openClue(loc, revealed));
+    grid.appendChild(card);
+  });
+  wrap.appendChild(grid);
+
+  if(revealedSet.size < c.locations.length){
+    const hint = document.createElement("div");
+    hint.className = "hint-note";
+    hint.textContent = "Buka semua lokasi petunjuk di atas sebelum membuat kesimpulan detektif.";
+    wrap.appendChild(hint);
+  } else {
+    const btn = document.createElement("button");
+    btn.className = "btn btn-primary";
+    btn.innerHTML = "🕵️ BUAT KESIMPULAN";
+    btn.addEventListener("click", ()=>{ sfxTransition(); state.substate="challenge"; renderContent(); });
+    wrap.appendChild(btn);
+  }
+  return wrap;
+}
+
+function openClue(loc, alreadyRevealed){
+  sfxReveal();
+  const modal = document.getElementById("clue-modal");
+  document.getElementById("clue-modal-title").textContent = loc.icon + " " + loc.name;
+  document.getElementById("clue-modal-text").textContent = loc.clue;
+  modal.classList.remove("hidden");
+  document.getElementById("clue-modal-close").onclick = ()=>{
+    modal.classList.add("hidden");
+    if(!alreadyRevealed){
+      state.revealed[state.caseIndex].add(loc.id);
+      state.notesLog.push(CASES[state.caseIndex].title + " — " + loc.name + ": " + loc.clue);
+      setTimeout(sfxDiscovery, 80);
+      renderContent();
+    }
+  };
+}
+
+/* ============================ VIEW: CHALLENGE ============================ */
+function buildChallengeView(){
+  const c = CASES[state.caseIndex];
+  const wrap = document.createElement("div");
+
+  const q = document.createElement("div");
+  q.className = "question-card";
+  q.innerHTML =
+    '<div class="question-eyebrow">🧩 Kesimpulan Detektif</div>' +
+    '<p class="question-text">' + c.question + '</p>';
+  wrap.appendChild(q);
+
+  if(c.type==="numeric"){
+    const disp = document.createElement("div");
+    disp.className = "answer-display";
+    disp.id = "answer-display";
+    disp.innerHTML = state.numericInput ? state.numericInput : '<span class="placeholder">Ketik jawabanmu...</span>';
+    wrap.appendChild(disp);
+
+    const pad = document.createElement("div");
+    pad.className = "keypad";
+    const keys = ["1","2","3","4","5","6","7","8","9","+/-","0","⌫"];
+    keys.forEach(k=>{
+      const b = document.createElement("button");
+      if(k==="⌫" || k==="+/-") b.className="key-action";
+      b.textContent = k;
+      b.addEventListener("click", ()=>{
+        if(k==="⌫"){ state.numericInput = state.numericInput.slice(0,-1); }
+        else if(k==="+/-"){ state.numericInput = state.numericInput.startsWith("-") ? state.numericInput.slice(1) : "-"+state.numericInput; }
+        else { state.numericInput += k; }
+        updateAnswerDisplay();
+      });
+      pad.appendChild(b);
+    });
+    const submit = document.createElement("button");
+    submit.className = "key-submit";
+    submit.id = "btn-submit-numeric";
+    submit.textContent = "✓ PERIKSA JAWABAN";
+    submit.disabled = state.numericInput.length===0;
+    submit.addEventListener("click", ()=>{
+      const val = parseFloat(state.numericInput);
+      if(isNaN(val)) return;
+      submitAnswer(val);
+    });
+    pad.appendChild(submit);
+    wrap.appendChild(pad);
+  } else if(c.type==="choice"){
+    const grid = document.createElement("div");
+    grid.className = "suspect-grid";
+    c.options.forEach(opt=>{
+      const card = document.createElement("button");
+      card.className = "suspect-card";
+      card.innerHTML =
+        '<span class="avatar">' + opt.icon + '</span>' +
+        '<span class="info"><div class="name">' + opt.name + '</div><div class="detail">' + opt.detail + '</div></span>';
+      card.addEventListener("click", ()=>submitAnswer(opt.id));
+      grid.appendChild(card);
+    });
+    wrap.appendChild(grid);
+  }
+  return wrap;
+}
+
+function updateAnswerDisplay(){
+  const disp = document.getElementById("answer-display");
+  if(disp) disp.innerHTML = state.numericInput ? state.numericInput : '<span class="placeholder">Ketik jawabanmu...</span>';
+  const btn = document.getElementById("btn-submit-numeric");
+  if(btn) btn.disabled = state.numericInput.length===0;
+}
+
+function submitAnswer(userAnswer){
+  const c = CASES[state.caseIndex];
+  let isCorrect = false;
+  if(c.type==="numeric"){
+    const tol = c.tolerance!=null ? c.tolerance : 0.01;
+    isCorrect = Math.abs(userAnswer - c.answer) <= tol;
+  } else {
+    isCorrect = userAnswer === c.answer;
+  }
+  state.lastCorrect = isCorrect;
+  if(isCorrect){ state.score += c.points; state.correctCount++; sfxCorrect(); }
+  else { state.wrongCount++; sfxWrong(); }
+  state.results.push({title:c.title, correct:isCorrect});
+  state.numericInput = "";
+  state.substate = "feedback";
+  renderHeader();
+  renderContent();
+}
+
+/* ============================ VIEW: FEEDBACK ============================ */
+function buildFeedbackView(){
+  const c = CASES[state.caseIndex];
+  const ok = state.lastCorrect;
+  const wrap = document.createElement("div");
+  wrap.className = "feedback-wrap";
+  wrap.innerHTML =
+    '<div class="feedback-icon ' + (ok?'correct':'wrong') + '">' + (ok?'✓':'✕') + '</div>' +
+    '<h2 class="feedback-title ' + (ok?'correct':'wrong') + '">' + (ok?'Jawaban Benar!':'Belum Tepat') + '</h2>' +
+    '<div class="feedback-points">' + (ok? '+'+c.points+' ⭐' : '+0 ⭐') + '</div>' +
+    '<div class="explain-card">' + (ok? c.explainCorrect : c.explainWrong) + '</div>';
+
+  const isLast = state.caseIndex === CASES.length-1;
+  const btn = document.createElement("button");
+  btn.className = "btn " + (ok ? "btn-success" : "btn-primary");
+  btn.textContent = isLast ? "🏁 LIHAT HASIL AKHIR" : "LANJUT →";
+  btn.addEventListener("click", ()=>{
+    sfxTransition();
+    if(isLast){ finishGame(); }
+    else {
+      state.caseIndex++;
+      state.substate = "investigate";
+      renderHeader();
+      renderContent();
+    }
+  });
+  wrap.appendChild(btn);
+  return wrap;
+}
+
+/* ============================ VIEW: PETUNJUK TAB ============================ */
+function buildPetunjukView(){
+  const c = CASES[state.caseIndex];
+  const revealedSet = state.revealed[state.caseIndex];
+  const wrap = document.createElement("div");
+  const label = document.createElement("div");
+  label.className = "section-label";
+  label.innerHTML = '<span>💡 Petunjuk — ' + c.title + '</span><span class="count">' + revealedSet.size + '/' + c.locations.length + '</span>';
+  wrap.appendChild(label);
+
+  c.locations.forEach(loc=>{
+    const revealed = revealedSet.has(loc.id);
+    const row = document.createElement("button");
+    row.className = "suspect-card";
+    row.style.width = "100%";
+    row.style.marginBottom = "10px";
+    row.innerHTML =
+      '<span class="avatar">' + loc.icon + '</span>' +
+      '<span class="info"><div class="name">' + loc.name + '</div><div class="detail">' + (revealed ? "Sudah ditemukan ✓" : "Ketuk untuk memeriksa") + '</div></span>';
+    row.addEventListener("click", ()=>openClue(loc, revealed));
+    wrap.appendChild(row);
+  });
+  return wrap;
+}
+
+/* ============================ VIEW: CATATAN TAB ============================ */
+function buildCatatanView(){
+  const wrap = document.createElement("div");
+  const card = document.createElement("div");
+  card.className = "notebook-card";
+  let inner = '<div class="notebook-title">📝 Catatan Detektif</div>';
+  if(state.notesLog.length===0){
+    inner += '<div class="notebook-empty">Belum ada petunjuk yang dicatat. Mulai buka lokasi petunjuk di tab Kasus.</div>';
+  } else {
+    state.notesLog.forEach(line=>{
+      inner += '<div class="notebook-line">' + line + '</div>';
+    });
+  }
+  card.innerHTML = inner;
+  wrap.appendChild(card);
+  return wrap;
+}
+
+/* ============================ VIEW: PROFIL TAB ============================ */
+function buildProfilView(){
+  const wrap = document.createElement("div");
+  const card = document.createElement("div");
+  card.className = "profile-card";
+  const total = state.correctCount + state.wrongCount;
+  card.innerHTML =
+    '<div class="profile-avatar">🕵️</div>' +
+    '<div class="profile-name">' + (state.playerName || "Detektif") + '</div>' +
+    '<div class="profile-class">' + (state.playerClass || "-") + '</div>' +
+    '<div class="stat-row">' +
+      '<div class="stat-box"><div class="num">' + state.score + '</div><div class="lbl">Skor</div></div>' +
+      '<div class="stat-box"><div class="num">' + state.correctCount + '</div><div class="lbl">Benar</div></div>' +
+      '<div class="stat-box"><div class="num">' + state.wrongCount + '</div><div class="lbl">Salah</div></div>' +
+    '</div>' +
+    '<div class="hint-note" style="margin-top:16px;text-align:left;">Progres: kasus ' + (state.caseIndex+1) + ' dari ' + CASES.length + ' (' + total + ' kasus telah dijawab).</div>';
+  wrap.appendChild(card);
+  return wrap;
+}
+
+/* ============================ CLUE MODAL ============================ */
+const modalHTML =
+  '<div class="modal-box">' +
+    '<h3 id="clue-modal-title" style="margin:0 0 10px;font-size:16px;font-weight:800;color:var(--ink);"></h3>' +
+    '<p id="clue-modal-text" style="margin:0 0 18px;font-size:14px;line-height:1.6;color:var(--ink-soft);"></p>' +
+    '<button id="clue-modal-close" class="btn btn-primary">Mengerti, catat petunjuk ini</button>' +
+  '</div>';
+(function injectModal(){
+  const modal = document.createElement("div");
+  modal.id = "clue-modal";
+  modal.className = "modal hidden";
+  modal.style.cssText = "position:fixed;inset:0;z-index:60;background:rgba(11,18,32,0.72);display:flex;align-items:flex-end;justify-content:center;";
+  modal.innerHTML = '<div style="width:100%;max-width:520px;background:var(--cream);border-radius:22px 22px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));animation:pop .25s ease;">' + modalHTML + '</div>';
+  document.body.appendChild(modal);
+  modal.addEventListener("click", (e)=>{ if(e.target===modal){ modal.classList.add("hidden"); } });
+})();
+
+/* ============================ END GAME ============================ */
+function finishGame(){
+  const pct = Math.round((state.correctCount / CASES.length) * 100);
+  const tier = RATING_TIERS.find(t=>pct>=t.min) || RATING_TIERS[RATING_TIERS.length-1];
+  document.getElementById("end-emoji").textContent = tier.emoji;
+  document.getElementById("end-title").textContent = tier.title;
+  document.getElementById("end-subtitle").textContent = tier.sub;
+  document.getElementById("end-player-line").textContent = (state.playerName||"Detektif") + " · " + (state.playerClass||"-") + " · " + pct + "% berhasil";
+  document.getElementById("end-score").textContent = state.score;
+  document.getElementById("end-correct").textContent = state.correctCount + "/" + CASES.length;
+
+  const review = document.getElementById("end-review");
+  review.innerHTML = "";
+  state.results.forEach(r=>{
+    const row = document.createElement("div");
+    row.className = "review-row";
+    row.innerHTML =
+      '<span class="dot ' + (r.correct?'ok':'no') + '">' + (r.correct?'✓':'✕') + '</span>' +
+      '<span class="rname">' + r.title + '</span>';
+    review.appendChild(row);
+  });
+
+  sfxVictory();
+  sendResultsToForm();
+  showScreen("screen-end");
+}
+
+/* ============================ RESTART ============================ */
+function resetGame(){
+  state.caseIndex=0; state.score=0; state.correctCount=0; state.wrongCount=0;
+  state.results=[]; state.notesLog=[]; state.numericInput=""; state.substate="investigate"; state.activeTab="kasus";
+  CASES.forEach((c,i)=>{ state.revealed[i] = new Set(); });
+  document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active", b.dataset.tab==="kasus"));
+  renderHeader();
+  renderContent();
+  showScreen("screen-game");
+}
+
+/* ============================ INIT / EVENTS ============================ */
+document.getElementById("btn-start").addEventListener("click", ()=>{
+  const nameVal = document.getElementById("input-name").value.trim();
+  const classVal = document.getElementById("input-class").value.trim();
+  state.playerName = nameVal || "Detektif";
+  state.playerClass = classVal || "-";
+  startMusic();
+  renderHeader();
+  renderContent();
+  showScreen("screen-game");
+});
+
+document.getElementById("btn-mute").addEventListener("click", ()=>{ setMuted(!muted); });
+
+document.querySelectorAll(".nav-item").forEach(btn=>{
+  btn.addEventListener("click", ()=>setActiveTab(btn.dataset.tab));
+});
+
+document.getElementById("btn-restart").addEventListener("click", resetGame);
+
+})();
+</script>
+</body>
+</html>
