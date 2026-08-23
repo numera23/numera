@@ -112,7 +112,7 @@ const NUMERA_GAMES = [
     },
    {
         nama: "🕵️‍♀️ Detektif Matematika",
-        materi: "SPLDV",
+        materi: "Soal Cerita SPLDV",
         deskripsi: "Kumpulkan petunjuk, hubungkan angka-angkanya, dan temukan kesimpulan yang benar.",
         tags: ["sistem persamaan linear dua variabel", "spldv", "penerapan spldv", "kasus", "SPLDV"],
         link: "game_detektif_penerapanspldv.html",
@@ -124,7 +124,7 @@ const NUMERA_GAMES = [
     },
    {
         nama: "🎯 Tembak Target",
-        materi: "Kedudukan Titik",
+        materi: "Titik Terhadap Lingkaran",
         deskripsi: "Bidik target sesuai jawaban persamaan lingkaran yang benar.",
         tags: ["lingkaran", "kedudukan titik", "persamaan lingkaran"],
         link: "game_tembak_target_kedudukan_titik.html",
