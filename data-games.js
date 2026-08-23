@@ -135,6 +135,18 @@ const NUMERA_GAMES = [
         badge: ""
     },
    {
+        nama: "₪ Labirin Matematika",
+        materi: "Teorema Faktor",
+        deskripsi: "Jelajahi, pecahkan tantangan, temukan jalan keluar!.",
+        tags: ["polinomial", "teorema faktor", "suku banyak"],
+        link: "game_labirin_teorema_faktor.html",
+        tanggal: "2026-08-24",
+        thumbnail: "",
+        warna: "#CE46AE",
+        emoji: "₪",
+        badge: "Baru"
+    },
+   {
         nama: "🕵️‍♀️ Detektif Matematika",
         materi: "Soal Cerita SPLDV",
         deskripsi: "Kumpulkan petunjuk, hubungkan angka-angkanya, dan temukan kesimpulan yang benar.",
