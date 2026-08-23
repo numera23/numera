@@ -79,7 +79,7 @@ const NUMERA_GAMES = [
         link: "game_susunlangkah_SPLDV_substitusi.html",
         tanggal: "2026-08-23",
         thumbnail: "",
-        warna: "##EC4899",
+        warna: "#EC4899",
         emoji: "🧩",
         badge: "Baru"
     },
