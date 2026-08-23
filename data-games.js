@@ -70,6 +70,17 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#7C3AED",
         emoji: "🧩",
+        badge: ""
+    },
+       {
+        nama: "🧩 Susun Langkah",
+        materi: "Substitusi SPLDV",
+        deskripsi: "Urutkan tahapannya.",
+        link: "game_susunlangkah_SPLDV_substitusi.html",
+        tanggal: "2026-08-23",
+        thumbnail: "",
+        warna: "##EC4899",
+        emoji: "🧩",
         badge: "Baru"
     },
     {
@@ -81,7 +92,7 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#0F172A",
         emoji: "🔐",
-        badge: "Baru"
+        badge: ""
     },
    {
         nama: "🎯 Tembak Target",
@@ -92,7 +103,7 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#0F172A",
         emoji: "🎯",
-        badge: "Baru"
+        badge: ""
     }
 ];
 
