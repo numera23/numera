@@ -275,7 +275,7 @@ function buatKartuNumera(game){
             </div>
             <div class="numera-info">
                 <div class="numera-meta">
-                    <span class="numera-tag-original">Numera</span>
+                    <span class="numera-tag-original">Numera Original</span>
                     <span class="dot"></span>
                     <span class="numera-meta-materi">${game.materi || ''}</span>
                 </div>
