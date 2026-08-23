@@ -724,7 +724,12 @@
 
     function cocokPencarian(game, q){
         if(!q) return true;
-        const gabungan = [game.nama, game.materi, game.deskripsi].join(' ').toLowerCase();
+        const gabungan = [
+            game.nama,
+            game.materi,
+            game.deskripsi,
+            ...(game.tags || [])
+        ].join(' ').toLowerCase();
         return gabungan.includes(q);
     }
 
