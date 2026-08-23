@@ -123,6 +123,18 @@ const NUMERA_GAMES = [
         badge: ""
     },
    {
+        nama: "🎡 Putar Dulu",
+        materi: "Titik Pusat & Jari-Jari",
+        deskripsi: "Putar roda, hadapi soal persamaan lingkaran.",
+        tags: ["persamaan lingkaran", "titik pusat", "jari jari", "jari-jari", "bentuk umum", "pusat lingkaran"],
+        link: "game_putar_dulu_titik_jarijari_lingkaran.html",
+        tanggal: "2026-08-24",
+        thumbnail: "",
+        warna: "#F5F5DC",
+        emoji: "🎡",
+        badge: ""
+    },
+   {
         nama: "🕵️‍♀️ Detektif Matematika",
         materi: "Soal Cerita SPLDV",
         deskripsi: "Kumpulkan petunjuk, hubungkan angka-angkanya, dan temukan kesimpulan yang benar.",
