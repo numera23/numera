@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🧭 Labirin Matematika — Teorema Faktor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   LABIRIN MATEMATIKA — Teorema Faktor (Level Mudah)
+   Single-file HTML game. Lihat komentar di bagian JS (cari
+   "BANK SOAL" dan "PETA NODE") untuk mengganti soal / peta.
+   ========================================================= */
+:root{
+  --bg-deep:#07211d;
+  --bg-mid:#0e332c;
+  --bg-panel:#123a33;
+  --line-fog:#1c4a41;
+  --gold:#ffcf6b;
+  --gold-soft:#ffe6ad;
+  --teal:#38d9b9;
+  --blue:#5ec8f0;
+  --purple:#c79bff;
+  --red:#ff7b7b;
+  --green:#7be0a8;
+  --text:#eafaf3;
+  --text-dim:#a9cfc4;
+  --danger:#ff6b6b;
+  --radius:18px;
+  --shadow:0 10px 30px rgba(0,0,0,0.35);
+  font-family:'Nunito',sans-serif;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 50% -10%, #164a40 0%, transparent 55%),
+    radial-gradient(circle at 90% 10%, rgba(255,207,107,0.08) 0%, transparent 40%),
+    linear-gradient(180deg, var(--bg-deep) 0%, #061a17 100%);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  overflow-x:hidden;
+}
+#app{
+  width:100%;
+  max-width:540px;
+  min-height:100vh;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent 200px);
+}
+.screen{ display:none; flex-direction:column; min-height:100vh; }
+.screen.active{ display:flex; }
+h1,h2,h3{ font-family:'Baloo 2',sans-serif; margin:0; }
+button{ font-family:'Nunito',sans-serif; cursor:pointer; border:none; }
+input{ font-family:'Nunito',sans-serif; }
+
+/* ---------- decorative sparkles ---------- */
+.sparkle{
+  position:absolute; border-radius:50%;
+  background:var(--gold-soft);
+  opacity:0.7; filter:blur(0.5px);
+  animation:twinkle 2.6s ease-in-out infinite;
+}
+@keyframes twinkle{ 0%,100%{opacity:.15; transform:scale(0.8);} 50%{opacity:.9; transform:scale(1.15);} }
+
+/* =========================================================
+   START SCREEN
+   ========================================================= */
+#screen-start{
+  padding:34px 24px calc(40px + env(safe-area-inset-bottom));
+  align-items:center;
+  text-align:center;
+  position:relative;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+.forest-glow{
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 30% at 20% 15%, rgba(56,217,185,0.18), transparent 60%),
+    radial-gradient(ellipse 50% 25% at 85% 8%, rgba(255,207,107,0.16), transparent 60%);
+}
+.title-wrap{ margin-top:18px; position:relative; z-index:2;}
+.compass-icon{ font-size:44px; filter:drop-shadow(0 0 14px rgba(255,207,107,0.6)); }
+.game-title{
+  font-size:34px; font-weight:800; letter-spacing:0.5px;
+  color:var(--text);
+  text-shadow:0 0 22px rgba(56,217,185,0.35);
+  margin-top:6px;
+}
+.game-title span{ color:var(--gold); text-shadow:0 0 22px rgba(255,207,107,0.55); }
+.subtitle{
+  margin-top:10px; font-weight:700; font-size:14.5px; color:var(--gold-soft);
+  background:rgba(255,207,107,0.1); border:1px solid rgba(255,207,107,0.35);
+  padding:8px 16px; border-radius:999px; display:inline-block;
+}
+.desc-text{
+  margin-top:16px; color:var(--text-dim); font-size:14.5px; line-height:1.6;
+  max-width:380px;
+}
+.start-form{
+  margin-top:26px; width:100%; max-width:360px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--radius);
+  padding:20px; text-align:left;
+  position:relative; z-index:2;
+  backdrop-filter:blur(6px);
+}
+.field{ margin-bottom:14px; }
+.field label{ display:block; font-size:12.5px; font-weight:700; color:var(--gold-soft); margin-bottom:6px; letter-spacing:0.3px;}
+.field input{
+  width:100%; padding:12px 14px; border-radius:12px;
+  border:1.5px solid rgba(255,255,255,0.14); background:rgba(6,26,23,0.6);
+  color:var(--text); font-size:15px; outline:none; transition:.2s;
+}
+.field input:focus{ border-color:var(--teal); box-shadow:0 0 0 3px rgba(56,217,185,0.18); }
+.btn-primary{
+  width:100%; padding:15px; border-radius:14px; margin-top:6px;
+  background:linear-gradient(135deg, var(--gold) 0%, #f2a94e 100%);
+  color:#2a1d06; font-weight:800; font-size:15.5px; letter-spacing:0.3px;
+  box-shadow:0 8px 20px rgba(255,207,107,0.28);
+  transition:transform .15s;
+}
+.btn-primary:active{ transform:scale(0.97); }
+.btn-primary:disabled{ opacity:0.45; box-shadow:none; }
+.start-stats{
+  display:flex; gap:10px; margin-top:22px; position:relative; z-index:2;
+}
+.stat-chip{
+  flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
+  border-radius:12px; padding:10px 6px; font-size:13px; font-weight:800;
+}
+.stat-chip .n{ display:block; font-size:16px; margin-top:2px;}
+
+/* =========================================================
+   GAME SCREEN — HUD
+   ========================================================= */
+#screen-game{ min-height:100vh; }
+.hud{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px; gap:8px;
+  background:linear-gradient(180deg, rgba(7,33,29,0.96), rgba(7,33,29,0.85));
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  position:sticky; top:0; z-index:20; backdrop-filter:blur(8px);
+}
+.hud-chips{ display:flex; gap:6px; flex-wrap:wrap; }
+.chip{
+  display:flex; align-items:center; gap:4px;
+  background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.09);
+  padding:6px 9px; border-radius:999px; font-weight:800; font-size:12.5px;
+}
+.chip.hearts{ color:var(--red); }
+.chip.gems{ color:var(--blue); }
+.chip.keys{ color:var(--gold); }
+.chip.score{ color:var(--green); }
+.hud-menu-btn{
+  width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.1); color:var(--text); font-size:17px;
+  display:flex; align-items:center; justify-content:center;
+}
+.audio-toggle{
+  position:fixed; top:14px; right:14px; z-index:250;
+  width:40px; height:40px; border-radius:50%;
+  background:rgba(10,40,35,0.85); border:1.5px solid rgba(255,207,107,0.4);
+  color:var(--gold-soft); font-size:17px; box-shadow:0 6px 16px rgba(0,0,0,0.35);
+  display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(6px); transition:transform .15s, border-color .2s;
+}
+.audio-toggle:active{ transform:scale(0.9); }
+.audio-toggle.muted{ border-color:rgba(255,255,255,0.15); color:var(--text-dim); }
+.progress-strip{
+  padding:8px 16px; font-size:11.5px; color:var(--text-dim); font-weight:700;
+  display:flex; justify-content:space-between; background:rgba(0,0,0,0.15);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.progress-strip b{ color:var(--gold-soft); }
+
+/* ---------- MAP ---------- */
+.map-scroll{
+  flex:1; overflow-y:auto; overflow-x:hidden;
+  background:
+    radial-gradient(ellipse 60% 25% at 15% 5%, rgba(56,217,185,0.10), transparent 55%),
+    radial-gradient(ellipse 50% 20% at 90% 60%, rgba(199,155,255,0.09), transparent 55%),
+    linear-gradient(180deg, var(--bg-mid), var(--bg-deep) 70%);
+  padding-bottom:90px;
+}
+.map-canvas{
+  position:relative; width:100%; height:1180px; margin-top:6px;
+}
+.map-canvas svg{ position:absolute; inset:0; width:100%; height:100%; }
+.node{
+  position:absolute; transform:translate(-50%,-50%);
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  width:92px; text-align:center; z-index:5;
+  cursor:pointer; transition:transform .15s;
+}
+.node:active{ transform:translate(-50%,-50%) scale(0.94); }
+.node-bubble{
+  width:56px; height:56px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px; position:relative;
+  background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.18), rgba(0,0,0,0.1));
+  border:2.5px solid var(--line-fog);
+  box-shadow:0 6px 14px rgba(0,0,0,0.3);
+}
+.node-label{
+  font-size:11px; font-weight:800; color:var(--text-dim);
+  line-height:1.2; text-shadow:0 1px 2px rgba(0,0,0,0.5);
+}
+.node.type-start .node-bubble{ border-color:var(--teal); box-shadow:0 0 16px rgba(56,217,185,0.5); background:radial-gradient(circle at 35% 30%, rgba(56,217,185,0.35), rgba(0,0,0,0.15)); }
+.node.state-fog .node-bubble{
+  background:rgba(20,45,40,0.85); border-color:rgba(255,255,255,0.08);
+  filter:blur(0.3px); animation:fogpulse 3.2s ease-in-out infinite;
+}
+.node.state-fog .node-label{ visibility:hidden; }
+@keyframes fogpulse{ 0%,100%{opacity:.55;} 50%{opacity:.85;} }
+.node.state-available .node-bubble{
+  border-color:var(--gold); box-shadow:0 0 16px rgba(255,207,107,0.5);
+  animation:glow 1.8s ease-in-out infinite;
+}
+@keyframes glow{ 0%,100%{ box-shadow:0 0 10px rgba(255,207,107,0.35);} 50%{ box-shadow:0 0 20px rgba(255,207,107,0.7);} }
+.node.state-locked .node-bubble{ border-color:var(--red); opacity:0.85; }
+.node.state-locked .node-bubble::after{
+  content:'🔒'; position:absolute; bottom:-4px; right:-4px; font-size:15px;
+  background:var(--bg-deep); border-radius:50%; padding:2px;
+}
+.node.state-done .node-bubble{ border-color:var(--green); background:radial-gradient(circle at 35% 30%, rgba(123,224,168,0.3), rgba(0,0,0,0.15)); }
+.node.state-done .node-bubble::after{
+  content:'✓'; position:absolute; bottom:-2px; right:-2px; font-size:12px; font-weight:900;
+  color:#08301f; background:var(--green); border-radius:50%; width:17px; height:17px;
+  display:flex; align-items:center; justify-content:center;
+}
+.node.type-exit .node-bubble{ width:64px; height:64px; font-size:28px; }
+
+/* bottom nav */
+.bottom-nav{
+  position:fixed; left:50%; transform:translateX(-50%); bottom:0;
+  width:100%; max-width:540px; display:flex;
+  background:linear-gradient(0deg, rgba(6,25,22,0.98), rgba(6,25,22,0.9));
+  border-top:1px solid rgba(255,255,255,0.08); z-index:30;
+  padding:8px 6px calc(8px + env(safe-area-inset-bottom));
+}
+.nav-btn{
+  flex:1; background:transparent; color:var(--text-dim); font-weight:800; font-size:12px;
+  display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px 0; border-radius:12px;
+}
+.nav-btn .ic{ font-size:19px; }
+.nav-btn:active{ background:rgba(255,255,255,0.06); }
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(4,16,14,0.72); backdrop-filter:blur(3px);
+  display:none; align-items:flex-end; justify-content:center; z-index:100;
+}
+.modal-overlay.active{ display:flex; }
+.modal-sheet{
+  width:100%; max-width:540px; max-height:88vh; overflow-y:auto;
+  background:linear-gradient(180deg, #133a33, #0d2b26);
+  border-top-left-radius:24px; border-top-right-radius:24px;
+  border:1px solid rgba(255,255,255,0.08); border-bottom:none;
+  padding:22px 20px calc(22px + env(safe-area-inset-bottom));
+  animation:sheetUp .25s ease-out;
+  box-shadow:0 -10px 40px rgba(0,0,0,0.4);
+}
+@keyframes sheetUp{ from{ transform:translateY(30px); opacity:0; } to{ transform:translateY(0); opacity:1; } }
+.modal-handle{ width:40px; height:4px; background:rgba(255,255,255,0.2); border-radius:99px; margin:0 auto 16px; }
+.modal-icon-row{ display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.modal-icon-row .ic{ font-size:30px; }
+.modal-title{ font-size:19px; font-weight:800; color:var(--gold-soft); }
+.modal-context{
+  background:rgba(255,255,255,0.05); border-left:3px solid var(--teal);
+  padding:10px 12px; border-radius:10px; font-size:13.5px; color:var(--text-dim);
+  margin-bottom:14px; line-height:1.5; font-style:italic;
+}
+.modal-prompt{ font-size:15.5px; font-weight:700; line-height:1.5; margin-bottom:16px; }
+.opt-list{ display:flex; flex-direction:column; gap:9px; margin-bottom:6px; }
+.opt-btn{
+  text-align:left; padding:13px 14px; border-radius:13px;
+  background:rgba(255,255,255,0.05); border:1.5px solid rgba(255,255,255,0.12);
+  color:var(--text); font-weight:700; font-size:14px; transition:.15s;
+}
+.opt-btn:active{ transform:scale(0.98); }
+.opt-btn.correct{ background:rgba(123,224,168,0.18); border-color:var(--green); }
+.opt-btn.wrong{ background:rgba(255,107,107,0.18); border-color:var(--danger); }
+.opt-btn:disabled{ opacity:0.55; }
+.numeric-row{ display:flex; gap:10px; margin-bottom:6px; }
+.numeric-row input{
+  flex:1; padding:13px 14px; border-radius:13px; border:1.5px solid rgba(255,255,255,0.14);
+  background:rgba(6,26,23,0.6); color:var(--text); font-size:16px; font-weight:800; outline:none;
+}
+.numeric-row input:focus{ border-color:var(--teal); }
+.btn-submit{
+  padding:13px 20px; border-radius:13px; background:linear-gradient(135deg, var(--teal), #22a888);
+  color:#04241c; font-weight:800; font-size:14px; white-space:nowrap;
+}
+.btn-submit:disabled{ opacity:0.4; }
+.feedback-box{
+  margin-top:14px; padding:14px; border-radius:14px; font-size:14px; line-height:1.55;
+  display:none;
+}
+.feedback-box.show{ display:block; animation:sheetUp .2s ease-out; }
+.feedback-box.ok{ background:rgba(123,224,168,0.14); border:1.5px solid var(--green); }
+.feedback-box.bad{ background:rgba(255,107,107,0.14); border:1.5px solid var(--danger); }
+.feedback-title{ font-weight:800; font-size:15.5px; margin-bottom:6px; }
+.feedback-box.ok .feedback-title{ color:var(--green); }
+.feedback-box.bad .feedback-title{ color:var(--danger); }
+.feedback-explain{ color:var(--text-dim); font-size:13px; }
+.modal-close-btn{
+  width:100%; margin-top:16px; padding:13px; border-radius:13px;
+  background:rgba(255,255,255,0.08); color:var(--text); font-weight:800; font-size:14px;
+  border:1px solid rgba(255,255,255,0.12); display:none;
+}
+.modal-close-btn.show{ display:block; }
+.locked-note{
+  background:rgba(255,107,107,0.12); border:1px solid rgba(255,107,107,0.4);
+  padding:12px 14px; border-radius:12px; font-size:13.5px; color:var(--gold-soft); margin-bottom:14px;
+}
+.reward-hero{ text-align:center; padding:14px 0 6px; }
+.reward-hero .big-ic{ font-size:52px; display:block; filter:drop-shadow(0 0 16px rgba(255,207,107,0.5)); }
+.reward-hero .reward-name{ font-weight:800; font-size:17px; margin-top:8px; color:var(--gold-soft); }
+.done-badge{
+  display:inline-flex; align-items:center; gap:6px; background:rgba(123,224,168,0.15);
+  border:1px solid var(--green); color:var(--green); font-weight:800; font-size:12.5px;
+  padding:6px 12px; border-radius:999px; margin-bottom:12px;
+}
+
+/* inventory / notes list items */
+.list-empty{ color:var(--text-dim); font-size:13.5px; text-align:center; padding:20px 0; }
+.inv-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:4px; }
+.inv-item{
+  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+  border-radius:14px; padding:14px 8px; text-align:center;
+}
+.inv-item .ic{ font-size:26px; display:block; margin-bottom:4px; }
+.inv-item .lbl{ font-size:11.5px; font-weight:700; color:var(--text-dim); }
+.inv-item.locked{ opacity:0.3; }
+.note-item{
+  background:rgba(255,255,255,0.045); border-left:3px solid var(--gold);
+  padding:10px 12px; border-radius:10px; font-size:13.5px; margin-bottom:9px; line-height:1.5;
+}
+.menu-list{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+.menu-item-btn{
+  padding:14px; border-radius:13px; background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1); color:var(--text); font-weight:800; font-size:14px;
+  text-align:left; display:flex; align-items:center; gap:10px;
+}
+.menu-item-btn.danger{ color:var(--red); }
+
+/* =========================================================
+   RESULT SCREEN
+   ========================================================= */
+#screen-result{ padding:32px 22px 40px; align-items:center; text-align:center; }
+.result-trophy{ font-size:56px; filter:drop-shadow(0 0 20px rgba(255,207,107,0.5)); }
+.result-title{ font-size:25px; font-weight:800; color:var(--gold-soft); margin-top:8px; }
+.result-rank{
+  margin-top:10px; background:rgba(255,207,107,0.12); border:1px solid rgba(255,207,107,0.4);
+  padding:9px 18px; border-radius:999px; font-weight:800; font-size:14px; color:var(--gold);
+}
+.result-card{
+  width:100%; max-width:380px; margin-top:22px; background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius); padding:18px; text-align:left;
+}
+.result-row{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed rgba(255,255,255,0.09); font-size:14px; }
+.result-row:last-child{ border-bottom:none; }
+.result-row span:first-child{ color:var(--text-dim); font-weight:700; }
+.result-row span:last-child{ font-weight:800; color:var(--gold-soft); }
+.result-actions{ width:100%; max-width:380px; margin-top:22px; display:flex; flex-direction:column; gap:10px; }
+.btn-secondary{
+  padding:14px; border-radius:14px; background:rgba(255,255,255,0.07);
+  border:1px solid rgba(255,255,255,0.12); color:var(--text); font-weight:800; font-size:14.5px;
+}
+.form-status{ margin-top:14px; font-size:12px; color:var(--text-dim); }
+
+/* toast */
+#toast{
+  position:fixed; top:14px; left:50%; transform:translateX(-50%) translateY(-60px);
+  background:rgba(18,58,51,0.97); border:1px solid var(--gold); color:var(--gold-soft);
+  padding:11px 18px; border-radius:999px; font-weight:800; font-size:13px; z-index:200;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4); transition:transform .35s ease, opacity .35s ease;
+  opacity:0; max-width:88%; text-align:center;
+}
+#toast.show{ transform:translateX(-50%) translateY(0); opacity:1; }
+
+::-webkit-scrollbar{ width:0; height:0; }
+</style>
+</head>
+<body>
+<button class="audio-toggle" id="btn-audio-toggle" aria-label="Aktif/Nonaktifkan Suara" title="Suara">🔊</button>
+<div id="app">
+
+  <!-- ============ START SCREEN ============ -->
+  <section class="screen active" id="screen-start">
+    <div class="forest-glow"></div>
+    <div class="title-wrap">
+      <div class="compass-icon">🧭</div>
+      <h1 class="game-title">LABIRIN <span>MATEMATIKA</span></h1>
+      <div class="subtitle">Jelajahi, pecahkan tantangan, temukan jalan keluar!</div>
+      <p class="desc-text">Gunakan <b>Teorema Faktor</b> untuk membuka jalan dan menemukan rahasia di dalam labirin. Setiap tantangan hanya punya satu kesempatan jawab — pikirkan baik-baik sebelum menjawab!</p>
+    </div>
+
+    <form class="start-form" id="start-form" onsubmit="return false;">
+      <div class="field">
+        <label for="inp-name">Nama Siswa</label>
+        <input id="inp-name" type="text" placeholder="Tulis namamu..." maxlength="40" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="inp-class">Kelas</label>
+        <input id="inp-class" type="text" placeholder="Contoh: XI IPA 2" maxlength="30" autocomplete="off">
+      </div>
+      <button class="btn-primary" id="btn-start" type="submit">🚀 MULAI PETUALANGAN</button>
+    </form>
+
+    <div class="start-stats">
+      <div class="stat-chip">❤️ Energi<span class="n">3</span></div>
+      <div class="stat-chip">🗝️ Kunci<span class="n">0/3</span></div>
+      <div class="stat-chip">⭐ Skor<span class="n">0</span></div>
+    </div>
+  </section>
+
+  <!-- ============ GAME SCREEN ============ -->
+  <section class="screen" id="screen-game">
+    <div class="hud">
+      <div class="hud-chips">
+        <div class="chip hearts" id="hud-hearts">❤️❤️❤️</div>
+        <div class="chip gems" id="hud-gems">💎 0</div>
+        <div class="chip keys" id="hud-keys">🗝️ 0/3</div>
+        <div class="chip score" id="hud-score">⭐ 0</div>
+      </div>
+      <button class="hud-menu-btn" id="btn-menu">☰</button>
+    </div>
+    <div class="progress-strip">
+      <span>Area ditemukan: <b id="prog-areas">2/15</b></span>
+      <span>Menuju <b>🚪 Gerbang Keluar</b></span>
+    </div>
+    <div class="map-scroll" id="map-scroll">
+      <div class="map-canvas" id="map-canvas">
+        <svg id="map-svg" viewBox="0 0 100 118" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn" id="nav-item"><span class="ic">🎒</span>Item</button>
+      <button class="nav-btn" id="nav-note"><span class="ic">📝</span>Catatan</button>
+      <button class="nav-btn" id="nav-hint"><span class="ic">💡</span>Petunjuk</button>
+    </nav>
+  </section>
+
+  <!-- ============ RESULT SCREEN ============ -->
+  <section class="screen" id="screen-result">
+    <div class="result-trophy" id="result-trophy">🏆</div>
+    <h2 class="result-title" id="result-title">PETUALANGAN SELESAI!</h2>
+    <div class="result-rank" id="result-rank">🌟 Penjelajah Hebat</div>
+
+    <div class="result-card">
+      <div class="result-row"><span>Nama</span><span id="res-name">-</span></div>
+      <div class="result-row"><span>Kelas</span><span id="res-class">-</span></div>
+      <div class="result-row"><span>Skor Akhir</span><span id="res-score">0</span></div>
+      <div class="result-row"><span>Energi Tersisa</span><span id="res-energy">0</span></div>
+      <div class="result-row"><span>Kunci Terkumpul</span><span id="res-keys">0/3</span></div>
+      <div class="result-row"><span>Area Ditemukan</span><span id="res-areas">0/15</span></div>
+      <div class="result-row"><span>Tantangan Benar</span><span id="res-correct">0/11</span></div>
+      <div class="result-row"><span>Waktu Bermain</span><span id="res-time">0:00</span></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-primary" id="btn-restart">🔁 Main Lagi</button>
+    </div>
+    <div class="form-status" id="form-status">Mengirim hasil...</div>
+  </section>
+
+</div>
+
+<!-- ============ MODAL (room / challenge / reward) ============ -->
+<div class="modal-overlay" id="modal-room">
+  <div class="modal-sheet" id="modal-room-content"></div>
+</div>
+
+<!-- ============ MODAL (inventory) ============ -->
+<div class="modal-overlay" id="modal-inv">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon-row"><span class="ic">🎒</span><span class="modal-title">Inventori</span></div>
+    <div class="inv-grid" id="inv-grid"></div>
+    <button class="modal-close-btn show" onclick="closeOverlay('modal-inv')">Tutup</button>
+  </div>
+</div>
+
+<!-- ============ MODAL (notes) ============ -->
+<div class="modal-overlay" id="modal-note">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon-row"><span class="ic">📝</span><span class="modal-title">Catatan Petualang</span></div>
+    <div id="note-list"></div>
+    <button class="modal-close-btn show" onclick="closeOverlay('modal-note')">Tutup</button>
+  </div>
+</div>
+
+<!-- ============ MODAL (hint) ============ -->
+<div class="modal-overlay" id="modal-hint">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon-row"><span class="ic">💡</span><span class="modal-title">Petunjuk</span></div>
+    <div id="hint-body" style="font-size:14px; line-height:1.6; color:var(--text-dim);"></div>
+    <button class="modal-close-btn show" onclick="closeOverlay('modal-hint')">Tutup</button>
+  </div>
+</div>
+
+<!-- ============ MODAL (menu) ============ -->
+<div class="modal-overlay" id="modal-menu">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-icon-row"><span class="ic">☰</span><span class="modal-title">Menu</span></div>
+    <div class="menu-list">
+      <button class="menu-item-btn" onclick="closeOverlay('modal-menu')">↩️ Lanjutkan Petualangan</button>
+      <button class="menu-item-btn" id="menu-end">🏁 Akhiri &amp; Lihat Hasil</button>
+      <button class="menu-item-btn danger" id="menu-restart">🔁 Mulai Ulang dari Awal</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================
+   AUDIO — musik latar & efek suara (disintesis via Web Audio API,
+   tanpa file eksternal, agar game tetap satu file HTML mandiri).
+   Semua suara mati/otomatis mulai lewat AudioEngine di bawah ini.
+   Untuk menonaktifkan audio secara default, ubah `let muted = false;`
+   menjadi `true`.
+   ========================================================= */
+const AudioEngine = (function(){
+  let ctx = null;
+  let musicGain = null, sfxGain = null;
+  let muted = false;
+  let musicPlaying = false;
+  let musicTimer = null;
+  const scale = [196.00, 220.00, 246.94, 293.66, 329.63]; // G pentatonic mayor — nuansa hutan cerah
+
+  function ensureCtx(){
+    if(muted) return false;
+    if(!ctx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if(!AC) return false;
+      ctx = new AC();
+      musicGain = ctx.createGain(); musicGain.gain.value = 0.43; musicGain.connect(ctx.destination);
+      sfxGain = ctx.createGain(); sfxGain.gain.value = 0.4; sfxGain.connect(ctx.destination);
+    }
+    if(ctx.state === 'suspended') ctx.resume();
+    return true;
+  }
+
+  function tone(freq, start, dur, type, gainVal, dest){
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.linearRampToValueAtTime(gainVal, start + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, start + dur);
+    o.connect(g); g.connect(dest);
+    o.start(start); o.stop(start + dur + 0.05);
+  }
+
+  function click(){ if(!ensureCtx()) return; const t = ctx.currentTime; tone(560, t, 0.055, 'triangle', 0.16, sfxGain); }
+  function correct(){ if(!ensureCtx()) return; const t = ctx.currentTime; [523.25,659.25,783.99].forEach((f,i)=>tone(f, t+i*0.09, 0.24, 'sine', 0.24, sfxGain)); }
+  function wrong(){ if(!ensureCtx()) return; const t = ctx.currentTime; tone(233, t, 0.16, 'sawtooth', 0.16, sfxGain); tone(174, t+0.12, 0.24, 'sawtooth', 0.14, sfxGain); }
+  function reward(){ if(!ensureCtx()) return; const t = ctx.currentTime; [659.25,783.99,987.77,1174.66].forEach((f,i)=>tone(f, t+i*0.06, 0.2, 'triangle', 0.2, sfxGain)); }
+  function unlockArea(){ if(!ensureCtx()) return; const t = ctx.currentTime; tone(392, t, 0.16, 'sine', 0.14, sfxGain); tone(587.33, t+0.09, 0.22, 'sine', 0.14, sfxGain); }
+  function win(){ if(!ensureCtx()) return; const t = ctx.currentTime; [523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f, t+i*0.13, 0.4, 'triangle', 0.26, sfxGain)); }
+  function lose(){ if(!ensureCtx()) return; const t = ctx.currentTime; [392,349.23,293.66].forEach((f,i)=>tone(f, t+i*0.2, 0.32, 'sine', 0.18, sfxGain)); }
+
+  function scheduleLoop(){
+    if(!musicPlaying || muted || !ctx) return;
+    const t = ctx.currentTime;
+    // drone lembut sebagai dasar suasana hutan
+    const drone = ctx.createOscillator();
+    const droneGain = ctx.createGain();
+    drone.type = 'sine'; drone.frequency.value = 98;
+    droneGain.gain.setValueAtTime(0.0001, t);
+    droneGain.gain.linearRampToValueAtTime(0.05, t + 1.6);
+    droneGain.gain.linearRampToValueAtTime(0.0001, t + 4);
+    drone.connect(droneGain); droneGain.connect(musicGain);
+    drone.start(t); drone.stop(t + 4.1);
+    // untaian nada acak dari tangga nada pentatonik — terasa mengembara & tenang
+    for(let i=0;i<4;i++){
+      const note = scale[Math.floor(Math.random()*scale.length)];
+      tone(note, t + i*1.0 + Math.random()*0.3, 1.5, 'sine', 0.045, musicGain);
+    }
+    musicTimer = setTimeout(scheduleLoop, 4000);
+  }
+
+  function startMusic(){
+    if(musicPlaying || muted) return;
+    if(!ensureCtx()) return;
+    musicPlaying = true;
+    scheduleLoop();
+  }
+  function stopMusic(){ musicPlaying = false; if(musicTimer) clearTimeout(musicTimer); }
+
+  function setMuted(v){
+    muted = v;
+    if(muted){ stopMusic(); if(musicGain) musicGain.gain.value = 0; if(sfxGain) sfxGain.gain.value = 0; }
+    else { if(musicGain) musicGain.gain.value = 0.43; if(sfxGain) sfxGain.gain.value = 0.4; startMusic(); }
+  }
+  function isMuted(){ return muted; }
+
+  return { click, correct, wrong, reward, unlockArea, win, lose, startMusic, stopMusic, setMuted, isMuted, ensureCtx };
+})();
+
+// Efek klik untuk SEMUA tombol & node peta (delegasi, dipasang di fase capture
+// agar bunyi sebelum aksi tombol dijalankan). Sentuhan pertama pengguna di
+// sini juga otomatis menyalakan AudioContext & memulai musik latar (kebijakan
+// autoplay browser mensyaratkan gestur pengguna).
+document.addEventListener('click', function(e){
+  const target = e.target.closest('button, .node');
+  if(!target) return;
+  AudioEngine.click();
+  AudioEngine.startMusic();
+}, true);
+
+document.getElementById('btn-audio-toggle').addEventListener('click', function(){
+  const nowMuted = !AudioEngine.isMuted();
+  AudioEngine.setMuted(nowMuted);
+  this.textContent = nowMuted ? '🔇' : '🔊';
+  this.classList.toggle('muted', nowMuted);
+});
+
+/* =========================================================
+   BANK SOAL — Teorema Faktor (Level Mudah)
+   Untuk mengganti soal: edit object QUESTIONS di bawah ini.
+   - type "choice"  -> butuh field: options:[{id,text}], correct: id
+   - type "numeric" -> butuh field: correct: angka (integer)
+   Field lain: diff (label tampilan), points (skor benar),
+   context (narasi ruang), prompt (soal), explain (pembahasan).
+   ========================================================= */
+const QUESTIONS = {
+  q1: { diff:'Mudah', points:15,
+    context:'Gerbang Awal tertutup rapat. Sebuah prasasti batu menampilkan sebuah fungsi lengkap dengan empat klaim tentang faktornya.',
+    prompt:'Diketahui f(x) = x³ − 6x² + 11x − 6. Manakah pernyataan berikut yang BENAR?',
+    type:'choice',
+    options:[
+      {id:'a',text:'f(1) = 0, sehingga (x − 1) adalah faktor dari f(x).'},
+      {id:'b',text:'f(1) = 12, sehingga (x − 1) bukan faktor dari f(x).'},
+      {id:'c',text:'f(1) = 0, sehingga (x + 1) adalah faktor dari f(x).'},
+      {id:'d',text:'Karena suku konstanta f(x) adalah −6, maka (x − 6) pasti faktor dari f(x).'}
+    ],
+    correct:'a',
+    explain:'f(1) = 1 − 6 + 11 − 6 = 0. Karena f(1) = 0, Teorema Faktor menyatakan (x − 1) adalah faktor dari f(x). Nilai konstanta saja tidak cukup untuk menyimpulkan sebuah faktor tanpa pengujian.' },
+
+  q2: { diff:'Mudah', points:15,
+    context:'Jalur Hutan membentang panjang namun teduh. Sebuah batu penanda meminta pembuktian sederhana sebelum jalan terbuka.',
+    prompt:'Diketahui f(x) = x² − 5x + 6. Untuk melanjutkan Jalur Hutan, hitung nilai f(2).',
+    type:'numeric', correct:0,
+    explain:'f(2) = (2)² − 5(2) + 6 = 4 − 10 + 6 = 0. Karena f(2) = 0, maka (x − 2) adalah faktor dari f(x).' },
+
+  q3: { diff:'Mudah', points:15,
+    context:'Ruang Kunci Merah menampilkan tiga pintu berbeda, masing-masing bertuliskan sebuah fungsi.',
+    prompt:'Manakah dari fungsi berikut yang memiliki (x − 2) sebagai faktor?',
+    type:'choice',
+    options:[
+      {id:'a',text:'f(x) = x² + x − 6'},
+      {id:'b',text:'f(x) = x² + 3x + 2'},
+      {id:'c',text:'f(x) = x² − x + 6'},
+      {id:'d',text:'f(x) = x² + 2x + 1'}
+    ],
+    correct:'a',
+    explain:'Substitusikan x = 2 ke setiap fungsi. Hanya f(x) = x² + x − 6 yang menghasilkan f(2) = 4 + 2 − 6 = 0, sehingga (x − 2) adalah faktornya.' },
+
+  q4: { diff:'Sedang', points:20,
+    context:'Gua Tersembunyi memancarkan cahaya merah redup — jalur lain menuju kunci yang sama.',
+    prompt:'Diketahui (x − 3) adalah faktor dari f(x) = x² − x + k. Tentukan nilai k.',
+    type:'numeric', correct:-6,
+    explain:'f(3) = 9 − 3 + k = 6 + k. Agar (x − 3) menjadi faktor, f(3) harus 0, sehingga k = −6.' },
+
+  q5: { diff:'Mudah', points:15,
+    context:'Jalur Sungai berarus deras. Sebuah papan batu menampilkan sebuah fakta dan menanyakan kesimpulan yang tepat.',
+    prompt:'Diketahui f(x) = x³ − 2x² − 5x + 6 dan f(1) = 0. Manakah kesimpulan yang tepat?',
+    type:'choice',
+    options:[
+      {id:'a',text:'(x − 1) adalah faktor dari f(x).'},
+      {id:'b',text:'(x + 1) adalah faktor dari f(x).'},
+      {id:'c',text:'f(x) tidak memiliki faktor linear karena f(1) = 0 hanya kebetulan.'},
+      {id:'d',text:'1 adalah faktor dari konstanta f(x), tetapi belum tentu (x − 1) faktor dari f(x).'}
+    ],
+    correct:'a',
+    explain:'Menurut Teorema Faktor, jika f(k) = 0 maka (x − k) adalah faktor dari f(x). Karena f(1) = 0, maka (x − 1) adalah faktor dari f(x).' },
+
+  q6: { diff:'Sedang', points:20,
+    context:'Ruang Kunci Biru dijaga oleh sebuah teka-teki parameter.',
+    prompt:'Diketahui (x − 1) adalah faktor dari f(x) = x³ − 4x² + kx + 2. Tentukan nilai k.',
+    type:'numeric', correct:1,
+    explain:'f(1) = 1 − 4 + k + 2 = k − 1. Agar (x − 1) menjadi faktor, f(1) harus 0, sehingga k = 1.' },
+
+  q7: { diff:'Mudah', points:15,
+    context:'Air Terjun Tersembunyi — jalur lain menuju kunci yang sama, dengan tantangan berbeda.',
+    prompt:'Diketahui f(x) = 2x² − 3x − 2. Manakah yang merupakan faktor dari f(x)?',
+    type:'choice',
+    options:[
+      {id:'a',text:'(x − 2)'},
+      {id:'b',text:'(x + 2)'},
+      {id:'c',text:'(x − 1)'},
+      {id:'d',text:'(x + 1)'}
+    ],
+    correct:'a',
+    explain:'f(2) = 2(4) − 3(2) − 2 = 8 − 6 − 2 = 0, sehingga (x − 2) adalah faktor dari f(x).' },
+
+  q8: { diff:'Sedang', points:20,
+    context:'Altar Keputusan di tengah labirin meminta nilai parameter yang tepat sebelum jalan bercabang lagi.',
+    prompt:'Diketahui (x − 3) adalah faktor dari f(x) = x² + ax − 15. Tentukan nilai a.',
+    type:'numeric', correct:2,
+    explain:'f(3) = 9 + 3a − 15 = 3a − 6. Agar (x − 3) faktor, f(3) = 0, sehingga a = 2.' },
+
+  q9: { diff:'Sedang', points:20,
+    context:'Kuil Ungu menuntut kesimpulan faktorisasi yang lengkap dan tepat.',
+    prompt:'Diketahui f(x) = x³ − x² − 4x + 4 dan diketahui f(1) = 0, f(2) = 0, f(−2) = 0. Manakah faktorisasi lengkap f(x) yang benar?',
+    type:'choice',
+    options:[
+      {id:'a',text:'f(x) = (x − 1)(x − 2)(x + 2)'},
+      {id:'b',text:'f(x) = (x + 1)(x + 2)(x − 2)'},
+      {id:'c',text:'f(x) = (x − 1)(x + 2)(x + 2)'},
+      {id:'d',text:'f(x) = (x − 1)(x − 2)(x − 2)'}
+    ],
+    correct:'a',
+    explain:'Karena f(1) = f(2) = f(−2) = 0, ketiga nilai tersebut adalah akar f(x), sehingga f(x) = (x − 1)(x − 2)(x + 2).' },
+
+  q10: { diff:'Sedang', points:20,
+    context:'Reruntuhan Ungu berbisik sebuah teka-teki lama — jalur lain menuju kunci yang sama.',
+    prompt:'Diketahui (x + 1) adalah faktor dari f(x) = x³ + 2x² + kx − 4. Tentukan nilai k.',
+    type:'numeric', correct:-3,
+    explain:'f(−1) = (−1)³ + 2(−1)² + k(−1) − 4 = −1 + 2 − k − 4 = −3 − k. Agar f(−1) = 0, maka k = −3.' },
+
+  q11: { diff:'Sedang', points:25,
+    context:'Gerbang Keluar bersinar terang, menunggu pembuktian terakhirmu.',
+    prompt:'Diketahui f(x) = x³ − 3x² − 4x + 12 dan f(2) = 0. Manakah pernyataan yang tepat untuk membuka gerbang?',
+    type:'choice',
+    options:[
+      {id:'a',text:'(x − 2) adalah faktor dari f(x), sehingga gerbang terbuka.'},
+      {id:'b',text:'f(2) = 0 hanya menunjukkan 2 adalah konstanta, bukan faktor.'},
+      {id:'c',text:'(x + 2) adalah faktor dari f(x) karena f(2) = 0.'},
+      {id:'d',text:'f(2) = 0 tidak cukup untuk menyimpulkan faktor tanpa pembagian polinomial.'}
+    ],
+    correct:'a',
+    explain:'Menurut Teorema Faktor, jika f(k) = 0 maka (x − k) adalah faktor dari f(x). Karena f(2) = 0, maka (x − 2) adalah faktor dari f(x), dan Gerbang Keluar pun terbuka!' }
+};
+
+/* =========================================================
+   PETA NODE — struktur labirin
+   x,y dalam persen terhadap kanvas (viewBox 100 x 118).
+   type: start | challenge | lockedChallenge | chest | hint | exit
+   unlocks: id node yang terbuka setelah node ini selesai
+   reward: {key:'merah'|'biru'|'ungu'} dan/atau {gem:n}
+   requiresKey: kunci yang wajib dimiliki untuk mencoba lockedChallenge
+   requiresKeys: daftar kunci yang wajib lengkap untuk exit
+   ========================================================= */
+/* Setiap kunci (merah/biru/ungu) memiliki DUA node berbeda yang sama-sama
+   memberi kunci tersebut (mis. L1 & L2 sama-sama memberi Kunci Merah).
+   Keduanya terbuka bersamaan sebagai bagian alami dari percabangan peta —
+   bukan "jalan khusus" yang muncul hanya setelah siswa salah. Jika siswa
+   salah pada salah satu, jalur satunya tetap tersedia sebagai cara lain
+   memperoleh kunci yang sama. */
+const NODES = {
+  start:      { id:'start', name:'Titik Awal', type:'start', icon:'🚩', x:50, y:4,
+                unlocks:['gate1'],
+                desc:'Kamu berdiri di ambang Labirin Matematika. Angin sepoi membawa aroma hutan.' },
+
+  gate1:      { id:'gate1', name:'Gerbang Awal', type:'challenge', icon:'🧩', x:50, y:13,
+                unlocks:['pathA','pathB'], challenge:'q1',
+                desc:'Gerbang batu besar ini adalah pintu masuk sesungguhnya ke dalam labirin.' },
+
+  pathA:      { id:'pathA', name:'Jalur Hutan', type:'challenge', icon:'🧩', x:24, y:23,
+                unlocks:['keyMerahA','keyMerahB','chest'], challenge:'q2',
+                desc:'Jalur teduh yang lebih panjang. Di depan, jalan pecah menjadi tiga arah.' },
+
+  pathB:      { id:'pathB', name:'Jalur Sungai', type:'challenge', icon:'🧩', x:76, y:23,
+                unlocks:['keyBiruA','keyBiruB','hint'], challenge:'q5',
+                desc:'Jalan pintas di tepi sungai. Di depan, jalan juga pecah menjadi tiga arah.' },
+
+  keyMerahA:  { id:'keyMerahA', name:'Ruang Kunci Merah', type:'challenge', icon:'🗝️', x:10, y:35,
+                unlocks:['middleGate'], challenge:'q3', reward:{key:'merah'},
+                desc:'Ruang dengan cahaya kemerahan menyoroti sebuah kunci di tengah altar.' },
+
+  keyMerahB:  { id:'keyMerahB', name:'Gua Tersembunyi', type:'challenge', icon:'🗝️', x:34, y:35,
+                unlocks:['middleGate'], challenge:'q4', reward:{key:'merah'},
+                desc:'Gua sempit yang memancarkan cahaya merah redup — jalur lain menuju kunci yang sama.' },
+
+  chest:      { id:'chest', name:'Peti Hadiah', type:'chest', icon:'🎁', x:22, y:47,
+                unlocks:[], reward:{gem:1},
+                desc:'Sebuah peti kayu tua terlihat menarik untuk dibuka. Tidak ada tantangan di sini — hadiah menantimu begitu saja.' },
+
+  keyBiruA:   { id:'keyBiruA', name:'Ruang Kunci Biru', type:'challenge', icon:'🗝️', x:66, y:35,
+                unlocks:['middleGate'], challenge:'q6', reward:{key:'biru'},
+                desc:'Ruang tenang dengan teka-teki parameter menjaga sebuah kunci biru.' },
+
+  keyBiruB:   { id:'keyBiruB', name:'Air Terjun Tersembunyi', type:'challenge', icon:'🗝️', x:90, y:35,
+                unlocks:['middleGate'], challenge:'q7', reward:{key:'biru'},
+                desc:'Air terjun kecil menutupi sebuah lorong — jalur lain menuju kunci yang sama.' },
+
+  hint:       { id:'hint', name:'Ruang Petunjuk', type:'hint', icon:'💡', x:78, y:47,
+                unlocks:[],
+                desc:'Ruang tenang dengan gulungan kertas tua berisi petunjuk penting tentang labirin ini.' },
+
+  middleGate: { id:'middleGate', name:'Altar Keputusan', type:'challenge', icon:'🧩', x:50, y:58,
+                unlocks:['keyUnguA','keyUnguB'], challenge:'q8',
+                desc:'Sebuah altar di tengah labirin, tempat semua jalur sementara bertemu.' },
+
+  keyUnguA:   { id:'keyUnguA', name:'Kuil Ungu', type:'challenge', icon:'🗝️', x:36, y:70,
+                unlocks:['praGate'], challenge:'q9', reward:{key:'ungu'},
+                desc:'Kuil tua bercahaya ungu, menyimpan kunci terakhir yang kamu butuhkan.' },
+
+  keyUnguB:   { id:'keyUnguB', name:'Reruntuhan Ungu', type:'challenge', icon:'🗝️', x:64, y:70,
+                unlocks:['praGate'], challenge:'q10', reward:{key:'ungu'},
+                desc:'Reruntuhan kuno berbisik teka-teki lama — jalur lain menuju kunci yang sama.' },
+
+  praGate:    { id:'praGate', name:'Ruang Pra-Gerbang', type:'passage', icon:'🌉', x:50, y:82,
+                unlocks:['exit'],
+                desc:'Ruang pertemuan tempat jalur-jalur yang kamu tempuh akhirnya menyatu. Gerbang Keluar sudah terasa dekat.' },
+
+  exit:       { id:'exit', name:'Gerbang Keluar', type:'exit', icon:'🚪', x:50, y:96,
+                requiresKeys:['merah','biru','ungu'], challenge:'q11',
+                desc:'Gerbang megah bersinar keemasan. Inilah akhir dari petualanganmu.' }
+};
+
+const EDGES = [
+  ['start','gate1'],['gate1','pathA'],['gate1','pathB'],
+  ['pathA','keyMerahA'],['pathA','keyMerahB'],['pathA','chest'],
+  ['pathB','keyBiruA'],['pathB','keyBiruB'],['pathB','hint'],
+  ['keyMerahA','middleGate'],['keyMerahB','middleGate'],
+  ['keyBiruA','middleGate'],['keyBiruB','middleGate'],
+  ['middleGate','keyUnguA'],['middleGate','keyUnguB'],
+  ['keyUnguA','praGate'],['keyUnguB','praGate'],
+  ['praGate','exit']
+];
+
+const KEY_META = {
+  merah:{ label:'Kunci Merah', ic:'🗝️', color:'#ff7b7b' },
+  biru: { label:'Kunci Biru',  ic:'🗝️', color:'#5ec8f0' },
+  ungu: { label:'Kunci Ungu',  ic:'🗝️', color:'#c79bff' }
+};
+
+const TOTAL_NODES = Object.keys(NODES).length;
+const TOTAL_CHALLENGES = Object.keys(QUESTIONS).length;
+
+const CORRECT_MSGS = ['Hebat! Jalan terbuka. ✅','Tepat sekali! Kamu melangkah maju. ✅','Perhitunganmu benar! ✅','Luar biasa, jalan menjadi terang! ✅'];
+const WRONG_MSGS = ['Belum tepat. Energi berkurang 1. ❌','Hampir! Tapi belum tepat. ❌','Perhitungan itu masih keliru. ❌'];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let state = null;
+function freshState(name, cls){
+  return {
+    name, cls,
+    energy: 3,
+    score: 0,
+    gems: 0,
+    keys: { merah:false, biru:false, ungu:false },
+    discovered: new Set(['start','gate1']),
+    completed: new Set(['start']),
+    attempted: new Set(),
+    notes: [],
+    correctCount: 0,
+    startTime: Date.now(),
+    formSent: false
+  };
+}
+
+function addNote(text){
+  if(state.notes.includes(text)) return;
+  state.notes.push(text);
+}
+
+/* =========================================================
+   NAVIGATION HELPERS
+   ========================================================= */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function openOverlay(id){ document.getElementById(id).classList.add('active'); }
+window.closeOverlay = function(id){ document.getElementById(id).classList.remove('active'); };
+
+let toastTimer=null;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* =========================================================
+   START FLOW
+   ========================================================= */
+document.getElementById('start-form').addEventListener('submit', startGame);
+document.getElementById('btn-start').addEventListener('click', startGame);
+function startGame(e){
+  if(e) e.preventDefault();
+  const name = document.getElementById('inp-name').value.trim();
+  const cls = document.getElementById('inp-class').value.trim();
+  if(!name || !cls){ showToast('Isi nama dan kelas dulu, ya! 📝'); return; }
+  state = freshState(name, cls);
+  showScreen('screen-game');
+  renderAll();
+}
+
+/* =========================================================
+   RENDER: HUD + MAP
+   ========================================================= */
+function renderAll(){ renderHUD(); renderMap(); }
+
+function renderHUD(){
+  document.getElementById('hud-hearts').textContent = '❤️'.repeat(state.energy) + '🖤'.repeat(3-state.energy);
+  document.getElementById('hud-gems').textContent = '💎 ' + state.gems;
+  const kcount = Object.values(state.keys).filter(Boolean).length;
+  document.getElementById('hud-keys').textContent = '🗝️ ' + kcount + '/3';
+  document.getElementById('hud-score').textContent = '⭐ ' + state.score;
+  document.getElementById('prog-areas').textContent = state.discovered.size + '/' + TOTAL_NODES;
+}
+
+function nodeStatus(node){
+  if(!state.discovered.has(node.id)) return 'fog';
+  if(state.completed.has(node.id)) return 'done';
+  if(node.type==='lockedChallenge' && !state.keys[node.requiresKey]) return 'locked';
+  if(node.type==='exit'){
+    const need = node.requiresKeys.every(k=>state.keys[k]);
+    if(!need) return 'locked';
+  }
+  return 'available';
+}
+
+function renderMap(){
+  const svg = document.getElementById('map-svg');
+  svg.innerHTML = '';
+  EDGES.forEach(([a,b])=>{
+    const na=NODES[a], nb=NODES[b];
+    if(!state.discovered.has(a)) return;
+    const bDiscovered = state.discovered.has(b);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1', na.x); line.setAttribute('y1', na.y);
+    line.setAttribute('x2', nb.x); line.setAttribute('y2', nb.y);
+    line.setAttribute('stroke-width', '0.6');
+    line.setAttribute('vector-effect','non-scaling-stroke');
+    if(bDiscovered){
+      line.setAttribute('stroke', 'rgba(255,207,107,0.55)');
+    } else {
+      line.setAttribute('stroke', 'rgba(255,255,255,0.15)');
+      line.setAttribute('stroke-dasharray','2,2');
+    }
+    svg.appendChild(line);
+  });
+
+  const canvas = document.getElementById('map-canvas');
+  canvas.querySelectorAll('.node').forEach(n=>n.remove());
+
+  Object.values(NODES).forEach(node=>{
+    const st = nodeStatus(node);
+    const div = document.createElement('div');
+    div.className = 'node type-'+node.type+' state-'+st;
+    div.style.left = node.x+'%';
+    div.style.top = (node.y/118*100)+'%';
+    const icon = st==='fog' ? '❓' : node.icon;
+    div.innerHTML = '<div class="node-bubble">'+icon+'</div><div class="node-label">'+(st==='fog'?'???':node.name)+'</div>';
+    div.addEventListener('click', ()=>onNodeTap(node.id));
+    canvas.appendChild(div);
+  });
+}
+
+/* =========================================================
+   NODE INTERACTION
+   ========================================================= */
+function onNodeTap(id){
+  const node = NODES[id];
+  const st = nodeStatus(node);
+  if(st==='fog'){ showToast('Area ini masih tertutup kabut... 🌫️'); return; }
+  if(st==='done'){ openDoneModal(node); return; }
+  if(st==='locked'){ openLockedModal(node); return; }
+
+  if(node.type==='chest' || node.type==='hint' || node.type==='passage'){ openFreeModal(node); return; }
+  openChallengeModal(node);
+}
+
+function openLockedModal(node){
+  let msg;
+  if(node.type==='lockedChallenge'){
+    const km = KEY_META[node.requiresKey];
+    msg = 'Pintu ini terkunci. Kamu membutuhkan <b style="color:'+km.color+'">'+km.ic+' '+km.label+'</b> untuk membukanya.';
+  } else if(node.type==='exit'){
+    const have = Object.values(state.keys).filter(Boolean).length;
+    msg = 'Gerbang ini bersegel kuat. Kamu butuh <b>3 kunci</b> untuk membukanya (saat ini kamu punya <b>'+have+'/3</b>). Jelajahi labirin lebih jauh untuk menemukan kunci yang tersisa.';
+  }
+  const html =
+    '<div class="modal-handle"></div>'+
+    '<div class="modal-icon-row"><span class="ic">'+node.icon+'</span><span class="modal-title">'+node.name+'</span></div>'+
+    '<div class="locked-note">🔒 '+msg+'</div>'+
+    '<button class="modal-close-btn show" onclick="closeOverlay(\'modal-room\')">Tutup</button>';
+  document.getElementById('modal-room-content').innerHTML = html;
+  openOverlay('modal-room');
+}
+
+function openDoneModal(node){
+  let rewardLine = '';
+  if(node.reward && node.reward.key){
+    const km = KEY_META[node.reward.key];
+    rewardLine = '<p style="color:var(--text-dim); font-size:13.5px;">Kamu mendapatkan '+km.ic+' <b style="color:'+km.color+'">'+km.label+'</b> di sini.</p>';
+  } else if(node.reward && node.reward.gem){
+    rewardLine = '<p style="color:var(--text-dim); font-size:13.5px;">Kamu menemukan 💎 Permata di sini.</p>';
+  }
+  const html =
+    '<div class="modal-handle"></div>'+
+    '<div class="modal-icon-row"><span class="ic">'+node.icon+'</span><span class="modal-title">'+node.name+'</span></div>'+
+    '<div class="done-badge">✓ Sudah dijelajahi</div>'+
+    '<p style="font-size:13.5px; color:var(--text-dim); line-height:1.55;">'+node.desc+'</p>'+
+    rewardLine+
+    '<button class="modal-close-btn show" onclick="closeOverlay(\'modal-room\')">Tutup</button>';
+  document.getElementById('modal-room-content').innerHTML = html;
+  openOverlay('modal-room');
+}
+
+function openFreeModal(node){
+  let rewardHtml, btnLabel;
+  if(node.type==='chest'){
+    rewardHtml = '<div class="reward-hero"><span class="big-ic">💎</span><div class="reward-name">Kamu menemukan sebuah Permata!</div></div>';
+    btnLabel = '🎁 Buka Peti';
+  } else if(node.type==='hint'){
+    rewardHtml = '<div class="reward-hero"><span class="big-ic">💡</span><div class="reward-name">Petunjuk baru dicatat!</div></div>'+
+      '<p style="font-size:13.5px; color:var(--text-dim); text-align:center;">"Gerbang Keluar membutuhkan 3 kunci — Merah, Biru, dan Ungu — sebelum bisa dibuka."</p>';
+    btnLabel = '📖 Baca Petunjuk';
+  } else { /* passage */
+    rewardHtml = '<div class="reward-hero"><span class="big-ic">🌉</span><div class="reward-name">Dua jalur akhirnya menyatu di sini.</div></div>';
+    btnLabel = '➡️ Lanjutkan ke Gerbang Keluar';
+  }
+  const html =
+    '<div class="modal-handle"></div>'+
+    '<div class="modal-icon-row"><span class="ic">'+node.icon+'</span><span class="modal-title">'+node.name+'</span></div>'+
+    '<p style="font-size:13.5px; color:var(--text-dim); line-height:1.55;">'+node.desc+'</p>'+
+    rewardHtml+
+    '<button class="btn-primary" id="btn-claim-free" style="margin-top:8px;">'+btnLabel+'</button>';
+  document.getElementById('modal-room-content').innerHTML = html;
+  openOverlay('modal-room');
+  document.getElementById('btn-claim-free').addEventListener('click', ()=>{
+    claimFreeNode(node);
+  });
+}
+
+function claimFreeNode(node){
+  if(node.reward && node.reward.gem){
+    state.gems += node.reward.gem;
+    addNote('💎 Kamu menemukan Permata di '+node.name+'.');
+    showToast('🎁 Kamu menemukan Permata!');
+    AudioEngine.reward();
+  }
+  if(node.id==='hint'){
+    addNote('💡 Petunjuk: Gerbang Keluar membutuhkan 3 kunci (Merah, Biru, Ungu) sebelum bisa dibuka.');
+  }
+  if(node.id==='praGate'){
+    addNote('🌉 Ruang Pra-Gerbang terbuka. Gerbang Keluar sudah terlihat, namun tetap membutuhkan 3 kunci untuk dibuka.');
+  }
+  state.completed.add(node.id);
+  unlockNext(node);
+  renderAll();
+  closeOverlay('modal-room');
+}
+
+function unlockNext(node){
+  let anyNew = false;
+  (node.unlocks||[]).forEach(id=>{
+    if(!state.discovered.has(id)){
+      state.discovered.add(id);
+      showToast('✨ Area baru ditemukan: '+NODES[id].name);
+      anyNew = true;
+    }
+  });
+  if(anyNew) AudioEngine.unlockArea();
+}
+
+/* ---------- challenge modal ---------- */
+function openChallengeModal(node){
+  const q = QUESTIONS[node.challenge];
+  let bodyHtml =
+    '<div class="modal-handle"></div>'+
+    '<div class="modal-icon-row"><span class="ic">'+node.icon+'</span><span class="modal-title">'+node.name+'</span></div>'+
+    '<div class="modal-context">'+q.context+'</div>'+
+    '<div class="modal-prompt">'+q.prompt+'</div>';
+
+  if(q.type==='choice'){
+    bodyHtml += '<div class="opt-list" id="opt-list">';
+    q.options.forEach(o=>{
+      bodyHtml += '<button class="opt-btn" data-id="'+o.id+'">'+o.text+'</button>';
+    });
+    bodyHtml += '</div>';
+  } else {
+    bodyHtml += '<div class="numeric-row">'+
+      '<input type="number" id="numeric-input" placeholder="Masukkan angka...">'+
+      '<button class="btn-submit" id="btn-numeric-submit">Jawab</button>'+
+      '</div>';
+  }
+  bodyHtml += '<div class="feedback-box" id="feedback-box"></div>'+
+    '<button class="modal-close-btn" id="modal-close-after">Tutup</button>';
+
+  document.getElementById('modal-room-content').innerHTML = bodyHtml;
+  openOverlay('modal-room');
+
+  if(q.type==='choice'){
+    document.querySelectorAll('#opt-list .opt-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('#opt-list .opt-btn').forEach(b=>b.disabled=true);
+        const chosen = btn.getAttribute('data-id');
+        const isCorrect = chosen === q.correct;
+        btn.classList.add(isCorrect?'correct':'wrong');
+        if(!isCorrect){
+          document.querySelectorAll('#opt-list .opt-btn').forEach(b=>{
+            if(b.getAttribute('data-id')===q.correct) b.classList.add('correct');
+          });
+        }
+        submitAnswer(node, isCorrect);
+      });
+    });
+  } else {
+    const submitFn = ()=>{
+      const val = document.getElementById('numeric-input').value;
+      if(val===''){ showToast('Isi jawabanmu dulu!'); return; }
+      document.getElementById('numeric-input').disabled = true;
+      document.getElementById('btn-numeric-submit').disabled = true;
+      const isCorrect = Number(val) === q.correct;
+      submitAnswer(node, isCorrect);
+    };
+    document.getElementById('btn-numeric-submit').addEventListener('click', submitFn);
+    document.getElementById('numeric-input').addEventListener('keydown', (e)=>{
+      if(e.key==='Enter') submitFn();
+    });
+  }
+}
+
+function submitAnswer(node, isCorrect){
+  const q = QUESTIONS[node.challenge];
+  // Setiap tantangan hanya boleh dijawab satu kali — node ini ditandai
+  // attempted dan tombol jawaban sudah dinonaktifkan sebelum fungsi ini
+  // dipanggil, sehingga tidak ada kesempatan kedua pada soal yang sama.
+  state.attempted.add(node.id);
+  let title, box;
+  if(isCorrect){
+    AudioEngine.correct();
+    // BENAR → skor penuh diperoleh, hadiah/kunci diperoleh jika ada.
+    state.score += q.points;
+    state.correctCount++;
+    let bonusNote = '';
+    if(node.reward && node.reward.key){
+      const keyName = node.reward.key;
+      const km = KEY_META[keyName];
+      if(state.keys[keyName]){
+        // Kunci ini sudah dimiliki lewat jalur lain — tetap beri apresiasi
+        // berupa bonus kecil, bukan penggandaan kunci.
+        state.gems += 1;
+        bonusNote = ' Kunci ini sudah kamu miliki dari jalur lain — kamu mendapat 💎 tambahan!';
+      } else {
+        state.keys[keyName] = true;
+        addNote('🗝️ '+km.label+' ditemukan di '+node.name+'.');
+        AudioEngine.reward();
+      }
+    }
+    title = CORRECT_MSGS[Math.floor(Math.random()*CORRECT_MSGS.length)];
+    box = '<div class="feedback-box show ok"><div class="feedback-title">'+title+'</div>'+
+      '<div class="feedback-explain">'+q.explain+bonusNote+' <br><b>+'+q.points+' skor</b></div></div>';
+  } else {
+    AudioEngine.wrong();
+    // SALAH → jawaban final, skor tantangan ini = 0, energi −1,
+    // hadiah/kunci TIDAK diperoleh. Jika node ini adalah salah satu dari
+    // dua jalur menuju kunci yang sama, jalur satunya tetap tersedia.
+    state.energy = Math.max(0, state.energy-1);
+    title = WRONG_MSGS[Math.floor(Math.random()*WRONG_MSGS.length)];
+    let altNote = '';
+    if(node.reward && node.reward.key && !state.keys[node.reward.key]){
+      altNote = ' Kamu belum mendapatkan kunci ini — namun mungkin masih ada jalur lain di labirin yang mengarah ke kunci yang sama.';
+    }
+    box = '<div class="feedback-box show bad"><div class="feedback-title">'+title+'</div>'+
+      '<div class="feedback-explain">'+q.explain+altNote+' <br><b>+0 skor</b></div></div>';
+  }
+  const fb = document.getElementById('feedback-box');
+  fb.outerHTML = box;
+  const closeBtn = document.getElementById('modal-close-after');
+  closeBtn.classList.add('show');
+  renderHUD();
+
+  if(node.id === 'exit'){
+    closeBtn.textContent = isCorrect ? '🏆 Lihat Hasil' : '📋 Lihat Hasil';
+    closeBtn.onclick = ()=>{ closeOverlay('modal-room'); endGame(isCorrect ? 'win' : 'gagal'); };
+    return;
+  }
+
+  state.completed.add(node.id);
+  unlockNext(node);
+  closeBtn.onclick = ()=>{
+    closeOverlay('modal-room');
+    renderAll();
+    if(state.energy<=0){ setTimeout(()=>endGame('energi'), 300); }
+  };
+}
+
+/* =========================================================
+   BOTTOM NAV: inventory / notes / hint
+   ========================================================= */
+document.getElementById('nav-item').addEventListener('click', ()=>{
+  const grid = document.getElementById('inv-grid');
+  let html = '';
+  html += '<div class="inv-item"><span class="ic">💎</span><span class="lbl">Permata x'+state.gems+'</span></div>';
+  Object.keys(KEY_META).forEach(k=>{
+    const have = state.keys[k];
+    const km = KEY_META[k];
+    html += '<div class="inv-item'+(have?'':' locked')+'"><span class="ic">'+km.ic+'</span><span class="lbl">'+km.label+'</span></div>';
+  });
+  html += '<div class="inv-item"><span class="ic">❤️</span><span class="lbl">Energi '+state.energy+'/3</span></div>';
+  grid.innerHTML = html;
+  openOverlay('modal-inv');
+});
+
+document.getElementById('nav-note').addEventListener('click', ()=>{
+  const list = document.getElementById('note-list');
+  if(state.notes.length===0){
+    list.innerHTML = '<div class="list-empty">Belum ada catatan. Jelajahi labirin untuk menemukan informasi penting!</div>';
+  } else {
+    list.innerHTML = state.notes.map(n=>'<div class="note-item">'+n+'</div>').join('');
+  }
+  openOverlay('modal-note');
+});
+
+document.getElementById('nav-hint').addEventListener('click', ()=>{
+  const body = document.getElementById('hint-body');
+  const avail = Object.values(NODES).filter(n=>{
+    const st = nodeStatus(n);
+    return st==='available';
+  });
+  let tip;
+  if(avail.length>0){
+    const n = avail[0];
+    tip = 'Coba jelajahi <b style="color:var(--gold-soft)">'+n.name+'</b> — area ini sudah terbuka dan siap dijelajahi.';
+  } else {
+    tip = 'Semua area yang terlihat sudah kamu selesaikan. Selesaikan tantangan yang tersisa untuk membuka jalan baru!';
+  }
+  const kcount = Object.values(state.keys).filter(Boolean).length;
+  body.innerHTML = '<p>🎯 Tujuan utama: temukan <b>3 kunci</b> (Merah, Biru, Ungu) lalu buka <b>Gerbang Keluar</b>.</p>'+
+    '<p>🗝️ Kunci yang sudah kamu punya: <b>'+kcount+'/3</b>.</p>'+
+    '<p>💡 '+tip+'</p>';
+  openOverlay('modal-hint');
+});
+
+document.getElementById('btn-menu').addEventListener('click', ()=>openOverlay('modal-menu'));
+document.getElementById('menu-end').addEventListener('click', ()=>{
+  closeOverlay('modal-menu');
+  endGame('manual');
+});
+document.getElementById('menu-restart').addEventListener('click', ()=>{
+  closeOverlay('modal-menu');
+  showScreen('screen-start');
+});
+
+/* =========================================================
+   END GAME / RESULT
+   ========================================================= */
+function fmtTime(ms){
+  const s = Math.floor(ms/1000);
+  const m = Math.floor(s/60);
+  const rem = s%60;
+  return m+':' + (rem<10?'0':'') + rem;
+}
+
+function endGame(reason){
+  const playMs = Date.now() - state.startTime;
+  const trophy = document.getElementById('result-trophy');
+  const title = document.getElementById('result-title');
+  const rank = document.getElementById('result-rank');
+
+  if(reason==='win'){
+    AudioEngine.win();
+    trophy.textContent = '🏆';
+    title.textContent = 'PETUALANGAN SELESAI!';
+    let rankText, rankIcon='🌟';
+    if(state.score>=170) rankText='Penjelajah Hebat';
+    else if(state.score>=100) rankText='Penjelajah Cerdas';
+    else rankText='Penjelajah Pemula';
+    rank.style.display='inline-flex';
+    rank.textContent = rankIcon+' '+rankText;
+  } else if(reason==='energi'){
+    AudioEngine.lose();
+    trophy.textContent = '💤';
+    title.textContent = 'Energi Habis!';
+    rank.style.display='none';
+  } else if(reason==='gagal'){
+    AudioEngine.lose();
+    trophy.textContent = '🚪';
+    title.textContent = 'Gerbang Belum Terbuka';
+    rank.style.display='none';
+  } else {
+    trophy.textContent = '📋';
+    title.textContent = 'Petualangan Dihentikan';
+    rank.style.display='none';
+  }
+
+  document.getElementById('res-name').textContent = state.name;
+  document.getElementById('res-class').textContent = state.cls;
+  document.getElementById('res-score').textContent = state.score;
+  document.getElementById('res-energy').textContent = state.energy + '/3';
+  const kcount = Object.values(state.keys).filter(Boolean).length;
+  document.getElementById('res-keys').textContent = kcount + '/3';
+  document.getElementById('res-areas').textContent = state.discovered.size + '/' + TOTAL_NODES;
+  document.getElementById('res-correct').textContent = state.correctCount + '/' + TOTAL_CHALLENGES;
+  document.getElementById('res-time').textContent = fmtTime(playMs);
+
+  showScreen('screen-result');
+  sendToGoogleForm();
+}
+
+document.getElementById('btn-restart').addEventListener('click', ()=>{
+  document.getElementById('inp-name').value='';
+  document.getElementById('inp-class').value='';
+  showScreen('screen-start');
+});
+
+/* =========================================================
+   GOOGLE FORM SUBMISSION (wajib — jangan ubah URL / entry ID)
+   ========================================================= */
+function sendToGoogleForm(){
+  const statusEl = document.getElementById('form-status');
+  if(state.formSent){ statusEl.textContent = 'Hasil sudah terkirim ✅'; return; }
+  state.formSent = true;
+  try{
+    const formData = new URLSearchParams();
+    formData.append('entry.1128873320', state.name);
+    formData.append('entry.1715675447', state.cls);
+    formData.append('entry.339753918', 'Labirin Matematika');
+    formData.append('entry.1119427673', String(state.score));
+
+    fetch('https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse', {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString()
+    }).then(()=>{
+      statusEl.textContent = 'Hasil berhasil dikirim ✅';
+    }).catch(()=>{
+      statusEl.textContent = 'Gagal mengirim hasil (periksa koneksi internet).';
+    });
+  } catch(err){
+    statusEl.textContent = 'Gagal mengirim hasil.';
+  }
+}
+
+})();
+</script>
+</body>
+</html>
