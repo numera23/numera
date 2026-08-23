@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>🧩 Susun Langkah — Numera</title>
+
+<!-- KaTeX untuk notasi matematika -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-dark:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --primary-soft:#EFF6FF;
+    --bg:#F8FAFC;
+    --white:#FFFFFF;
+    --ink:#0F172A;
+    --ink-soft:#475569;
+    --line:#E2E8F0;
+    --good:#16A34A;
+    --good-soft:#DCFCE7;
+    --bad:#DC2626;
+    --bad-soft:#FEE2E2;
+    --radius-lg:26px;
+    --radius-md:16px;
+    --radius-sm:12px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  /* ====== FIX SCROLL: jangan mengunci tinggi html/body ke viewport ====== */
+  html{
+    min-height:100%;
+  }
+  body{
+    margin:0; padding:0; width:100%; min-height:100%;
+    background:var(--bg);
+    font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Inter, sans-serif;
+    color:var(--ink);
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-y;             /* izinkan scroll vertikal di seluruh halaman */
+  }
+  /* Boleh dipilih hanya untuk elemen non-interaktif dekoratif; input teks TIDAK diberi user-select:none */
+  body, button, .card, .slot, .chip{ user-select:none; }
+  input[type="text"]{ user-select:text; -webkit-user-select:text; }
+
+  #app{
+    width:100%;
+    /* TIDAK menggunakan min-height:100vh/100dvh — biarkan tinggi mengikuti konten,
+       supaya halaman boleh lebih panjang dari layar dan tetap bisa discroll. */
+    display:flex; flex-direction:column; align-items:center;
+    padding-top:calc(var(--safe-top) + 12px);
+    padding-bottom:calc(var(--safe-bottom) + 16px);
+  }
+
+  .screen{
+    width:100%; max-width:520px; padding:0 16px;
+    display:none; flex-direction:column; align-items:center;
+    /* TIDAK memakai flex:1 agar screen tidak dipaksa setinggi viewport */
+  }
+  .screen.active{ display:flex; }
+
+  /* ============ START ============ */
+  .brand-eyebrow{
+    display:flex; align-items:center; gap:8px; color:var(--primary);
+    font-weight:700; font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+    margin-top:6px;
+  }
+  .brand-eyebrow .dot{ width:6px; height:6px; border-radius:50%; background:var(--primary); }
+
+  .hero-emoji{ font-size:54px; margin:20px 0 6px; animation: bob 2.4s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-6px);} }
+
+  h1.title{ font-size:29px; font-weight:800; margin:0 0 6px; text-align:center; letter-spacing:-0.02em; }
+  p.subtitle{ color:var(--ink-soft); text-align:center; font-size:15.5px; line-height:1.5; margin:0 0 26px; max-width:320px; }
+
+  .field{ width:100%; margin-bottom:16px; }
+  .field label{ display:block; font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:7px; }
+  .field input[type="text"]{
+    width:100%; padding:16px; font-size:16px; border-radius:var(--radius-sm);
+    border:1.5px solid var(--line); background:var(--white); outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input[type="text"]:focus{ border-color:var(--primary); box-shadow:0 0 0 4px var(--primary-light); }
+
+  .btn{
+    appearance:none; border:none; cursor:pointer; border-radius:var(--radius-md);
+    font-weight:700; font-size:17px; padding:16px 22px; width:100%;
+    min-height:52px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:transform .08s ease, background .15s ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{ background:var(--primary); color:#fff; box-shadow:0 10px 24px -8px rgba(37,99,235,.5); }
+  .btn-primary:active{ background:var(--primary-dark); }
+  .btn-primary:disabled{ background:#94A3B8; box-shadow:none; }
+  .btn-ghost{ background:var(--primary-soft); color:var(--primary); border:1.5px solid var(--primary-light); }
+
+  /* ============ GAME ============ */
+  .game-content{
+    width:100%; display:flex; flex-direction:column; align-items:center;
+    padding-bottom:14px; /* jarak aman dari action-bar sticky di bawah */
+  }
+
+  .action-bar{
+    position:sticky;
+    bottom:0;
+    left:0;
+    width:100%;
+    max-width:520px;
+    background:linear-gradient(180deg, rgba(248,250,252,0) 0%, var(--bg) 22%);
+    padding:10px 0 calc(var(--safe-bottom) + 10px);
+    z-index:5;
+  }
+
+  .hud{ width:100%; display:flex; align-items:center; justify-content:space-between; padding:2px 2px 12px; gap:8px; }
+  .hud-chip{
+    display:flex; align-items:center; gap:6px; background:var(--white); border:1.5px solid var(--line);
+    padding:8px 13px; border-radius:999px; font-weight:700; font-size:13.5px; min-height:38px;
+  }
+  .hud-chip.score{ color:var(--primary); border-color:var(--primary-light); background:var(--primary-soft); }
+  .mute-btn{
+    width:38px; height:38px; min-width:38px; border-radius:50%; border:1.5px solid var(--line);
+    background:var(--white); display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer;
+  }
+
+  .progress-track{ width:100%; height:5px; background:var(--line); border-radius:999px; overflow:hidden; margin-bottom:14px; }
+  .progress-fill{ height:100%; background:var(--primary); border-radius:999px; transition:width .35s ease; }
+
+  .question-card{
+    width:100%; background:var(--white); border:1.5px solid var(--line); border-radius:var(--radius-md);
+    padding:14px 15px; margin-bottom:12px; box-shadow:0 12px 26px -20px rgba(15,23,42,.3);
+  }
+  .question-label{ font-size:11px; font-weight:700; color:var(--primary); text-transform:uppercase; letter-spacing:.06em; margin-bottom:5px; }
+  .question-text{ font-size:13.5px; color:var(--ink-soft); margin-bottom:6px; line-height:1.35; }
+  .question-expr{ font-size:19px; font-weight:700; text-align:center; padding:6px 4px; }
+
+  .section-label{
+    font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em;
+    margin:2px 0 7px; width:100%;
+  }
+
+  /* Slot area (susunan jawaban) */
+  .slots{ width:100%; display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+  .slot{
+    min-height:44px; border-radius:var(--radius-sm); border:1.5px dashed var(--line);
+    background:var(--white); display:flex; align-items:center; gap:9px; padding:7px 11px;
+    transition:border-color .15s ease, background .15s ease, transform .15s ease;
+  }
+  .slot.filled{ border-style:solid; border-color:var(--primary-light); background:var(--primary-soft); }
+  .slot.selectable-target{ border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-light); }
+  .slot.correct{ border-color:var(--good); background:var(--good-soft); }
+  .slot.incorrect{ border-color:var(--bad); background:var(--bad-soft); animation: shakeSlot .3s ease; }
+  @keyframes shakeSlot{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+  .slot-index{
+    width:22px; height:22px; min-width:22px; border-radius:50%; background:var(--primary);
+    color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center;
+  }
+  .slot.filled .slot-index{ background:var(--primary-dark); }
+  .slot-content{ flex:1; font-size:13.5px; font-weight:600; min-height:20px; display:flex; align-items:center; }
+  .slot-content .katex{ font-size:1em; }
+  .slot-placeholder{ color:#94A3B8; font-size:12px; font-weight:500; }
+
+  /* Pool kartu langkah (belum disusun) — grid 2 kolom agar rapi */
+  .pool{ width:100%; display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:4px; min-height:20px; }
+  .card{
+    min-height:46px;
+    background:var(--white); border:1.5px solid var(--line); border-radius:var(--radius-sm);
+    padding:9px 10px; display:flex; align-items:center; justify-content:center; text-align:center;
+    font-size:13px; font-weight:600; cursor:pointer;
+    transition:transform .1s ease, border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .card .katex{ font-size:0.96em; }
+  .card:active{ transform:scale(0.96); }
+  .card.selected{
+    border-color:var(--primary); background:var(--primary-soft);
+    box-shadow:0 0 0 3px var(--primary-light);
+  }
+
+  .hint-line{ min-height:16px; font-size:12.5px; font-weight:700; text-align:center; margin-bottom:4px; }
+  .hint-line.good{ color:var(--good); }
+  .hint-line.bad{ color:var(--bad); }
+  .hint-line.info{ color:var(--ink-soft); font-weight:600; }
+
+  .action-row{ width:100%; display:flex; gap:8px; }
+  .action-row .btn{ min-height:46px; padding:12px 18px; font-size:15px; }
+  .reset-btn{
+    flex:0 0 auto; width:auto; padding:12px 14px;
+    background:var(--white); color:var(--ink-soft); border:1.5px solid var(--line);
+  }
+
+  /* ============ RESULT ============ */
+  .result-emoji{ font-size:56px; margin-top:8px; }
+  .result-title{ font-size:24px; font-weight:800; text-align:center; margin:10px 0 4px; }
+  .result-sub{ color:var(--ink-soft); font-size:14.5px; text-align:center; margin-bottom:22px; }
+  .score-banner{ width:100%; background:var(--primary); color:#fff; border-radius:var(--radius-md); padding:18px; text-align:center; margin-bottom:18px; }
+  .score-banner .num{ font-size:34px; font-weight:800; }
+  .score-banner .lbl{ font-size:12px; opacity:.85; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+  .stat-grid{ width:100%; display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:22px; }
+  .stat-card{ background:var(--white); border:1.5px solid var(--line); border-radius:var(--radius-md); padding:16px; text-align:center; }
+  .stat-num{ font-size:24px; font-weight:800; color:var(--primary); }
+  .stat-label{ font-size:12px; color:var(--ink-soft); font-weight:700; margin-top:2px; text-transform:uppercase; letter-spacing:.05em; }
+  .sending-note{ font-size:12px; color:var(--ink-soft); text-align:center; margin-top:10px; min-height:16px; }
+  footer.foot{ margin-top:auto; padding-top:22px; font-size:11.5px; color:#94A3B8; text-align:center; }
+
+  @media (min-width:520px){
+    h1.title{ font-size:33px; }
+    .card{ min-width:30%; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ======================= LAYAR 1 — START ======================= -->
+  <section id="screen-start" class="screen active">
+    <div class="brand-eyebrow"><span class="dot"></span>NUMERA</div>
+    <div class="hero-emoji">🧩</div>
+    <h1 class="title">Susun Langkah</h1>
+    <p class="subtitle">Urutkan langkahnya. Pecahkan masalahnya.</p>
+
+    <div class="field">
+      <label for="input-name">Nama Kamu</label>
+      <input type="text" id="input-name" placeholder="Tulis namamu" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="input-class">Kelas</label>
+      <input type="text" id="input-class" placeholder="Contoh: XI IPA 2" autocomplete="off">
+    </div>
+
+    <button class="btn btn-primary" id="btn-start">🧩 Mulai Main</button>
+  </section>
+
+  <!-- ======================= LAYAR PERMAINAN ======================= -->
+  <section id="screen-game" class="screen">
+    <div class="game-content">
+      <div class="hud">
+        <div class="hud-chip" id="hud-round">Ronde 1/10</div>
+        <div class="hud-chip score" id="hud-score">⭐ 0</div>
+        <button class="mute-btn" id="btn-mute">🔊</button>
+      </div>
+
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+      <div class="question-card">
+        <div class="question-label">Soal</div>
+        <div class="question-text" id="question-text"></div>
+        <div class="question-expr" id="question-expr"></div>
+      </div>
+
+      <div class="section-label">Susunan Kamu</div>
+      <div class="slots" id="slots"></div>
+
+      <div class="hint-line" id="hint-line"></div>
+
+      <div class="section-label">Kartu Langkah (ketuk untuk memilih)</div>
+      <div class="pool" id="pool"></div>
+    </div>
+
+    <div class="action-bar">
+      <div class="action-row">
+        <button class="btn reset-btn" id="btn-reset">↺ Atur Ulang</button>
+        <button class="btn btn-primary" id="btn-check" disabled>✓ Cek Urutan</button>
+      </div>
+      <button class="btn btn-primary" id="btn-next" style="display:none; margin-top:8px;">Lanjut →</button>
+    </div>
+  </section>
+
+  <!-- ======================= LAYAR HASIL ======================= -->
+  <section id="screen-result" class="screen">
+    <div class="result-emoji" id="result-emoji">🎉</div>
+    <div class="result-title" id="result-title">Permainan Selesai!</div>
+    <div class="result-sub" id="result-sub">Kerja bagus menyelesaikan semua ronde.</div>
+
+    <div class="score-banner">
+      <div class="num" id="final-score">0</div>
+      <div class="lbl">Skor Akhir</div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="stat-correct">0</div><div class="stat-label">Benar</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-wrong">0</div><div class="stat-label">Salah</div></div>
+      <div class="stat-card" style="grid-column:span 2;"><div class="stat-num" id="stat-percent">0%</div><div class="stat-label">Persentase</div></div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-again">🔄 Main Lagi</button>
+    <div class="sending-note" id="sending-note"></div>
+
+    <footer class="foot">Numera — Susun Langkah</footer>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================
+   1. CONFIG
+========================================================= */
+const CONFIG = {
+    totalQuestions: 10,   // jumlah ronde per permainan (dipilih acak dari bank soal)
+    pointsCorrect: 10,    // poin saat urutan benar
+    pointsWrong: -2       // poin saat urutan salah (per percobaan gagal)
+};
+
+/* =========================================================
+   2. GOOGLE FORM CONFIG
+========================================================= */
+const GOOGLE_FORM_CONFIG = {
+    formAction: "https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse",
+    nameEntry: "entry.1128873320",
+    classEntry: "entry.1715675447",
+    gameEntry: "entry.339753918",
+    scoreEntry: "entry.1119427673"
+};
+const GAME_NAME = "Susun Langkah";
+
+/* =========================================================
+   3. BANK SOAL
+   - question   : instruksi singkat (teks biasa)
+   - expression : ekspresi awal yang ditampilkan besar (LaTeX, tanpa "$")
+   - steps      : urutan langkah penyelesaian yang BENAR, dari awal ke akhir (LaTeX)
+   Program otomatis mengacak "steps" menjadi kartu, lalu memeriksa
+   apakah susunan siswa sama dengan urutan asli di sini.
+========================================================= */
+const QUESTIONS = [
+    {
+        question: "Selesaikan SPLDV berikut dengan metode substitusi:",
+        expression: "\\begin{cases}x+y=7\\\\x-y=3\\end{cases}",
+        steps: ["\\begin{cases}x+y=7\\\\x-y=3\\end{cases}", "x=y+3", "(y+3)+y=7", "y=2", "x=5 \\text{ dan } y=2"]
+    },
+    {
+        question: "Tentukan nilai x dan y dari sistem persamaan berikut (metode substitusi):",
+        expression: "\\begin{cases}y=x+2\\\\x+y=10\\end{cases}",
+        steps: ["\\begin{cases}y=x+2\\\\x+y=10\\end{cases}", "x+(x+2)=10", "x=4", "x=4 \\text{ dan } y=6"]
+    },
+    {
+        question: "Cari nilai x dan y menggunakan metode substitusi:",
+        expression: "\\begin{cases}2x+y=11\\\\y=3x-4\\end{cases}",
+        steps: ["\\begin{cases}2x+y=11\\\\y=3x-4\\end{cases}", "2x+(3x-4)=11", "x=3", "x=3 \\text{ dan } y=5"]
+    },
+    {
+        question: "Selesaikan sistem persamaan linear dua variabel berikut:",
+        expression: "\\begin{cases}x-2y=1\\\\x+y=7\\end{cases}",
+        steps: ["\\begin{cases}x-2y=1\\\\x+y=7\\end{cases}", "x=2y+1", "(2y+1)+y=7", "y=2", "x=5 \\text{ dan } y=2"]
+    },
+    {
+        question: "Gunakan metode substitusi untuk menyelesaikan SPLDV berikut:",
+        expression: "\\begin{cases}p+2q=9\\\\p-q=3\\end{cases}",
+        steps: ["\\begin{cases}p+2q=9\\\\p-q=3\\end{cases}", "p=q+3", "(q+3)+2q=9", "q=2", "p=5 \\text{ dan } q=2"]
+    },
+    {
+        question: "Tentukan nilai m dan n dari SPLDV berikut dengan substitusi:",
+        expression: "\\begin{cases}m+n=12\\\\m=2n\\end{cases}",
+        steps: ["\\begin{cases}m+n=12\\\\m=2n\\end{cases}", "2n+n=12", "n=4", "m=8 \\text{ dan } n=4"]
+    },
+    {
+        question: "Selesaikan SPLDV berikut (metode substitusi):",
+        expression: "\\begin{cases}2a-b=4\\\\a+b=8\\end{cases}",
+        steps: ["\\begin{cases}2a-b=4\\\\a+b=8\\end{cases}", "b=2a-4", "a+(2a-4)=8", "a=4", "a=4 \\text{ dan } b=4"]
+    },
+    {
+        question: "Cari nilai x dan y dari sistem persamaan berikut:",
+        expression: "\\begin{cases}x+3y=13\\\\x-y=1\\end{cases}",
+        steps: ["\\begin{cases}x+3y=13\\\\x-y=1\\end{cases}", "x=y+1", "(y+1)+3y=13", "y=3", "x=4 \\text{ dan } y=3"]
+    },
+    {
+        question: "Tentukan nilai p dan q menggunakan metode substitusi:",
+        expression: "\\begin{cases}4p-q=10\\\\q=p-1\\end{cases}",
+        steps: ["\\begin{cases}4p-q=10\\\\q=p-1\\end{cases}", "4p-(p-1)=10", "p=3", "p=3 \\text{ dan } q=2"]
+    },
+    {
+        question: "Selesaikan SPLDV berikut dengan metode substitusi:",
+        expression: "\\begin{cases}x+y=15\\\\2x-y=3\\end{cases}",
+        steps: ["\\begin{cases}x+y=15\\\\2x-y=3\\end{cases}", "y=2x-3", "x+(2x-3)=15", "x=6", "x=6 \\text{ dan } y=9"]
+    }
+];
+
+/* =========================================================
+   4. AUDIO SYSTEM (Web Audio API — musik latar bermelodi sungguhan)
+   Musik disusun sebagai loop 12 bar (~26 detik) dengan 4 lapisan:
+   CHORD (harmoni), MELODY (frasa+variasi), BASS (mengikuti chord),
+   dan RHYTHM (kick/hat/clap ringan) — bukan sekadar nada tunggal.
+========================================================= */
+const AudioSystem = (function(){
+    let ctx = null;
+    let masterGain = null;
+    let musicGain = null;
+    let sfxGain = null;
+    let initialized = false;
+    let muted = false;
+
+    // --- sequencer state untuk musik latar ---
+    const TEMPO = 112;               // BPM — playful, energik tapi tidak agresif
+    const BEAT = 60 / TEMPO;         // durasi 1 ketuk (detik)
+    const STEP = BEAT / 2;           // resolusi step (1/8 not)
+    const STEPS_PER_BAR = 8;
+    let nextStepTime = 0;
+    let stepIndex = 0;
+    let schedulerTimer = null;
+    const LOOKAHEAD = 0.12;
+
+    // --- definisi chord unik (triad) + akar bass (satu oktaf lebih rendah) ---
+    // 0=C mayor, 1=G mayor, 2=A minor, 3=F mayor, 4=E minor
+    const CHORD_DEFS = [
+        { triad:[261.63, 329.63, 392.00], bass:65.41  }, // C
+        { triad:[196.00, 246.94, 293.66], bass:98.00  }, // G
+        { triad:[220.00, 261.63, 329.63], bass:110.00 }, // Am
+        { triad:[174.61, 220.00, 261.63], bass:87.31  }, // F
+        { triad:[164.81, 196.00, 246.94], bass:82.41  }  // Em
+    ];
+    // Progresi 12 bar: C-G-Am-F-C-G-Am-Em-F-C-G-G (bar terakhir "menahan" G agar transisi loop terasa mulus)
+    const CHORD_SEQUENCE = [0,1,2,3, 0,1,2,4, 3,0,1,1];
+
+    // --- melodi per bar (8 not seperdelapan; 0 = jeda) — punya frase & variasi, bukan pengulangan nada yang sama ---
+    const MELODY_BARS = [
+        [523.25, 0, 587.33, 659.25, 587.33, 0, 523.25, 0],          // bar 1  (C)  - motif pembuka
+        [493.88, 0, 587.33, 523.25, 493.88, 0, 440.00, 0],          // bar 2  (G)
+        [440.00, 0, 523.25, 493.88, 440.00, 392.00, 440.00, 0],     // bar 3  (Am)
+        [349.23, 0, 440.00, 392.00, 349.23, 0, 329.63, 0],          // bar 4  (F)  - akhir frase A
+        [523.25, 587.33, 659.25, 698.46, 659.25, 587.33, 523.25, 0],// bar 5  (C)  - variasi motif (lebih bergerak)
+        [587.33, 0, 659.25, 587.33, 523.25, 0, 493.88, 0],          // bar 6  (G)
+        [440.00, 523.25, 587.33, 523.25, 440.00, 0, 392.00, 440.00],// bar 7  (Am)
+        [392.00, 0, 440.00, 392.00, 329.63, 0, 293.66, 0],          // bar 8  (Em) - akhir frase A'
+        [523.25, 0, 587.33, 523.25, 440.00, 0, 349.23, 0],          // bar 9  (F)  - puncak frase B
+        [659.25, 0, 587.33, 523.25, 493.88, 0, 440.00, 0],          // bar 10 (C)  - turun, melandai
+        [440.00, 0, 493.88, 440.00, 392.00, 0, 349.23, 0],          // bar 11 (G)
+        [392.00, 0, 349.23, 0, 329.63, 0, 293.66, 0]                // bar 12 (G)  - menyelesaikan frase, siap loop
+    ];
+
+    const TOTAL_STEPS = CHORD_SEQUENCE.length * STEPS_PER_BAR; // 12 bar x 8 = 96 step (~26 detik loop)
+
+    function init(){
+        if (initialized) return;
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = ctx.createGain();
+        masterGain.gain.value = muted ? 0 : 1;
+        masterGain.connect(ctx.destination);
+
+        musicGain = ctx.createGain();
+        musicGain.gain.value = 0.11; // musik latar: volume rendah (0.08–0.15) agar tidak mengganggu konsentrasi
+        musicGain.connect(masterGain);
+
+        sfxGain = ctx.createGain();
+        sfxGain.gain.value = 0.26; // sfx: tetap terdengar jelas di atas musik (0.15–0.30)
+        sfxGain.connect(masterGain);
+
+        initialized = true;
+    }
+
+    function resume(){
+        if (!initialized) init();
+        if (ctx.state === "suspended") ctx.resume();
+    }
+
+    // --- nada sederhana (dipakai untuk SFX, waktunya relatif terhadap "sekarang") ---
+    function tone(freq, start, dur, type, gainVal, node){
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = type || "sine";
+        osc.frequency.value = freq;
+        g.gain.value = 0;
+        osc.connect(g); g.connect(node || sfxGain);
+        const t0 = ctx.currentTime + start;
+        g.gain.linearRampToValueAtTime(gainVal, t0 + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        osc.start(t0);
+        osc.stop(t0 + dur + 0.05);
+    }
+
+    // --- nada terjadwal presisi (dipakai untuk musik latar, waktu absolut AudioContext) ---
+    function playNote(freq, time, dur, type, peakGain, destination){
+        if (!freq) return; // 0 = jeda/rest
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(0, time);
+        g.gain.linearRampToValueAtTime(peakGain, time + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+        osc.connect(g); g.connect(destination);
+        osc.start(time);
+        osc.stop(time + dur + 0.05);
+    }
+
+    function playKick(time, destination){
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(118, time);
+        osc.frequency.exponentialRampToValueAtTime(42, time + 0.12);
+        g.gain.setValueAtTime(0.38, time);
+        g.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+        osc.connect(g); g.connect(destination);
+        osc.start(time); osc.stop(time + 0.18);
+    }
+
+    function playHat(time, destination, open){
+        const dur = open ? 0.09 : 0.035;
+        const bufferSize = Math.floor(ctx.sampleRate * dur);
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(open ? 0.075 : 0.1, time);
+        g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+        const hp = ctx.createBiquadFilter();
+        hp.type = "highpass"; hp.frequency.value = 7000;
+        noise.connect(hp); hp.connect(g); g.connect(destination);
+        noise.start(time); noise.stop(time + dur + 0.01);
+    }
+
+    function playClap(time, destination){
+        const dur = 0.12;
+        const bufferSize = Math.floor(ctx.sampleRate * dur);
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1);
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.09, time);
+        g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+        const bp = ctx.createBiquadFilter();
+        bp.type = "bandpass"; bp.frequency.value = 1500; bp.Q.value = 1.1;
+        noise.connect(bp); bp.connect(g); g.connect(destination);
+        noise.start(time); noise.stop(time + dur + 0.01);
+    }
+
+    function scheduleStep(time, globalIdx){
+        const barIdx = Math.floor(globalIdx / STEPS_PER_BAR) % CHORD_SEQUENCE.length;
+        const stepInBar = globalIdx % STEPS_PER_BAR;
+        const chord = CHORD_DEFS[CHORD_SEQUENCE[barIdx]];
+        const melodyNote = MELODY_BARS[barIdx][stepInBar];
+
+        // 1) CHORD / HARMONY — triad lembut ditahan sepanjang bar
+        if (stepInBar === 0){
+            chord.triad.forEach((f, i) => {
+                playNote(f, time, BEAT * 3.5, i === 0 ? "triangle" : "sine", i === 0 ? 0.05 : 0.035, musicGain);
+            });
+        }
+
+        // 2) BASS — mengikuti akar chord, dengan sedikit pergerakan (root di awal bar, kuint di tengah)
+        if (stepInBar === 0){
+            playNote(chord.bass, time, BEAT * 1.8, "triangle", 0.16, musicGain);
+        } else if (stepInBar === 4){
+            playNote(chord.bass * 1.5, time, BEAT * 1.4, "triangle", 0.11, musicGain);
+        }
+
+        // 3) MELODY — frasa dengan variasi antar bar, bukan nada berulang
+        if (melodyNote){
+            playNote(melodyNote, time, STEP * 1.55, "square", 0.075, musicGain);
+        }
+
+        // 4) RHYTHM — kick + hi-hat + clap ringan, terasa seperti musik game
+        if (stepInBar === 0 || stepInBar === 4) playKick(time, musicGain);
+        playHat(time, musicGain, stepInBar % 4 === 2);
+        if (stepInBar === 2 || stepInBar === 6) playClap(time, musicGain);
+    }
+
+    function schedulerLoop(){
+        while (nextStepTime < ctx.currentTime + LOOKAHEAD){
+            scheduleStep(nextStepTime, stepIndex);
+            stepIndex = (stepIndex + 1) % TOTAL_STEPS;
+            nextStepTime += STEP;
+        }
+    }
+
+    // --- Background music: chord + melodi + bass + ritme, loop ~26 detik yang mulus ---
+    function startBGM(){
+        if (!initialized) return;
+        stopBGM();
+        stepIndex = 0;
+        nextStepTime = ctx.currentTime + 0.05;
+        schedulerTimer = setInterval(schedulerLoop, 40);
+    }
+    function stopBGM(){
+        if (schedulerTimer) clearInterval(schedulerTimer);
+        schedulerTimer = null;
+    }
+
+    // --- SFX (tetap dipertahankan semua) ---
+    function sfxStart(){
+        if (!initialized) return;
+        const t = ctx.currentTime;
+        tone(523.25, 0, 0.1, "square", 0.22, sfxGain);
+        tone(783.99, 0.09, 0.16, "square", 0.22, sfxGain);
+    }
+    function sfxCardSelect(){
+        if (!initialized) return;
+        tone(880, 0, 0.06, "square", 0.15, sfxGain);
+    }
+    function sfxCorrect(){
+        if (!initialized) return;
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.09, 0.2, "sine", 0.22, sfxGain));
+    }
+    function sfxWrong(){
+        if (!initialized) return;
+        tone(200, 0, 0.18, "sawtooth", 0.18, sfxGain);
+        tone(150, 0.1, 0.22, "sawtooth", 0.16, sfxGain);
+    }
+    function sfxNext(){
+        if (!initialized) return;
+        tone(660, 0, 0.08, "triangle", 0.15, sfxGain);
+        tone(880, 0.06, 0.1, "triangle", 0.15, sfxGain);
+    }
+    function sfxComplete(){
+        if (!initialized) return;
+        [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => tone(f, i * 0.12, 0.3, "sine", 0.22, sfxGain));
+    }
+
+    function setMuted(val){
+        muted = val;
+        if (masterGain) masterGain.gain.value = muted ? 0 : 1;
+    }
+    function isMuted(){ return muted; }
+
+    return { init, resume, startBGM, stopBGM, sfxStart, sfxCardSelect, sfxCorrect, sfxWrong, sfxNext, sfxComplete, setMuted, isMuted };
+})();
+
+/* =========================================================
+   5. GAME STATE
+========================================================= */
+let state = {
+    playerName: "",
+    playerClass: "",
+    order: [],          // indeks QUESTIONS untuk tiap ronde
+    currentIndex: 0,
+    score: 0,
+    correctCount: 0,
+    wrongCount: 0,
+
+    // state ronde berjalan
+    poolCards: [],       // array of {text, used}
+    slotAnswers: [],      // array (panjang = jumlah steps), isi index poolCards atau null
+    selectedPoolIdx: null,
+    locked: false,
+    answeredCorrectly: false,
+    checkStage: 0          // 0 = belum cek, 1 = sudah "Cek Urutan" (masih boleh diperbaiki), 2 = final "Cek Jawaban" (terkunci)
+};
+
+function shuffleArray(arr){
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function buildQuestionOrder(){
+    const total = Math.min(CONFIG.totalQuestions, QUESTIONS.length);
+    const indices = shuffleArray(QUESTIONS.map((_, i) => i));
+    return indices.slice(0, total);
+}
+
+/* =========================================================
+   6. GAME LOGIC
+========================================================= */
+function startGame(){
+    state.playerName = document.getElementById('input-name').value.trim() || "Siswa";
+    state.playerClass = document.getElementById('input-class').value.trim() || "-";
+    state.order = buildQuestionOrder();
+    state.currentIndex = 0;
+    state.score = 0;
+    state.correctCount = 0;
+    state.wrongCount = 0;
+
+    AudioSystem.resume();
+    AudioSystem.sfxStart();
+    AudioSystem.startBGM();
+
+    showScreen('screen-game');
+    renderQuestion();
+}
+
+function currentQuestion(){
+    return QUESTIONS[state.order[state.currentIndex]];
+}
+
+function renderQuestion(){
+    const q = currentQuestion();
+    const total = state.order.length;
+
+    document.getElementById('hud-round').textContent = `Ronde ${state.currentIndex + 1}/${total}`;
+    document.getElementById('hud-score').textContent = `⭐ ${state.score}`;
+    document.getElementById('progress-fill').style.width = `${(state.currentIndex / total) * 100}%`;
+
+    document.getElementById('question-text').textContent = q.question;
+    renderKatexInto(document.getElementById('question-expr'), q.expression);
+
+    // Siapkan pool (acak) & slot kosong
+    const shuffledSteps = shuffleArray(q.steps.map((text, i) => ({ text, originalIndex: i })));
+    state.poolCards = shuffledSteps.map(s => ({ text: s.text, originalIndex: s.originalIndex, placedSlot: null }));
+    state.slotAnswers = new Array(q.steps.length).fill(null);
+    state.selectedPoolIdx = null;
+    state.locked = false;
+    state.answeredCorrectly = false;
+    state.checkStage = 0;
+
+    document.getElementById('btn-check').style.display = '';
+    document.getElementById('btn-check').disabled = true;
+    document.getElementById('btn-check').textContent = '✓ Cek Urutan';
+    document.getElementById('btn-next').style.display = 'none';
+    document.getElementById('btn-reset').disabled = false;
+    setHint("", "");
+
+    renderSlots();
+    renderPool();
+}
+
+function renderKatexInto(el, latex){
+    try{
+        if (window.katex){
+            katex.render(latex, el, { throwOnError:false, displayMode:false });
+        } else {
+            el.textContent = latex;
+        }
+    }catch(e){
+        el.textContent = latex;
+    }
+}
+
+function renderSlots(){
+    const wrap = document.getElementById('slots');
+    wrap.innerHTML = "";
+    state.slotAnswers.forEach((cardIdx, slotIdx) => {
+        const slotEl = document.createElement('div');
+        slotEl.className = 'slot' + (cardIdx !== null ? ' filled' : '');
+        slotEl.dataset.slotIndex = slotIdx;
+
+        const badge = document.createElement('div');
+        badge.className = 'slot-index';
+        badge.textContent = slotIdx + 1;
+        slotEl.appendChild(badge);
+
+        const content = document.createElement('div');
+        content.className = 'slot-content';
+        if (cardIdx !== null){
+            renderKatexInto(content, state.poolCards[cardIdx].text);
+        } else {
+            const ph = document.createElement('span');
+            ph.className = 'slot-placeholder';
+            ph.textContent = `Ketuk kartu untuk isi langkah ${slotIdx + 1}`;
+            content.appendChild(ph);
+        }
+        slotEl.appendChild(content);
+
+        slotEl.addEventListener('click', () => onSlotTap(slotIdx));
+        wrap.appendChild(slotEl);
+    });
+}
+
+function renderPool(){
+    const wrap = document.getElementById('pool');
+    wrap.innerHTML = "";
+    state.poolCards.forEach((card, idx) => {
+        if (card.placedSlot !== null) return; // sudah dipakai, tidak ditampilkan di pool
+        const cardEl = document.createElement('div');
+        cardEl.className = 'card' + (state.selectedPoolIdx === idx ? ' selected' : '');
+        cardEl.dataset.poolIndex = idx;
+        renderKatexInto(cardEl, card.text);
+        cardEl.addEventListener('click', () => onCardTap(idx));
+        wrap.appendChild(cardEl);
+    });
+}
+
+/* =========================================================
+   7. TOUCH INPUT — mekanik TAP kartu lalu TAP slot tujuan
+========================================================= */
+function onCardTap(poolIdx){
+    if (state.locked) return;
+    if (state.selectedPoolIdx === poolIdx){
+        state.selectedPoolIdx = null; // batal pilih
+    } else {
+        state.selectedPoolIdx = poolIdx;
+        AudioSystem.sfxCardSelect();
+    }
+    renderPool();
+}
+
+function onSlotTap(slotIdx){
+    if (state.locked) return;
+
+    // Jika slot sudah terisi dan tidak ada kartu terpilih -> kembalikan kartu ke pool
+    if (state.slotAnswers[slotIdx] !== null && state.selectedPoolIdx === null){
+        const cardIdx = state.slotAnswers[slotIdx];
+        state.poolCards[cardIdx].placedSlot = null;
+        state.slotAnswers[slotIdx] = null;
+        renderSlots();
+        renderPool();
+        updateCheckButton();
+        setHint("", "");
+        return;
+    }
+
+    // Jika ada kartu terpilih -> taruh di slot ini (tukar bila slot terisi kartu lain)
+    if (state.selectedPoolIdx !== null){
+        const poolIdx = state.selectedPoolIdx;
+
+        // jika slot tujuan sudah terisi kartu lain, kembalikan kartu lama ke pool
+        if (state.slotAnswers[slotIdx] !== null){
+            state.poolCards[state.slotAnswers[slotIdx]].placedSlot = null;
+        }
+        // jika kartu yang dipilih sebelumnya sudah ada di slot lain, kosongkan slot lama itu
+        if (state.poolCards[poolIdx].placedSlot !== null){
+            state.slotAnswers[state.poolCards[poolIdx].placedSlot] = null;
+        }
+
+        state.slotAnswers[slotIdx] = poolIdx;
+        state.poolCards[poolIdx].placedSlot = slotIdx;
+        state.selectedPoolIdx = null;
+
+        renderSlots();
+        renderPool();
+        updateCheckButton();
+        setHint("", "");
+    }
+}
+
+function resetSlots(){
+    if (state.locked) return;
+    state.poolCards.forEach(c => c.placedSlot = null);
+    state.slotAnswers = new Array(state.slotAnswers.length).fill(null);
+    state.selectedPoolIdx = null;
+    renderSlots();
+    renderPool();
+    updateCheckButton();
+    setHint("", "");
+}
+
+function updateCheckButton(){
+    const allFilled = state.slotAnswers.every(v => v !== null);
+    document.getElementById('btn-check').disabled = !allFilled;
+}
+
+function setHint(text, type){
+    const el = document.getElementById('hint-line');
+    el.textContent = text;
+    el.className = 'hint-line' + (type ? ' ' + type : '');
+}
+
+/* =========================================================
+   8. PEMERIKSAAN JAWABAN
+========================================================= */
+function checkOrder(){
+    if (state.locked) return;
+    const allFilled = state.slotAnswers.every(v => v !== null);
+    if (!allFilled) return;
+
+    const q = currentQuestion();
+    const givenOrder = state.slotAnswers.map(cardIdx => state.poolCards[cardIdx].originalIndex);
+    const isCorrect = givenOrder.every((origIdx, i) => origIdx === i);
+
+    const slotEls = document.querySelectorAll('.slot');
+
+    if (state.checkStage === 0){
+        // ===== TAHAP 1: "Cek Urutan" — pratinjau, belum dinilai, siswa masih boleh memperbaiki =====
+        state.checkStage = 1;
+
+        if (isCorrect){
+            slotEls.forEach(el => el.classList.add('correct'));
+            setHint('Urutanmu sudah tepat! Tekan CEK JAWABAN untuk mengunci jawabanmu.', 'good');
+            AudioSystem.sfxCorrect();
+        } else {
+            slotEls.forEach((el, i) => {
+                if (givenOrder[i] !== i) el.classList.add('incorrect');
+            });
+            setHint('Ada langkah yang belum tepat. Perbaiki susunanmu, lalu tekan CEK JAWABAN.', 'bad');
+            AudioSystem.sfxWrong();
+        }
+
+        document.getElementById('btn-check').textContent = '✓ Cek Jawaban';
+        // catatan: menyusun ulang kartu (onCardTap/onSlotTap) akan me-render ulang slot
+        // sehingga highlight correct/incorrect di atas otomatis hilang saat siswa mengedit.
+        return;
+    }
+
+    // ===== TAHAP 2: "Cek Jawaban" — final, dinilai, lalu lanjut ke soal berikutnya =====
+    state.locked = true;
+
+    if (isCorrect){
+        state.answeredCorrectly = true;
+        state.score += CONFIG.pointsCorrect;
+        state.correctCount++;
+
+        slotEls.forEach(el => el.classList.add('correct'));
+        setHint('Tepat sekali! Urutan langkahmu benar. ⭐ +' + CONFIG.pointsCorrect, 'good');
+        AudioSystem.sfxCorrect();
+    } else {
+        state.score += CONFIG.pointsWrong;
+        state.wrongCount++;
+
+        slotEls.forEach((el, i) => {
+            if (givenOrder[i] !== i) el.classList.add('incorrect');
+        });
+        setHint('Belum tepat. Lanjut ke soal berikutnya. ⭐ ' + CONFIG.pointsWrong, 'bad');
+        AudioSystem.sfxWrong();
+    }
+
+    document.getElementById('hud-score').textContent = `⭐ ${state.score}`;
+    document.getElementById('btn-check').style.display = 'none';
+    document.getElementById('btn-reset').disabled = true;
+    document.getElementById('btn-next').style.display = '';
+}
+
+function goNext(){
+    AudioSystem.sfxNext();
+    state.currentIndex++;
+    if (state.currentIndex >= state.order.length){
+        finishGame();
+    } else {
+        renderQuestion();
+    }
+}
+
+/* =========================================================
+   9. HASIL AKHIR
+========================================================= */
+function finishGame(){
+    AudioSystem.stopBGM();
+    AudioSystem.sfxComplete();
+
+    const total = state.order.length;
+    const percent = Math.round((state.correctCount / total) * 100);
+
+    document.getElementById('final-score').textContent = state.score;
+    document.getElementById('stat-correct').textContent = state.correctCount;
+    document.getElementById('stat-wrong').textContent = state.wrongCount;
+    document.getElementById('stat-percent').textContent = `${percent}%`;
+
+    const cat = resultCategory(percent);
+    document.getElementById('result-emoji').textContent = cat.emoji;
+    document.getElementById('result-title').textContent = cat.title;
+    document.getElementById('result-sub').textContent = cat.sub;
+
+    showScreen('screen-result');
+    sendScoreToGoogleForm();
+}
+
+function resultCategory(percent){
+    if (percent >= 90) return { emoji:"🌟", title:"Hebat!", sub:"Kemampuan menyusun langkahmu sangat rapi dan tepat." };
+    if (percent >= 70) return { emoji:"👍", title:"Bagus!", sub:"Sebagian besar langkahmu sudah tersusun dengan baik." };
+    if (percent >= 50) return { emoji:"🔧", title:"Terus Berlatih!", sub:"Kamu sudah di jalur yang tepat, coba latihan lagi." };
+    return { emoji:"🛠️", title:"Coba Lagi!", sub:"Latihan lebih banyak akan membuat urutan langkahmu makin kuat." };
+}
+
+/* =========================================================
+   10. UI — navigasi layar & pengikatan tombol
+========================================================= */
+function showScreen(id){
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function bindUI(){
+    document.getElementById('btn-start').addEventListener('click', startGame);
+    document.getElementById('btn-check').addEventListener('click', checkOrder);
+    document.getElementById('btn-next').addEventListener('click', goNext);
+    document.getElementById('btn-reset').addEventListener('click', resetSlots);
+
+    document.getElementById('btn-mute').addEventListener('click', () => {
+        const nowMuted = !AudioSystem.isMuted();
+        AudioSystem.setMuted(nowMuted);
+        document.getElementById('btn-mute').textContent = nowMuted ? "🔇" : "🔊";
+    });
+
+    document.getElementById('btn-again').addEventListener('click', () => {
+        showScreen('screen-start');
+    });
+
+    document.getElementById('input-name').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') document.getElementById('input-class').focus();
+    });
+    document.getElementById('input-class').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') startGame();
+    });
+}
+
+/* =========================================================
+   11. GOOGLE FORM SUBMISSION — dikirim otomatis satu kali
+========================================================= */
+function sendScoreToGoogleForm(){
+    const note = document.getElementById('sending-note');
+    try{
+        const formData = new FormData();
+        formData.append(GOOGLE_FORM_CONFIG.nameEntry, state.playerName);
+        formData.append(GOOGLE_FORM_CONFIG.classEntry, state.playerClass);
+        formData.append(GOOGLE_FORM_CONFIG.gameEntry, GAME_NAME);
+        formData.append(GOOGLE_FORM_CONFIG.scoreEntry, String(state.score));
+
+        fetch(GOOGLE_FORM_CONFIG.formAction, {
+            method: "POST",
+            mode: "no-cors",
+            body: formData
+        }).then(() => {
+            note.textContent = "Hasil kamu sudah tersimpan ✓";
+        }).catch(() => {
+            note.textContent = "";
+        });
+    }catch(err){
+        note.textContent = "";
+    }
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+    bindUI();
+    // AudioContext diinisialisasi/resume HANYA setelah tombol "Mulai Main" ditekan.
+});
+</script>
+</body>
+</html>
