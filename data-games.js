@@ -74,6 +74,18 @@ const NUMERA_GAMES = [
         emoji: "⚙",
         badge: ""
     },
+   {
+        nama: "💪🏻 Tarik ke Posisi yang Benar",
+        materi: "Grafik SPLDV",
+        deskripsi: "Seret titik ke posisi tepat pada grafik.",
+        tags: ["fungsi", "grafik", "spldv", "titik", "kurva"],
+        link: "game_tarik_ke_posisi_yang_benar_spldv.html",
+        tanggal: "2026-08-24",
+        thumbnail: "",
+        warna: "#008080",
+        emoji: "💪🏻",
+        badge: ""
+    },
     {
         nama: "🧩 Susun Langkah",
         materi: "Fungsi Invers",
