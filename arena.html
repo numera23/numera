@@ -549,6 +549,57 @@
     .load-more svg { width: 15px; height: 15px; transition: transform 0.15s ease; }
     .load-more.expanded svg { transform: rotate(180deg); }
 
+    /* =================================================================
+       KOTAK PENCARIAN ARENA — mencakup game Numera + game eksternal
+       ================================================================= */
+    .search-box {
+        position: relative;
+        margin-bottom: 4px;
+    }
+    .search-box svg {
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        color: var(--text-secondary);
+        pointer-events: none;
+    }
+    .search-box input {
+        width: 100%;
+        padding: 11px 14px 11px 38px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        font-size: 13.5px;
+        font-family: inherit;
+        color: var(--text);
+        outline: none;
+    }
+    .search-box input:focus { border-color: var(--primary); }
+    .search-box input::placeholder { color: var(--text-secondary); }
+    .search-box .clear-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--border);
+        color: var(--text-secondary);
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    .search-box .clear-btn svg { position: static; width: 11px; height: 11px; color: inherit; }
+    .search-box.has-text .clear-btn { display: flex; }
+
+    .search-results { margin-top: 16px; }
+    .search-results-group { margin-bottom: 18px; }
+    .search-results-group[hidden] { display: none; }
+
     .empty-state {
         display: none;
         flex-direction: column;
@@ -623,6 +674,34 @@
 
     <div class="container">
 
+        <!-- ================= PENCARIAN ARENA (mencakup game Numera + eksternal) ================= -->
+        <div class="search-box" id="searchBoxArena">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="searchArena" placeholder="Cari nama game atau materi..." autocomplete="off">
+            <button class="clear-btn" id="clearSearchArena" type="button" aria-label="Hapus pencarian">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <!-- ================= HASIL PENCARIAN (tampil hanya saat mengetik) ================= -->
+        <div class="search-results" id="searchResultsArena" hidden>
+            <div class="search-results-group" id="resultsNumeraGroup" hidden>
+                <div class="numera-full-label">Game Numera</div>
+                <div class="numera-list" id="resultsNumeraList"></div>
+            </div>
+            <div class="search-results-group" id="resultsEksternalGroup" hidden>
+                <div class="numera-full-label">Game & Kuis Eksternal</div>
+                <div class="game-list" id="resultsEksternalList"></div>
+            </div>
+            <div class="empty-state" id="searchEmptyArena">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <p>Game tidak ditemukan untuk kata kunci tersebut. Coba kata kunci lain.</p>
+            </div>
+        </div>
+
+        <!-- ================= TAMPILAN DEFAULT (disembunyikan saat mencari) ================= -->
+        <div id="defaultArenaView">
+
         <!-- ================= HERO (ringkas) ================= -->
         <div class="hero">
             <div class="hero-text">
@@ -669,6 +748,9 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
         </div>
+
+        </div>
+        <!-- ================= /TAMPILAN DEFAULT ================= -->
 
     </div>
 
@@ -731,6 +813,68 @@
         const data = GAMES.slice(0, PREVIEW_COUNT);
         data.forEach(item => wrap.appendChild(buatBarisGame(item)));
     }
+
+    /* ---------------- PENCARIAN ARENA — mencakup game Numera + eksternal ----------------
+       Memakai field yang sama seperti game-numera.html & game-eksternal.html
+       (nama + materi + deskripsi/platform + tags), jadi hasilnya konsisten
+       di mana pun siswa mengetik pencarian. */
+    const searchInputArena = document.getElementById('searchArena');
+    const searchBoxArena = document.getElementById('searchBoxArena');
+    const clearSearchArena = document.getElementById('clearSearchArena');
+    const defaultArenaView = document.getElementById('defaultArenaView');
+    const searchResultsArena = document.getElementById('searchResultsArena');
+    const resultsNumeraGroup = document.getElementById('resultsNumeraGroup');
+    const resultsNumeraList = document.getElementById('resultsNumeraList');
+    const resultsEksternalGroup = document.getElementById('resultsEksternalGroup');
+    const resultsEksternalList = document.getElementById('resultsEksternalList');
+    const searchEmptyArena = document.getElementById('searchEmptyArena');
+
+    function cocokPencarianArena(fields, tags, q){
+        const gabungan = [...fields, ...(tags || [])].join(' ').toLowerCase();
+        return gabungan.includes(q);
+    }
+
+    function renderSearchArena(q){
+        resultsNumeraList.innerHTML = '';
+        resultsEksternalList.innerHTML = '';
+
+        const numeraMatches = numeraTerurut().filter(g =>
+            cocokPencarianArena([g.nama, g.materi, g.deskripsi], g.tags, q)
+        );
+        const eksternalMatches = GAMES.filter(g =>
+            cocokPencarianArena([g.nama, g.materi, g.platform], g.tags, q)
+        );
+
+        resultsNumeraGroup.hidden = numeraMatches.length === 0;
+        resultsEksternalGroup.hidden = eksternalMatches.length === 0;
+
+        numeraMatches.forEach(game => resultsNumeraList.appendChild(buatKartuNumera(game)));
+        eksternalMatches.forEach(item => resultsEksternalList.appendChild(buatBarisGame(item)));
+
+        const totalHasil = numeraMatches.length + eksternalMatches.length;
+        searchEmptyArena.classList.toggle('show', totalHasil === 0);
+    }
+
+    function updateArenaSearchView(){
+        const q = searchInputArena.value.trim().toLowerCase();
+        searchBoxArena.classList.toggle('has-text', q.length > 0);
+
+        if(q === ''){
+            defaultArenaView.hidden = false;
+            searchResultsArena.hidden = true;
+            return;
+        }
+        defaultArenaView.hidden = true;
+        searchResultsArena.hidden = false;
+        renderSearchArena(q);
+    }
+
+    searchInputArena.addEventListener('input', updateArenaSearchView);
+    clearSearchArena.addEventListener('click', () => {
+        searchInputArena.value = '';
+        updateArenaSearchView();
+        searchInputArena.focus();
+    });
 
     /* ---------------- INISIALISASI ---------------- */
     renderGameNumeraFeatured();
