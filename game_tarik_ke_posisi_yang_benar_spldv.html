@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Numera — Tarik ke Posisi yang Benar</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+/* ============================================================
+   CONFIG / DESIGN TOKENS
+   ============================================================ */
+:root{
+  --blue-900:#0b3d91;
+  --blue-700:#1a56db;
+  --blue-500:#2f7ff5;
+  --blue-300:#7db2ff;
+  --blue-100:#eaf2ff;
+  --sky-bg-1:#dceafe;
+  --sky-bg-2:#f5f9ff;
+  --yellow:#ffc93c;
+  --yellow-dark:#e6a800;
+  --green:#2ecc71;
+  --green-dark:#1ea854;
+  --red:#ff5c5c;
+  --red-dark:#e23b3b;
+  --purple:#9b6bff;
+  --orange:#ff8a3d;
+  --ink:#0f2647;
+  --ink-soft:#4a5c7a;
+  --card:#ffffff;
+  --radius-lg:22px;
+  --radius-md:14px;
+  --radius-sm:9px;
+  --shadow:0 10px 26px rgba(11,61,145,0.16);
+  --font-display:'Baloo 2','Poppins',system-ui,sans-serif;
+  --font-body:'Poppins',system-ui,sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;width:100%;height:100%;overflow-x:hidden;}
+body{
+  font-family:var(--font-body);
+  color:var(--ink);
+  background:linear-gradient(180deg,var(--sky-bg-1) 0%, var(--sky-bg-2) 45%, #ffffff 100%);
+  min-height:100vh;
+  -webkit-user-select:none; user-select:none;
+  touch-action:pan-y;
+}
+h1,h2,h3,.display{font-family:var(--font-display);}
+button{font-family:var(--font-body); cursor:pointer;}
+.screen{display:none; min-height:100vh; width:100%; flex-direction:column; align-items:center; padding:18px 16px 32px; position:relative;}
+.screen.active{display:flex;}
+.app{max-width:520px; margin:0 auto; width:100%; position:relative;}
+
+/* ---------- shared bits ---------- */
+.top-icon-btn{
+  width:42px; height:42px; border-radius:14px; border:none;
+  background:#ffffff; box-shadow:var(--shadow); display:flex; align-items:center; justify-content:center;
+  font-size:18px; color:var(--blue-700); flex-shrink:0;
+}
+.pill{
+  background:#ffffff; border-radius:999px; padding:6px 14px; box-shadow:var(--shadow);
+  font-weight:700; font-size:13px; display:flex; align-items:center; gap:6px; color:var(--blue-900);
+}
+.btn{
+  border:none; border-radius:16px; padding:15px 20px; font-weight:800; font-size:16px;
+  box-shadow:0 8px 0 rgba(0,0,0,0.12); transition:transform .05s ease;
+  letter-spacing:.3px;
+}
+.btn:active{transform:translateY(4px); box-shadow:0 4px 0 rgba(0,0,0,0.12);}
+.btn-green{background:linear-gradient(180deg,#3ddc7a,var(--green-dark)); color:#fff;}
+.btn-blue{background:linear-gradient(180deg,var(--blue-500),var(--blue-700)); color:#fff;}
+.btn-red{background:linear-gradient(180deg,#ff7a7a,var(--red-dark)); color:#fff;}
+.btn-yellow{background:linear-gradient(180deg,#ffd873,var(--yellow-dark)); color:#5a3d00;}
+.btn-white{background:#fff; color:var(--blue-700); border:2px solid var(--blue-100);}
+.btn-wide{width:100%;}
+.card{background:var(--card); border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:18px;}
+
+/* ============ START SCREEN ============ */
+#screen-start .brand{display:flex; align-items:center; gap:10px; width:100%; margin-bottom:14px;}
+#screen-start .brand .logo{
+  width:44px;height:44px;border-radius:13px;background:linear-gradient(160deg,var(--blue-500),var(--blue-900));
+  color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:20px; box-shadow:var(--shadow);
+}
+#screen-start .brand .brand-text{line-height:1.05;}
+#screen-start .brand .brand-text b{display:block; font-size:15px; color:var(--blue-900); letter-spacing:.5px;}
+#screen-start .brand .brand-text span{font-size:10px; color:var(--ink-soft); font-weight:700; letter-spacing:1px;}
+.hero-title{text-align:center; margin:8px 0 4px;}
+.hero-title .line1{font-size:22px; font-weight:700; color:var(--blue-900);}
+.hero-title .line2{
+  font-size:40px; font-weight:800; line-height:1.02;
+  background:linear-gradient(180deg,var(--blue-500),var(--blue-900));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero-title .line3{
+  font-size:40px; font-weight:800; line-height:1.02;
+  background:linear-gradient(180deg,var(--yellow),var(--orange));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.tagline{
+  margin:10px auto 18px; background:#ffe3ea; color:#c23366; font-weight:700; font-size:13px;
+  padding:9px 16px; border-radius:999px; text-align:center;
+}
+.hero-visual{width:100%; display:flex; gap:12px; margin-bottom:16px;}
+.hero-visual .mini-graph{flex:1.1; background:var(--blue-100); border-radius:var(--radius-md); padding:10px; box-shadow:inset 0 0 0 2px #d7e6ff;}
+.hero-visual .feature-list{flex:1; display:flex; flex-direction:column; gap:8px; justify-content:center;}
+.feature-item{display:flex; align-items:center; gap:8px; font-size:12.5px; font-weight:600; color:var(--ink);}
+.feature-item .dot{width:20px;height:20px;border-radius:7px;background:var(--blue-100); display:flex;align-items:center;justify-content:center; font-size:12px; flex-shrink:0;}
+.field-group{width:100%; margin-bottom:12px;}
+.field-group label{display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin-bottom:6px; padding-left:2px;}
+.field-group input{
+  width:100%; padding:13px 15px; border-radius:14px; border:2px solid #e1ebfd; font-size:15px;
+  font-family:var(--font-body); font-weight:600; color:var(--ink); background:#fbfdff;
+}
+.field-group input:focus{outline:none; border-color:var(--blue-500);}
+.field-error{color:var(--red-dark); font-size:11.5px; font-weight:700; margin-top:4px; padding-left:2px; min-height:14px;}
+#screen-start .actions{width:100%; margin-top:6px;}
+
+/* ============ INSTRUCTIONS SCREEN ============ */
+.instr-card{width:100%;}
+.instr-header{
+  background:linear-gradient(90deg,var(--blue-700),var(--blue-500)); color:#fff; text-align:center;
+  font-weight:800; font-size:15px; border-radius:16px 16px 0 0; padding:13px; letter-spacing:.4px;
+}
+.instr-body{background:#fffdf3; border:2px solid #ffe9a8; border-top:none; border-radius:0 0 16px 16px; padding:18px 16px;}
+.cara-title{
+  background:#ffe28a; color:#7a4b00; display:inline-block; font-weight:800; font-size:13px;
+  padding:6px 14px; border-radius:999px; margin-bottom:14px;
+}
+.instr-row{display:flex; gap:12px; align-items:flex-start; margin-bottom:16px;}
+.instr-row .emoji{font-size:22px; width:32px; text-align:center; flex-shrink:0;}
+.instr-row .txt{font-size:13.5px; font-weight:600; color:var(--ink); line-height:1.45;}
+
+/* ============ GAMEPLAY SCREEN ============ */
+.play-header{width:100%; display:flex; align-items:center; gap:8px; margin-bottom:12px;}
+.play-header .title-pill{
+  flex:1; background:linear-gradient(90deg,var(--blue-700),var(--blue-500)); color:#fff; border-radius:999px;
+  padding:9px 16px; font-weight:800; font-size:13px; text-align:center; box-shadow:var(--shadow); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.score-pill{background:#fff9e3; color:#8a6400;}
+.question-card{width:100%; background:#fff; border-radius:16px; box-shadow:var(--shadow); padding:14px 16px; margin-bottom:12px;}
+.question-card .qtext{font-size:13px; font-weight:600; color:var(--ink-soft); margin-bottom:6px;}
+.question-card .qmath{font-size:16px; text-align:center; margin:8px 0; color:var(--blue-900);}
+.question-card .qinstr{font-size:12.5px; color:var(--ink-soft); font-weight:600; text-align:center;}
+
+.graph-area-wrap{width:100%; display:flex; gap:10px; margin-bottom:12px;}
+.graph-wrap{
+  flex:1.55; position:relative; background:#fff; border-radius:16px; box-shadow:var(--shadow); padding:6px;
+  aspect-ratio:1/1; touch-action:none;
+}
+.graph-wrap svg{width:100%; height:100%; display:block;}
+.tray-wrap{flex:1; display:flex; flex-direction:column; gap:8px;}
+.tray-title{
+  background:#fff5cf; color:#8a6400; font-weight:800; font-size:10.5px; text-align:center;
+  border-radius:12px 12px 0 0; padding:8px 4px; letter-spacing:.3px;
+}
+.tray-list{
+  background:#fff; border-radius:0 0 16px 16px; box-shadow:var(--shadow); padding:8px; flex:1;
+  display:flex; flex-direction:column; gap:8px; min-height:120px;
+}
+.token{
+  display:flex; align-items:center; gap:8px; background:#f6f9ff; border-radius:12px; padding:7px 9px;
+  border:2px solid #e6eefc; touch-action:none;
+}
+.token .swatch{width:16px;height:16px;border-radius:50%; flex-shrink:0; box-shadow:0 0 0 3px rgba(255,255,255,0.6) inset;}
+.token .lbl{font-size:12.5px; font-weight:700; color:var(--ink);}
+.token.dragging-src{opacity:.25;}
+.token.placed{display:none;}
+
+.dragging-clone{
+  position:fixed; z-index:9999; display:flex; align-items:center; gap:6px; background:#fff;
+  border-radius:12px; padding:7px 10px; box-shadow:0 12px 24px rgba(11,61,145,.35); border:2px solid var(--blue-300);
+  pointer-events:none; transform:translate(-50%,-50%); font-size:12.5px; font-weight:700;
+}
+.dragging-clone .swatch{width:14px;height:14px;border-radius:50%;}
+
+
+/* ============ MODAL / FEEDBACK ============ */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(10,25,60,.45); display:none; align-items:center; justify-content:center;
+  z-index:2000; padding:20px;
+}
+.modal-overlay.show{display:flex;}
+.modal-box{
+  width:100%; max-width:340px; background:#fff; border-radius:22px; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,.3);
+  animation:popIn .22s ease;
+}
+@keyframes popIn{from{transform:scale(.85); opacity:0;} to{transform:scale(1); opacity:1;}}
+.modal-banner{padding:16px; text-align:center; font-family:var(--font-display); font-weight:800; font-size:20px; color:#fff;}
+.modal-banner.ok{background:linear-gradient(90deg,#3ddc7a,var(--green-dark));}
+.modal-banner.bad{background:linear-gradient(90deg,#ff7a7a,var(--red-dark));}
+.modal-body{padding:18px 20px 22px; text-align:center;}
+.modal-body p{font-size:13.5px; font-weight:600; color:var(--ink-soft); margin:0 0 12px;}
+.modal-score{font-size:22px; font-weight:800; color:var(--yellow-dark); margin-bottom:14px;}
+.modal-hint-box{background:#fff8e3; border:2px dashed #ffcf5c; border-radius:14px; padding:10px 12px; margin-bottom:14px; font-size:12.5px; font-weight:600; color:#6b4c00; text-align:left;}
+.modal-actions{display:flex; gap:10px;}
+.modal-actions .btn{flex:1; font-size:14px; padding:12px;}
+
+/* ============ RESULT SCREEN ============ */
+.result-banner{
+  width:100%; background:linear-gradient(120deg,var(--blue-500),var(--blue-900)); border-radius:22px; padding:26px 18px;
+  text-align:center; color:#fff; box-shadow:var(--shadow); margin-bottom:16px; position:relative; overflow:hidden;
+}
+.result-banner .trophy{font-size:52px; margin-bottom:6px; display:block;}
+.result-banner h2{margin:0 0 6px; font-size:24px;}
+.result-banner p{margin:0; font-size:13px; font-weight:600; opacity:.9;}
+.result-stats{width:100%; background:#fff; border-radius:18px; box-shadow:var(--shadow); padding:6px 16px; margin-bottom:16px;}
+.stat-row{display:flex; align-items:center; justify-content:space-between; padding:11px 0; border-bottom:1px solid #eef3fc; font-weight:700; font-size:13.5px;}
+.stat-row:last-child{border-bottom:none;}
+.stat-row .left{display:flex; align-items:center; gap:9px; color:var(--ink-soft);}
+.stat-row .val{color:var(--blue-900); font-size:15px;}
+.result-actions{width:100%; display:flex; gap:10px;}
+.result-actions .btn{flex:1;}
+
+/* toast */
+.toast{
+  position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); opacity:0;
+  background:var(--ink); color:#fff; padding:10px 18px; border-radius:999px; font-weight:700; font-size:12.5px;
+  z-index:3000; transition:all .25s ease; box-shadow:0 8px 20px rgba(0,0,0,.25); pointer-events:none;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+.mute-fab{position:absolute; top:0; right:0;}
+.katex{font-size:1em !important;}
+
+@media (max-width:380px){
+  .hero-title .line2, .hero-title .line3{font-size:33px;}
+  .graph-area-wrap{flex-direction:column;}
+  .tray-list{flex-direction:row; flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SCREEN 1: START / ARENA GAME
+     ============================================================ -->
+<div class="screen active" id="screen-start">
+  <div class="app">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div class="brand-text"><b>NUMERA</b><span>ARENA MATEMATIKA</span></div>
+      <div style="flex:1"></div>
+      <button class="top-icon-btn" id="btn-mute-start">🔊</button>
+    </div>
+
+    <div class="hero-title">
+      <div class="line1">TARIK KE</div>
+      <div class="line2">POSISI</div>
+      <div class="line3">YANG BENAR</div>
+    </div>
+    <div class="tagline">Seret titik-titik ke posisi yang tepat pada grafik!</div>
+
+    <div class="hero-visual">
+      <div class="mini-graph">
+        <svg viewBox="0 0 120 100" width="100%" height="100%">
+          <path d="M10,90 L110,90" stroke="#b9d3fb" stroke-width="2"/>
+          <path d="M20,10 L20,95" stroke="#b9d3fb" stroke-width="2"/>
+          <path d="M15,20 Q60,105 108,25" fill="none" stroke="#2f7ff5" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="34" cy="88" r="4.5" fill="#ff5c5c"/>
+          <circle cx="86" cy="88" r="4.5" fill="#2f7ff5"/>
+          <circle cx="60" cy="83" r="4.5" fill="#ffc93c"/>
+          <circle cx="20" cy="26" r="4.5" fill="#9b6bff" stroke-dasharray="2 2"/>
+        </svg>
+      </div>
+      <div class="feature-list">
+        <div class="feature-item"><span class="dot">🎯</span> Letakkan titik dengan tepat</div>
+        <div class="feature-item"><span class="dot">⭐</span> Dapatkan skor tertinggi</div>
+        <div class="feature-item"><span class="dot">🧠</span> Amati grafik sebelum menarik titik</div>
+        <div class="feature-item"><span class="dot">🧩</span> 10 puzzle menantang</div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label for="input-nama">NAMA</label>
+      <input type="text" id="input-nama" placeholder="Tulis namamu di sini" maxlength="40">
+      <div class="field-error" id="err-nama"></div>
+    </div>
+    <div class="field-group">
+      <label for="input-kelas">KELAS <span style="font-weight:500;color:#9aa9c4;">(opsional)</span></label>
+      <input type="text" id="input-kelas" placeholder="Contoh: X IPA 2" maxlength="20">
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-green btn-wide" id="btn-mulai">MULAI GAME</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 2: INSTRUKSI
+     ============================================================ -->
+<div class="screen" id="screen-instr">
+  <div class="app">
+    <div class="instr-card">
+      <div class="instr-header">TARIK KE POSISI YANG BENAR</div>
+      <div class="instr-body">
+        <div class="cara-title">CARA BERMAIN</div>
+        <div class="instr-row"><div class="emoji">👆</div><div class="txt">Seret titik dari daftar titik yang tersedia.</div></div>
+        <div class="instr-row"><div class="emoji">🎯</div><div class="txt">Letakkan pada posisi yang menurutmu benar di grafik.</div></div>
+        <div class="instr-row"><div class="emoji">✅</div><div class="txt">Jika benar, titik akan terkunci di tempatnya dan skormu bertambah.</div></div>
+        <div class="instr-row"><div class="emoji">⚠️</div><div class="txt">Hati-hati! Tidak semua titik yang tersedia adalah jawaban — hanya titik yang benar-benar berada pada kurva yang boleh ditarik. Jika salah meletakkan, skor akan berkurang.</div></div>
+        <div class="instr-row"><div class="emoji">📈</div><div class="txt">Semakin ke puzzle berikutnya, bentuk grafiknya akan semakin beragam dan makin menantang — tidak semua grafik parabola menghadap ke atas, ada juga grafik pangkat tiga dan pangkat empat!</div></div>
+        <div class="instr-row"><div class="emoji">🧩</div><div class="txt">Selesaikan semua 10 puzzle untuk menyelesaikan permainan.</div></div>
+        <button class="btn btn-blue btn-wide" id="btn-mengerti">MENGERTI, MULAI!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 3: GAMEPLAY
+     ============================================================ -->
+<div class="screen" id="screen-play">
+  <div class="app">
+    <div class="play-header">
+      <button class="top-icon-btn" id="btn-back">←</button>
+      <div class="title-pill" id="puzzle-progress">PUZZLE 1 / 10</div>
+      <div class="pill score-pill">⭐ <span id="score-display">0</span></div>
+      <button class="top-icon-btn" id="btn-mute-play">🔊</button>
+    </div>
+
+    <div class="question-card">
+      <div class="qtext" id="q-context">Diketahui fungsi</div>
+      <div class="qmath" id="q-equation"></div>
+      <div class="qinstr" id="q-instruction"></div>
+    </div>
+
+    <div class="graph-area-wrap">
+      <div class="graph-wrap" id="graph-wrap">
+        <svg id="graph-svg" viewBox="0 0 320 320" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="tray-wrap">
+        <div class="tray-title">TITIK YANG<br>TERSEDIA</div>
+        <div class="tray-list" id="tray-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 4: RESULT
+     ============================================================ -->
+<div class="screen" id="screen-result">
+  <div class="app">
+    <div class="result-banner">
+      <span class="trophy">🏆</span>
+      <h2>SELAMAT!</h2>
+      <p>Kamu telah menyelesaikan semua puzzle!</p>
+    </div>
+    <div class="result-stats">
+      <div class="stat-row"><div class="left">⭐ Skor Akhir</div><div class="val" id="res-score">0</div></div>
+      <div class="stat-row"><div class="left">🎯 Akurasi</div><div class="val" id="res-acc">0%</div></div>
+      <div class="stat-row"><div class="left">⏱️ Waktu</div><div class="val" id="res-time">00:00</div></div>
+    </div>
+    <div class="result-actions">
+      <button class="btn btn-white" id="btn-arena">KEMBALI KE ARENA</button>
+      <button class="btn btn-green" id="btn-lagi">MAIN LAGI</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MODAL FEEDBACK
+     ============================================================ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-banner" id="modal-banner">BENAR!</div>
+    <div class="modal-body">
+      <p id="modal-text">Titik ditempatkan dengan tepat.</p>
+      <div class="modal-score" id="modal-score-line" style="display:none;">⭐ +50</div>
+      <div class="modal-hint-box" id="modal-hint-box" style="display:none;"></div>
+      <div class="modal-actions" id="modal-actions"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const POINT_COLORS = ["#ff5c5c","#2f7ff5","#2ecc71","#9b6bff","#ff8a3d","#17b8b0","#f45fc6"];
+const SNAP_TOLERANCE_MATH = 0.55;   // toleransi snap dalam satuan matematika
+const SCORE_PER_POINT = 50;
+const WRONG_PENALTY = 25;
+const GAME_NAME = "Tarik ke Posisi yang Benar";
+
+/* ============================================================
+   QUESTION BANK
+   Guru dapat mengganti / menambah puzzle di sini tanpa
+   memahami seluruh kode game. Setiap "points" berisi seluruh
+   token yang tersedia untuk puzzle tsb; correct:true = titik
+   itu benar berada pada koordinat (x,y) tersebut.
+   "view" (opsional) mengatur rentang sumbu grafik untuk
+   puzzle tsb — dipakai untuk grafik yang lebih besar/curam
+   seperti kubik & kuartik. Jika tidak diisi, memakai DEFAULT_VIEW.
+   Puzzle disusun dari mudah ke sulit: parabola naik, parabola
+   turun, parabola curam, kubik (x^3), lalu kuartik (x^4).
+   ============================================================ */
+const QUESTION_BANK = [
+  {
+    id:1,
+    equation:"y = x^2 - 4x + 3",
+    instruction:"Tentukan posisi titik puncak parabola.",
+    points:[
+      {label:"(2, -1)", x:2, y:-1, correct:true}
+    ],
+    explanation:"Sumbu simetri x = -(-4)/(2·1) = 2, sehingga y = 2² - 4(2) + 3 = -1. Titik puncaknya (2, -1)."
+  },
+  {
+    id:2,
+    equation:"y = x^2 - 4x + 3",
+    instruction:"Tarik titik-titik yang terletak pada grafik fungsi ini.",
+    points:[
+      {label:"(1, 0)", x:1, y:0, correct:true},
+      {label:"(3, 0)", x:3, y:0, correct:true},
+      {label:"(2, -1)", x:2, y:-1, correct:true},
+      {label:"(0, 3)", x:0, y:3, correct:true},
+      {label:"(2, 1)", x:2, y:1, correct:false}
+    ],
+    explanation:"(1,0), (3,0), (2,-1), dan (0,3) memenuhi persamaan. (2,1) tidak, karena saat x=2 nilai y yang benar adalah -1."
+  },
+  {
+    id:3,
+    equation:"y = x^2 - 4x + 3",
+    instruction:"Tarik titik-titik yang benar-benar terletak pada grafik. Jangan tertipu titik lain!",
+    points:[
+      {label:"(1, 0)", x:1, y:0, correct:true},
+      {label:"(0, 3)", x:0, y:3, correct:true},
+      {label:"(4, 3)", x:4, y:3, correct:true},
+      {label:"(2, 1)", x:2, y:1, correct:false},
+      {label:"(5, 3)", x:5, y:3, correct:false}
+    ],
+    explanation:"(1,0), (0,3), dan (4,3) berada tepat pada grafik. (2,1) dan (5,3) bukan titik pada grafik ini."
+  },
+  {
+    id:4,
+    equation:"y = x^2 - 4x + 3",
+    instruction:"Tarik titik-titik yang merupakan titik potong grafik dengan sumbu X.",
+    points:[
+      {label:"(1, 0)", x:1, y:0, correct:true},
+      {label:"(3, 0)", x:3, y:0, correct:true},
+      {label:"(0, 0)", x:0, y:0, correct:false},
+      {label:"(2, -1)", x:2, y:-1, correct:false}
+    ],
+    explanation:"x² - 4x + 3 = 0 ⟶ (x-1)(x-3) = 0 ⟶ x = 1 atau x = 3, sehingga titik potongnya (1,0) dan (3,0)."
+  },
+  {
+    id:5,
+    equation:"y = x^2 - 4x + 3",
+    instruction:"Titik mana saja yang memenuhi persamaan fungsi ini? Tarik yang benar.",
+    points:[
+      {label:"(4, 3)", x:4, y:3, correct:true},
+      {label:"(-1, 8)", x:-1, y:8, correct:true},
+      {label:"(5, 3)", x:5, y:3, correct:false},
+      {label:"(1, 1)", x:1, y:1, correct:false}
+    ],
+    explanation:"(4,3) dan (-1,8) memenuhi persamaan. (5,3) seharusnya y=8, dan (1,1) seharusnya y=0."
+  },
+  {
+    id:6,
+    equation:"y = -x^2 + 2x + 3",
+    instruction:"Awas, grafik ini menghadap ke BAWAH karena koefisien x² negatif! Tarik titik puncak dan titik potong sumbu Y.",
+    points:[
+      {label:"(1, 4)", x:1, y:4, correct:true},
+      {label:"(0, 3)", x:0, y:3, correct:true},
+      {label:"(1, 3)", x:1, y:3, correct:false},
+      {label:"(0, -3)", x:0, y:-3, correct:false}
+    ],
+    explanation:"Titik puncak x=-2/(2·-1)=1, y=-(1)²+2(1)+3=4 → (1,4). Titik potong sumbu Y: y(0)=3 → (0,3)."
+  },
+  {
+    id:7,
+    equation:"y = -x^2 + 2x + 3",
+    instruction:"Kumpulkan titik-titik kunci grafik yang menghadap ke bawah ini: titik potong sumbu X, titik puncak, dan titik potong sumbu Y.",
+    points:[
+      {label:"(-1, 0)", x:-1, y:0, correct:true},
+      {label:"(3, 0)", x:3, y:0, correct:true},
+      {label:"(1, 4)", x:1, y:4, correct:true},
+      {label:"(0, 3)", x:0, y:3, correct:true},
+      {label:"(1, 3)", x:1, y:3, correct:false},
+      {label:"(0, -3)", x:0, y:-3, correct:false}
+    ],
+    explanation:"-x²+2x+3 = -(x-3)(x+1), sehingga akarnya -1 dan 3. Ditambah titik puncak (1,4) dan titik potong sumbu Y (0,3)."
+  },
+  {
+    id:8,
+    equation:"y = -2x^2 + 8x - 6",
+    instruction:"Grafik ini juga menghadap ke bawah, tapi lebih curam. Tarik titik potong sumbu X, titik puncak, dan titik potong sumbu Y.",
+    view:{xMin:-1, xMax:5, yMin:-7, yMax:4},
+    points:[
+      {label:"(1, 0)", x:1, y:0, correct:true},
+      {label:"(3, 0)", x:3, y:0, correct:true},
+      {label:"(2, 2)", x:2, y:2, correct:true},
+      {label:"(0, -6)", x:0, y:-6, correct:true},
+      {label:"(2, -2)", x:2, y:-2, correct:false},
+      {label:"(0, 6)", x:0, y:6, correct:false}
+    ],
+    explanation:"-2x²+8x-6 = -2(x-1)(x-3), akarnya 1 dan 3. Titik puncak (2,2), titik potong sumbu Y adalah (0,-6)."
+  },
+  {
+    id:9,
+    equation:"y = x^3 - 4x",
+    instruction:"Sekarang grafik pangkat TIGA (kubik)! Tarik titik potong sumbu X dan dua titik lain yang terletak pada grafik.",
+    view:{xMin:-3, xMax:3, yMin:-6, yMax:6},
+    points:[
+      {label:"(-2, 0)", x:-2, y:0, correct:true},
+      {label:"(0, 0)", x:0, y:0, correct:true},
+      {label:"(2, 0)", x:2, y:0, correct:true},
+      {label:"(-1, 3)", x:-1, y:3, correct:true},
+      {label:"(1, -3)", x:1, y:-3, correct:true},
+      {label:"(-1, -3)", x:-1, y:-3, correct:false},
+      {label:"(1, 3)", x:1, y:3, correct:false}
+    ],
+    explanation:"x³-4x = x(x-2)(x+2), akarnya -2, 0, 2. Lalu y(-1)=-1+4=3 dan y(1)=1-4=-3."
+  },
+  {
+    id:10,
+    equation:"y = x^4 - 5x^2 + 4",
+    instruction:"Tantangan akhir! Grafik pangkat EMPAT dengan dua lembah. Tarik semua titik potong sumbu X dan titik potong sumbu Y — hati-hati banyak jebakan!",
+    view:{xMin:-3, xMax:3, yMin:-4, yMax:6},
+    points:[
+      {label:"(-2, 0)", x:-2, y:0, correct:true},
+      {label:"(-1, 0)", x:-1, y:0, correct:true},
+      {label:"(1, 0)", x:1, y:0, correct:true},
+      {label:"(2, 0)", x:2, y:0, correct:true},
+      {label:"(0, 4)", x:0, y:4, correct:true},
+      {label:"(1, 4)", x:1, y:4, correct:false},
+      {label:"(-1, 4)", x:-1, y:4, correct:false},
+      {label:"(0, -4)", x:0, y:-4, correct:false}
+    ],
+    explanation:"x⁴-5x²+4 = (x²-1)(x²-4), akarnya -2,-1,1,2. Titik potong sumbu Y: y(0)=4 → (0,4)."
+  }
+];
+
+/* ============================================================
+   GOOGLE FORM
+   ============================================================ */
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse";
+const ENTRY = {
+  nama: "entry.1128873320",
+  kelas: "entry.1715675447",
+  game: "entry.339753918",
+  skor: "entry.1119427673"
+};
+function sendScoreToGoogleForm(nama, kelas, skor){
+  try{
+    const body = new URLSearchParams();
+    body.append(ENTRY.nama, nama);
+    body.append(ENTRY.kelas, kelas || "-");
+    body.append(ENTRY.game, GAME_NAME);
+    body.append(ENTRY.skor, String(skor));
+    fetch(FORM_URL, {
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"application/x-www-form-urlencoded"},
+      body: body.toString()
+    }).catch(function(){ /* diam-diam gagal, tidak mengganggu siswa */ });
+  }catch(e){ /* no-op */ }
+}
+
+/* ============================================================
+   AUDIO (Web Audio API — tanpa file eksternal)
+   ============================================================ */
+let audioCtx = null;
+let bgmPadNodes = null;
+let bgmMasterGain = null;
+let bgmTimer = null;
+let bgmActive = false;
+const audio = {
+  muted:false,
+  ensureCtx(){
+    if(!audioCtx){
+      const AC = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AC();
+    }
+    if(audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  },
+  tone(freq, dur, type, startDelay, gainPeak){
+    if(this.muted) return;
+    const ctx = this.ensureCtx();
+    const t0 = ctx.currentTime + (startDelay||0);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || "sine";
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(gainPeak||0.16, t0+0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(t0); osc.stop(t0+dur+0.02);
+  },
+  click(){ this.tone(520,0.09,"square",0,0.10); },
+  correct(){ this.tone(523.25,0.13,"sine",0,0.18); this.tone(659.25,0.15,"sine",0.09,0.16); this.tone(783.99,0.22,"sine",0.18,0.16); },
+  wrong(){ this.tone(220,0.18,"sawtooth",0,0.12); this.tone(160,0.22,"sawtooth",0.08,0.10); },
+  hint(){ this.tone(700,0.1,"triangle",0,0.10); this.tone(880,0.12,"triangle",0.07,0.09); },
+  puzzleDone(){ this.tone(659.25,0.12,"sine",0,0.15); this.tone(830.6,0.12,"sine",0.1,0.15); this.tone(1046.5,0.22,"sine",0.2,0.16); },
+  gameDone(){ [523.25,659.25,783.99,1046.5].forEach((f,i)=>this.tone(f,0.28,"sine",i*0.14,0.17)); },
+  startBgm(){
+    if(this.muted || bgmActive) return;
+    const ctx = this.ensureCtx();
+
+    bgmMasterGain = ctx.createGain();
+    bgmMasterGain.gain.value = 0.05;
+    bgmMasterGain.connect(ctx.destination);
+
+    // bantalan nada lembut yang terus berbunyi di latar (pad)
+    const pad1 = ctx.createOscillator();
+    const pad2 = ctx.createOscillator();
+    const padGain = ctx.createGain();
+    pad1.type = "sine"; pad2.type = "sine";
+    pad1.frequency.value = 130.81; // C3
+    pad2.frequency.value = 196.00; // G3
+    padGain.gain.value = 0.32;
+    pad1.connect(padGain); pad2.connect(padGain); padGain.connect(bgmMasterGain);
+    pad1.start(); pad2.start();
+    bgmPadNodes = [pad1, pad2];
+
+    bgmActive = true;
+    this._bgmLoop();
+  },
+  _bgmLoop(){
+    if(!bgmActive || this.muted) return;
+    const ctx = audioCtx;
+    // pola arpeggio lonceng ceria di atas pad (C mayor 7)
+    const melody = [523.25,659.25,783.99,987.77,783.99,659.25];
+    const noteDur = 0.30, gap = 0.34;
+    melody.forEach((freq, i)=>{
+      this.tone(freq, noteDur, "triangle", i*gap, 0.05);
+    });
+    const loopSeconds = melody.length * gap;
+    bgmTimer = setTimeout(()=>{ this._bgmLoop(); }, loopSeconds*1000);
+  },
+  stopBgm(){
+    bgmActive = false;
+    if(bgmTimer){ clearTimeout(bgmTimer); bgmTimer = null; }
+    if(bgmPadNodes){
+      try{ bgmPadNodes.forEach(function(n){ n.stop(); }); }catch(e){}
+      bgmPadNodes = null;
+    }
+    if(bgmMasterGain){
+      try{ bgmMasterGain.disconnect(); }catch(e){}
+      bgmMasterGain = null;
+    }
+  },
+  setMuted(m){
+    this.muted = m;
+    if(m) this.stopBgm(); else this.startBgm();
+  }
+};
+
+/* ============================================================
+   GAME STATE
+   ============================================================ */
+const state = {
+  nama:"", kelas:"",
+  puzzleIndex:0,
+  totalPuzzles: QUESTION_BANK.length,
+  score:0,
+  correctCount:0,
+  wrongCount:0,
+  attempts:0,
+  startTime:0,
+  endTime:0,
+  placedInPuzzle:0,
+  correctNeededInPuzzle:0,
+  status:"idle"
+};
+
+/* ============================================================
+   GRAPH / COORDINATE SYSTEM
+   ============================================================ */
+const DEFAULT_VIEW = {xMin:-2, xMax:5, yMin:-3, yMax:5};
+const SVG_SIZE=320, PAD=34, PLOT=SVG_SIZE-PAD*2;
+let CURRENT_VIEW = DEFAULT_VIEW;
+function toPx(xm,ym){
+  const v = CURRENT_VIEW;
+  const px = PAD + (xm-v.xMin)/(v.xMax-v.xMin)*PLOT;
+  const py = PAD + PLOT - (ym-v.yMin)/(v.yMax-v.yMin)*PLOT;
+  return [px,py];
+}
+function toMath(px,py){
+  const v = CURRENT_VIEW;
+  const xm = v.xMin + (px-PAD)/PLOT*(v.xMax-v.xMin);
+  const ym = v.yMin + (PLOT-(py-PAD))/PLOT*(v.yMax-v.yMin);
+  return [xm,ym];
+}
+const svgNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs){
+  const el = document.createElementNS(svgNS, tag);
+  for(const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+const FN_MAP = {
+  "y = x^2 - 4x + 3": (x)=> x*x - 4*x + 3,
+  "y = -x^2 + 2x + 3": (x)=> -x*x + 2*x + 3,
+  "y = -2x^2 + 8x - 6": (x)=> -2*x*x + 8*x - 6,
+  "y = x^3 - 4x": (x)=> x*x*x - 4*x,
+  "y = x^4 - 5x^2 + 4": (x)=> x*x*x*x - 5*x*x + 4
+};
+
+let currentSvg = null;
+function drawGraph(puzzle){
+  CURRENT_VIEW = puzzle.view || DEFAULT_VIEW;
+  const v = CURRENT_VIEW;
+  const svg = document.getElementById("graph-svg");
+  svg.innerHTML = "";
+  currentSvg = svg;
+
+  // clip path
+  const defs = svgEl("defs",{});
+  const clip = svgEl("clipPath",{id:"plotClip"});
+  clip.appendChild(svgEl("rect",{x:PAD,y:PAD,width:PLOT,height:PLOT}));
+  defs.appendChild(clip);
+  svg.appendChild(defs);
+
+  // background plot area
+  svg.appendChild(svgEl("rect",{x:PAD,y:PAD,width:PLOT,height:PLOT,fill:"#fbfdff",rx:8}));
+
+  // grid lines
+  for(let gx=Math.ceil(v.xMin); gx<=v.xMax; gx++){
+    const [px] = toPx(gx,0);
+    svg.appendChild(svgEl("line",{x1:px,y1:PAD,x2:px,y2:PAD+PLOT,stroke:"#e7eefb","stroke-width":1}));
+  }
+  for(let gy=Math.ceil(v.yMin); gy<=v.yMax; gy++){
+    const [,py] = toPx(0,gy);
+    svg.appendChild(svgEl("line",{x1:PAD,y1:py,x2:PAD+PLOT,y2:py,stroke:"#e7eefb","stroke-width":1}));
+  }
+
+  // axes
+  const [ax0] = toPx(0,0); const [,ay0] = toPx(0,0);
+  svg.appendChild(svgEl("line",{x1:PAD,y1:ay0,x2:PAD+PLOT,y2:ay0,stroke:"#0b3d91","stroke-width":2}));
+  svg.appendChild(svgEl("line",{x1:ax0,y1:PAD,x2:ax0,y2:PAD+PLOT,stroke:"#0b3d91","stroke-width":2}));
+
+  // arrow heads
+  svg.appendChild(svgEl("polygon",{points:`${PAD+PLOT},${ay0} ${PAD+PLOT-8},${ay0-5} ${PAD+PLOT-8},${ay0+5}`,fill:"#0b3d91"}));
+  svg.appendChild(svgEl("polygon",{points:`${ax0},${PAD} ${ax0-5},${PAD+8} ${ax0+5},${PAD+8}`,fill:"#0b3d91"}));
+
+  // axis labels x/y
+  const lblX = svgEl("text",{x:PAD+PLOT-6,y:ay0-8,"font-size":11,fill:"#0b3d91","font-weight":700,"text-anchor":"end"});
+  lblX.textContent="x"; svg.appendChild(lblX);
+  const lblY = svgEl("text",{x:ax0+10,y:PAD+10,"font-size":11,fill:"#0b3d91","font-weight":700});
+  lblY.textContent="y"; svg.appendChild(lblY);
+
+  // tick numbers
+  for(let gx=Math.ceil(v.xMin); gx<=v.xMax; gx++){
+    if(gx===0) continue;
+    const [px] = toPx(gx,0);
+    const t = svgEl("text",{x:px,y:ay0+14,"font-size":9.5,fill:"#7d8fb3","text-anchor":"middle"});
+    t.textContent = gx; svg.appendChild(t);
+  }
+  for(let gy=Math.ceil(v.yMin); gy<=v.yMax; gy++){
+    if(gy===0) continue;
+    const [,py] = toPx(0,gy);
+    const t = svgEl("text",{x:ax0-8,y:py+3.5,"font-size":9.5,fill:"#7d8fb3","text-anchor":"end"});
+    t.textContent = gy; svg.appendChild(t);
+  }
+
+  // curve
+  const fn = FN_MAP[puzzle.equation];
+  if(fn){
+    let d = "";
+    const steps = 160;
+    for(let i=0;i<=steps;i++){
+      const xm = v.xMin + (v.xMax-v.xMin)*i/steps;
+      const ym = fn(xm);
+      const [px,py] = toPx(xm,ym);
+      d += (i===0? "M":"L") + px.toFixed(2)+","+py.toFixed(2)+" ";
+    }
+    const path = svgEl("path",{d:d, fill:"none", stroke:"#2f7ff5","stroke-width":3.2,"stroke-linecap":"round","clip-path":"url(#plotClip)"});
+    svg.appendChild(path);
+  }
+
+  // locked/placed points group (tidak ada penanda posisi target —
+  // siswa harus menentukan sendiri letak titik yang benar)
+  const lockedGroup = svgEl("g",{id:"locked-group"});
+  svg.appendChild(lockedGroup);
+}
+function lockPointOnGraph(p, idx){
+  const lockedGroup = document.getElementById("locked-group");
+  const [px,py] = toPx(p.x,p.y);
+  const color = POINT_COLORS[idx % POINT_COLORS.length];
+  const dot = svgEl("circle",{cx:px,cy:py,r:8,fill:color,stroke:"#fff","stroke-width":2.5});
+  dot.setAttribute("class","locked-dot");
+  lockedGroup.appendChild(dot);
+}
+
+/* ============================================================
+   DRAG & DROP (Pointer Events — mendukung mouse, touch, stylus)
+   ============================================================ */
+let dragState = null;
+
+function renderTray(puzzle){
+  const tray = document.getElementById("tray-list");
+  tray.innerHTML = "";
+  puzzle.points.forEach(function(p, idx){
+    const tok = document.createElement("div");
+    tok.className = "token";
+    tok.dataset.idx = idx;
+    if(p.placed) tok.classList.add("placed");
+    const swatch = document.createElement("div");
+    swatch.className="swatch";
+    swatch.style.background = POINT_COLORS[idx % POINT_COLORS.length];
+    const lbl = document.createElement("span");
+    lbl.className="lbl";
+    tok.appendChild(swatch);
+    tok.appendChild(lbl);
+    tray.appendChild(tok);
+    renderKatexInto(lbl, p.label);
+    tok.addEventListener("pointerdown", function(ev){ onTokenPointerDown(ev, puzzle, idx, tok); });
+  });
+}
+
+function onTokenPointerDown(ev, puzzle, idx, tokEl){
+  const p = puzzle.points[idx];
+  if(p.placed) return;
+  ev.preventDefault();
+  audio.click();
+  const rect = tokEl.getBoundingClientRect();
+  const clone = document.createElement("div");
+  clone.className = "dragging-clone";
+  const sw = document.createElement("div");
+  sw.className="swatch";
+  sw.style.background = POINT_COLORS[idx % POINT_COLORS.length];
+  const lbl = document.createElement("span");
+  clone.appendChild(sw); clone.appendChild(lbl);
+  document.body.appendChild(clone);
+  renderKatexInto(lbl, p.label);
+  clone.style.left = (rect.left+rect.width/2)+"px";
+  clone.style.top = (rect.top+rect.height/2)+"px";
+
+  tokEl.classList.add("dragging-src");
+
+  dragState = {puzzle, idx, tokEl, clone, pointerId: ev.pointerId};
+  window.addEventListener("pointermove", onPointerMove);
+  window.addEventListener("pointerup", onPointerUp);
+}
+
+function onPointerMove(ev){
+  if(!dragState) return;
+  dragState.clone.style.left = ev.clientX+"px";
+  dragState.clone.style.top = ev.clientY+"px";
+}
+
+function onPointerUp(ev){
+  if(!dragState) return;
+  const {puzzle, idx, tokEl, clone} = dragState;
+  const p = puzzle.points[idx];
+
+  const graphWrap = document.getElementById("graph-wrap");
+  const rect = graphWrap.getBoundingClientRect();
+  const inside = ev.clientX >= rect.left && ev.clientX <= rect.right && ev.clientY >= rect.top && ev.clientY <= rect.bottom;
+
+  let success = false;
+  if(inside){
+    const scaleX = SVG_SIZE / rect.width;
+    const scaleY = SVG_SIZE / rect.height;
+    const svgX = (ev.clientX - rect.left) * scaleX;
+    const svgY = (ev.clientY - rect.top) * scaleY;
+    const [xm, ym] = toMath(svgX, svgY);
+    const dist = Math.max(Math.abs(xm-p.x), Math.abs(ym-p.y));
+    if(p.correct && dist <= SNAP_TOLERANCE_MATH){
+      success = true;
+    }
+  }
+
+  clone.remove();
+  tokEl.classList.remove("dragging-src");
+  window.removeEventListener("pointermove", onPointerMove);
+  window.removeEventListener("pointerup", onPointerUp);
+  dragState = null;
+
+  state.attempts++;
+  if(success){
+    handleCorrectDrop(puzzle, idx);
+  }else{
+    handleWrongDrop(puzzle, idx, inside);
+  }
+}
+
+/* ============================================================
+   GAMEPLAY
+   ============================================================ */
+function startGame(){
+  state.nama = document.getElementById("input-nama").value.trim();
+  state.kelas = document.getElementById("input-kelas").value.trim();
+  state.puzzleIndex = 0;
+  state.score = 0;
+  state.correctCount = 0;
+  state.wrongCount = 0;
+  state.attempts = 0;
+  state.startTime = Date.now();
+  audio.ensureCtx();
+  audio.startBgm();
+  showScreen("screen-instr");
+}
+
+function beginPuzzle(){
+  const puzzle = QUESTION_BANK[state.puzzleIndex];
+  puzzle.points.forEach(function(p){ p.placed = false; });
+  state.placedInPuzzle = 0;
+  state.correctNeededInPuzzle = puzzle.points.filter(function(p){return p.correct;}).length;
+
+  document.getElementById("puzzle-progress").textContent = "PUZZLE "+(state.puzzleIndex+1)+" / "+state.totalPuzzles;
+  document.getElementById("score-display").textContent = state.score;
+  document.getElementById("q-instruction").textContent = puzzle.instruction;
+  renderKatexInto(document.getElementById("q-equation"), puzzle.equation, true);
+
+  drawGraph(puzzle);
+  renderTray(puzzle);
+  showScreen("screen-play");
+}
+
+function handleCorrectDrop(puzzle, idx){
+  const p = puzzle.points[idx];
+  p.placed = true;
+  state.correctCount++;
+  state.score += SCORE_PER_POINT;
+  state.placedInPuzzle++;
+  document.getElementById("score-display").textContent = state.score;
+
+  lockPointOnGraph(p, idx);
+  renderTray(puzzle);
+  audio.correct();
+
+  const puzzleFinished = state.placedInPuzzle >= state.correctNeededInPuzzle;
+  showModal({
+    ok:true,
+    title:"BENAR!",
+    text:"Titik ditempatkan dengan tepat.",
+    scoreLine: "+"+SCORE_PER_POINT,
+    puzzleFinished: puzzleFinished,
+    explanation: puzzleFinished ? puzzle.explanation : null
+  });
+}
+
+function handleWrongDrop(puzzle, idx, wasInsideGraph){
+  state.wrongCount++;
+  state.score = Math.max(0, state.score - WRONG_PENALTY);
+  document.getElementById("score-display").textContent = state.score;
+  audio.wrong();
+  showModal({
+    ok:false,
+    title:"BELUM TEPAT!",
+    text: wasInsideGraph ? "Coba periksa kembali posisi titik pada grafik." : "Seret titik itu ke atas bidang grafik.",
+    scoreLine: "-"+WRONG_PENALTY,
+    puzzleFinished:false
+  });
+}
+
+function showModal(opts){
+  const overlay = document.getElementById("modal-overlay");
+  const banner = document.getElementById("modal-banner");
+  const text = document.getElementById("modal-text");
+  const scoreLine = document.getElementById("modal-score-line");
+  const hintBox = document.getElementById("modal-hint-box");
+  const actions = document.getElementById("modal-actions");
+
+  banner.className = "modal-banner " + (opts.ok ? "ok":"bad");
+  banner.textContent = opts.title;
+  text.textContent = opts.text;
+
+  if(opts.scoreLine){
+    scoreLine.style.display="block";
+    scoreLine.textContent="⭐ "+opts.scoreLine;
+    scoreLine.style.color = opts.ok ? "var(--yellow-dark)" : "var(--red-dark)";
+  } else {
+    scoreLine.style.display="none";
+  }
+
+  if(opts.explanation){ hintBox.style.display="block"; hintBox.textContent = opts.explanation; }
+  else { hintBox.style.display="none"; hintBox.textContent=""; }
+
+  actions.innerHTML="";
+  if(opts.ok){
+    const btn = document.createElement("button");
+    btn.className = "btn btn-blue";
+    btn.textContent = opts.puzzleFinished ? "LANJUTKAN" : "OKE";
+    btn.onclick = function(){
+      hideModal();
+      if(opts.puzzleFinished) advancePuzzle();
+    };
+    actions.appendChild(btn);
+  }else{
+    const btn = document.createElement("button");
+    btn.className = "btn btn-red";
+    btn.textContent = "COBA LAGI";
+    btn.onclick = hideModal;
+    actions.appendChild(btn);
+  }
+  overlay.classList.add("show");
+}
+function hideModal(){
+  document.getElementById("modal-overlay").classList.remove("show");
+}
+
+function advancePuzzle(){
+  audio.puzzleDone();
+  state.puzzleIndex++;
+  if(state.puzzleIndex >= state.totalPuzzles){
+    finishGame();
+  }else{
+    beginPuzzle();
+  }
+}
+
+function finishGame(){
+  state.endTime = Date.now();
+  audio.gameDone();
+  audio.stopBgm();
+
+  const durationSec = Math.max(0, Math.round((state.endTime-state.startTime)/1000));
+  const mm = String(Math.floor(durationSec/60)).padStart(2,"0");
+  const ss = String(durationSec%60).padStart(2,"0");
+  const accuracy = state.attempts>0 ? Math.round((state.correctCount/state.attempts)*100) : 100;
+
+  document.getElementById("res-score").textContent = state.score;
+  document.getElementById("res-acc").textContent = accuracy+"%";
+  document.getElementById("res-time").textContent = mm+":"+ss;
+
+  sendScoreToGoogleForm(state.nama, state.kelas, state.score);
+  showScreen("screen-result");
+}
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(function(s){ s.classList.remove("active"); });
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+function renderKatexInto(el, text, isBlockish){
+  try{
+    katex.render(text, el, {throwOnError:false, displayMode: !!isBlockish});
+  }catch(e){
+    el.textContent = text;
+  }
+}
+let toastTimer=null;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+document.getElementById("btn-mulai").addEventListener("click", function(){
+  const nama = document.getElementById("input-nama").value.trim();
+  const errEl = document.getElementById("err-nama");
+  if(!nama){
+    errEl.textContent = "Nama wajib diisi sebelum mulai bermain.";
+    return;
+  }
+  errEl.textContent = "";
+  startGame();
+});
+document.getElementById("btn-mengerti").addEventListener("click", function(){
+  audio.click();
+  beginPuzzle();
+});
+document.getElementById("btn-back").addEventListener("click", function(){
+  audio.click();
+  if(confirm("Keluar dari puzzle saat ini dan kembali ke Arena? Progres permainan ini akan hilang.")){
+    audio.stopBgm();
+    showScreen("screen-start");
+  }
+});
+document.getElementById("btn-arena").addEventListener("click", function(){ showScreen("screen-start"); });
+document.getElementById("btn-lagi").addEventListener("click", function(){ startGame(); });
+
+function toggleMute(btnIds){
+  audio.setMuted(!audio.muted);
+  const icon = audio.muted ? "🔇" : "🔊";
+  btnIds.forEach(function(id){ document.getElementById(id).textContent = icon; });
+}
+document.getElementById("btn-mute-start").addEventListener("click", function(){ toggleMute(["btn-mute-start","btn-mute-play"]); });
+document.getElementById("btn-mute-play").addEventListener("click", function(){ toggleMute(["btn-mute-start","btn-mute-play"]); });
+
+})();
+</script>
+</body>
+</html>
