@@ -750,7 +750,12 @@
 
     function cocokPencarian(game){
         if(!queryEksternal) return true;
-        const gabungan = [game.nama, game.materi, game.platform].join(' ').toLowerCase();
+        const gabungan = [
+            game.nama,
+            game.materi,
+            game.platform,
+            ...(game.tags || [])
+        ].join(' ').toLowerCase();
         return gabungan.includes(queryEksternal);
     }
 
