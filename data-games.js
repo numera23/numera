@@ -64,7 +64,7 @@
 const NUMERA_GAMES = [
     {
         nama: "⚙ Mesin Matematika",
-        materi: "Operasi Komposisi Fungsi",
+        materi: "Komposisi Fungsi",
         deskripsi: "Masukkan angka agar mesin berjalan.",
         tags: ["fungsi", "operasi fungsi", "komposisi fungsi", "penjumlahan", "pengurangan"],
         link: "game_mesin_jumlah_kurang_komposisi.html",
@@ -137,7 +137,7 @@ const NUMERA_GAMES = [
    {
         nama: "🎡 Putar Dulu",
         materi: "Titik Pusat & Jari-Jari",
-        deskripsi: "Putar roda, hadapi soal persamaan lingkaran.",
+        deskripsi: "Putar roda, hadapi soalnya.",
         tags: ["persamaan lingkaran", "titik pusat", "jari jari", "jari-jari", "bentuk umum", "pusat lingkaran"],
         link: "game_putar_dulu_titik_jarijari_lingkaran.html",
         tanggal: "2026-08-24",
@@ -185,7 +185,7 @@ const NUMERA_GAMES = [
    {
         nama: "🎯 Tembak Target",
         materi: "Titik Terhadap Lingkaran",
-        deskripsi: "Bidik target sesuai jawaban persamaan lingkaran yang benar.",
+        deskripsi: "Bidik target sesuai jawaban benar.",
         tags: ["lingkaran", "kedudukan titik", "persamaan lingkaran"],
         link: "game_tembak_target_kedudukan_titik.html",
         tanggal: "2026-08-22",
