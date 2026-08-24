@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pasangkan Grafik — SPLDV — Numera</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-dark:#1D4ED8;
+    --primary-light:#EFF4FE;
+    --line2:#F97316;
+    --bg:#F5F8FD;
+    --card-bg:#FFFFFF;
+    --border:#E2E8F0;
+    --text:#0F172A;
+    --text-muted:#64748B;
+    --success:#16A34A;
+    --success-bg:#EAFBF0;
+    --danger:#DC2626;
+    --danger-bg:#FEF0F0;
+    --radius-lg:22px;
+    --radius:16px;
+    --radius-sm:12px;
+    --shadow:0 8px 24px rgba(15,23,42,0.08);
+    --shadow-sm:0 3px 10px rgba(15,23,42,0.06);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{
+    margin:0;padding:0;width:100%;min-height:100%;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    overflow-x:hidden;
+  }
+  #app{min-height:100vh;max-width:520px;margin:0 auto;display:flex;flex-direction:column;padding-bottom:24px;}
+  .screen{display:none;flex-direction:column;flex:1;padding:20px 16px;animation:fadeIn .3s ease;}
+  .screen.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .brand-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .brand-dot{width:22px;height:22px;border-radius:7px;background:var(--primary);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .brand-name{font-size:13px;font-weight:700;color:var(--primary);letter-spacing:.03em;}
+
+  /* ===== START ===== */
+  .hero{text-align:center;margin-top:6px;}
+  .hero-art{width:150px;height:104px;margin:10px auto 16px;position:relative;}
+  .hero-card{position:absolute;width:82px;height:96px;border-radius:16px;background:var(--card-bg);border:2px solid var(--primary);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--primary);font-weight:700;}
+  .hero-card.c1{left:8px;top:8px;transform:rotate(-7deg);}
+  .hero-card.c2{right:8px;top:0;transform:rotate(6deg);background:var(--primary);color:#fff;}
+  .hero h1{font-size:27px;margin:2px 0 8px;font-weight:800;letter-spacing:-.02em;}
+  .hero p{color:var(--text-muted);font-size:14.5px;line-height:1.5;margin:0 auto 20px;max-width:320px;}
+
+  .chip-row{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
+  .chip{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:9px 15px;font-size:12.5px;font-weight:700;color:var(--text-muted);box-shadow:var(--shadow-sm);}
+  .chip b{color:var(--primary);}
+
+  .rules-card{background:var(--card-bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:16px 18px;margin-bottom:18px;}
+  .rules-card h3{margin:0 0 12px;font-size:12px;color:var(--text-muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em;}
+  .rule-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:9px;font-size:13.5px;line-height:1.5;}
+  .rule-item:last-child{margin-bottom:0;}
+  .rule-num{flex:none;width:21px;height:21px;border-radius:50%;background:var(--primary-light);color:var(--primary);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .rule-item b{color:var(--danger);}
+
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:12.5px;font-weight:700;color:var(--text-muted);margin-bottom:6px;}
+  .field input{width:100%;padding:14px 16px;font-size:16px;border:1.5px solid var(--border);border-radius:14px;background:var(--card-bg);color:var(--text);outline:none;transition:border-color .15s;}
+  .field input:focus{border-color:var(--primary);}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;font-size:16.5px;font-weight:800;border:none;border-radius:16px;cursor:pointer;background:var(--primary);color:#fff;box-shadow:0 6px 18px rgba(37,99,235,.3);transition:transform .1s, background .15s, opacity .15s;-webkit-user-select:none;user-select:none;}
+  .btn:active{transform:scale(.97);background:var(--primary-dark);}
+  .btn:disabled{opacity:.45;box-shadow:none;cursor:not-allowed;}
+  .btn.secondary{background:var(--card-bg);color:var(--primary);border:1.5px solid var(--primary);box-shadow:none;}
+  .btn.secondary:active{background:var(--primary-light);}
+  .btn-row{display:flex;gap:10px;}
+  .btn-row .btn{flex:1;}
+
+  /* ===== GAME (umum) ===== */
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .topbar-title{font-size:16.5px;font-weight:800;}
+  .icon-btn{width:38px;height:38px;border-radius:12px;border:1.5px solid var(--border);background:var(--card-bg);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;}
+  .icon-btn:active{background:var(--primary-light);}
+
+  .stats-bar{display:flex;background:var(--card-bg);border-radius:16px;box-shadow:var(--shadow-sm);padding:10px 4px;margin-bottom:10px;}
+  .stat-item{flex:1;text-align:center;position:relative;}
+  .stat-item:not(:last-child)::after{content:"";position:absolute;right:0;top:15%;bottom:15%;width:1px;background:var(--border);}
+  .stat-item .val{font-size:15px;font-weight:800;color:var(--text);}
+  .stat-item.score .val{color:var(--primary);}
+  .stat-item.warn .val{color:var(--danger);}
+  .stat-item .lbl{font-size:10px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+
+  .toast{
+    position:fixed;left:50%;top:14px;transform:translateX(-50%) translateY(-10px);
+    padding:11px 20px;border-radius:100px;font-weight:800;font-size:13px;
+    box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;
+    z-index:50;white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast.ok{background:var(--success-bg);color:var(--success);border:1.5px solid var(--success);}
+  .toast.bad{background:var(--danger-bg);color:var(--danger);border:1.5px solid var(--danger);}
+
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-4px);}
+    75%{transform:translateX(4px);}
+  }
+
+  /* ===== BOARD VIEW (papan pemasangan) ===== */
+  .instruction{text-align:center;font-size:12.3px;color:var(--text-muted);margin-bottom:10px;line-height:1.4;}
+  .instruction b{color:var(--danger);}
+
+  .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;}
+  .col-label{font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;padding:0 2px;}
+  .col-label.right{text-align:right;}
+
+  .m-card{
+    background:var(--card-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+    padding:8px 6px;min-height:82px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:border-color .15s, background .15s, transform .1s;
+    box-shadow:var(--shadow-sm);position:relative;
+  }
+  .m-card.eq .katex{font-size:12.5px;}
+  .m-card.graph svg{width:100%;height:100%;max-width:82px;max-height:70px;}
+
+  .m-card.selected{border-color:var(--primary);background:var(--primary-light);transform:scale(1.03);}
+  .m-card.matched{border-color:var(--success);background:var(--success-bg);cursor:default;opacity:.85;}
+  .m-card.matched::after{content:"✓";position:absolute;top:4px;right:6px;color:var(--success);font-size:13px;font-weight:900;}
+  .m-card.wrong-locked{border-color:var(--danger);background:var(--danger-bg);cursor:default;opacity:.8;}
+  .m-card.wrong-locked::after{content:"✕";position:absolute;top:4px;right:6px;color:var(--danger);font-size:13px;font-weight:900;}
+
+  /* ===== DETAIL VIEW (titik potong & bukti) ===== */
+  #detail-view{display:none;}
+  .detail-title{text-align:center;font-size:13px;font-weight:800;color:var(--primary);margin-bottom:8px;}
+
+  .stage-pills{display:flex;gap:6px;margin-bottom:10px;}
+  .stage-pill{flex:1;text-align:center;padding:7px 4px;border-radius:10px;background:var(--card-bg);border:1.5px solid var(--border);font-size:10.8px;font-weight:800;color:var(--text-muted);transition:all .15s;}
+  .stage-pill.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .stage-pill.done{background:var(--success-bg);color:var(--success);border-color:var(--success);}
+
+  .eq-card{background:var(--card-bg);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:14px 10px;margin-bottom:10px;text-align:center;}
+  .eq-card .katex{font-size:17px;}
+  .eq-card .eq-tag{font-size:10.5px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+
+  .graph-preview-wrap{background:var(--card-bg);border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);padding:10px;margin-bottom:10px;display:flex;flex-direction:column;align-items:center;}
+  .graph-preview-wrap svg{width:100%;max-width:210px;height:auto;}
+  .graph-legend{display:flex;gap:14px;justify-content:center;margin-top:4px;}
+  .graph-legend span{font-size:10.5px;color:var(--text-muted);font-weight:700;display:flex;align-items:center;gap:5px;}
+  .graph-legend i{width:14px;height:3px;border-radius:2px;display:inline-block;}
+  .graph-legend i.l1{background:var(--primary);}
+  .graph-legend i.l2{background:var(--line2);}
+  .preview-caption{font-size:11.5px;font-weight:700;color:var(--success);margin-top:5px;text-align:center;}
+
+  .prompt-text{text-align:center;font-size:14px;font-weight:800;margin-bottom:10px;color:var(--text);}
+  .attempt-note{text-align:center;font-size:11px;font-weight:700;color:var(--danger);margin-bottom:8px;}
+
+  .feedback-line{text-align:center;font-size:12px;font-weight:700;min-height:16px;margin-bottom:4px;}
+  .feedback-line.ok{color:var(--success);}
+  .feedback-line.bad{color:var(--danger);}
+
+  .opt-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .opt-card{background:var(--card-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px;min-height:58px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow-sm);transition:border-color .15s,background .15s,transform .1s;position:relative;font-size:17px;font-weight:800;}
+  .opt-card.correct{border-color:var(--success);background:var(--success-bg);transform:scale(1.02);}
+  .opt-card.wrong{border-color:var(--danger);background:var(--danger-bg);animation:shake .35s;}
+  .opt-card.reveal-correct{border-color:var(--success);box-shadow:0 0 0 2px var(--success) inset;}
+  .opt-card.dim{opacity:.45;}
+  .opt-card.locked-nc{cursor:default;}
+
+  .opt-list{display:flex;flex-direction:column;gap:9px;}
+  .opt-proof{background:var(--card-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-size:13.3px;line-height:1.45;font-weight:600;cursor:pointer;box-shadow:var(--shadow-sm);transition:border-color .15s,background .15s;}
+  .opt-proof.correct{border-color:var(--success);background:var(--success-bg);}
+  .opt-proof.wrong{border-color:var(--danger);background:var(--danger-bg);animation:shake .35s;}
+  .opt-proof.reveal-correct{border-color:var(--success);box-shadow:0 0 0 2px var(--success) inset;}
+  .opt-proof.dim{opacity:.45;}
+  .opt-proof.locked-nc{cursor:default;}
+
+  .explain-box{background:var(--success-bg);border:1.5px solid var(--success);border-radius:var(--radius-sm);padding:12px 14px;font-size:12.5px;line-height:1.5;color:#0F5132;font-weight:600;margin-top:10px;display:none;}
+
+  /* ===== RESULT ===== */
+  .result-hero{text-align:center;margin-top:6px;margin-bottom:16px;}
+  .result-emoji{font-size:52px;margin-bottom:6px;}
+  .result-hero h2{font-size:23px;margin:2px 0 4px;font-weight:800;}
+  .result-hero p{color:var(--text-muted);font-size:14px;margin:0;}
+
+  .score-big{text-align:center;background:var(--card-bg);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:20px;margin-bottom:14px;}
+  .score-big .num{font-size:40px;font-weight:800;color:var(--primary);line-height:1;}
+  .score-big .lbl{font-size:12.5px;color:var(--text-muted);font-weight:700;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;}
+  .score-big .bonus{font-size:12px;color:var(--success);font-weight:700;margin-top:4px;}
+
+  .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;}
+  .result-cell{background:var(--card-bg);border-radius:14px;padding:13px;text-align:center;box-shadow:var(--shadow-sm);}
+  .result-cell.span2{grid-column:1/-1;}
+  .result-cell .num{font-size:19px;font-weight:800;}
+  .result-cell .lbl{font-size:11.5px;color:var(--text-muted);font-weight:600;margin-top:2px;}
+
+  .send-status{text-align:center;font-size:12px;color:var(--text-muted);margin-bottom:14px;min-height:16px;}
+
+  .spacer{flex:1;}
+  footer.credit{text-align:center;font-size:11px;color:var(--text-muted);padding-top:14px;opacity:.7;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ SCREEN 1: START ============ -->
+  <section id="screen-start" class="screen active">
+    <div class="brand-row"><span class="brand-dot">N</span><span class="brand-name">NUMERA</span></div>
+
+    <div class="hero">
+      <div class="hero-art">
+        <div class="hero-card c1">SPLDV</div>
+        <div class="hero-card c2">📈</div>
+      </div>
+      <h1>Pasangkan Grafik</h1>
+      <p>Hubungkan dua persamaan dengan grafik dan buktikan solusinya!</p>
+    </div>
+
+    <div class="chip-row">
+      <div class="chip">🔗 <b id="chip-pairs">10</b> Pasang</div>
+      <div class="chip">⏱ Waktu <b id="chip-time">08:00</b></div>
+    </div>
+
+    <div class="rules-card">
+      <h3>Cara Bermain</h3>
+      <div class="rule-item"><span class="rule-num">1</span><span>Ketuk satu sistem persamaan di kiri, lalu ketuk grafik pasangannya di kanan.</span></div>
+      <div class="rule-item"><span class="rule-num">2</span><span><b>Hanya 1 kesempatan</b> untuk setiap pasangan — kalau salah, sistem itu dianggap selesai dan tidak bisa dicoba lagi.</span></div>
+      <div class="rule-item"><span class="rule-num">3</span><span>Pasangan benar lanjut ke tahap Titik Potong, lalu Bukti — masing-masing juga <b>hanya 1 kesempatan</b>.</span></div>
+      <div class="rule-item"><span class="rule-num">4</span><span>Selesaikan secepat mungkin untuk bonus waktu!</span></div>
+    </div>
+
+    <div class="field">
+      <label for="input-nama">Nama Siswa</label>
+      <input id="input-nama" type="text" placeholder="Tulis namamu" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="input-kelas">Kelas</label>
+      <input id="input-kelas" type="text" placeholder="Contoh: X IPA 2" autocomplete="off">
+    </div>
+
+    <button class="btn" id="btn-start" disabled>MULAI GAME</button>
+    <div class="spacer"></div>
+    <footer class="credit">Arena Game Numera</footer>
+  </section>
+
+  <!-- ============ SCREEN 2: GAME ============ -->
+  <section id="screen-game" class="screen">
+    <div class="topbar">
+      <div class="topbar-title">Pasangkan Grafik — SPLDV</div>
+      <button class="icon-btn" id="btn-mute">🔊</button>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-item"><div class="val" id="val-progress">0/10</div><div class="lbl">Pasang</div></div>
+      <div class="stat-item score"><div class="val" id="val-score">0</div><div class="lbl">Skor</div></div>
+      <div class="stat-item" id="pill-timer"><div class="val" id="val-timer">08:00</div><div class="lbl">Waktu</div></div>
+    </div>
+
+    <!-- ===== BOARD VIEW ===== -->
+    <div id="board-view">
+      <div class="instruction">Ketuk sistem persamaan, lalu ketuk grafik pasangannya. <b>Hanya 1 kesempatan!</b></div>
+      <div class="match-grid">
+        <div class="col-label">Persamaan</div>
+        <div class="col-label right">Grafik</div>
+      </div>
+      <div class="match-grid" id="match-grid"></div>
+    </div>
+
+    <!-- ===== DETAIL VIEW (Titik Potong & Bukti) ===== -->
+    <div id="detail-view">
+      <div class="detail-title">Pasangan Ditemukan!</div>
+      <div class="stage-pills" id="stage-pills">
+        <div class="stage-pill" id="pill-point">1. Titik Potong</div>
+        <div class="stage-pill" id="pill-proof">2. Bukti</div>
+      </div>
+
+      <div class="eq-card">
+        <div class="eq-tag">Sistem Persamaan</div>
+        <div id="eq-render"></div>
+      </div>
+
+      <div class="graph-preview-wrap" id="graph-preview-wrap">
+        <div class="graph-legend">
+          <span><i class="l1"></i>Persamaan 1</span>
+          <span><i class="l2"></i>Persamaan 2</span>
+        </div>
+        <div class="preview-caption" id="preview-caption"></div>
+      </div>
+
+      <div class="prompt-text" id="prompt-text"></div>
+      <div class="attempt-note">Ingat: hanya 1 kesempatan, jawaban langsung final.</div>
+      <div class="feedback-line" id="feedback-line"></div>
+
+      <div id="opt-wrap"></div>
+
+      <div class="explain-box" id="explain-box"></div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3: RESULT ============ -->
+  <section id="screen-result" class="screen">
+    <div class="brand-row"><span class="brand-dot">N</span><span class="brand-name">NUMERA</span></div>
+
+    <div class="result-hero">
+      <div class="result-emoji" id="result-emoji">🎉</div>
+      <h2 id="result-title">Permainan Selesai!</h2>
+      <p id="result-sub">Lihat hasil pencapaianmu di bawah.</p>
+    </div>
+
+    <div class="score-big">
+      <div class="num" id="result-score">0</div>
+      <div class="lbl">Skor Akhir</div>
+      <div class="bonus" id="result-bonus"></div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-cell"><div class="num" id="result-rounds">0/10</div><div class="lbl">Ronde Selesai</div></div>
+      <div class="result-cell"><div class="num" id="result-time">00:00</div><div class="lbl">Waktu Terpakai</div></div>
+      <div class="result-cell"><div class="num" id="result-graph">0/10</div><div class="lbl">Grafik Benar</div></div>
+      <div class="result-cell"><div class="num" id="result-point">0/10</div><div class="lbl">Titik Potong Benar</div></div>
+      <div class="result-cell span2"><div class="num" id="result-proof">0/10</div><div class="lbl">Bukti Benar</div></div>
+    </div>
+
+    <div class="send-status" id="send-status">Mengirim hasil...</div>
+
+    <div class="btn-row">
+      <button class="btn secondary" id="btn-back">KEMBALI</button>
+      <button class="btn" id="btn-again">MAIN LAGI</button>
+    </div>
+    <div class="spacer"></div>
+    <footer class="credit">Arena Game Numera</footer>
+  </section>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   1. CONFIG
+============================================================ */
+const CONFIG = {
+  totalPairs: 10,
+  timeLimit: 480,        // detik (8 menit)
+  pointsGraph: 20,
+  pointsPoint: 20,
+  pointsProof: 30,
+  maxTimeBonus: 100
+};
+
+/* ============================================================
+   2. BANK SOAL SPLDV — 10 pasangan (7 mudah + 3 sedang)
+   Sudah divalidasi matematis: solusi tunggal bilangan bulat,
+   dan setiap opsi distraktor titik sudah diperiksa agar tidak
+   ada yang tumpang tindih atau kebetulan benar.
+
+   a1x + b1y = c1   (persamaan 1)
+   a2x + b2y = c2   (persamaan 2)
+   sol   = titik potong yang benar
+   swap  = distraktor: koordinat (x,y) tertukar jadi (y,x)
+   only1 = distraktor: titik yang hanya memenuhi persamaan 1
+   only2 = distraktor: titik yang hanya memenuhi persamaan 2
+============================================================ */
+const ROUNDS = [
+  { level:"mudah",  a1:1, b1:1, c1:6,   a2:1, b2:-1, c2:2,
+    eq1:"x + y = 6", eq2:"x - y = 2",
+    subst1:"4 + 2 = 6", subst2:"4 - 2 = 2",
+    sol:{x:4,y:2}, swap:{x:2,y:4}, only1:{x:5,y:1}, only2:{x:3,y:1} },
+
+  { level:"mudah",  a1:1, b1:1, c1:-2,  a2:1, b2:-1, c2:-6,
+    eq1:"x + y = -2", eq2:"x - y = -6",
+    subst1:"(-4) + 2 = -2", subst2:"(-4) - 2 = -6",
+    sol:{x:-4,y:2}, swap:{x:2,y:-4}, only1:{x:-3,y:1}, only2:{x:-5,y:1} },
+
+  { level:"mudah",  a1:1, b1:-1, c1:5,  a2:1, b2:1, c2:1,
+    eq1:"x - y = 5", eq2:"x + y = 1",
+    subst1:"3 - (-2) = 5", subst2:"3 + (-2) = 1",
+    sol:{x:3,y:-2}, swap:{x:-2,y:3}, only1:{x:2,y:-3}, only2:{x:4,y:-3} },
+
+  { level:"mudah",  a1:1, b1:1, c1:-5,  a2:1, b2:-1, c2:-1,
+    eq1:"x + y = -5", eq2:"x - y = -1",
+    subst1:"(-3) + (-2) = -5", subst2:"(-3) - (-2) = -1",
+    sol:{x:-3,y:-2}, swap:{x:-2,y:-3}, only1:{x:-4,y:-1}, only2:{x:-4,y:-3} },
+
+  { level:"mudah",  a1:2, b1:1, c1:7,   a2:1, b2:-1, c2:-1,
+    eq1:"2x + y = 7", eq2:"x - y = -1",
+    subst1:"2×2 + 3 = 7", subst2:"2 - 3 = -1",
+    sol:{x:2,y:3}, swap:{x:3,y:2}, only1:{x:3,y:1}, only2:{x:1,y:2} },
+
+  { level:"mudah",  a1:1, b1:2, c1:0,   a2:1, b2:-1, c2:-3,
+    eq1:"x + 2y = 0", eq2:"x - y = -3",
+    subst1:"(-2) + 2×1 = 0", subst2:"(-2) - 1 = -3",
+    sol:{x:-2,y:1}, swap:{x:1,y:-2}, only1:{x:0,y:0}, only2:{x:-3,y:0} },
+
+  { level:"mudah",  a1:3, b1:-1, c1:1,  a2:1, b2:1, c2:7,
+    eq1:"3x - y = 1", eq2:"x + y = 7",
+    subst1:"3×2 - 5 = 1", subst2:"2 + 5 = 7",
+    sol:{x:2,y:5}, swap:{x:5,y:2}, only1:{x:1,y:2}, only2:{x:3,y:4} },
+
+  { level:"sedang", a1:2, b1:3, c1:13,  a2:3, b2:-2, c2:0,
+    eq1:"2x + 3y = 13", eq2:"3x - 2y = 0",
+    subst1:"2×2 + 3×3 = 13", subst2:"3×2 - 2×3 = 0",
+    sol:{x:2,y:3}, swap:{x:3,y:2}, only1:{x:5,y:1}, only2:{x:0,y:0} },
+
+  { level:"sedang", a1:3, b1:2, c1:-1,  a2:2, b2:-3, c2:8,
+    eq1:"3x + 2y = -1", eq2:"2x - 3y = 8",
+    subst1:"3×1 + 2×(-2) = -1", subst2:"2×1 - 3×(-2) = 8",
+    sol:{x:1,y:-2}, swap:{x:-2,y:1}, only1:{x:3,y:-5}, only2:{x:-2,y:-4} },
+
+  { level:"sedang", a1:2, b1:3, c1:-12, a2:3, b2:-1, c2:-7,
+    eq1:"2x + 3y = -12", eq2:"3x - y = -7",
+    subst1:"2×(-3) + 3×(-2) = -12", subst2:"3×(-3) - (-2) = -7",
+    sol:{x:-3,y:-2}, swap:{x:-2,y:-3}, only1:{x:0,y:-4}, only2:{x:-4,y:-5} }
+];
+
+/* ============================================================
+   3. GOOGLE FORM CONFIG (tidak diubah dari versi lama)
+============================================================ */
+const GOOGLE_FORM_CONFIG = {
+  formAction: "https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse",
+  nameEntry: "entry.1128873320",
+  classEntry: "entry.1715675447",
+  gameEntry: "entry.339753918",
+  scoreEntry: "entry.1119427673"
+};
+const GAME_NAME = "PASANGKAN GRAFIK";
+
+/* ============================================================
+   4. STATE
+============================================================ */
+let state = {
+  nama: "",
+  kelas: "",
+  leftItems: [],        // [{pairIndex, status:'available'|'matched'|'wrong'}]
+  rightItems: [],       // [{pairIndex, status:'available'|'matched'}]
+  selectedLeftPos: null,
+  locked: false,
+  score: 0,
+  timeLeft: CONFIG.timeLimit,
+  timerId: null,
+  muted: false,
+  audioReady: false,
+  stats: { graphCorrect:0, pointCorrect:0, proofCorrect:0, resolvedCount:0 },
+  curPair: null         // { pairIndex, r, pointOptions, proofOptions, stage:'point'|'proof' }
+};
+
+/* ============================================================
+   5. AUDIO — Web Audio API (musik puzzle + efek suara)
+============================================================ */
+let actx = null;
+let musicTimer = null;
+let musicIdx = 0;
+
+const SCALE = [523.25, 587.33, 659.25, 783.99, 880.00]; // C5 D5 E5 G5 A5
+const PATTERN = [
+  { deg: 0, dur: 1 }, { deg: 2, dur: 0.5 }, { deg: 3, dur: 0.5 }, { deg: 1, dur: 1 },
+  { deg: 4, dur: 0.5 }, { deg: 2, dur: 0.5 }, { deg: 0, dur: 1 }, { deg: 3, dur: 1 }
+];
+const BASS_ROOT = 130.81;
+const STEP_UNIT = 0.22;
+
+function initAudio(){
+  if(actx) return;
+  actx = new (window.AudioContext || window.webkitAudioContext)();
+  state.audioReady = true;
+}
+function playTone(freq, time, duration, type, gainPeak){
+  if(!actx || state.muted) return;
+  const osc = actx.createOscillator();
+  const gain = actx.createGain();
+  osc.type = type || "sine";
+  osc.frequency.setValueAtTime(freq, time);
+  gain.gain.setValueAtTime(0.0001, time);
+  gain.gain.exponentialRampToValueAtTime(gainPeak || 0.15, time + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+  osc.connect(gain).connect(actx.destination);
+  osc.start(time);
+  osc.stop(time + duration + 0.05);
+}
+function scheduleMusicStep(){
+  if(!actx || state.muted){ musicTimer = setTimeout(scheduleMusicStep, 300); return; }
+  const now = actx.currentTime;
+  const step = PATTERN[musicIdx % PATTERN.length];
+  const dur = step.dur * STEP_UNIT * 2;
+  playTone(SCALE[step.deg], now, dur * 0.85, "triangle", 0.08);
+  if(step.dur === 1) playTone(BASS_ROOT, now, dur * 1.3, "sine", 0.05);
+  musicIdx++;
+  musicTimer = setTimeout(scheduleMusicStep, dur * 1000);
+}
+function startMusic(){ if(musicTimer) return; musicIdx = 0; scheduleMusicStep(); }
+function stopMusic(){ if(musicTimer){ clearTimeout(musicTimer); musicTimer = null; } }
+
+function sfxSelect(){ if(!actx || state.muted) return; playTone(523.25, actx.currentTime, 0.08, "square", 0.06); }
+function sfxCorrect(){
+  if(!actx || state.muted) return;
+  const t = actx.currentTime;
+  playTone(659.25, t, 0.14, "triangle", 0.15);
+  playTone(880.00, t + 0.09, 0.2, "triangle", 0.15);
+}
+function sfxWrong(){
+  if(!actx || state.muted) return;
+  const t = actx.currentTime;
+  playTone(233.08, t, 0.18, "sawtooth", 0.09);
+  playTone(196.00, t + 0.09, 0.22, "sawtooth", 0.09);
+}
+function sfxComplete(){
+  if(!actx || state.muted) return;
+  const t = actx.currentTime;
+  [523.25, 659.25, 783.99, 1046.5].forEach((f,i)=> playTone(f, t + i*0.12, 0.32, "triangle", 0.16));
+}
+function sfxTimeUp(){
+  if(!actx || state.muted) return;
+  const t = actx.currentTime;
+  [392, 329.6, 261.6].forEach((f,i)=> playTone(f, t + i*0.15, 0.3, "sawtooth", 0.1));
+}
+
+/* ============================================================
+   6. GRAFIK SVG — dua garis dari sistem SPLDV
+   Semua garis pada bank soal ini tidak vertikal (b != 0),
+   sehingga bisa ditulis sebagai y = m x + k.
+============================================================ */
+function lineOf(a, b, c){ return { m: -a / b, k: c / b }; }
+
+function pairSVG(L1, L2, dot, size){
+  size = size || 132;
+  const half = 6.5;
+  const scale = (size/2 - 16) / half;
+  const cx = size/2, cy = size/2;
+  function mapX(x){ return cx + x*scale; }
+  function mapY(y){ return cy - y*scale; }
+
+  function pathFor(m, k, color){
+    const steps = 40;
+    let d = "", started = false;
+    for(let i=0;i<=steps;i++){
+      const x = -half + (2*half)*i/steps;
+      const y = m*x + k;
+      if(Math.abs(y) > half + 0.25){ started = false; continue; }
+      const px = mapX(x).toFixed(1), py = mapY(y).toFixed(1);
+      d += (started ? "L" : "M") + px + "," + py + " ";
+      started = true;
+    }
+    return `<path d="${d.trim()}" fill="none" stroke="${color}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+
+  let svg = `<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
+  svg += `<line x1="0" y1="${cy}" x2="${size}" y2="${cy}" stroke="#CBD5E1" stroke-width="1.1"/>`;
+  svg += `<line x1="${cx}" y1="0" x2="${cx}" y2="${size}" stroke="#CBD5E1" stroke-width="1.1"/>`;
+  svg += pathFor(L1.m, L1.k, "#2563EB");
+  svg += pathFor(L2.m, L2.k, "#F97316");
+  if(dot){
+    const dx = mapX(dot.x).toFixed(1), dy = mapY(dot.y).toFixed(1);
+    svg += `<circle cx="${dx}" cy="${dy}" r="4.2" fill="#16A34A" stroke="#fff" stroke-width="1.5"/>`;
+  }
+  svg += `</svg>`;
+  return svg;
+}
+
+/* ============================================================
+   7. GENERATOR OPSI (titik potong & bukti)
+============================================================ */
+function shuffleArr(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function buildPointOptions(r){
+  return shuffleArr([
+    { x:r.sol.x,   y:r.sol.y,   correct:true },
+    { x:r.swap.x,  y:r.swap.y,  correct:false },
+    { x:r.only1.x, y:r.only1.y, correct:false },
+    { x:r.only2.x, y:r.only2.y, correct:false }
+  ]);
+}
+/* Opsi BUKTI dibangun khusus per ronde (bukan array global), memakai
+   titik solusi & titik distraktor (swap/only1/only2) milik ronde itu
+   sendiri, sehingga kunci jawaban dan angkanya selalu relevan dengan
+   sistem persamaan yang sedang dikerjakan. */
+function buildProofOptions(r){
+  const correct = {
+    text: `Karena (${r.sol.x}, ${r.sol.y}) memenuhi kedua persamaan: pada persamaan pertama, ${r.subst1}, dan pada persamaan kedua, ${r.subst2}. Kedua persamaan sama-sama menjadi pernyataan yang benar.`,
+    correct: true
+  };
+  const wrongOnly1 = {
+    text: `Karena (${r.only1.x}, ${r.only1.y}) sudah memenuhi ${r.eq1}, sehingga titik itu dianggap cukup menjadi solusi SPLDV tanpa perlu memeriksa persamaan kedua.`,
+    correct: false
+  };
+  const wrongOnly2 = {
+    text: `Karena (${r.only2.x}, ${r.only2.y}) sudah memenuhi ${r.eq2}, sehingga titik itu dianggap otomatis menjadi solusi sistem persamaan ini.`,
+    correct: false
+  };
+  const wrongSwap = {
+    text: `Karena jika koordinatnya ditukar menjadi (${r.swap.x}, ${r.swap.y}), titik itu masih terlihat berada pada salah satu garis, sehingga urutan (x, y) dianggap tidak terlalu penting untuk solusi SPLDV.`,
+    correct: false
+  };
+  return shuffleArr([correct, wrongOnly1, wrongOnly2, wrongSwap]);
+}
+
+/* ============================================================
+   8. RENDER HELPERS UMUM
+============================================================ */
+function fmtTime(sec){
+  const m = Math.floor(sec/60).toString().padStart(2,"0");
+  const s = Math.floor(sec%60).toString().padStart(2,"0");
+  return m+":"+s;
+}
+function showToast(text, kind){
+  const el = document.getElementById("toast");
+  el.textContent = text;
+  el.className = "toast show " + kind;
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>{ el.classList.remove("show"); }, 1000);
+}
+function updateStatsUI(){
+  const matchedCount = state.leftItems.filter(i=> i.status==="matched").length;
+  document.getElementById("val-progress").textContent = matchedCount + "/" + CONFIG.totalPairs;
+  document.getElementById("val-score").textContent = state.score;
+  document.getElementById("val-timer").textContent = fmtTime(state.timeLeft);
+  document.getElementById("pill-timer").classList.toggle("warn", state.timeLeft <= 30);
+}
+
+/* ============================================================
+   9. PAPAN PEMASANGAN (BOARD VIEW)
+============================================================ */
+function buildBoard(){
+  const idxs = ROUNDS.map((_,i)=> i);
+  state.leftItems = shuffleArr(idxs).map(pairIndex=> ({ pairIndex, status:"available" }));
+  state.rightItems = shuffleArr(idxs).map(pairIndex=> ({ pairIndex, status:"available" }));
+  state.selectedLeftPos = null;
+}
+
+function renderEqInto(container, r){
+  container.innerHTML = "";
+  if(window.katex){
+    try{
+      katex.render(`\\begin{cases} \\textcolor{#2563EB}{${r.eq1}} \\\\ \\textcolor{#F97316}{${r.eq2}} \\end{cases}`, container, { throwOnError:false });
+      return;
+    }catch(e){ /* fallback */ }
+  }
+  container.innerHTML = `<span style="color:#2563EB;font-weight:800;">${r.eq1}</span>  ;  <span style="color:#F97316;font-weight:800;">${r.eq2}</span>`;
+}
+
+function renderBoard(){
+  const grid = document.getElementById("match-grid");
+  grid.innerHTML = "";
+  const rows = Math.max(state.leftItems.length, state.rightItems.length);
+  for(let pos=0; pos<rows; pos++){
+    const l = state.leftItems[pos];
+    const lEl = document.createElement("div");
+    lEl.className = "m-card eq" +
+      (pos===state.selectedLeftPos ? " selected" : "") +
+      (l.status==="matched" ? " matched" : "") +
+      (l.status==="wrong" ? " wrong-locked" : "");
+    const lContent = document.createElement("div");
+    renderEqInto(lContent, ROUNDS[l.pairIndex]);
+    lEl.appendChild(lContent);
+    lEl.addEventListener("click", ()=> onLeftTap(pos));
+    grid.appendChild(lEl);
+
+    const r = state.rightItems[pos];
+    const rEl = document.createElement("div");
+    rEl.className = "m-card graph" + (r.status==="matched" ? " matched" : "");
+    const rr = ROUNDS[r.pairIndex];
+    rEl.innerHTML = pairSVG(lineOf(rr.a1,rr.b1,rr.c1), lineOf(rr.a2,rr.b2,rr.c2), null, 120);
+    rEl.addEventListener("click", ()=> onRightTap(pos));
+    grid.appendChild(rEl);
+  }
+}
+
+function onLeftTap(pos){
+  if(state.locked) return;
+  const item = state.leftItems[pos];
+  if(item.status !== "available") return;
+  state.selectedLeftPos = (state.selectedLeftPos === pos) ? null : pos;
+  sfxSelect();
+  renderBoard();
+}
+
+function onRightTap(pos){
+  if(state.locked) return;
+  if(state.selectedLeftPos === null){
+    showToast("PILIH SISTEM PERSAMAAN DULU", "bad");
+    return;
+  }
+  const rItem = state.rightItems[pos];
+  if(rItem.status !== "available") return;
+
+  const lPos = state.selectedLeftPos;
+  const lItem = state.leftItems[lPos];
+
+  state.locked = true;
+
+  if(lItem.pairIndex === rItem.pairIndex){
+    lItem.status = "matched";
+    rItem.status = "matched";
+    state.score += CONFIG.pointsGraph;
+    state.stats.graphCorrect++;
+    sfxCorrect();
+    showToast("PASANGAN BENAR!", "ok");
+    state.selectedLeftPos = null;
+    updateStatsUI();
+    renderBoard();
+    setTimeout(()=> enterDetail(lItem.pairIndex), 550);
+  } else {
+    lItem.status = "wrong";
+    state.stats.resolvedCount++;
+    sfxWrong();
+    showToast("PASANGAN SALAH — SISTEM INI SELESAI", "bad");
+    state.selectedLeftPos = null;
+    updateStatsUI();
+    renderBoard();
+    setTimeout(()=>{
+      state.locked = false;
+      checkBoardCompletion();
+    }, 550);
+  }
+}
+
+function checkBoardCompletion(){
+  if(state.stats.resolvedCount >= CONFIG.totalPairs){
+    endGame("selesai");
+  }
+}
+
+/* ============================================================
+   10. DETAIL VIEW (TITIK POTONG & BUKTI) — 1 KESEMPATAN
+============================================================ */
+function showBoardView(){
+  document.getElementById("board-view").style.display = "block";
+  document.getElementById("detail-view").style.display = "none";
+}
+function showDetailView(){
+  document.getElementById("board-view").style.display = "none";
+  document.getElementById("detail-view").style.display = "block";
+}
+
+function enterDetail(pairIndex){
+  const r = ROUNDS[pairIndex];
+  state.curPair = {
+    pairIndex, r,
+    pointOptions: buildPointOptions(r),
+    proofOptions: buildProofOptions(r),
+    stage: "point"
+  };
+  state.locked = false;
+  showDetailView();
+  renderDetailStage();
+}
+
+function renderStagePills(){
+  const stage = state.curPair.stage;
+  const pillPoint = document.getElementById("pill-point");
+  const pillProof = document.getElementById("pill-proof");
+  pillPoint.classList.remove("active","done");
+  pillProof.classList.remove("active","done");
+  if(stage === "point"){ pillPoint.classList.add("active"); }
+  else { pillPoint.classList.add("done"); pillProof.classList.add("active"); }
+}
+
+function renderDetailStage(){
+  updateStatsUI();
+  renderStagePills();
+  renderEqInto(document.getElementById("eq-render"), state.curPair.r);
+  document.getElementById("feedback-line").textContent = "";
+  document.getElementById("explain-box").style.display = "none";
+
+  const r = state.curPair.r;
+  const L1 = lineOf(r.a1, r.b1, r.c1);
+  const L2 = lineOf(r.a2, r.b2, r.c2);
+  const previewWrap = document.getElementById("graph-preview-wrap");
+  const captionEl = document.getElementById("preview-caption");
+  const existingSvg = previewWrap.querySelector("svg");
+  if(existingSvg) existingSvg.remove();
+
+  const optWrap = document.getElementById("opt-wrap");
+  optWrap.innerHTML = "";
+
+  if(state.curPair.stage === "point"){
+    document.getElementById("prompt-text").textContent = "Di titik mana kedua garis ini berpotongan?";
+    previewWrap.insertAdjacentHTML("afterbegin", pairSVG(L1, L2, null));
+    captionEl.textContent = "";
+
+    const grid = document.createElement("div");
+    grid.className = "opt-grid-2";
+    state.curPair.pointOptions.forEach((opt, idx)=>{
+      const card = document.createElement("div");
+      card.className = "opt-card";
+      card.id = "optc-" + idx;
+      card.textContent = `(${opt.x}, ${opt.y})`;
+      card.addEventListener("click", ()=> onAnswerPoint(idx));
+      grid.appendChild(card);
+    });
+    optWrap.appendChild(grid);
+
+  } else {
+    document.getElementById("prompt-text").textContent = "Mengapa titik ini merupakan solusi SPLDV?";
+    previewWrap.insertAdjacentHTML("afterbegin", pairSVG(L1, L2, r.sol));
+    captionEl.textContent = `Titik potong: (${r.sol.x}, ${r.sol.y})`;
+
+    const list = document.createElement("div");
+    list.className = "opt-list";
+    state.curPair.proofOptions.forEach((opt, idx)=>{
+      const card = document.createElement("div");
+      card.className = "opt-proof";
+      card.id = "optc-" + idx;
+      card.textContent = opt.text;
+      card.addEventListener("click", ()=> onAnswerProof(idx));
+      list.appendChild(card);
+    });
+    optWrap.appendChild(list);
+  }
+}
+
+function lockAllOptions(selector, chosenIdx, options){
+  document.querySelectorAll(selector).forEach((el, idx)=>{
+    el.classList.add("locked-nc");
+    if(idx !== chosenIdx && !options[idx].correct){ el.classList.add("dim"); }
+  });
+}
+
+function onAnswerPoint(idx){
+  if(state.locked) return;
+  state.locked = true;
+
+  const options = state.curPair.pointOptions;
+  const opt = options[idx];
+  const el = document.getElementById("optc-" + idx);
+
+  if(opt.correct){
+    el.classList.add("correct");
+    state.score += CONFIG.pointsPoint;
+    state.stats.pointCorrect++;
+    sfxCorrect();
+    showToast("TITIK POTONG BENAR!", "ok");
+    document.getElementById("feedback-line").textContent = "Benar! Itulah titik potong kedua garis.";
+    document.getElementById("feedback-line").className = "feedback-line ok";
+  } else {
+    el.classList.add("wrong");
+    const correctIdx = options.findIndex(o=> o.correct);
+    document.getElementById("optc-" + correctIdx).classList.add("reveal-correct");
+    sfxWrong();
+    showToast("TITIK POTONG SALAH", "bad");
+    document.getElementById("feedback-line").textContent = "Belum tepat. Jawaban yang benar ditandai hijau.";
+    document.getElementById("feedback-line").className = "feedback-line bad";
+  }
+  lockAllOptions("#opt-wrap .opt-card", idx, options);
+  updateStatsUI();
+
+  setTimeout(()=>{
+    state.locked = false;
+    state.curPair.stage = "proof";
+    renderDetailStage();
+  }, 1100);
+}
+
+function onAnswerProof(idx){
+  if(state.locked) return;
+  state.locked = true;
+
+  const options = state.curPair.proofOptions;
+  const opt = options[idx];
+  const el = document.getElementById("optc-" + idx);
+  const r = state.curPair.r;
+
+  if(opt.correct){
+    el.classList.add("correct");
+    state.score += CONFIG.pointsProof;
+    state.stats.proofCorrect++;
+    sfxCorrect();
+    showToast("BUKTI BENAR!", "ok");
+    document.getElementById("feedback-line").textContent = "Benar!";
+    document.getElementById("feedback-line").className = "feedback-line ok";
+  } else {
+    el.classList.add("wrong");
+    const correctIdx = options.findIndex(o=> o.correct);
+    document.getElementById("optc-" + correctIdx).classList.add("reveal-correct");
+    sfxWrong();
+    showToast("BUKTI SALAH", "bad");
+    document.getElementById("feedback-line").textContent = "Belum tepat. Ingat: solusi SPLDV harus memenuhi kedua persamaan sekaligus.";
+    document.getElementById("feedback-line").className = "feedback-line bad";
+  }
+  lockAllOptions("#opt-wrap .opt-proof", idx, options);
+  updateStatsUI();
+
+  const box = document.getElementById("explain-box");
+  box.textContent = `Titik (${r.sol.x}, ${r.sol.y}) terletak pada kedua garis, sehingga memenuhi ${r.eq1} maupun ${r.eq2}. Itulah sebabnya titik ini menjadi solusi sistem persamaan.`;
+  box.style.display = "block";
+
+  setTimeout(()=>{
+    state.locked = false;
+    state.stats.resolvedCount++;
+    showBoardView();
+    renderBoard();
+    checkBoardCompletion();
+  }, 1700);
+}
+
+/* ============================================================
+   11. TIMER
+============================================================ */
+function startTimer(){
+  clearInterval(state.timerId);
+  state.timerId = setInterval(()=>{
+    state.timeLeft--;
+    updateStatsUI();
+    if(state.timeLeft <= 0){
+      clearInterval(state.timerId);
+      endGame("waktu_habis");
+    }
+  }, 1000);
+}
+
+function endGame(reason){
+  clearInterval(state.timerId);
+  state.locked = true;
+  stopMusic();
+  if(reason === "selesai") sfxComplete(); else sfxTimeUp();
+  setTimeout(()=> showResult(reason), reason === "selesai" ? 350 : 0);
+}
+
+/* ============================================================
+   12. GOOGLE FORM SUBMISSION (endpoint & entri lama dipertahankan)
+============================================================ */
+function submitToGoogleForm(){
+  const statusEl = document.getElementById("send-status");
+  try{
+    const formData = new FormData();
+    formData.append(GOOGLE_FORM_CONFIG.nameEntry, state.nama);
+    formData.append(GOOGLE_FORM_CONFIG.classEntry, state.kelas);
+    formData.append(GOOGLE_FORM_CONFIG.gameEntry, GAME_NAME);
+    formData.append(GOOGLE_FORM_CONFIG.scoreEntry, String(state.score));
+
+    fetch(GOOGLE_FORM_CONFIG.formAction, {
+      method: "POST",
+      mode: "no-cors",
+      body: formData
+    }).then(()=>{
+      statusEl.textContent = "Hasil berhasil dikirim ✓";
+    }).catch(()=>{
+      statusEl.textContent = "Skor tersimpan di layar ini (gagal kirim otomatis).";
+    });
+  }catch(e){
+    statusEl.textContent = "Skor tersimpan di layar ini (gagal kirim otomatis).";
+  }
+}
+
+/* ============================================================
+   13. TRANSISI LAYAR
+============================================================ */
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=> s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+}
+
+function resetGameState(){
+  buildBoard();
+  state.locked = false;
+  state.score = 0;
+  state.timeLeft = CONFIG.timeLimit;
+  state.stats = { graphCorrect:0, pointCorrect:0, proofCorrect:0, resolvedCount:0 };
+  state.curPair = null;
+}
+
+function startGame(){
+  resetGameState();
+  showScreen("screen-game");
+  showBoardView();
+  renderBoard();
+  updateStatsUI();
+  startTimer();
+  if(state.audioReady) startMusic();
+}
+
+function showResult(reason){
+  const timeUsed = CONFIG.timeLimit - state.timeLeft;
+  let bonus = 0;
+  if(reason === "selesai"){
+    bonus = Math.round(CONFIG.maxTimeBonus * (state.timeLeft / CONFIG.timeLimit));
+    state.score += bonus;
+  }
+
+  document.getElementById("result-title").textContent = reason === "selesai" ? "Semua Pasangan Selesai!" : "Waktu Habis!";
+  document.getElementById("result-emoji").textContent = reason === "selesai" ? "🎉" : "⏰";
+  document.getElementById("result-sub").textContent = reason === "selesai"
+    ? "Kamu berhasil menyelesaikan semua pasangan!"
+    : "Waktu habis sebelum semua pasangan selesai.";
+
+  document.getElementById("result-score").textContent = state.score;
+  document.getElementById("result-bonus").textContent = bonus > 0 ? `+${bonus} bonus waktu` : "";
+  document.getElementById("result-rounds").textContent = state.stats.resolvedCount + "/" + CONFIG.totalPairs;
+  document.getElementById("result-time").textContent = fmtTime(timeUsed);
+  document.getElementById("result-graph").textContent = state.stats.graphCorrect + "/" + CONFIG.totalPairs;
+  document.getElementById("result-point").textContent = state.stats.pointCorrect + "/" + CONFIG.totalPairs;
+  document.getElementById("result-proof").textContent = state.stats.proofCorrect + "/" + CONFIG.totalPairs;
+
+  document.getElementById("send-status").textContent = "Mengirim hasil...";
+  showScreen("screen-result");
+  submitToGoogleForm();
+}
+
+/* ============================================================
+   14. INIT DISPLAY
+============================================================ */
+document.getElementById("chip-pairs").textContent = CONFIG.totalPairs;
+document.getElementById("chip-time").textContent = fmtTime(CONFIG.timeLimit);
+
+/* ============================================================
+   15. EVENT BINDINGS
+============================================================ */
+const inputNama = document.getElementById("input-nama");
+const inputKelas = document.getElementById("input-kelas");
+const btnStart = document.getElementById("btn-start");
+
+function validateStart(){
+  btnStart.disabled = !(inputNama.value.trim() && inputKelas.value.trim());
+}
+inputNama.addEventListener("input", validateStart);
+inputKelas.addEventListener("input", validateStart);
+
+btnStart.addEventListener("click", ()=>{
+  if(btnStart.disabled) return;
+  state.nama = inputNama.value.trim();
+  state.kelas = inputKelas.value.trim();
+  initAudio();
+  startGame();
+});
+
+document.getElementById("btn-mute").addEventListener("click", function(){
+  state.muted = !state.muted;
+  this.textContent = state.muted ? "🔇" : "🔊";
+  if(state.muted){ stopMusic(); } else { if(state.audioReady) startMusic(); }
+});
+
+document.getElementById("btn-again").addEventListener("click", ()=>{
+  startGame();
+});
+
+document.getElementById("btn-back").addEventListener("click", ()=>{
+  showScreen("screen-start");
+});
+
+})();
+</script>
+</body>
+</html>
