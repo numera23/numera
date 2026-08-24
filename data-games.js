@@ -147,7 +147,19 @@ const NUMERA_GAMES = [
         badge: ""
     },
    {
-        nama: "₪ Labirin Matematika",
+        nama: "🏆 Siapa yang Mau Jadi Juara",
+        materi: "Fungsi Trigonometri",
+        deskripsi: "15 tantangan, 3 bantuan.",
+        tags: ["sin", "cos", "tan", "periode", "amplitudo", "fungsi trigonometri", "kuis"],
+        link: "game_siapa_mau_juara_fungtrig.html",
+        tanggal: "2026-08-24",
+        thumbnail: "",
+        warna: "#000080",
+        emoji: "🏆",
+        badge: "Baru"
+    },
+   {
+        nama: "₪ Labirin Gelap",
         materi: "Teorema Faktor",
         deskripsi: "Jelajahi, pecahkan tantangan, temukan jalan keluar!.",
         tags: ["polinomial", "teorema faktor", "suku banyak"],
@@ -159,9 +171,9 @@ const NUMERA_GAMES = [
         badge: "Baru"
     },
    {
-        nama: "🕵️‍♀️ Detektif Matematika",
+        nama: "🕵️‍♀️ Detektif Misteri",
         materi: "Soal Cerita SPLDV",
-        deskripsi: "Kumpulkan petunjuk, hubungkan angka-angkanya, dan temukan kesimpulan yang benar.",
+        deskripsi: "Kumpulkan petunjuk & temukan kesimpulan yang benar.",
         tags: ["sistem persamaan linear dua variabel", "spldv", "penerapan spldv", "kasus", "SPLDV"],
         link: "game_detektif_penerapanspldv.html",
         tanggal: "2026-08-23",
