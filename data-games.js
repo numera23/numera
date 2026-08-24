@@ -152,7 +152,7 @@ const NUMERA_GAMES = [
         deskripsi: "15 tantangan, 3 bantuan.",
         tags: ["sin", "cos", "tan", "periode", "amplitudo", "fungsi trigonometri", "kuis"],
         link: "game_siapa_mau_juara_fungtrig.html",
-        tanggal: "2026-08-24",
+        tanggal: "2026-08-25",
         thumbnail: "",
         warna: "#000080",
         emoji: "🏆",
@@ -168,7 +168,7 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#CE46AE",
         emoji: "₪",
-        badge: "Baru"
+        badge: ""
     },
    {
         nama: "🕵️‍♀️ Detektif Misteri",
