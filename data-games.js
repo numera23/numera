@@ -75,7 +75,7 @@ const NUMERA_GAMES = [
         badge: ""
     },
    {
-        nama: "🤝🏼 Pasangkan d& Buktikan",
+        nama: "🤝🏼 Pasangkan & Buktikan",
         materi: "Metode Grafik SPLDV",
         deskripsi: "Sistem persamaan di kiri, grafik di kanan.",
         tags: ["spldv", "grafik", "sistem persamaan linear dua variabel", "metode grafik"],
