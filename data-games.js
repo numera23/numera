@@ -75,6 +75,18 @@ const NUMERA_GAMES = [
         badge: ""
     },
    {
+        nama: "🤝🏼 Pasangkan d& Buktikan",
+        materi: "Metode Grafik SPLDV",
+        deskripsi: "Sistem persamaan di kiri, grafik di kanan.",
+        tags: ["spldv", "grafik", "sistem persamaan linear dua variabel", "metode grafik"],
+        link: "game_pasangkan_buktikan_grafik_spldv.html",
+        tanggal: "2026-08-24",
+        thumbnail: "",
+        warna: "#FBCEB1",
+        emoji: "🤝🏼",
+        badge: "Baru"
+    },
+   {
         nama: "💪🏻 Tarik ke Posisi yang Benar",
         materi: "Grafik SPLDV",
         deskripsi: "Seret titik ke posisi tepat pada grafik.",
@@ -106,9 +118,9 @@ const NUMERA_GAMES = [
         link: "game_susunlangkah_SPLDV_substitusi.html",
         tanggal: "2026-08-23",
         thumbnail: "",
-        warna: "##EC4899",
+        warna: "#EC4899",
         emoji: "🧩",
-        badge: "Baru"
+        badge: ""
     },
     {
         nama: "🔐 Escape Room",
