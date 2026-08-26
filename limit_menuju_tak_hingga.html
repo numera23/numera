@@ -1,0 +1,763 @@
+<!--
+NUMERA — Modul Pembelajaran Interaktif
+Judul: Limit Menuju Tak Hingga
+Materi: Limit Fungsi — Limit di Tak Hingga dan Perilaku Fungsi Saat x Menuju Tak Hingga
+Bab: Limit (Modul 5 dari 5)
+Jenis Halaman: Modul Interaktif
+Versi: 1.0 (Master Prompt Limit v1.0)
+Dikembangkan oleh: Kiki Herdiansyah
+© 2026 NUMERA — Seluruh hak cipta dilindungi.
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Limit Menuju Tak Hingga — NUMERA</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-soft:#EFF4FF;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --green:#16A34A;
+  --green-soft:#F0FDF4;
+  --red:#DC2626;
+  --red-soft:#FEF2F2;
+  --amber:#D97706;
+  --amber-soft:#FFFBEB;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.06);
+  --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);}
+
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,0.92);
+  backdrop-filter:saturate(180%) blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:var(--sp-3) var(--sp-4);
+}
+.topbar-title{font-size:13px;font-weight:600;color:var(--text-soft);letter-spacing:0.02em;}
+.progress-track{height:4px;background:var(--border);border-radius:99px;margin-top:var(--sp-2);overflow:hidden;}
+.progress-fill{height:100%;background:var(--primary);width:0%;transition:width .2s ease;border-radius:99px;}
+
+.content{padding:var(--sp-4) var(--sp-4) var(--sp-6);}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:var(--sp-5);
+  margin-bottom:var(--sp-5);
+}
+.eyebrow{font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:var(--sp-2);}
+h1{font-size:24px;font-weight:800;margin:0 0 var(--sp-2);line-height:1.25;}
+h2{font-size:18px;font-weight:700;margin:0 0 var(--sp-3);line-height:1.35;}
+h3{font-size:15px;font-weight:700;margin:0 0 var(--sp-2);}
+p{font-size:15px;line-height:1.65;color:var(--text);margin:0 0 var(--sp-3);}
+p:last-child{margin-bottom:0;}
+.soft{color:var(--text-soft);}
+.small{font-size:13px;}
+
+.meta-row{display:flex;gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-4);}
+.meta-chip{
+  display:flex;align-items:center;gap:6px;
+  background:var(--primary-soft);color:var(--primary);
+  font-size:12px;font-weight:600;
+  padding:6px 12px;border-radius:99px;
+}
+.goal-list{margin:0;padding-left:18px;}
+.goal-list li{font-size:14px;line-height:1.6;color:var(--text-soft);margin-bottom:4px;}
+
+.identity-box{
+  background:var(--primary-soft);
+  border:1px solid #DCE7FF;
+  border-radius:var(--radius);
+  padding:var(--sp-4);
+  margin-top:var(--sp-4);
+}
+.identity-box h3{color:var(--primary);margin-bottom:var(--sp-3);}
+.field{margin-bottom:var(--sp-3);}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-soft);margin-bottom:4px;}
+.field input, .field textarea{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:10px 12px;
+  font-size:14px;
+  font-family:inherit;
+  background:#fff;
+  color:var(--text);
+}
+.field textarea{resize:vertical;min-height:70px;}
+.field input:focus, .field textarea:focus{outline:none;border-color:var(--primary);}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:inherit;font-weight:600;font-size:14px;
+  border:none;border-radius:var(--radius-sm);
+  padding:11px 18px;cursor:pointer;
+  transition:opacity .15s ease, transform .1s ease;
+}
+.btn:active{transform:scale(0.98);}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-ghost{background:var(--border);color:var(--text);}
+.btn-full{width:100%;}
+.btn-sm{padding:8px 14px;font-size:13px;}
+
+.chip-row{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-bottom:var(--sp-3);}
+.chip{
+  border:1px solid var(--border);background:#fff;color:var(--text-soft);
+  font-size:13px;font-weight:600;padding:8px 14px;border-radius:99px;
+  cursor:pointer;transition:.15s ease;
+}
+.chip.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+.mathbox{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-4);text-align:center;font-size:16px;margin:var(--sp-3) 0;overflow-x:auto;
+}
+.mathbox.big{font-size:18px;}
+
+.insight{
+  display:flex;gap:10px;align-items:flex-start;
+  background:var(--amber-soft);border:1px solid #FDE8C8;
+  border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);margin-top:var(--sp-3);
+  font-size:13.5px;line-height:1.55;color:#7C4A03;
+}
+.insight .ic{font-size:16px;flex-shrink:0;}
+
+.graph-wrap{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);padding:var(--sp-3);}
+.graph-controls{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:var(--sp-3);}
+.readout .cell{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--sp-3);text-align:center;}
+.readout .lbl{font-size:11px;color:var(--text-soft);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.readout .v{font-size:18px;font-weight:800;color:var(--primary);margin-top:4px;}
+
+.result-panel{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:var(--sp-3);}
+.result-cell{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--sp-3);text-align:center;}
+.result-cell .lbl{font-size:11px;color:var(--text-soft);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.result-cell .v{font-size:20px;font-weight:800;color:var(--primary);margin-top:4px;}
+
+.prop-item{border-top:1px solid var(--border);padding:var(--sp-4) 0;}
+.prop-item:first-child{border-top:none;padding-top:0;}
+.prop-name{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;}
+
+.mis-item{border-top:1px solid var(--border);padding:var(--sp-4) 0;}
+.mis-item:first-child{border-top:none;padding-top:0;}
+.mis-tag{display:inline-block;background:var(--red-soft);color:var(--red);font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;margin-bottom:8px;}
+
+.summary-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:var(--sp-3);}
+.summary-item:last-child{margin-bottom:0;}
+.summary-num{
+  flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--primary);
+  color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
+}
+
+.q-card{margin-bottom:var(--sp-4);}
+.q-num{font-size:12px;font-weight:700;color:var(--text-soft);margin-bottom:6px;}
+.q-diff{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;margin-left:6px;}
+.diff-easy{background:var(--green-soft);color:var(--green);}
+.diff-med{background:var(--amber-soft);color:var(--amber);}
+.diff-hard{background:var(--red-soft);color:var(--red);}
+.opt{
+  display:block;width:100%;text-align:left;
+  border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);
+  padding:12px 14px;margin-bottom:8px;font-size:14px;font-family:inherit;color:var(--text);
+  cursor:pointer;transition:.15s ease;
+}
+.opt:hover{border-color:var(--primary);}
+.opt.correct{border-color:var(--green);background:var(--green-soft);color:#14532D;}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);color:#7F1D1D;}
+.opt:disabled{cursor:default;}
+.feedback{margin-top:10px;padding:12px 14px;border-radius:var(--radius-sm);font-size:13.5px;line-height:1.55;}
+.feedback.ok{background:var(--green-soft);color:#14532D;}
+.feedback.bad{background:var(--red-soft);color:#7F1D1D;}
+
+.status-msg{font-size:13px;text-align:center;margin-top:var(--sp-3);color:var(--text-soft);}
+.status-msg.ok{color:var(--green);font-weight:600;}
+
+.site-footer{text-align:center;padding:var(--sp-6) var(--sp-4);color:var(--text-soft);font-size:12px;line-height:1.7;}
+.site-footer strong{color:var(--text);}
+
+.locked-note{
+  font-size:13px;color:var(--text-soft);background:var(--bg);
+  border:1px dashed var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-3) var(--sp-4);text-align:center;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="topbar">
+    <div class="topbar-title">NUMERA · Limit Menuju Tak Hingga</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="content">
+
+    <!-- 1. HEADER -->
+    <section class="card">
+      <div class="eyebrow">Bab Limit · Modul 5 dari 5</div>
+      <h1>Limit Menuju Tak Hingga</h1>
+      <p class="soft">Limit di Tak Hingga dan Perilaku Fungsi Saat x Menuju Tak Hingga</p>
+      <div class="meta-row">
+        <div class="meta-chip">⏱ 15–20 menit</div>
+        <div class="meta-chip">📈 x → ∞</div>
+      </div>
+      <h3>Tujuan Belajar</h3>
+      <ul class="goal-list">
+        <li>Memahami makna x menuju tak hingga, sebagai "terus membesar tanpa henti", bukan "sampai" ke suatu angka</li>
+        <li>Memahami mengapa nilai fungsi bisa mendekati suatu bilangan tertentu meski x terus membesar</li>
+        <li>Bisa menentukan limit fungsi rasional di tak hingga dengan membandingkan derajat pembilang dan penyebut</li>
+        <li>Mengenal makna garis asimtot datar pada grafik</li>
+      </ul>
+
+      <div class="identity-box">
+        <h3>👤 Identitas Siswa</h3>
+        <div class="field">
+          <label for="namaSiswa">Nama Lengkap</label>
+          <input type="text" id="namaSiswa" placeholder="Tulis namamu di sini">
+        </div>
+        <div class="field">
+          <label for="kelasSiswa">Kelas</label>
+          <input type="text" id="kelasSiswa" placeholder="Contoh: X-2, XI IPA 3">
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+    <section class="card">
+      <div class="eyebrow">🤔 Pernahkah Kamu Berpikir?</div>
+      <p>Sejauh ini, <span class="katex-inline" data-tex="x"></span> selalu mendekati angka tertentu, seperti 2 atau 3.</p>
+      <p>Tapi bagaimana kalau <span class="katex-inline" data-tex="x"></span> dibiarkan terus membesar — 10, lalu 100, lalu 1.000, lalu 1.000.000 — tanpa pernah berhenti?</p>
+      <p><strong>Coba pikirkan:</strong> apakah nilai suatu fungsi juga ikut membesar tanpa batas? Atau justru menuju ke satu angka tertentu, walaupun <span class="katex-inline" data-tex="x"></span>-nya sendiri tidak pernah berhenti membesar?</p>
+    </section>
+
+    <!-- 3. PENJELASAN SEDERHANA -->
+    <section class="card">
+      <div class="eyebrow">💡 Penjelasan Sederhana</div>
+
+      <h2>A. "Menuju Tak Hingga" Itu Apa?</h2>
+      <p><span class="katex-inline" data-tex="x\to\infty"></span> bukan berarti <span class="katex-inline" data-tex="x"></span> "sampai" di suatu angka bernama tak hingga — tidak ada angka seperti itu. Artinya adalah: <span class="katex-inline" data-tex="x"></span> terus membesar, tanpa batas, tanpa pernah berhenti.</p>
+
+      <h2>B. Coba Amati Fungsi Sederhana</h2>
+      <p>Perhatikan <span class="katex-inline" data-tex="f(x)=\dfrac{1}{x}"></span>. Lihat apa yang terjadi ketika <span class="katex-inline" data-tex="x"></span> terus membesar:</p>
+      <div class="mathbox"><div id="growTable"></div></div>
+      <div class="insight">
+        <span class="ic">💡</span>
+        <span>Nilai <span class="katex-inline" data-tex="f(x)"></span> semakin dekat ke <strong>0</strong>, walaupun tidak pernah benar-benar menjadi 0. Semakin besar <span class="katex-inline" data-tex="x"></span>, semakin dekat <span class="katex-inline" data-tex="f(x)"></span> ke 0.</span>
+      </div>
+
+      <h2>C. Notasinya</h2>
+      <div class="mathbox big"><span class="katex-inline" data-tex="\lim_{x\to\infty} f(x) = L"></span></div>
+      <p>Artinya: ketika <span class="katex-inline" data-tex="x"></span> terus membesar tanpa batas, nilai <span class="katex-inline" data-tex="f(x)"></span> semakin dekat ke <span class="katex-inline" data-tex="L"></span>.</p>
+
+      <h2>D. Fungsi Rasional — Bagaimana Menghitungnya?</h2>
+      <p>Untuk fungsi pecahan seperti <span class="katex-inline" data-tex="\dfrac{2x+3}{x+1}"></span>, substitusi langsung tidak bisa dipakai (tidak ada angka "tak hingga" untuk disubstitusi). Triknya: <strong>bagi pembilang dan penyebut dengan pangkat x tertinggi</strong>.</p>
+      <div class="mathbox">
+        <span class="katex-inline" data-tex="\dfrac{2x+3}{x+1} = \dfrac{2+\frac{3}{x}}{1+\frac{1}{x}}"></span>
+      </div>
+      <p>Saat <span class="katex-inline" data-tex="x\to\infty"></span>, bagian <span class="katex-inline" data-tex="\tfrac{3}{x}"></span> dan <span class="katex-inline" data-tex="\tfrac{1}{x}"></span> sama-sama mendekati 0 (seperti <span class="katex-inline" data-tex="\tfrac{1}{x}"></span> tadi). Jadi bentuknya menjadi:</p>
+      <div class="mathbox big"><span class="katex-inline" data-tex="\dfrac{2+0}{1+0}=2"></span></div>
+
+      <h2>E. Tiga Kemungkinan (Bandingkan Derajatnya)</h2>
+      <p>Untuk fungsi rasional, hasilnya bergantung pada <strong>derajat tertinggi</strong> di pembilang dibanding penyebut:</p>
+      <div class="prop-item">
+        <div class="prop-name">Derajat pembilang = derajat penyebut</div>
+        <p class="small soft">Limitnya adalah rasio koefisien pangkat tertinggi. Contoh di atas: 2/1 = 2.</p>
+      </div>
+      <div class="prop-item">
+        <div class="prop-name">Derajat pembilang &lt; derajat penyebut</div>
+        <p class="small soft">Penyebut "tumbuh" jauh lebih cepat, sehingga seluruh pecahan menyusut menuju 0.</p>
+      </div>
+      <div class="prop-item">
+        <div class="prop-name">Derajat pembilang &gt; derajat penyebut</div>
+        <p class="small soft">Pembilang "tumbuh" jauh lebih cepat, sehingga nilai fungsi terus membesar tanpa henti — tidak menuju angka berhingga tertentu.</p>
+      </div>
+
+      <h2>F. Garis Asimtot Datar</h2>
+      <p>Ketika grafik suatu fungsi semakin dekat ke suatu garis mendatar saat <span class="katex-inline" data-tex="x\to\infty"></span>, garis itu disebut <strong>asimtot datar</strong>. Grafik akan terus mendekati garis itu, tapi tidak pernah benar-benar menyentuhnya — sama seperti gagasan "mendekati tanpa mencapai" yang sudah kamu kenal.</p>
+    </section>
+
+    <!-- 4. LIHAT CARA KERJANYA -->
+    <section class="card">
+      <div class="eyebrow">🎬 Lihat Cara Kerjanya</div>
+      <p>Perhatikan grafik <span class="katex-inline" data-tex="f(x)=\dfrac{2x+3}{x+1}"></span>. Titik akan bergerak ke kanan seiring <span class="katex-inline" data-tex="x"></span> membesar, mendekati garis asimtot <span class="katex-inline" data-tex="y=2"></span>.</p>
+      <div class="graph-wrap">
+        <svg viewBox="0 0 300 200" id="graphSvg" style="width:100%;height:auto;display:block;">
+          <line x1="20" y1="180" x2="290" y2="180" stroke="#CBD5E1" stroke-width="1"/>
+          <line x1="30" y1="10" x2="30" y2="190" stroke="#CBD5E1" stroke-width="1"/>
+          <line x1="30" y1="158.5" x2="290" y2="158.5" stroke="#D97706" stroke-width="1.5" stroke-dasharray="4,4"/>
+          <text x="255" y="152" font-size="9" fill="#D97706">y = 2 (asimtot)</text>
+          <path id="curvePath" d="" fill="none" stroke="#2563EB" stroke-width="2.5"/>
+          <circle id="moveDot" cx="45" cy="43" r="5.5" fill="#DC2626"/>
+        </svg>
+      </div>
+      <div class="graph-controls">
+        <button class="btn btn-primary btn-sm" id="playBtn">▶ Play</button>
+        <button class="btn btn-ghost btn-sm" id="pauseBtn">⏸ Pause</button>
+        <button class="btn btn-ghost btn-sm" id="resetBtn">↻ Reset</button>
+      </div>
+      <div class="readout">
+        <div class="cell"><div class="lbl">Nilai x</div><div class="v" id="readX">1</div></div>
+        <div class="cell"><div class="lbl">Nilai f(x)</div><div class="v" id="readFx">2.50</div></div>
+      </div>
+      <div class="insight" id="graphInsight" style="display:none;"></div>
+    </section>
+
+    <!-- 5. COBA SENDIRI -->
+    <section class="card">
+      <div class="eyebrow">🧪 Coba Sendiri</div>
+      <p>Pilih salah satu fungsi, lalu tekan tombol nilai x untuk melihat ke mana f(x) menuju saat x membesar.</p>
+
+      <div class="chip-row" id="fnChips">
+        <button class="chip active" data-fn="sama">Derajat Sama</button>
+        <button class="chip" data-fn="kecil">Pembilang &lt; Penyebut</button>
+        <button class="chip" data-fn="besar">Pembilang &gt; Penyebut</button>
+      </div>
+
+      <div class="mathbox" id="fnDisplay"></div>
+
+      <div class="chip-row" id="xChips">
+        <button class="chip" data-x="10">x = 10</button>
+        <button class="chip" data-x="100">x = 100</button>
+        <button class="chip" data-x="1000">x = 1.000</button>
+        <button class="chip" data-x="10000">x = 10.000</button>
+      </div>
+
+      <div class="result-panel">
+        <div class="result-cell">
+          <div class="lbl">f(x) saat ini</div>
+          <div class="v" id="fxNow">-</div>
+        </div>
+        <div class="result-cell">
+          <div class="lbl">Menuju ke mana?</div>
+          <div class="v" id="fxTrend" style="font-size:16px;">-</div>
+        </div>
+      </div>
+
+      <div class="insight" id="tryInsight" style="display:none;"></div>
+    </section>
+
+    <!-- 6. CHALLENGE -->
+    <section class="card" id="challengeSection">
+      <div class="eyebrow">🎯 Challenge</div>
+      <p class="soft small">Jawab ketiga soal berikut. Setiap jawaban langsung diperiksa.</p>
+
+      <div class="locked-note" id="challengeLock">🔒 Isi Nama dan Kelas di bagian atas dulu untuk membuka Challenge.</div>
+
+      <div id="challengeBody" style="display:none;">
+        <div class="q-card">
+          <div class="q-num">Soal 1 <span class="q-diff diff-easy">Mudah</span></div>
+          <p><span class="katex-inline" data-tex="\text{Hitung } \lim_{x\to\infty}\dfrac{3x+5}{x+2}"></span></p>
+          <div id="q1opts"></div>
+          <div class="feedback" id="q1fb" style="display:none;"></div>
+        </div>
+        <div class="q-card">
+          <div class="q-num">Soal 2 <span class="q-diff diff-med">Sedang</span></div>
+          <p>Perhatikan <span class="katex-inline" data-tex="\lim_{x\to\infty}\dfrac{5}{x^2+1}"></span>. Karena penyebut tumbuh jauh lebih cepat daripada pembilang saat x membesar, limit ini menuju...</p>
+          <div id="q2opts"></div>
+          <div class="feedback" id="q2fb" style="display:none;"></div>
+        </div>
+        <div class="q-card">
+          <div class="q-num">Soal 3 <span class="q-diff diff-hard">Sulit</span></div>
+          <p>Perhatikan <span class="katex-inline" data-tex="\lim_{x\to\infty}\dfrac{x^2+3}{x+1}"></span>. Manakah kesimpulan yang tepat?</p>
+          <div id="q3opts"></div>
+          <div class="feedback" id="q3fb" style="display:none;"></div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="submitChallenge" disabled>Kirim Jawaban Challenge</button>
+        <div class="status-msg" id="challengeStatus"></div>
+      </div>
+    </section>
+
+    <!-- 7. KESALAHAN YANG SERING TERJADI -->
+    <section class="card">
+      <div class="eyebrow">⚠️ Kesalahan yang Sering Terjadi</div>
+
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 1</span>
+        <p><strong>Yang biasa dilakukan:</strong> menganggap <span class="katex-inline" data-tex="x\to\infty"></span> berarti x akhirnya "sampai" di suatu angka bernama tak hingga.</p>
+        <p><strong>Kenapa salah:</strong> tak hingga bukan angka. <span class="katex-inline" data-tex="x\to\infty"></span> hanya berarti x terus membesar tanpa batas, tidak pernah berhenti di angka manapun.</p>
+        <p><strong>Cara menghindarinya:</strong> baca <span class="katex-inline" data-tex="x\to\infty"></span> sebagai "x terus membesar", bukan "x menjadi tak hingga".</p>
+      </div>
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 2</span>
+        <p><strong>Yang biasa dilakukan:</strong> menganggap semua fungsi pecahan otomatis menuju tak hingga karena ada x di dalamnya.</p>
+        <p><strong>Kenapa salah:</strong> hasilnya tergantung pada perbandingan derajat pembilang dan penyebut — bisa menuju 0, menuju angka tertentu, atau memang menuju tak hingga.</p>
+        <p><strong>Cara menghindarinya:</strong> selalu bandingkan dulu derajat tertinggi di pembilang dan penyebut sebelum menyimpulkan.</p>
+      </div>
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 3</span>
+        <p><strong>Yang biasa dilakukan:</strong> langsung memakai "rasio koefisien pangkat tertinggi" untuk semua kasus, walaupun derajat pembilang dan penyebutnya berbeda.</p>
+        <p><strong>Kenapa salah:</strong> cara itu hanya berlaku kalau derajat pembilang dan penyebutnya SAMA. Kalau berbeda, hasilnya bisa 0 atau tak hingga.</p>
+        <p><strong>Cara menghindarinya:</strong> selalu cek dulu derajatnya sama, lebih kecil, atau lebih besar, baru pilih cara yang sesuai.</p>
+      </div>
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 4</span>
+        <p><strong>Yang biasa dilakukan:</strong> mengira grafik yang mendekati asimtot akan menyentuhnya pada suatu titik tertentu.</p>
+        <p><strong>Kenapa salah:</strong> asimtot adalah garis yang terus didekati tanpa pernah benar-benar disentuh, berapa pun besarnya x.</p>
+        <p><strong>Cara menghindarinya:</strong> ingat lagi gagasan "mendekati tanpa mencapai" yang berlaku juga di sini.</p>
+      </div>
+    </section>
+
+    <!-- 8. RINGKASAN -->
+    <section class="card">
+      <div class="eyebrow">📌 Ringkasan</div>
+      <div class="summary-item"><div class="summary-num">1</div><p><span class="katex-inline" data-tex="x\to\infty"></span> berarti x terus membesar tanpa batas, bukan "sampai" ke angka tertentu.</p></div>
+      <div class="summary-item"><div class="summary-num">2</div><p>Untuk fungsi rasional, bandingkan derajat tertinggi pembilang dan penyebut untuk menentukan hasil limitnya.</p></div>
+      <div class="summary-item"><div class="summary-num">3</div><p>Kalau derajatnya sama, limitnya adalah rasio koefisien pangkat tertinggi.</p></div>
+      <div class="summary-item"><div class="summary-num">4</div><p>Kalau derajat pembilang lebih kecil, limitnya menuju 0. Kalau lebih besar, limitnya menuju tak hingga.</p></div>
+      <div class="summary-item"><div class="summary-num">5</div><p>Garis asimtot datar menggambarkan nilai yang terus didekati grafik saat x membesar, tanpa pernah disentuh.</p></div>
+    </section>
+
+    <!-- 9. REFLEKSI -->
+    <section class="card" id="reflectionSection">
+      <div class="eyebrow">✍️ Refleksi</div>
+      <div class="locked-note" id="reflectionLock">🔒 Isi Nama dan Kelas di bagian atas dulu untuk membuka Refleksi.</div>
+
+      <div id="reflectionBody" style="display:none;">
+        <div class="field">
+          <label>1. Dengan kata-katamu sendiri, apa bedanya "x mendekati suatu angka" pada modul-modul sebelumnya dengan "x menuju tak hingga" di modul ini?</label>
+          <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+        </div>
+        <div class="field">
+          <label>2. Menurutmu, mengapa membandingkan derajat pembilang dan penyebut bisa membantu menentukan hasil limit fungsi rasional saat x menuju tak hingga?</label>
+          <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+        </div>
+        <button class="btn btn-primary btn-full" id="submitReflection">Kirim Refleksi</button>
+        <div class="status-msg" id="reflectionStatus"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="site-footer">
+    <strong>NUMERA</strong><br>
+    Dikembangkan oleh Kiki Herdiansyah<br>
+    Versi 1.0 · © 2026
+  </footer>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec"; // <-- Guru: tempel URL Google Apps Script di sini sebelum publish
+const TOPIK = "Limit Menuju Tak Hingga";
+
+function renderKatex(el, tex, displayMode){
+  if(window.katex){
+    try{ katex.render(tex, el, {throwOnError:false, displayMode: !!displayMode}); }
+    catch(e){ el.textContent = tex; }
+  } else {
+    el.textContent = tex;
+  }
+}
+function renderAllStatic(){
+  document.querySelectorAll('.katex-inline').forEach(el=>{
+    renderKatex(el, el.getAttribute('data-tex'), false);
+  });
+}
+window.addEventListener('load', ()=>{ setTimeout(renderAllStatic, 60); });
+
+function updateProgress(){
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop || document.body.scrollTop;
+  const height = (doc.scrollHeight || document.body.scrollHeight) - doc.clientHeight;
+  const pct = height > 0 ? Math.min(100,(scrolled/height)*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+window.addEventListener('scroll', updateProgress);
+window.addEventListener('load', updateProgress);
+
+(function(){
+  const container = document.getElementById('growTable');
+  const xs = [10,100,1000,10000];
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+  html += '<tr>'+xs.map(x=>`<td style="padding:4px;color:#64748B;">x=${x.toLocaleString('id-ID')}</td>`).join('')+'</tr>';
+  html += '<tr>'+xs.map(x=>{
+    const f = 1/x;
+    return `<td style="padding:4px;font-weight:700;color:#2563EB;">${f}</td>`;
+  }).join('')+'</tr>';
+  html += '</table>';
+  container.innerHTML = html;
+})();
+
+function identityFilled(){
+  return document.getElementById('namaSiswa').value.trim() !== '' &&
+         document.getElementById('kelasSiswa').value.trim() !== '';
+}
+function refreshGates(){
+  const ok = identityFilled();
+  document.getElementById('challengeLock').style.display = ok ? 'none' : 'block';
+  document.getElementById('challengeBody').style.display = ok ? 'block' : 'none';
+  document.getElementById('reflectionLock').style.display = ok ? 'none' : 'block';
+  document.getElementById('reflectionBody').style.display = ok ? 'block' : 'none';
+  if(ok){ setTimeout(renderAllStatic, 30); }
+}
+document.getElementById('namaSiswa').addEventListener('input', refreshGates);
+document.getElementById('kelasSiswa').addEventListener('input', refreshGates);
+refreshGates();
+
+function xToPx(x){ return 45 + (x-1)*(270-45)/(60-1); }
+function fxToPy(fx){ return 170 - (fx-1.95)*(170-20)/(2.6-1.95); }
+
+(function(){
+  let d = '';
+  for(let x=1; x<=60; x+=1){
+    const fx = (2*x+3)/(x+1);
+    const px = xToPx(x), py = fxToPy(fx);
+    d += (x===1 ? 'M' : 'L') + px.toFixed(1) + ',' + py.toFixed(1) + ' ';
+  }
+  document.getElementById('curvePath').setAttribute('d', d);
+})();
+
+let animRunning = false;
+let animX = 1;
+const dot = document.getElementById('moveDot');
+const readX = document.getElementById('readX');
+const readFx = document.getElementById('readFx');
+const graphInsight = document.getElementById('graphInsight');
+
+function setDot(x){
+  const fx = (2*x+3)/(x+1);
+  dot.setAttribute('cx', xToPx(x));
+  dot.setAttribute('cy', fxToPy(fx));
+  readX.textContent = Math.round(x);
+  readFx.textContent = fx.toFixed(3);
+}
+setDot(1);
+
+function stepAnim(){
+  if(!animRunning) return;
+  animX += 0.5;
+  if(animX >= 60){
+    graphInsight.style.display='flex';
+    graphInsight.innerHTML = '<span class="ic">💡</span><span>Walaupun x terus membesar tanpa henti, f(x) semakin dekat ke 2 dan tidak pernah menyentuh garis asimtotnya.</span>';
+    animX = 1;
+  }
+  setDot(animX);
+  setTimeout(stepAnim, 30);
+}
+document.getElementById('playBtn').addEventListener('click', ()=>{
+  if(!animRunning){ animRunning = true; stepAnim(); }
+});
+document.getElementById('pauseBtn').addEventListener('click', ()=>{ animRunning = false; });
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  animRunning = false; animX = 1; setDot(1);
+  graphInsight.style.display='none';
+});
+
+const fnDefs = {
+  sama: {
+    label: "f(x)=(3x+5)/(x+2)",
+    fn: (x)=>(3*x+5)/(x+2),
+    trend: "Menuju 3 (rasio koefisien pangkat tertinggi)",
+    insight: "Derajat pembilang dan penyebut SAMA (sama-sama pangkat 1), jadi limitnya adalah rasio koefisiennya: 3/1 = 3."
+  },
+  kecil: {
+    label: "f(x)=(2x+1)/(x^2+3)",
+    fn: (x)=>(2*x+1)/(x*x+3),
+    trend: "Menuju 0",
+    insight: "Derajat pembilang (1) LEBIH KECIL dari derajat penyebut (2), jadi penyebut tumbuh jauh lebih cepat — nilainya menyusut menuju 0."
+  },
+  besar: {
+    label: "f(x)=(x^2+2)/(x+1)",
+    fn: (x)=>(x*x+2)/(x+1),
+    trend: "Terus membesar menuju tak hingga",
+    insight: "Derajat pembilang (2) LEBIH BESAR dari derajat penyebut (1), jadi nilainya terus membesar tanpa henti, tidak menuju angka berhingga tertentu."
+  }
+};
+let currentFn = 'sama';
+let currentX = null;
+
+function updateFnDisplay(){
+  renderKatex(document.getElementById('fnDisplay'), fnDefs[currentFn].label, false);
+}
+function updateTry(){
+  if(currentX === null){
+    document.getElementById('fxNow').textContent = '-';
+    document.getElementById('fxTrend').textContent = '-';
+    document.getElementById('tryInsight').style.display = 'none';
+    return;
+  }
+  const def = fnDefs[currentFn];
+  const val = def.fn(currentX);
+  document.getElementById('fxNow').textContent = val < 1000 ? val.toFixed(4) : val.toFixed(1);
+  document.getElementById('fxTrend').textContent = def.trend;
+  const insight = document.getElementById('tryInsight');
+  insight.style.display = 'flex';
+  insight.innerHTML = `<span class="ic">💡</span><span>${def.insight}</span>`;
+}
+document.querySelectorAll('#fnChips .chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('#fnChips .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    currentFn = chip.getAttribute('data-fn');
+    updateFnDisplay();
+    updateTry();
+  });
+});
+document.querySelectorAll('#xChips .chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('#xChips .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    currentX = Number(chip.getAttribute('data-x'));
+    updateTry();
+  });
+});
+updateFnDisplay();
+
+const challenge = {
+  q1: {
+    options: ["3","5","2","∞"],
+    correct: 0,
+    fb: {
+      correct: "Benar! Derajat pembilang dan penyebut sama-sama pangkat 1, jadi limitnya adalah rasio koefisien pangkat tertinggi: 3/1 = 3.",
+      wrong: "Bandingkan derajat pembilang dan penyebut dulu — keduanya pangkat 1 (sama), jadi ambil rasio koefisien pangkat tertingginya: 3 dibagi 1."
+    }
+  },
+  q2: {
+    options: ["0","5","tak hingga","tidak ada nilainya"],
+    correct: 0,
+    fb: {
+      correct: "Tepat! Karena penyebut (x²+1) tumbuh jauh lebih cepat daripada pembilang (5) yang konstan, seluruh pecahan menyusut menuju 0.",
+      wrong: "Ingat lagi: kalau penyebut tumbuh jauh lebih cepat daripada pembilang, seluruh pecahan menyusut mengecil, bukan membesar. Hasilnya menuju 0."
+    }
+  },
+  q3: {
+    options: [
+      "Limitnya menuju tak hingga (tidak ada nilai berhingga), karena derajat pembilang lebih tinggi",
+      "Limitnya = 1, karena koefisien x² dan x sama-sama 1",
+      "Limitnya = 0, karena penyebutnya juga mengandung x",
+      "Limitnya = 3, mengikuti angka konstanta pada pembilang"
+    ],
+    correct: 0,
+    fb: {
+      correct: "Benar! Derajat pembilang (2) lebih tinggi daripada penyebut (1), jadi pembilang tumbuh jauh lebih cepat — nilai fungsinya terus membesar tanpa henti, tidak menuju angka berhingga.",
+      wrong: "Bandingkan dulu derajatnya: pembilang berderajat 2, penyebut berderajat 1. Karena pembilang LEBIH TINGGI, nilainya terus membesar tanpa henti — tidak menuju satu angka berhingga."
+    }
+  }
+};
+const challengeAnswers = {};
+function renderOptions(qid){
+  const q = challenge[qid];
+  const container = document.getElementById(qid+'opts');
+  container.innerHTML = '';
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.addEventListener('click', ()=>{
+      if(challengeAnswers[qid] !== undefined) return;
+      challengeAnswers[qid] = i;
+      const isCorrect = i === q.correct;
+      Array.from(container.children).forEach((b,bi)=>{
+        b.disabled = true;
+        if(bi===q.correct) b.classList.add('correct');
+        else if(bi===i) b.classList.add('wrong');
+      });
+      const fb = document.getElementById(qid+'fb');
+      fb.style.display = 'block';
+      fb.className = 'feedback ' + (isCorrect ? 'ok' : 'bad');
+      fb.textContent = isCorrect ? q.fb.correct : q.fb.wrong;
+      checkChallengeComplete();
+    });
+    container.appendChild(btn);
+  });
+}
+['q1','q2','q3'].forEach(renderOptions);
+function checkChallengeComplete(){
+  const done = ['q1','q2','q3'].every(q=>challengeAnswers[q]!==undefined);
+  document.getElementById('submitChallenge').disabled = !done;
+}
+document.getElementById('submitChallenge').addEventListener('click', ()=>{
+  const score = ['q1','q2','q3'].filter(q=>challengeAnswers[q]===challenge[q].correct).length;
+  const payload = {
+    jenis: "Challenge",
+    topik: TOPIK,
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim(),
+    skor: score+" / 3",
+    jawaban1: challenge.q1.options[challengeAnswers.q1],
+    jawaban2: challenge.q2.options[challengeAnswers.q2],
+    jawaban3: challenge.q3.options[challengeAnswers.q3],
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  kirimKeGuru(payload, 'challengeStatus');
+  document.getElementById('submitChallenge').disabled = true;
+});
+
+document.getElementById('submitReflection').addEventListener('click', ()=>{
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  if(!r1 || !r2){
+    const st = document.getElementById('reflectionStatus');
+    st.textContent = 'Isi kedua jawaban refleksi dulu ya.';
+    st.className = 'status-msg';
+    return;
+  }
+  const payload = {
+    jenis: "Refleksi",
+    topik: TOPIK,
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim(),
+    jawaban1: r1,
+    jawaban2: r2,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  kirimKeGuru(payload, 'reflectionStatus');
+});
+
+function kirimKeGuru(payload, statusElId){
+  const st = document.getElementById(statusElId);
+  if(!SCRIPT_URL){
+    st.textContent = '⚠️ Belum terhubung ke Google Sheet (SCRIPT_URL kosong). Jawaban belum terkirim ke guru.';
+    st.className = 'status-msg';
+    console.log('Payload (SCRIPT_URL kosong):', payload);
+    return;
+  }
+  st.textContent = 'Mengirim jawaban...';
+  st.className = 'status-msg';
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    st.textContent = '✅ Jawaban berhasil dikirim ke guru!';
+    st.className = 'status-msg ok';
+  }).catch(()=>{
+    st.textContent = '❌ Gagal mengirim jawaban. Periksa koneksi internetmu.';
+    st.className = 'status-msg';
+  });
+}
+</script>
+</body>
+</html>

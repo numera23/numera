@@ -1,0 +1,1142 @@
+<!--
+====================================================================
+  NUMERA — Modul Pembelajaran Interaktif
+  Judul Modul   : Limit dari Tabel dan Grafik
+  Materi        : Limit Fungsi — Menentukan dan Memahami Limit dari
+                  Tabel dan Grafik (Modul 2 dari 5 — Rangkaian Limit Numera)
+  Jenis Halaman : Modul Interaktif (bukan game, bukan eksplorasi)
+  Cakupan       : Menentukan limit lewat tabel & grafik, membaca titik
+                  kosong/penuh, limit kiri (x→a⁻) & kanan (x→a⁺),
+                  keberadaan limit, langkah-langkah membaca grafik.
+                  TIDAK mencakup substitusi aljabar, bentuk 0/0,
+                  faktorisasi, sekawan, atau limit tak hingga —
+                  materi tersebut ada di Modul 3-5.
+  Versi         : 1.0
+  Dikembangkan oleh : Kiki Herdiansyah
+  © 2026 Numera. Seluruh hak cipta dilindungi.
+====================================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Numera — Limit dari Tabel dan Grafik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-dark:#1D4ED8;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-sec:#64748B;
+    --border:#E2E8F0;
+    --success:#16A34A;
+    --success-bg:#F0FDF4;
+    --danger:#DC2626;
+    --danger-bg:#FEF2F2;
+    --warn:#D97706;
+    --warn-bg:#FFFBEB;
+    --radius:16px;
+    --radius-sm:10px;
+    --shadow:0 1px 3px rgba(15,23,42,0.06), 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md:0 4px 12px rgba(15,23,42,0.08);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px;}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(248,250,252,0.9);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+    padding:12px 0;
+  }
+  .topbar-inner{display:flex;align-items:center;justify-content:space-between;}
+  .brand{font-weight:800;color:var(--primary);font-size:15px;letter-spacing:0.2px;}
+  .brand span{color:var(--text-sec);font-weight:500;font-size:12px;display:block;}
+  .progress-track{height:6px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:10px;}
+  .progress-fill{height:100%;width:0%;background:var(--primary);border-radius:99px;transition:width .3s ease;}
+
+  section{padding:36px 0;border-bottom:1px solid var(--border);}
+  section:last-of-type{border-bottom:none;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px;
+    margin-bottom:16px;
+  }
+
+  .eyebrow{
+    display:inline-block;font-size:12px;font-weight:700;color:var(--primary);
+    background:#EFF6FF;padding:4px 10px;border-radius:99px;margin-bottom:10px;
+    letter-spacing:.3px;
+  }
+  h1{font-size:26px;font-weight:800;margin:6px 0 8px;letter-spacing:-0.3px;}
+  h2{font-size:20px;font-weight:700;margin:0 0 12px;letter-spacing:-0.2px;}
+  h3{font-size:16px;font-weight:700;margin:0 0 8px;}
+  p{margin:0 0 12px;color:var(--text);}
+  .muted{color:var(--text-sec);font-size:14px;}
+  .lead{font-size:16px;color:var(--text-sec);}
+
+  .meta-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;}
+  .meta-pill{
+    background:var(--card);border:1px solid var(--border);border-radius:99px;
+    padding:6px 12px;font-size:13px;color:var(--text-sec);font-weight:500;
+    display:flex;align-items:center;gap:6px;
+  }
+
+  label{display:block;font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:6px;}
+  input[type=text], textarea, input[type=number]{
+    width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+    font-family:inherit;font-size:15px;color:var(--text);background:#fff;
+    transition:border-color .15s;
+  }
+  input:focus, textarea:focus{outline:none;border-color:var(--primary);}
+  textarea{resize:vertical;min-height:80px;}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);
+    padding:12px 20px;font-size:15px;font-weight:600;cursor:pointer;
+    transition:background .15s, transform .1s;
+    font-family:inherit;
+  }
+  .btn:hover{background:var(--primary-dark);}
+  .btn:active{transform:scale(0.98);}
+  .btn:disabled{background:#CBD5E1;cursor:not-allowed;}
+  .btn-outline{
+    background:#fff;color:var(--primary);border:1.5px solid var(--primary);
+  }
+  .btn-outline:hover{background:#EFF6FF;}
+  .btn-sm{padding:8px 14px;font-size:13px;}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+
+  .divider{height:1px;background:var(--border);margin:20px 0;}
+
+  .think-box{
+    background:linear-gradient(135deg,#EFF6FF,#F8FAFC);
+    border:1px solid #DBEAFE;border-radius:var(--radius);padding:22px;
+  }
+  .think-box .q{font-size:17px;font-weight:600;color:var(--text);margin-bottom:8px;}
+
+  .numberline-wrap{overflow-x:auto;padding:10px 0;}
+  svg{display:block;max-width:100%;height:auto;}
+
+  table.datatable{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0;}
+  table.datatable th, table.datatable td{
+    padding:9px 8px;text-align:center;border-bottom:1px solid var(--border);
+  }
+  table.datatable th{color:var(--text-sec);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px;}
+  table.datatable td.highlight{color:var(--primary);font-weight:700;}
+  table.datatable tr.active td{background:#EFF6FF;}
+
+  .slider-row{display:flex;align-items:center;gap:12px;margin:14px 0;}
+  input[type=range]{flex:1;accent-color:var(--primary);height:6px;}
+  .slider-val{
+    min-width:64px;text-align:center;font-weight:700;color:var(--primary);
+    background:#EFF6FF;border-radius:8px;padding:6px 8px;font-size:14px;
+  }
+
+  .insight{
+    background:var(--success-bg);border:1px solid #BBF7D0;border-radius:var(--radius-sm);
+    padding:14px 16px;font-size:14px;color:#15803D;margin-top:12px;display:none;
+    animation:fadeIn .3s ease;
+  }
+  .insight.show{display:block;}
+  .insight.warn{background:var(--warn-bg);border-color:#FDE68A;color:#92400E;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .subsection{margin-bottom:26px;}
+  .subsection .tag{
+    font-size:11px;font-weight:700;color:#fff;background:var(--primary);
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;border-radius:6px;margin-right:8px;flex-shrink:0;
+  }
+  .subsection-title{display:flex;align-items:center;margin-bottom:10px;}
+
+  .anim-controls{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+
+  .toggle-btn{
+    background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+    padding:10px 16px;font-weight:600;font-size:14px;cursor:pointer;color:var(--text);
+    transition:all .15s;
+  }
+  .toggle-btn.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+  .challenge-card{border-left:4px solid var(--primary);}
+  .challenge-num{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;
+    font-size:13px;font-weight:700;margin-right:8px;
+  }
+  .difficulty{font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;margin-left:6px;}
+  .diff-mudah{background:#F0FDF4;color:#16A34A;}
+  .diff-sedang{background:#FFFBEB;color:#D97706;}
+  .diff-sulit{background:#FEF2F2;color:#DC2626;}
+  .option{
+    display:block;width:100%;text-align:left;padding:12px 14px;margin:8px 0;
+    border:1.5px solid var(--border);border-radius:var(--radius-sm);background:#fff;
+    font-family:inherit;font-size:14.5px;cursor:pointer;color:var(--text);transition:all .15s;
+  }
+  .option:hover{border-color:var(--primary);background:#F8FAFF;}
+  .option.correct{border-color:var(--success);background:var(--success-bg);color:#15803D;font-weight:600;}
+  .option.wrong{border-color:var(--danger);background:var(--danger-bg);color:#B91C1C;font-weight:600;}
+  .feedback{
+    margin-top:12px;padding:14px 16px;border-radius:var(--radius-sm);font-size:14px;display:none;
+  }
+  .feedback.show{display:block;animation:fadeIn .3s ease;}
+  .feedback.correct{background:var(--success-bg);color:#15803D;border:1px solid #BBF7D0;}
+  .feedback.wrong{background:var(--danger-bg);color:#B91C1C;border:1px solid #FECACA;}
+
+  .mistake-item{padding:16px 0;border-bottom:1px solid var(--border);}
+  .mistake-item:last-child{border-bottom:none;}
+  .mistake-item .label{font-weight:700;font-size:14.5px;margin-bottom:6px;color:var(--text);}
+  .mistake-item .sub{font-size:13.5px;color:var(--text-sec);margin:3px 0;}
+  .mistake-item .sub b{color:var(--text);}
+
+  .summary-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+  .summary-item:last-child{border-bottom:none;}
+  .summary-num{
+    flex-shrink:0;width:26px;height:26px;border-radius:50%;background:#EFF6FF;color:var(--primary);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
+  }
+  .step-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+  .step-item:last-child{border-bottom:none;}
+  .step-num{
+    flex-shrink:0;width:26px;height:26px;border-radius:8px;background:var(--primary);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;
+  }
+
+  .status-box{
+    display:flex;align-items:center;gap:8px;font-size:13.5px;padding:10px 14px;border-radius:var(--radius-sm);
+    margin-top:12px;font-weight:600;
+  }
+  .status-idle{background:#F1F5F9;color:var(--text-sec);}
+  .status-sending{background:var(--warn-bg);color:var(--warn);}
+  .status-sent{background:var(--success-bg);color:var(--success);}
+  .status-error{background:var(--danger-bg);color:var(--danger);}
+
+  footer{padding:32px 0 50px;text-align:center;}
+  footer .foot-brand{font-weight:800;color:var(--primary);font-size:15px;}
+  footer .foot-sub{font-size:12.5px;color:var(--text-sec);margin-top:4px;}
+
+  .katex{font-size:1.05em;}
+  .formula-block{
+    background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:18px;text-align:center;margin:14px 0;overflow-x:auto;
+  }
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--text-sec);margin-top:8px;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="topbar-inner">
+      <div class="brand">NUMERA <span>Modul Interaktif</span></div>
+      <div class="muted" id="progressLabel" style="font-size:12px;">0%</div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ 1. HEADER ============ -->
+  <section id="sec-header">
+    <span class="eyebrow">Limit Fungsi</span>
+    <h1>Limit dari Tabel dan Grafik</h1>
+    <p class="lead">Sekarang kamu sudah tahu apa artinya "mendekati". Di modul ini kita akan berlatih membaca tabel dan grafik untuk menentukan nilai limit — tanpa rumus, cukup lewat pengamatan.</p>
+
+    <div class="meta-row">
+      <div class="meta-pill">⏱ Estimasi 15–20 menit</div>
+      <div class="meta-pill">🎯 Menentukan Limit dari Tabel &amp; Grafik</div>
+    </div>
+
+    <div class="card">
+      <h3>Tujuan Belajar</h3>
+      <p class="muted" style="margin-bottom:6px;">Setelah menyelesaikan modul ini, kamu diharapkan dapat:</p>
+      <div class="summary-item"><div class="summary-num">1</div><div>Menentukan nilai limit suatu fungsi hanya dengan membaca tabel nilainya.</div></div>
+      <div class="summary-item"><div class="summary-num">2</div><div>Menentukan nilai limit suatu fungsi hanya dengan membaca grafiknya, termasuk grafik berlubang.</div></div>
+      <div class="summary-item"><div class="summary-num">3</div><div>Membaca dan menuliskan limit kiri (<span>\(x\to a^-\)</span>) dan limit kanan (<span>\(x\to a^+\)</span>) dari grafik.</div></div>
+      <div class="summary-item"><div class="summary-num">4</div><div>Menyimpulkan apakah limit suatu fungsi ada atau tidak, berdasarkan grafiknya.</div></div>
+      <div class="summary-item"><div class="summary-num">5</div><div>Menjelaskan langkah-langkah sistematis untuk menentukan limit dari tabel atau grafik.</div></div>
+    </div>
+
+    <div class="card">
+      <h3>Identitas Kamu</h3>
+      <p class="muted" style="margin-bottom:10px;">Isi dulu, ya — supaya jawabanmu bisa sampai ke gurumu nanti.</p>
+      <label for="inpNama">Nama</label>
+      <input type="text" id="inpNama" placeholder="Tulis nama lengkapmu">
+      <div style="height:12px;"></div>
+      <label for="inpKelas">Kelas</label>
+      <input type="text" id="inpKelas" placeholder="Contoh: XI IPA 2">
+    </div>
+  </section>
+
+  <!-- ============ 2. PERNAHKAH KAMU BERPIKIR? ============ -->
+  <section id="sec-hook">
+    <h2>Pernahkah Kamu Berpikir?</h2>
+    <div class="think-box">
+      <div class="q">Kalau kamu diberi tabel angka tanpa rumus fungsinya sama sekali, apakah kamu tetap bisa menebak limitnya?</div>
+      <p class="muted" style="margin-bottom:0;">Coba pikirkan sebentar sebelum lanjut membaca.</p>
+    </div>
+    <div style="height:14px;"></div>
+    <div class="think-box">
+      <div class="q">Kalau grafiknya berlubang di suatu titik, apakah itu otomatis berarti limitnya tidak ada?</div>
+      <p class="muted" style="margin-bottom:0;">Simpan pertanyaan ini — kita akan buktikan jawabannya lewat beberapa grafik di bawah.</p>
+    </div>
+  </section>
+
+  <!-- ============ 3. PENJELASAN SEDERHANA ============ -->
+  <section id="sec-penjelasan">
+    <h2>Penjelasan Sederhana</h2>
+
+    <!-- A. Menentukan limit dari tabel -->
+    <div class="subsection">
+      <div class="subsection-title"><span class="tag">A</span><h3 style="margin:0;">Menentukan limit dari tabel</h3></div>
+      <div class="card">
+        <p>Perhatikan dua tabel berikut. Kamu tidak diberi rumus fungsinya — hanya angka. Coba tebak, ke arah mana nilai f(x) berkumpul?</p>
+        <div class="btn-row">
+          <button class="toggle-btn active" id="btnTabel1">Tabel 1</button>
+          <button class="toggle-btn" id="btnTabel2">Tabel 2</button>
+        </div>
+        <table class="datatable" id="tblA"></table>
+        <div class="btn-row"><button class="btn btn-sm" id="btnTabelReveal">Apa limitnya?</button></div>
+        <div class="insight" id="insightA"></div>
+      </div>
+    </div>
+
+    <!-- B. Menentukan limit dari grafik mulus -->
+    <div class="subsection">
+      <div class="subsection-title"><span class="tag">B</span><h3 style="margin:0;">Menentukan limit dari grafik yang tersambung mulus</h3></div>
+      <div class="card">
+        <p>Kalau grafiknya tersambung tanpa putus di sekitar suatu titik, membaca limitnya jadi mudah: tinggal lihat ke mana grafik itu menuju.</p>
+        <div class="numberline-wrap"><svg id="svgB" viewBox="0 0 320 260"></svg></div>
+        <div class="slider-row">
+          <label style="margin:0;min-width:36px;">x =</label>
+          <input type="range" id="sliderB" min="0" max="400" value="100" step="1">
+          <div class="slider-val" id="sliderBVal">1.00</div>
+        </div>
+        <table class="datatable" id="tblB"></table>
+        <div class="insight" id="insightB"></div>
+      </div>
+    </div>
+
+    <!-- C. Ketika grafik berlubang -->
+    <div class="subsection">
+      <div class="subsection-title"><span class="tag">C</span><h3 style="margin:0;">Ketika grafik berlubang</h3></div>
+      <div class="card">
+        <p>Sekarang bandingkan dua kasus grafik berlubang berikut. Perhatikan baik-baik apa yang sama dan apa yang berbeda.</p>
+        <div class="btn-row">
+          <button class="toggle-btn active" id="btnKasus1">Kasus 1 — ada titik penuh</button>
+          <button class="toggle-btn" id="btnKasus2">Kasus 2 — tidak ada titik penuh</button>
+        </div>
+        <div class="numberline-wrap"><svg id="svgC" viewBox="0 0 320 260"></svg></div>
+        <div class="legend">
+          <span><span class="dot" style="background:#fff;border:2px solid var(--primary);"></span> titik kosong — nilai yang didekati</span>
+          <span><span class="dot" style="background:var(--danger);"></span> titik penuh — nilai fungsi (jika ada)</span>
+        </div>
+        <p id="kasusDesc" class="muted" style="margin-top:8px;"></p>
+        <div class="insight show" id="insightKasus"></div>
+      </div>
+    </div>
+
+    <!-- D. Limit kiri dan kanan dari grafik -->
+    <div class="subsection">
+      <div class="subsection-title"><span class="tag">D</span><h3 style="margin:0;">Membaca limit kiri dan kanan dari grafik</h3></div>
+      <div class="card">
+        <p>Grafik berikut melompat di satu titik. Tekan tombol untuk mendekati titik itu dari masing-masing sisi, lalu bandingkan hasilnya.</p>
+        <div class="numberline-wrap"><svg id="svgD" viewBox="0 0 320 260"></svg></div>
+        <div class="btn-row">
+          <button class="btn btn-outline btn-sm" id="btnDLeft">dari kiri →</button>
+          <button class="btn btn-outline btn-sm" id="btnDRight">← dari kanan</button>
+          <button class="btn btn-outline btn-sm" id="btnDReset">↻ Reset</button>
+        </div>
+        <table class="datatable" id="tblD"></table>
+        <div class="insight" id="insightD"></div>
+      </div>
+    </div>
+
+    <!-- E. Kapan limit ada -->
+    <div class="subsection">
+      <div class="subsection-title"><span class="tag">E</span><h3 style="margin:0;">Kapan limit dari grafik dikatakan ada?</h3></div>
+      <div class="card">
+        <p>Sekarang kita bandingkan empat jenis grafik sekaligus. Tekan tiap tombol dan lihat kesimpulannya.</p>
+        <div class="btn-row">
+          <button class="toggle-btn active" id="btnCond1">Mulus</button>
+          <button class="toggle-btn" id="btnCond2">Berlubang (ada titik)</button>
+          <button class="toggle-btn" id="btnCond3">Berlubang (tanpa titik)</button>
+          <button class="toggle-btn" id="btnCond4">Melompat</button>
+        </div>
+        <div class="numberline-wrap"><svg id="svgE" viewBox="0 0 320 260"></svg></div>
+        <p id="condDesc" class="muted"></p>
+        <div class="insight show" id="insightE"></div>
+      </div>
+    </div>
+
+    <!-- F. Notasi limit kiri dan kanan -->
+    <div class="subsection">
+      <div class="subsection-title"><span class="tag">F</span><h3 style="margin:0;">Notasi limit kiri dan kanan</h3></div>
+      <div class="card">
+        <p>Sekarang saatnya menuliskan gagasan "dari kiri" dan "dari kanan" secara matematis:</p>
+        <div class="formula-block"><span id="ktxFL"></span></div>
+        <p class="muted">dibaca: <i>limit f(x) untuk x mendekati a dari kiri</i> — tanda minus kecil di atas <b>a</b> menandakan arah kiri.</p>
+        <div class="formula-block"><span id="ktxFR"></span></div>
+        <p class="muted">dibaca: <i>limit f(x) untuk x mendekati a dari kanan</i> — tanda plus kecil menandakan arah kanan.</p>
+        <p>Dan aturan keberadaan limit yang sudah kita buktikan lewat grafik tadi, sekarang bisa dituliskan begini:</p>
+        <div class="formula-block"><span id="ktxRule"></span></div>
+        <p class="muted" style="margin-bottom:0;">Kalau kedua sisi menuju nilai yang sama, barulah kita boleh menuliskan <span id="ktxSimple"></span>.</p>
+      </div>
+    </div>
+
+    <!-- G. Langkah-langkah -->
+    <div class="subsection">
+      <div class="subsection-title"><span class="tag">G</span><h3 style="margin:0;">Langkah-langkah menentukan limit dari tabel atau grafik</h3></div>
+      <div class="card">
+        <div class="step-item"><div class="step-num">1</div><div>Cari titik <b>a</b> yang didekati x, lalu lihat nilai fungsi di sekitarnya — bukan tepat di titiknya.</div></div>
+        <div class="step-item"><div class="step-num">2</div><div>Amati ke nilai berapa f(x) menuju saat x mendekati a <b>dari kiri</b>.</div></div>
+        <div class="step-item"><div class="step-num">3</div><div>Amati ke nilai berapa f(x) menuju saat x mendekati a <b>dari kanan</b>.</div></div>
+        <div class="step-item"><div class="step-num">4</div><div>Bandingkan kedua hasil. Sama? Limitnya <b>ada</b>, nilainya itu. Beda? Limitnya <b>tidak ada</b>.</div></div>
+        <div class="step-item"><div class="step-num">5</div><div>Jangan tergoda memakai nilai f(a) — titik penuh atau kosong di a bukan penentu nilai limit.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. LIHAT CARA KERJANYA ============ -->
+  <section id="sec-animasi">
+    <h2>Lihat Cara Kerjanya</h2>
+    <div class="card">
+      <p>Mari kita lihat proses membaca limit kiri dan kanan pada grafik yang melompat. Perhatikan titik birunya bergerak, lalu bandingkan hasil dari dua sisi.</p>
+      <div class="numberline-wrap"><svg id="svgAnim" viewBox="0 0 320 260"></svg></div>
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;">
+        <div class="meta-pill">x saat ini: <b id="animXVal" style="color:var(--text);">-2.000</b></div>
+        <div class="meta-pill">f(x) saat ini: <b id="animFVal" style="color:var(--text);">3.000</b></div>
+        <div class="meta-pill">Arah: <b id="animArah" style="color:var(--text);">Kiri</b></div>
+      </div>
+      <div class="anim-controls">
+        <button class="btn btn-sm" id="btnAnimLeft">▶ Dari Kiri</button>
+        <button class="btn btn-sm" id="btnAnimRight">▶ Dari Kanan</button>
+        <button class="btn btn-outline btn-sm" id="btnAnimPause">⏸ Pause</button>
+        <button class="btn btn-outline btn-sm" id="btnAnimReset">↻ Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. COBA SENDIRI ============ -->
+  <section id="sec-coba">
+    <h2>Coba Sendiri</h2>
+    <div class="card">
+      <h3>Telusuri grafik berlubang tanpa titik penuh</h3>
+      <p class="muted">Fungsi ini tidak terdefinisi tepat di x=3 (tidak ada titik penuh sama sekali). Geser slider dan tentukan sendiri limitnya.</p>
+      <div class="numberline-wrap"><svg id="svgCoba" viewBox="0 0 320 260"></svg></div>
+      <div class="slider-row">
+        <label style="margin:0;min-width:36px;">x =</label>
+        <input type="range" id="sliderCoba" min="100" max="500" value="100" step="1">
+        <div class="slider-val" id="sliderCobaVal">1.00</div>
+      </div>
+      <table class="datatable" id="tblCoba"></table>
+      <div class="insight" id="insightCoba1"></div>
+    </div>
+
+    <div class="card">
+      <h3>Latihan kiri-kanan pada grafik baru</h3>
+      <p class="muted">Fungsi bertingkat baru di sekitar x=1. Tekan tombol untuk mendekati dari masing-masing sisi, lalu simpulkan sendiri.</p>
+      <div class="numberline-wrap"><svg id="svgCoba2" viewBox="0 0 320 260"></svg></div>
+      <div class="btn-row">
+        <button class="btn btn-sm" id="btnCobaLeft">← dari kiri</button>
+        <button class="btn btn-sm" id="btnCobaRight">dari kanan →</button>
+        <button class="btn btn-outline btn-sm" id="btnCobaReset2">↻ Reset</button>
+      </div>
+      <table class="datatable" id="tblCoba2"></table>
+      <div class="insight" id="insightCoba3"></div>
+    </div>
+  </section>
+
+  <!-- ============ 6. CHALLENGE ============ -->
+  <section id="sec-challenge">
+    <h2>Challenge</h2>
+    <p class="muted">Tiga soal untuk menguji pemahamanmu. Isi identitas di atas dulu kalau belum, ya.</p>
+
+    <!-- Soal 1 -->
+    <div class="card challenge-card">
+      <div><span class="challenge-num">1</span><b>Membaca tabel</b><span class="difficulty diff-mudah">Mudah</span></div>
+      <div style="height:10px;"></div>
+      <p>Perhatikan tabel nilai fungsi f(x) berikut saat x mendekati 5:</p>
+      <table class="datatable">
+        <tr><th>x</th><td>4.9</td><td>4.99</td><td>4.999</td><td>→</td><td>5.001</td><td>5.01</td><td>5.1</td></tr>
+        <tr><th>f(x)</th><td>7.8</td><td>7.98</td><td>7.998</td><td>→</td><td>8.002</td><td>8.02</td><td>8.2</td></tr>
+      </table>
+      <p>Berapakah nilai <span>\( \lim_{x \to 5} f(x) \)</span>?</p>
+      <input type="number" id="jawaban1" placeholder="Tulis jawabanmu (angka)">
+      <div class="btn-row"><button class="btn btn-sm" onclick="cekSoal1()">Periksa Jawaban</button></div>
+      <div class="feedback" id="fb1"></div>
+    </div>
+
+    <!-- Soal 2 -->
+    <div class="card challenge-card">
+      <div><span class="challenge-num">2</span><b>Grafik berlubang tanpa titik penuh</b><span class="difficulty diff-sedang">Sedang</span></div>
+      <div style="height:10px;"></div>
+      <p>Sebuah grafik menunjukkan titik kosong di (4, 6). Fungsinya tidak terdefinisi sama sekali di x=4 — tidak ada titik penuh di mana pun pada garis vertikal x=4. Manakah pernyataan yang benar tentang <span>\( \lim_{x \to 4} f(x) \)</span>?</p>
+      <div id="opt2"></div>
+      <div class="feedback" id="fb2"></div>
+    </div>
+
+    <!-- Soal 3 -->
+    <div class="card challenge-card">
+      <div><span class="challenge-num">3</span><b>Membaca grafik gabungan</b><span class="difficulty diff-sulit">Sulit</span></div>
+      <div style="height:10px;"></div>
+      <p>Perhatikan grafik berikut di sekitar x=2:</p>
+      <div class="numberline-wrap"><svg id="svgSoal3" viewBox="0 0 320 220"></svg></div>
+      <p>Manakah kesimpulan yang paling tepat tentang <span>\( \lim_{x \to 2} f(x) \)</span>?</p>
+      <div id="opt3"></div>
+      <div class="feedback" id="fb3"></div>
+    </div>
+  </section>
+
+  <!-- ============ 7. KESALAHAN YANG SERING TERJADI ============ -->
+  <section id="sec-kesalahan">
+    <h2>Kesalahan yang Sering Terjadi</h2>
+    <div class="card">
+      <div class="mistake-item">
+        <div class="label">1. Langsung membaca nilai f(a) sebagai limit dari grafik</div>
+        <div class="sub"><b>Yang biasa dilakukan:</b> melihat titik penuh di suatu titik, lalu langsung menjawab itu sebagai limitnya.</div>
+        <div class="sub"><b>Kenapa salah:</b> nilai limit ditentukan oleh ke mana grafik menuju di sekitar titik, bukan nilai tepat di titik itu.</div>
+        <div class="sub"><b>Cara menghindari:</b> selalu ikuti langkah-langkah di bagian G — cek kiri dan kanan dulu, baru simpulkan.</div>
+      </div>
+      <div class="mistake-item">
+        <div class="label">2. Hanya membaca tabel atau grafik dari satu sisi saja</div>
+        <div class="sub"><b>Yang biasa dilakukan:</b> mengecek nilai x yang lebih besar dari a saja (atau lebih kecil saja), lalu langsung menyimpulkan.</div>
+        <div class="sub"><b>Kenapa salah:</b> kesimpulan tentang limit baru sah setelah kedua arah dicek.</div>
+        <div class="sub"><b>Cara menghindari:</b> biasakan selalu mencari dua kolom di tabel: yang mendekati dari kiri dan dari kanan.</div>
+      </div>
+      <div class="mistake-item">
+        <div class="label">3. Menganggap grafik berlubang otomatis berarti limitnya tidak ada</div>
+        <div class="sub"><b>Yang biasa dilakukan:</b> melihat titik kosong lalu langsung menyimpulkan "limit tidak ada".</div>
+        <div class="sub"><b>Kenapa salah:</b> lubang hanya menunjukkan f(a) berbeda atau tidak terdefinisi — bukan berarti perilaku di sekitarnya tidak menuju ke mana pun.</div>
+        <div class="sub"><b>Cara menghindari:</b> fokus pada arah kiri dan kanan grafik, bukan pada lubangnya.</div>
+      </div>
+      <div class="mistake-item">
+        <div class="label">4. Menganggap fungsi yang tidak terdefinisi di suatu titik pasti tidak punya limit di titik itu</div>
+        <div class="sub"><b>Yang biasa dilakukan:</b> karena tidak ada titik penuh sama sekali, siswa menyerah dan menjawab "tidak bisa ditentukan".</div>
+        <div class="sub"><b>Kenapa salah:</b> limit hanya bergantung pada perilaku di sekitar titik, jadi tetap bisa dibaca dari grafik walau f(a) tidak ada.</div>
+        <div class="sub"><b>Cara menghindari:</b> tutup titik itu dengan jari, lalu perhatikan saja ke mana grafik di kiri dan kanannya menuju.</div>
+      </div>
+      <div class="mistake-item">
+        <div class="label">5. Terburu-buru menyimpulkan dari grafik yang melompat</div>
+        <div class="sub"><b>Yang biasa dilakukan:</b> memilih salah satu nilai (kiri atau kanan) sebagai jawaban akhir tanpa menyebut limitnya tidak ada.</div>
+        <div class="sub"><b>Kenapa salah:</b> kalau kiri dan kanan berbeda, jawaban yang tepat adalah "limit tidak ada", bukan salah satu angkanya.</div>
+        <div class="sub"><b>Cara menghindari:</b> selalu tuliskan dua notasi, <span>\(x\to a^-\)</span> dan <span>\(x\to a^+\)</span>, lalu bandingkan.</div>
+      </div>
+      <div class="mistake-item">
+        <div class="label">6. Mengira limit kiri dan kanan hanya bisa dicari lewat rumus</div>
+        <div class="sub"><b>Yang biasa dilakukan:</b> merasa tidak bisa menjawab kalau tidak diberi rumus fungsinya.</div>
+        <div class="sub"><b>Kenapa salah:</b> pada modul ini, limit kiri dan kanan justru dibaca langsung dari tabel atau grafik — rumus baru dibutuhkan di modul selanjutnya.</div>
+        <div class="sub"><b>Cara menghindari:</b> percaya pada apa yang terlihat di tabel/grafik; pengamatan visual sudah cukup untuk modul ini.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8. RINGKASAN ============ -->
+  <section id="sec-ringkasan">
+    <h2>Ringkasan</h2>
+    <div class="card">
+      <div class="summary-item"><div class="summary-num">1</div><div>Limit dapat ditentukan hanya dengan membaca <b>tabel</b> atau <b>grafik</b>, tanpa perlu rumus fungsinya.</div></div>
+      <div class="summary-item"><div class="summary-num">2</div><div>Pada grafik yang tersambung mulus, limitnya sama dengan nilai fungsi di titik itu.</div></div>
+      <div class="summary-item"><div class="summary-num">3</div><div>Pada grafik berlubang, limitnya ditentukan oleh ke mana grafik <i>menuju</i>, bukan oleh titik kosong atau titik penuhnya.</div></div>
+      <div class="summary-item"><div class="summary-num">4</div><div>Limit kiri (<span>\(x\to a^-\)</span>) dan limit kanan (<span>\(x\to a^+\)</span>) harus sama-sama dicek; limit hanya ada kalau keduanya menuju nilai yang sama.</div></div>
+      <div class="summary-item"><div class="summary-num">5</div><div>Langkah sistematis (cek kiri → cek kanan → bandingkan) berlaku untuk membaca limit dari tabel maupun grafik jenis apa pun.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ 9. REFLEKSI ============ -->
+  <section id="sec-refleksi">
+    <h2>Refleksi</h2>
+    <p class="muted">Tidak ada jawaban benar atau salah di sini — tulis dengan pemahamanmu sendiri.</p>
+    <div class="card">
+      <label for="refleksi1">Kalau kamu diberi sebuah grafik tanpa rumus fungsinya, langkah apa saja yang kamu lakukan untuk menentukan limitnya di suatu titik?</label>
+      <textarea id="refleksi1" placeholder="Tulis pemahamanmu di sini..."></textarea>
+    </div>
+    <div class="card">
+      <label for="refleksi2">Menurutmu, kenapa titik kosong pada grafik tidak selalu berarti limitnya tidak ada?</label>
+      <textarea id="refleksi2" placeholder="Tulis pemahamanmu di sini..."></textarea>
+    </div>
+
+    <div class="card">
+      <h3>Kirim ke Guru</h3>
+      <p class="muted">Pastikan nama, kelas, jawaban Challenge, dan Refleksi sudah terisi sebelum mengirim.</p>
+      <button class="btn" id="btnKirim" onclick="kirimKeGuru()">Kirim Jawaban</button>
+      <div class="status-box status-idle" id="statusBox">Belum dikirim</div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="foot-brand">NUMERA</div>
+  <div class="foot-sub">Dikembangkan oleh Kiki Herdiansyah &nbsp;•&nbsp; Versi 1.0 &nbsp;•&nbsp; © 2026</div>
+</footer>
+
+<script>
+/* ==================================================================
+   NUMERA — Modul Limit: Tabel dan Grafik (Modul 2)
+   Script utama — TIDAK berisi substitusi aljabar/0-0/faktorisasi
+================================================================== */
+
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec"; // <-- ISI dengan URL Google Apps Script sebelum publish
+const TOPIK = "Limit Fungsi — Menentukan dan Memahami Limit dari Tabel dan Grafik";
+
+let jawaban2 = {
+  soal1: null, soal1Benar: null,
+  soal2: null, soal2Benar: null,
+  soal3: null, soal3Benar: null,
+  refleksi1: "", refleksi2: ""
+};
+
+function fmt(n, d=3){ return Number(n).toFixed(d); }
+
+/* ---------- SVG helpers ---------- */
+function svgEl(tag, attrs){
+  const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for(const k in attrs) el.setAttribute(k, attrs[k]);
+  return el;
+}
+function clearSvg(svg){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
+function makeMapper(xmin,xmax,ymin,ymax,W=320,H=260,pad=34){
+  const sx = (W-2*pad)/(xmax-xmin);
+  const sy = (H-2*pad)/(ymax-ymin);
+  return { x:(x)=> pad + (x-xmin)*sx, y:(y)=> H-pad - (y-ymin)*sy, W,H,pad,xmin,xmax,ymin,ymax };
+}
+function drawAxes(svg, m){
+  clearSvg(svg);
+  for(let gx=Math.ceil(m.xmin); gx<=Math.floor(m.xmax); gx++){
+    svg.appendChild(svgEl("line",{x1:m.x(gx),y1:m.y(m.ymin),x2:m.x(gx),y2:m.y(m.ymax),stroke:"#F1F5F9",'stroke-width':1}));
+  }
+  for(let gy=Math.ceil(m.ymin); gy<=Math.floor(m.ymax); gy++){
+    svg.appendChild(svgEl("line",{x1:m.x(m.xmin),y1:m.y(gy),x2:m.x(m.xmax),y2:m.y(gy),stroke:"#F1F5F9",'stroke-width':1}));
+  }
+  if(m.ymin<0 && m.ymax>0){
+    svg.appendChild(svgEl("line",{x1:m.x(m.xmin),y1:m.y(0),x2:m.x(m.xmax),y2:m.y(0),stroke:"#CBD5E1",'stroke-width':1.5}));
+  }
+  if(m.xmin<0 && m.xmax>0){
+    svg.appendChild(svgEl("line",{x1:m.x(0),y1:m.y(m.ymin),x2:m.x(0),y2:m.y(m.ymax),stroke:"#CBD5E1",'stroke-width':1.5}));
+  } else {
+    svg.appendChild(svgEl("line",{x1:m.x(m.xmin),y1:m.y(m.ymin),x2:m.x(m.xmin),y2:m.y(m.ymax),stroke:"#CBD5E1",'stroke-width':1.5}));
+  }
+  svg.appendChild(svgEl("line",{x1:m.x(m.xmin),y1:m.y(m.ymin),x2:m.x(m.xmax),y2:m.y(m.ymin),stroke:"#CBD5E1",'stroke-width':1.5}));
+}
+function dashedVLine(svg,m,xval){
+  svg.appendChild(svgEl("line",{x1:m.x(xval),y1:m.y(m.ymin),x2:m.x(xval),y2:m.y(m.ymax),stroke:"#94A3B8",'stroke-width':1.2,'stroke-dasharray':"4,4"}));
+}
+function drawLine(svg,m,x1,y1,x2,y2,color="#2563EB",w=2.5){
+  svg.appendChild(svgEl("line",{x1:m.x(x1),y1:m.y(y1),x2:m.x(x2),y2:m.y(y2),stroke:color,'stroke-width':w,'stroke-linecap':"round"}));
+}
+function drawHollow(svg,m,x,y,color="#2563EB"){
+  svg.appendChild(svgEl("circle",{cx:m.x(x),cy:m.y(y),r:6,fill:"#fff",stroke:color,'stroke-width':2.5}));
+}
+function drawFilled(svg,m,x,y,color="#DC2626"){
+  svg.appendChild(svgEl("circle",{cx:m.x(x),cy:m.y(y),r:6,fill:color}));
+}
+function drawMoving(svg,m,x,y,color="#2563EB"){
+  svg.appendChild(svgEl("circle",{cx:m.x(x),cy:m.y(y),r:7,fill:color,stroke:"#fff",'stroke-width':2}));
+}
+function labelXY(svg,m,text,x,y,dy=-10){
+  const t=svgEl("text",{x:m.x(x),y:m.y(y)+dy,'text-anchor':"middle",'font-size':11,fill:"#64748B",'font-family':"Inter"});
+  t.textContent=text; svg.appendChild(t);
+}
+
+function K(el, tex, display=false){
+  if(window.katex){ katex.render(tex, el, {throwOnError:false, displayMode:display}); }
+  else { el.textContent = tex; }
+}
+window.addEventListener("load", ()=>{
+  K(document.getElementById("ktxFL"), "\\lim_{x\\to a^-} f(x)", true);
+  K(document.getElementById("ktxFR"), "\\lim_{x\\to a^+} f(x)", true);
+  K(document.getElementById("ktxRule"), "\\lim_{x\\to a^-} f(x) = \\lim_{x\\to a^+} f(x)", true);
+  K(document.getElementById("ktxSimple"), "\\lim_{x\\to a} f(x) = L");
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {delimiters:[{left:"\\(", right:"\\)", display:false},{left:"\\[", right:"\\]", display:true}]});
+  }
+  initAll();
+});
+
+/* ==================================================================
+   A. TABEL — dua contoh tabel tanpa rumus
+================================================================== */
+const tabelData = {
+  1: { a:"3", seqL:["2.9","2.99","2.999"], seqR:["3.1","3.01","3.001"], valL:["4.7","4.97","4.997"], valR:["5.3","5.03","5.003"], L:"5" },
+  2: { a:"-1", seqL:["-1.1","-1.01","-1.001"], seqR:["-0.9","-0.99","-0.999"], valL:["-0.3","-0.03","-0.003"], valR:["0.3","0.03","0.003"], L:"0" }
+};
+let tabelActive = 1;
+function renderTabelA(){
+  const d = tabelData[tabelActive];
+  let tbl = "<tr><th>x</th>" + d.seqL.map(v=>`<td>${v}</td>`).join("") + "<td>→</td>" + d.seqR.map(v=>`<td>${v}</td>`).join("") + "</tr>";
+  tbl += "<tr><th>f(x)</th>" + d.valL.map(v=>`<td>${v}</td>`).join("") + "<td>→</td>" + d.valR.map(v=>`<td>${v}</td>`).join("") + "</tr>";
+  document.getElementById("tblA").innerHTML = tbl;
+  document.getElementById("insightA").classList.remove("show");
+}
+document.addEventListener("click",(e)=>{
+  if(e.target.id==="btnTabel1"){ tabelActive=1; document.getElementById("btnTabel1").classList.add("active"); document.getElementById("btnTabel2").classList.remove("active"); renderTabelA(); }
+  if(e.target.id==="btnTabel2"){ tabelActive=2; document.getElementById("btnTabel2").classList.add("active"); document.getElementById("btnTabel1").classList.remove("active"); renderTabelA(); }
+  if(e.target.id==="btnTabelReveal"){
+    const d = tabelData[tabelActive];
+    const box = document.getElementById("insightA");
+    box.innerHTML = `💡 Dari kiri maupun kanan, nilai f(x) berkumpul menuju <b>${d.L}</b>. Jadi <b>lim<sub>x→${d.a}</sub> f(x) = ${d.L}</b>, walau kita tidak tahu rumus fungsinya sama sekali.`;
+    box.classList.add("show");
+  }
+});
+</script>
+<script>
+/* ==================================================================
+   B. Grafik mulus p(x) = 0.5x + 3, a = 2
+================================================================== */
+function pB(x){ return 0.5*x+3; }
+function drawB(xNow){
+  const svg = document.getElementById("svgB");
+  const m = makeMapper(0,4,0,6);
+  drawAxes(svg,m);
+  dashedVLine(svg,m,2);
+  drawLine(svg,m,0,pB(0),4,pB(4));
+  drawFilled(svg,m,2,pB(2));
+  labelXY(svg,m,"x=2",2,0,16);
+  drawMoving(svg,m,xNow,pB(xNow));
+}
+function updateB(){
+  const raw = document.getElementById("sliderB").value;
+  const x = raw/100;
+  document.getElementById("sliderBVal").textContent = fmt(x,2);
+  drawB(x);
+  document.getElementById("tblB").innerHTML =
+    `<tr><th>x</th><td>${fmt(x,2)}</td></tr><tr><th>f(x)</th><td class="highlight">${fmt(pB(x),2)}</td></tr>`;
+  const near = Math.abs(x-2)<0.35;
+  const box = document.getElementById("insightB");
+  box.innerHTML = "💡 Grafiknya tersambung mulus, jadi limitnya sama dengan nilai fungsi tepat di x=2, yaitu <b>4</b>.";
+  box.classList.toggle("show", near);
+}
+document.addEventListener("input",(e)=>{ if(e.target.id==="sliderB") updateB(); });
+
+/* ==================================================================
+   C. Dua kasus grafik berlubang
+================================================================== */
+function bC(x){ return -x+9; } // hole at x=3 -> limit 6, filled at (3,6)... let's set a=3
+function drawKasus1(){
+  const svg = document.getElementById("svgC");
+  const m = makeMapper(0,5,0,8);
+  drawAxes(svg,m);
+  dashedVLine(svg,m,3);
+  drawLine(svg,m,0,bC(0),2.9,bC(2.9));
+  drawLine(svg,m,3.1,bC(3.1),5,bC(5));
+  drawHollow(svg,m,3,bC(3));
+  drawFilled(svg,m,3,1);
+  labelXY(svg,m,"x=3",3,0,16);
+  document.getElementById("kasusDesc").innerHTML = "Titik kosong di (3, 6), titik penuh (nilai fungsi sebenarnya) di (3, 1).";
+  document.getElementById("insightKasus").innerHTML = "✅ Limitnya tetap <b>6</b> — nilai fungsi sebenarnya (1) tidak memengaruhi ke mana grafik di sekitarnya menuju.";
+}
+function cC(x){ return 0.5*x+2; } // undefined at x=1, limit 2.5
+function drawKasus2(){
+  const svg = document.getElementById("svgC");
+  const m = makeMapper(0,3,0,4);
+  drawAxes(svg,m);
+  dashedVLine(svg,m,1);
+  drawLine(svg,m,0,cC(0),0.9,cC(0.9));
+  drawLine(svg,m,1.1,cC(1.1),3,cC(3));
+  drawHollow(svg,m,1,cC(1));
+  labelXY(svg,m,"x=1",1,0,16);
+  document.getElementById("kasusDesc").innerHTML = "Titik kosong di (1, 2.5). Tidak ada titik penuh di mana pun pada x=1 — fungsinya memang tidak terdefinisi di sana.";
+  document.getElementById("insightKasus").innerHTML = "✅ Limitnya tetap <b>2.5</b> — walau f(1) tidak ada sama sekali, perilaku grafik di sekitarnya tetap jelas menuju satu nilai.";
+}
+document.addEventListener("click",(e)=>{
+  if(e.target.id==="btnKasus1"){ document.getElementById("btnKasus1").classList.add("active"); document.getElementById("btnKasus2").classList.remove("active"); drawKasus1(); }
+  if(e.target.id==="btnKasus2"){ document.getElementById("btnKasus2").classList.add("active"); document.getElementById("btnKasus1").classList.remove("active"); drawKasus2(); }
+});
+
+/* ==================================================================
+   D. Limit kiri-kanan — grafik melompat baru, a=0
+================================================================== */
+let dSide=null, dIndex=0;
+const dLeftSeq=[-0.7,-0.4,-0.1];
+const dRightSeq=[0.7,0.4,0.1];
+function hD(x){ return x<0? x+5 : x+1; }
+function drawD(){
+  const svg=document.getElementById("svgD");
+  const m=makeMapper(-2,2,0,6);
+  drawAxes(svg,m);
+  dashedVLine(svg,m,0);
+  drawLine(svg,m,-2,hD(-2),-0.02,hD(-0.02));
+  drawLine(svg,m,0,hD(0),2,hD(2));
+  drawHollow(svg,m,0,5);
+  drawFilled(svg,m,0,1);
+  labelXY(svg,m,"x=0",0,0,16);
+  if(dSide==="left" && dIndex>0){ const v=dLeftSeq[dIndex-1]; drawMoving(svg,m,v,hD(v)); }
+  if(dSide==="right" && dIndex>0){ const v=dRightSeq[dIndex-1]; drawMoving(svg,m,v,hD(v)); }
+}
+function renderDTable(){
+  if(!dSide){ document.getElementById("tblD").innerHTML=""; document.getElementById("insightD").classList.remove("show"); return; }
+  const seq = dSide==="left"? dLeftSeq: dRightSeq;
+  let tbl = "<tr><th>x</th>" + seq.map((v,i)=>`<td class="${i<dIndex?'highlight':''}">${v}</td>`).join("") + "</tr>";
+  tbl += "<tr><th>f(x)</th>" + seq.map((v,i)=>`<td class="${i<dIndex?'highlight':''}">${fmt(hD(v),2)}</td>`).join("") + "</tr>";
+  document.getElementById("tblD").innerHTML = tbl;
+  const box = document.getElementById("insightD");
+  if(dIndex>=3){
+    if(dSide==="left"){ box.innerHTML = "💡 Dari kiri, f(x) mendekati <b>5</b>. Tulisannya: <span></span> = 5."; }
+    else { box.innerHTML = "💡 Dari kanan, f(x) mendekati <b>1</b>. Karena berbeda dari limit kiri (5), limitnya <b>tidak ada</b> di x=0."; }
+    box.classList.add("show");
+  } else box.classList.remove("show");
+}
+document.addEventListener("click",(e)=>{
+  if(e.target.id==="btnDLeft"){ dSide="left"; dIndex=Math.min(dIndex+1,3); drawD(); renderDTable(); }
+  if(e.target.id==="btnDRight"){ dSide="right"; dIndex=Math.min(dIndex+1,3); drawD(); renderDTable(); }
+  if(e.target.id==="btnDReset"){ dSide=null; dIndex=0; drawD(); renderDTable(); }
+});
+
+/* ==================================================================
+   E. Empat kondisi
+================================================================== */
+let condActive=1;
+function drawE(){
+  const svg=document.getElementById("svgE");
+  const desc=document.getElementById("condDesc");
+  const insight=document.getElementById("insightE");
+  if(condActive===1){
+    const m=makeMapper(0,4,0,6);
+    drawAxes(svg,m); dashedVLine(svg,m,2);
+    drawLine(svg,m,0,pB(0),4,pB(4));
+    drawFilled(svg,m,2,pB(2));
+    labelXY(svg,m,"x=2",2,0,16);
+    desc.innerHTML = "Grafik mulus. Kiri = kanan = f(2) = 4.";
+    insight.innerHTML = "✅ <b>Limit ada</b>, nilainya 4 — sama seperti nilai fungsinya.";
+  } else if(condActive===2){
+    const m=makeMapper(0,5,0,8);
+    drawAxes(svg,m); dashedVLine(svg,m,3);
+    drawLine(svg,m,0,bC(0),2.9,bC(2.9));
+    drawLine(svg,m,3.1,bC(3.1),5,bC(5));
+    drawHollow(svg,m,3,bC(3)); drawFilled(svg,m,3,1);
+    labelXY(svg,m,"x=3",3,0,16);
+    desc.innerHTML = "Berlubang tapi ada titik penuh berbeda. Kiri = kanan = 6, meski f(3)=1.";
+    insight.innerHTML = "✅ <b>Limit tetap ada</b>, nilainya 6 — titik penuhnya tidak relevan.";
+  } else if(condActive===3){
+    const m=makeMapper(0,3,0,4);
+    drawAxes(svg,m); dashedVLine(svg,m,1);
+    drawLine(svg,m,0,cC(0),0.9,cC(0.9));
+    drawLine(svg,m,1.1,cC(1.1),3,cC(3));
+    drawHollow(svg,m,1,cC(1));
+    labelXY(svg,m,"x=1",1,0,16);
+    desc.innerHTML = "Berlubang tanpa titik penuh sama sekali. Kiri = kanan = 2.5.";
+    insight.innerHTML = "✅ <b>Limit tetap ada</b>, nilainya 2.5 — walau f(1) tidak terdefinisi sama sekali.";
+  } else {
+    const m=makeMapper(-2,2,0,6);
+    drawAxes(svg,m); dashedVLine(svg,m,0);
+    drawLine(svg,m,-2,hD(-2),-0.02,hD(-0.02));
+    drawLine(svg,m,0,hD(0),2,hD(2));
+    drawHollow(svg,m,0,5); drawFilled(svg,m,0,1);
+    labelXY(svg,m,"x=0",0,0,16);
+    desc.innerHTML = "Grafik melompat. Kiri = 5, Kanan = 1 — berbeda.";
+    insight.innerHTML = "❌ <b>Limit tidak ada</b> — karena kiri dan kanan menuju nilai yang berbeda.";
+  }
+}
+document.addEventListener("click",(e)=>{
+  ["btnCond1","btnCond2","btnCond3","btnCond4"].forEach((id,i)=>{
+    if(e.target.id===id){
+      condActive=i+1;
+      ["btnCond1","btnCond2","btnCond3","btnCond4"].forEach(bid=>document.getElementById(bid).classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      drawE();
+    }
+  });
+});
+
+/* ==================================================================
+   4. ANIMASI — kiri/kanan pada grafik D
+================================================================== */
+let animTimer=null, animX=-2.0, animDir="left";
+function drawAnim(){
+  const svg=document.getElementById("svgAnim");
+  const m=makeMapper(-2,2,0,6);
+  drawAxes(svg,m); dashedVLine(svg,m,0);
+  drawLine(svg,m,-2,hD(-2),-0.02,hD(-0.02));
+  drawLine(svg,m,0,hD(0),2,hD(2));
+  drawHollow(svg,m,0,5); drawFilled(svg,m,0,1);
+  labelXY(svg,m,"x=0",0,0,16);
+  drawMoving(svg,m,animX,hD(animX));
+  document.getElementById("animXVal").textContent = fmt(animX,3);
+  document.getElementById("animFVal").textContent = fmt(hD(animX),3);
+  document.getElementById("animArah").textContent = animDir==="left"?"Kiri":"Kanan";
+}
+function playAnimLeft(){
+  pauseAnim(); animDir="left"; animX=-2.0; drawAnim();
+  animTimer = setInterval(()=>{
+    animX = animX + (0-animX)*0.15;
+    if(0-animX < 0.01){ animX=-0.005; clearInterval(animTimer); animTimer=null; }
+    drawAnim();
+  }, 180);
+}
+function playAnimRight(){
+  pauseAnim(); animDir="right"; animX=2.0; drawAnim();
+  animTimer = setInterval(()=>{
+    animX = animX - (animX-0)*0.15;
+    if(animX-0 < 0.01){ animX=0.005; clearInterval(animTimer); animTimer=null; }
+    drawAnim();
+  }, 180);
+}
+function pauseAnim(){ if(animTimer){ clearInterval(animTimer); animTimer=null; } }
+function resetAnim(){ pauseAnim(); animX=-2.0; animDir="left"; drawAnim(); }
+document.addEventListener("click",(e)=>{
+  if(e.target.id==="btnAnimLeft") playAnimLeft();
+  if(e.target.id==="btnAnimRight") playAnimRight();
+  if(e.target.id==="btnAnimPause") pauseAnim();
+  if(e.target.id==="btnAnimReset") resetAnim();
+});
+
+/* ==================================================================
+   5. COBA SENDIRI
+================================================================== */
+function rCoba(x){ return -0.5*x+4; } // undefined at x=3, limit=2.5
+function drawCobaSvg(xNow){
+  const svg=document.getElementById("svgCoba");
+  const m=makeMapper(0,5,0,5);
+  drawAxes(svg,m); dashedVLine(svg,m,3);
+  drawLine(svg,m,0,rCoba(0),2.9,rCoba(2.9));
+  drawLine(svg,m,3.1,rCoba(3.1),5,rCoba(5));
+  drawHollow(svg,m,3,rCoba(3));
+  labelXY(svg,m,"x=3",3,0,16);
+  drawMoving(svg,m,xNow,rCoba(xNow));
+}
+function updateCoba(){
+  const raw=document.getElementById("sliderCoba").value;
+  const x=raw/100;
+  document.getElementById("sliderCobaVal").textContent=fmt(x,2);
+  drawCobaSvg(x);
+  document.getElementById("tblCoba").innerHTML =
+    `<tr><th>x</th><td>${fmt(x,2)}</td></tr><tr><th>f(x)</th><td class="highlight">${fmt(rCoba(x),2)}</td></tr>`;
+  const near = Math.abs(x-3)<0.35;
+  const box=document.getElementById("insightCoba1");
+  box.innerHTML = "💡 Meski f(3) tidak terdefinisi, dari kedua sisi nilai f(x) tetap menuju <b>2.5</b>. Limitnya tetap ada.";
+  box.classList.toggle("show", near);
+}
+document.addEventListener("input",(e)=>{ if(e.target.id==="sliderCoba") updateCoba(); });
+
+let coba2Side=null, coba2Idx=0;
+const e2LeftSeq=[0.7,0.9,0.99];
+const e2RightSeq=[1.3,1.1,1.01];
+function eCoba2(x){ return x<1? -x+4 : x+3; } // kiri->3, kanan->4
+function drawCoba2(){
+  const svg=document.getElementById("svgCoba2");
+  const m=makeMapper(-1,3,0,6);
+  drawAxes(svg,m); dashedVLine(svg,m,1);
+  drawLine(svg,m,-1,eCoba2(-1),0.98,eCoba2(0.98));
+  drawLine(svg,m,1,eCoba2(1),3,eCoba2(3));
+  drawHollow(svg,m,1,3); drawFilled(svg,m,1,4);
+  labelXY(svg,m,"x=1",1,0,16);
+  if(coba2Side==="left" && coba2Idx>0){ const v=e2LeftSeq[coba2Idx-1]; drawMoving(svg,m,v,eCoba2(v)); }
+  if(coba2Side==="right" && coba2Idx>0){ const v=e2RightSeq[coba2Idx-1]; drawMoving(svg,m,v,eCoba2(v)); }
+}
+function renderCoba2Table(){
+  const box=document.getElementById("insightCoba3");
+  if(!coba2Side){ document.getElementById("tblCoba2").innerHTML=""; box.classList.remove("show"); return; }
+  const seq=coba2Side==="left"?e2LeftSeq:e2RightSeq;
+  let tbl="<tr><th>x</th>"+seq.map((v,i)=>`<td class="${i<coba2Idx?'highlight':''}">${v}</td>`).join("")+"</tr>";
+  tbl+="<tr><th>f(x)</th>"+seq.map((v,i)=>`<td class="${i<coba2Idx?'highlight':''}">${fmt(eCoba2(v),2)}</td>`).join("")+"</tr>";
+  document.getElementById("tblCoba2").innerHTML=tbl;
+  if(coba2Idx>=3){
+    box.innerHTML = coba2Side==="left" ? "💡 Dari kiri, nilainya menuju 3." : "💡 Dari kanan, nilainya menuju 4. Karena 3 &ne; 4, limitnya <b>tidak ada</b> di x=1.";
+    box.classList.add("show");
+  } else box.classList.remove("show");
+}
+document.addEventListener("click",(e)=>{
+  if(e.target.id==="btnCobaLeft"){ coba2Side="left"; coba2Idx=Math.min(coba2Idx+1,3); drawCoba2(); renderCoba2Table(); }
+  if(e.target.id==="btnCobaRight"){ coba2Side="right"; coba2Idx=Math.min(coba2Idx+1,3); drawCoba2(); renderCoba2Table(); }
+  if(e.target.id==="btnCobaReset2"){ coba2Side=null; coba2Idx=0; drawCoba2(); renderCoba2Table(); }
+});
+
+/* ==================================================================
+   6. CHALLENGE
+================================================================== */
+function drawSoal3(){
+  const svg=document.getElementById("svgSoal3");
+  const m=makeMapper(0,4,0,6,320,220,34);
+  drawAxes(svg,m); dashedVLine(svg,m,2);
+  // kiri menuju 3 (hollow), kanan mulai dari titik penuh (2,5) naik
+  drawLine(svg,m,0,3+ (0-2)*(-0.3), 1.9, 3+(1.9-2)*(-0.3)); // slight slope left approaching 3
+  drawLine(svg,m,2,5,4,5+(4-2)*0.5);
+  drawHollow(svg,m,2,3);
+  drawFilled(svg,m,2,5);
+  labelXY(svg,m,"x=2",2,0,16);
+}
+const opt2 = [
+  {t:"Limitnya tidak dapat ditentukan karena f(4) tidak ada", correct:false},
+  {t:"Limitnya adalah 6, karena grafik di sekitar x=4 dari kedua arah menuju titik kosong itu", correct:true},
+  {t:"Limitnya tidak ada karena titik (4,6) hanya berupa titik kosong", correct:false},
+];
+const opt3 = [
+  {t:"Limitnya adalah 5, karena f(2)=5 (titik penuhnya)", correct:false},
+  {t:"Limitnya adalah 3, karena itu titik kosongnya", correct:false},
+  {t:"Limitnya tidak ada, karena limit kiri (3) tidak sama dengan limit kanan (5)", correct:true},
+];
+function renderOptions(id, arr, key){
+  const container = document.getElementById(id);
+  container.innerHTML = "";
+  arr.forEach((o,i)=>{
+    const btn = document.createElement("button");
+    btn.className="option"; btn.type="button"; btn.textContent=o.t;
+    btn.onclick = ()=> pilihOpsi(id, arr, i, key);
+    container.appendChild(btn);
+  });
+}
+function pilihOpsi(id, arr, idx, key){
+  const container = document.getElementById(id);
+  [...container.children].forEach((b,i)=>{
+    b.classList.remove("correct","wrong");
+    if(i===idx) b.classList.add(arr[idx].correct?"correct":"wrong");
+    if(arr[i].correct && idx!==i) b.classList.add("correct");
+    b.disabled = true;
+  });
+  const fbId = key==="soal2"?"fb2":"fb3";
+  const fb = document.getElementById(fbId);
+  fb.classList.add("show");
+  jawaban2[key] = arr[idx].t;
+  jawaban2[key+"Benar"] = arr[idx].correct;
+  if(key==="soal2"){
+    fb.className = "feedback show " + (arr[idx].correct?"correct":"wrong");
+    fb.innerHTML = arr[idx].correct
+      ? "Betul! Walau f(4) tidak terdefinisi sama sekali, kita tetap bisa membaca ke mana grafik di sekitarnya menuju."
+      : "Belum tepat. Ingat: tidak adanya titik penuh bukan berarti limitnya tidak bisa dibaca — tutup titik itu dan lihat saja arah kiri-kanannya.";
+  } else {
+    fb.className = "feedback show " + (arr[idx].correct?"correct":"wrong");
+    fb.innerHTML = arr[idx].correct
+      ? "Betul! Limit kiri (3) dan limit kanan (5) berbeda, jadi limitnya tidak ada — nilai f(2)=5 tidak mengubah kesimpulan itu."
+      : "Belum tepat. Bandingkan dulu ke mana grafik menuju dari kiri dan dari kanan — kalau hasilnya berbeda, limitnya tidak ada, terlepas dari nilai f(2).";
+  }
+}
+function cekSoal1(){
+  const val = parseFloat(document.getElementById("jawaban1").value);
+  const fb = document.getElementById("fb1");
+  fb.classList.add("show");
+  const benar = Math.abs(val-8) < 0.001;
+  jawaban2.soal1 = document.getElementById("jawaban1").value;
+  jawaban2.soal1Benar = benar;
+  fb.className = "feedback show " + (benar?"correct":"wrong");
+  fb.innerHTML = benar
+    ? "Betul! Tabel menunjukkan f(x) semakin dekat ke <b>8</b> dari kedua arah."
+    : "Belum tepat. Coba lihat lagi kolom paling dekat dengan x=5 dari kiri dan kanan — ke angka berapa nilainya berkumpul?";
+}
+
+/* ==================================================================
+   INIT
+================================================================== */
+function initAll(){
+  renderTabelA();
+  updateB();
+  drawKasus1();
+  drawD(); renderDTable();
+  drawE();
+  resetAnim();
+  updateCoba();
+  drawCoba2(); renderCoba2Table();
+  drawSoal3();
+  renderOptions("opt2", opt2, "soal2");
+  renderOptions("opt3", opt3, "soal3");
+  setupProgress();
+}
+
+function setupProgress(){
+  const fill = document.getElementById("progressFill");
+  const label = document.getElementById("progressLabel");
+  function update(){
+    const scrollTop = window.scrollY;
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docH>0 ? Math.min(100, Math.round(scrollTop/docH*100)) : 0;
+    fill.style.width = pct+"%";
+    label.textContent = pct+"%";
+  }
+  window.addEventListener("scroll", update);
+  update();
+}
+
+/* ==================================================================
+   KIRIM KE GURU
+================================================================== */
+function kirimKeGuru(){
+  const nama = document.getElementById("inpNama").value.trim();
+  const kelas = document.getElementById("inpKelas").value.trim();
+  const statusBox = document.getElementById("statusBox");
+
+  if(!nama || !kelas){
+    statusBox.className = "status-box status-error";
+    statusBox.textContent = "Isi dulu Nama dan Kelas di bagian atas modul.";
+    document.getElementById("sec-header").scrollIntoView({behavior:"smooth"});
+    return;
+  }
+  if(jawaban2.soal1===null || jawaban2.soal2===null || jawaban2.soal3===null){
+    statusBox.className = "status-box status-error";
+    statusBox.textContent = "Selesaikan dulu ketiga soal Challenge sebelum mengirim.";
+    document.getElementById("sec-challenge").scrollIntoView({behavior:"smooth"});
+    return;
+  }
+  const r1 = document.getElementById("refleksi1").value.trim();
+  const r2 = document.getElementById("refleksi2").value.trim();
+  if(!r1 || !r2){
+    statusBox.className = "status-box status-error";
+    statusBox.textContent = "Isi dulu kedua pertanyaan Refleksi.";
+    return;
+  }
+  jawaban2.refleksi1 = r1;
+  jawaban2.refleksi2 = r2;
+
+  const skor = [jawaban2.soal1Benar, jawaban2.soal2Benar, jawaban2.soal3Benar].filter(Boolean).length;
+
+  const payload = {
+    nama, kelas, topik: TOPIK,
+    soal1: jawaban2.soal1, soal1Benar: jawaban2.soal1Benar,
+    soal2: jawaban2.soal2, soal2Benar: jawaban2.soal2Benar,
+    soal3: jawaban2.soal3, soal3Benar: jawaban2.soal3Benar,
+    skor: skor + " / 3",
+    refleksi1: r1, refleksi2: r2,
+    waktu: new Date().toISOString()
+  };
+
+  if(!SCRIPT_URL){
+    statusBox.className = "status-box status-error";
+    statusBox.textContent = "SCRIPT_URL belum diisi guru — jawaban belum bisa dikirim.";
+    return;
+  }
+
+  statusBox.className = "status-box status-sending";
+  statusBox.textContent = "Mengirim...";
+
+  fetch(SCRIPT_URL, {
+    method:"POST",
+    mode:"no-cors",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    statusBox.className = "status-box status-sent";
+    statusBox.textContent = "Terkirim! Terima kasih sudah menyelesaikan modul ini.";
+  }).catch(()=>{
+    statusBox.className = "status-box status-error";
+    statusBox.textContent = "Gagal mengirim. Periksa koneksi internetmu dan coba lagi.";
+  });
+}
+</script>
+</body>
+</html>

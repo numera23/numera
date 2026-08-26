@@ -1,0 +1,821 @@
+<!--
+NUMERA — Modul Pembelajaran Interaktif
+Judul: Ketika Substitusi Tidak Berhasil
+Materi: Limit Fungsi — Bentuk Tak Tentu 0/0 dan Manipulasi Aljabar
+Bab: Limit (Modul 4 dari 5)
+Jenis Halaman: Modul Interaktif
+Versi: 1.0 (Master Prompt Limit v1.0)
+Dikembangkan oleh: Kiki Herdiansyah
+© 2026 NUMERA — Seluruh hak cipta dilindungi.
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ketika Substitusi Tidak Berhasil — NUMERA</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-soft:#EFF4FF;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --green:#16A34A;
+  --green-soft:#F0FDF4;
+  --red:#DC2626;
+  --red-soft:#FEF2F2;
+  --amber:#D97706;
+  --amber-soft:#FFFBEB;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.06);
+  --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,0.92);
+  backdrop-filter:saturate(180%) blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:var(--sp-3) var(--sp-4);
+}
+.topbar-title{font-size:13px;font-weight:600;color:var(--text-soft);letter-spacing:0.02em;}
+.progress-track{height:4px;background:var(--border);border-radius:99px;margin-top:var(--sp-2);overflow:hidden;}
+.progress-fill{height:100%;background:var(--primary);width:0%;transition:width .2s ease;border-radius:99px;}
+
+.content{padding:var(--sp-4) var(--sp-4) var(--sp-6);}
+
+/* Card */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:var(--sp-5);
+  margin-bottom:var(--sp-5);
+}
+.eyebrow{font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:var(--sp-2);}
+h1{font-size:24px;font-weight:800;margin:0 0 var(--sp-2);line-height:1.25;}
+h2{font-size:18px;font-weight:700;margin:0 0 var(--sp-3);line-height:1.35;}
+h3{font-size:15px;font-weight:700;margin:0 0 var(--sp-2);}
+p{font-size:15px;line-height:1.65;color:var(--text);margin:0 0 var(--sp-3);}
+p:last-child{margin-bottom:0;}
+.soft{color:var(--text-soft);}
+.small{font-size:13px;}
+
+.meta-row{display:flex;gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-4);}
+.meta-chip{
+  display:flex;align-items:center;gap:6px;
+  background:var(--primary-soft);color:var(--primary);
+  font-size:12px;font-weight:600;
+  padding:6px 12px;border-radius:99px;
+}
+.goal-list{margin:0;padding-left:18px;}
+.goal-list li{font-size:14px;line-height:1.6;color:var(--text-soft);margin-bottom:4px;}
+
+/* Identity box */
+.identity-box{
+  background:var(--primary-soft);
+  border:1px solid #DCE7FF;
+  border-radius:var(--radius);
+  padding:var(--sp-4);
+  margin-top:var(--sp-4);
+}
+.identity-box h3{color:var(--primary);margin-bottom:var(--sp-3);}
+.field{margin-bottom:var(--sp-3);}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-soft);margin-bottom:4px;}
+.field input, .field textarea{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:10px 12px;
+  font-size:14px;
+  font-family:inherit;
+  background:#fff;
+  color:var(--text);
+}
+.field textarea{resize:vertical;min-height:70px;}
+.field input:focus, .field textarea:focus{outline:none;border-color:var(--primary);}
+
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:inherit;font-weight:600;font-size:14px;
+  border:none;border-radius:var(--radius-sm);
+  padding:11px 18px;cursor:pointer;
+  transition:opacity .15s ease, transform .1s ease;
+}
+.btn:active{transform:scale(0.98);}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-ghost{background:var(--border);color:var(--text);}
+.btn-row{display:flex;gap:var(--sp-3);flex-wrap:wrap;}
+.btn-full{width:100%;}
+.btn-sm{padding:8px 14px;font-size:13px;}
+
+/* chips */
+.chip-row{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-bottom:var(--sp-3);}
+.chip{
+  border:1px solid var(--border);background:#fff;color:var(--text-soft);
+  font-size:13px;font-weight:600;padding:8px 14px;border-radius:99px;
+  cursor:pointer;transition:.15s ease;
+}
+.chip.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+/* math box */
+.mathbox{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-4);text-align:center;font-size:16px;margin:var(--sp-3) 0;overflow-x:auto;
+}
+.mathbox.big{font-size:18px;}
+.mathbox.warn{background:var(--red-soft);border-color:#FCA5A5;color:#7F1D1D;font-weight:700;}
+
+/* property list */
+.prop-item{border-top:1px solid var(--border);padding:var(--sp-4) 0;}
+.prop-item:first-child{border-top:none;padding-top:0;}
+.prop-name{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;}
+.prop-example{font-size:13px;color:var(--text-soft);margin-top:6px;}
+
+/* insight box */
+.insight{
+  display:flex;gap:10px;align-items:flex-start;
+  background:var(--amber-soft);border:1px solid #FDE8C8;
+  border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);margin-top:var(--sp-3);
+  font-size:13.5px;line-height:1.55;color:#7C4A03;
+}
+.insight .ic{font-size:16px;flex-shrink:0;}
+
+/* step viewer */
+.step-viewer{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+.step-header{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--bg);padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--border);
+}
+.step-header span{font-size:12px;font-weight:700;color:var(--text-soft);}
+.step-body{padding:var(--sp-4);min-height:110px;}
+.step-nav{display:flex;justify-content:space-between;padding:var(--sp-3) var(--sp-4);border-top:1px solid var(--border);}
+.dot-row{display:flex;gap:6px;justify-content:center;padding:var(--sp-3) 0 0;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
+.dot.active{background:var(--primary);width:16px;border-radius:99px;transition:.2s ease;}
+
+/* graph */
+.graph-wrap{border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);padding:var(--sp-3);}
+.graph-controls{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:var(--sp-3);}
+.readout .cell{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--sp-3);text-align:center;}
+.readout .lbl{font-size:11px;color:var(--text-soft);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.readout .v{font-size:18px;font-weight:800;color:var(--primary);margin-top:4px;}
+
+/* result panel */
+.result-panel{
+  display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:var(--sp-3);
+}
+.result-cell{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-3);text-align:center;
+}
+.result-cell .lbl{font-size:11px;color:var(--text-soft);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.result-cell .v{font-size:20px;font-weight:800;color:var(--primary);margin-top:4px;}
+
+/* misconception */
+.mis-item{border-top:1px solid var(--border);padding:var(--sp-4) 0;}
+.mis-item:first-child{border-top:none;padding-top:0;}
+.mis-tag{display:inline-block;background:var(--red-soft);color:var(--red);font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;margin-bottom:8px;}
+
+/* summary */
+.summary-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:var(--sp-3);}
+.summary-item:last-child{margin-bottom:0;}
+.summary-num{
+  flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--primary);
+  color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
+}
+
+/* challenge */
+.q-card{margin-bottom:var(--sp-4);}
+.q-num{font-size:12px;font-weight:700;color:var(--text-soft);margin-bottom:6px;}
+.q-diff{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;margin-left:6px;}
+.diff-easy{background:var(--green-soft);color:var(--green);}
+.diff-med{background:var(--amber-soft);color:var(--amber);}
+.diff-hard{background:var(--red-soft);color:var(--red);}
+.opt{
+  display:block;width:100%;text-align:left;
+  border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);
+  padding:12px 14px;margin-bottom:8px;font-size:14px;font-family:inherit;color:var(--text);
+  cursor:pointer;transition:.15s ease;
+}
+.opt:hover{border-color:var(--primary);}
+.opt.correct{border-color:var(--green);background:var(--green-soft);color:#14532D;}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);color:#7F1D1D;}
+.opt:disabled{cursor:default;}
+.feedback{
+  margin-top:10px;padding:12px 14px;border-radius:var(--radius-sm);font-size:13.5px;line-height:1.55;
+}
+.feedback.ok{background:var(--green-soft);color:#14532D;}
+.feedback.bad{background:var(--red-soft);color:#7F1D1D;}
+
+/* status */
+.status-msg{font-size:13px;text-align:center;margin-top:var(--sp-3);color:var(--text-soft);}
+.status-msg.ok{color:var(--green);font-weight:600;}
+
+/* footer */
+.site-footer{
+  text-align:center;padding:var(--sp-6) var(--sp-4);
+  color:var(--text-soft);font-size:12px;line-height:1.7;
+}
+.site-footer strong{color:var(--text);}
+
+.locked-note{
+  font-size:13px;color:var(--text-soft);background:var(--bg);
+  border:1px dashed var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-3) var(--sp-4);text-align:center;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title">NUMERA · Ketika Substitusi Tidak Berhasil</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="content">
+
+    <!-- 1. HEADER -->
+    <section class="card">
+      <div class="eyebrow">Bab Limit · Modul 4 dari 5</div>
+      <h1>Ketika Substitusi Tidak Berhasil</h1>
+      <p class="soft">Bentuk Tak Tentu 0/0 dan Manipulasi Aljabar</p>
+      <div class="meta-row">
+        <div class="meta-chip">⏱ 15–20 menit</div>
+        <div class="meta-chip">🧩 Faktorisasi & Sekawan</div>
+      </div>
+      <h3>Tujuan Belajar</h3>
+      <ul class="goal-list">
+        <li>Memahami bahwa hasil 0/0 bukan jawaban, melainkan tanda bentuk tak tentu</li>
+        <li>Memahami mengapa faktor yang sama boleh dicoret dari pembilang dan penyebut</li>
+        <li>Bisa menyederhanakan limit lewat faktorisasi</li>
+        <li>Bisa menyederhanakan limit berbentuk akar lewat bentuk sekawan</li>
+        <li>Menyadari bahwa grafik "berlubang" tidak berarti limitnya tidak ada</li>
+      </ul>
+
+      <div class="identity-box">
+        <h3>👤 Identitas Siswa</h3>
+        <div class="field">
+          <label for="namaSiswa">Nama Lengkap</label>
+          <input type="text" id="namaSiswa" placeholder="Tulis namamu di sini">
+        </div>
+        <div class="field">
+          <label for="kelasSiswa">Kelas</label>
+          <input type="text" id="kelasSiswa" placeholder="Contoh: X-2, XI IPA 3">
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+    <section class="card">
+      <div class="eyebrow">🤔 Pernahkah Kamu Berpikir?</div>
+      <p>Di materi sebelumnya, substitusi langsung terasa seperti jurus andalan — cepat dan selalu berhasil.</p>
+      <p>Tapi bagaimana kalau suatu saat, ketika kamu substitusi, hasilnya jadi <span class="katex-inline" data-tex="\tfrac{0}{0}"></span>?</p>
+      <p><strong>Coba pikirkan:</strong> apakah itu artinya limitnya tidak ada? Atau ada sesuatu yang perlu dilakukan lebih dulu sebelum menyimpulkan apa-apa?</p>
+    </section>
+
+    <!-- 3. PENJELASAN SEDERHANA -->
+    <section class="card">
+      <div class="eyebrow">💡 Penjelasan Sederhana</div>
+
+      <h2>A. Ketika Substitusi Menabrak Tembok</h2>
+      <p>Coba hitung <span class="katex-inline" data-tex="\lim_{x\to 2}\dfrac{x^2-4}{x-2}"></span> dengan substitusi langsung.</p>
+      <div class="mathbox big"><span class="katex-inline" data-tex="\dfrac{(2)^2-4}{(2)-2} = \dfrac{0}{0}"></span></div>
+      <p>Nah, di sinilah pertanyaannya muncul: <strong>apakah 0/0 berarti limitnya tidak ada?</strong></p>
+
+      <h2>B. Mari Buktikan Lewat Tabel</h2>
+      <p>Daripada menebak, coba lihat apa yang terjadi pada <span class="katex-inline" data-tex="f(x)"></span> ketika <span class="katex-inline" data-tex="x"></span> semakin dekat ke <span class="katex-inline" data-tex="2"></span>, tanpa pernah benar-benar menjadi 2:</p>
+      <div class="mathbox"><div id="conflictTable"></div></div>
+      <div class="insight">
+        <span class="ic">💡</span>
+        <span>Nilai <span class="katex-inline" data-tex="f(x)"></span> jelas mendekati <strong>4</strong>, meskipun di titik <span class="katex-inline" data-tex="x=2"></span> sendiri fungsinya "tidak terdefinisi". Jadi 0/0 bukan berarti limitnya tidak ada — itu cuma tanda bahwa kita perlu cara lain untuk melihatnya.</span>
+      </div>
+
+      <h2>C. 0/0 Adalah Bentuk Tak Tentu, Bukan Jawaban</h2>
+      <p><span class="katex-inline" data-tex="\tfrac{0}{0}"></span> disebut <strong>bentuk tak tentu</strong>. Artinya, bentuk itu belum memberi tahu kita nilai limitnya — bentuk itu hanya sinyal: "pembilang dan penyebut sama-sama punya faktor yang membuat mereka nol di titik ini, coba sederhanakan dulu."</p>
+
+      <h2>D. Jalan Keluar 1 — Faktorisasi</h2>
+      <p>Untuk <span class="katex-inline" data-tex="\dfrac{x^2-4}{x-2}"></span>, pembilangnya bisa difaktorkan:</p>
+      <div class="mathbox"><span class="katex-inline" data-tex="x^2-4 = (x-2)(x+2)"></span></div>
+      <p>Sehingga:</p>
+      <div class="mathbox big"><span class="katex-inline" data-tex="\dfrac{(x-2)(x+2)}{x-2} = x+2"></span></div>
+      <div class="insight">
+        <span class="ic">💡</span>
+        <span>Mencoret <span class="katex-inline" data-tex="(x-2)"></span> itu <strong>boleh</strong>, karena saat menghitung limit, <span class="katex-inline" data-tex="x"></span> hanya <em>mendekati</em> 2, tidak pernah benar-benar sama dengan 2 — jadi <span class="katex-inline" data-tex="(x-2)"></span> tidak pernah benar-benar nol saat proses pencoretan ini berlangsung.</span>
+      </div>
+      <p>Sekarang bentuknya sudah sederhana, baru substitusikan <span class="katex-inline" data-tex="x=2"></span>:</p>
+      <div class="mathbox big"><span class="katex-inline" data-tex="2+2 = 4"></span></div>
+      <p>Cocok dengan dugaan dari tabel tadi!</p>
+
+      <h2>E. Jalan Keluar 2 — Bentuk Sekawan</h2>
+      <p>Kadang bentuk 0/0 muncul pada fungsi yang mengandung <strong>akar</strong>, misalnya <span class="katex-inline" data-tex="\dfrac{\sqrt{x+4}-2}{x}"></span> ketika <span class="katex-inline" data-tex="x\to 0"></span>. Di sini faktorisasi biasa tidak bisa dipakai. Triknya: kalikan pembilang dan penyebut dengan <strong>sekawan</strong> dari bagian akarnya, yaitu <span class="katex-inline" data-tex="\sqrt{x+4}+2"></span>, supaya bentuk akarnya hilang lewat sifat selisih kuadrat.</p>
+      <p class="soft small">Kamu akan melihat contoh lengkapnya di bagian "Coba Sendiri" di bawah.</p>
+
+      <h2>F. Grafik Berlubang</h2>
+      <p>Fungsi seperti <span class="katex-inline" data-tex="f(x)=\dfrac{x^2-4}{x-2}"></span> sebenarnya adalah garis lurus <span class="katex-inline" data-tex="y=x+2"></span> yang "berlubang" tepat di <span class="katex-inline" data-tex="x=2"></span>, karena di titik itu fungsinya tidak terdefinisi. Tapi grafik di sekitar lubang itu tetap menuju satu nilai yang sama — dan itulah nilai limitnya. Lihat animasinya di bagian berikutnya.</p>
+    </section>
+
+    <!-- 4. LIHAT CARA KERJANYA -->
+    <section class="card">
+      <div class="eyebrow">🎬 Lihat Cara Kerjanya</div>
+      <p>Perhatikan grafik <span class="katex-inline" data-tex="f(x)=\dfrac{x^2-4}{x-2}"></span>. Titik pada grafik akan bergerak mendekati lubang di <span class="katex-inline" data-tex="x=2"></span> dari kedua sisi.</p>
+      <div class="graph-wrap">
+        <svg viewBox="0 0 300 200" id="graphSvg" style="width:100%;height:auto;display:block;">
+          <!-- axes -->
+          <line x1="20" y1="180" x2="290" y2="180" stroke="#CBD5E1" stroke-width="1"/>
+          <line x1="30" y1="10" x2="30" y2="190" stroke="#CBD5E1" stroke-width="1"/>
+          <!-- function line (two segments, gap at x=2) -->
+          <line x1="45" y1="165" x2="128" y2="88" stroke="#2563EB" stroke-width="2.5"/>
+          <line x1="132" y1="84" x2="270" y2="20" stroke="#2563EB" stroke-width="2.5"/>
+          <!-- hole marker at x=2 (f=4) -->
+          <circle cx="130" cy="86" r="5" fill="#F8FAFC" stroke="#2563EB" stroke-width="2"/>
+          <!-- moving dot -->
+          <circle id="moveDot" cx="45" cy="165" r="5.5" fill="#DC2626"/>
+          <!-- axis labels -->
+          <text x="128" y="196" font-size="9" fill="#64748B" text-anchor="middle">x=2</text>
+          <text x="14" y="89" font-size="9" fill="#64748B" text-anchor="middle">4</text>
+        </svg>
+      </div>
+      <div class="graph-controls">
+        <button class="btn btn-primary btn-sm" id="playBtn">▶ Play</button>
+        <button class="btn btn-ghost btn-sm" id="pauseBtn">⏸ Pause</button>
+        <button class="btn btn-ghost btn-sm" id="resetBtn">↻ Reset</button>
+      </div>
+      <div class="readout">
+        <div class="cell"><div class="lbl">Nilai x</div><div class="v" id="readX">0.20</div></div>
+        <div class="cell"><div class="lbl">Nilai f(x)</div><div class="v" id="readFx">2.20</div></div>
+      </div>
+      <div class="insight" id="graphInsight" style="display:none;"></div>
+    </section>
+
+    <!-- 5. COBA SENDIRI -->
+    <section class="card">
+      <div class="eyebrow">🧪 Coba Sendiri</div>
+      <p>Pilih salah satu contoh, lalu telusuri langkah penyelesaiannya satu per satu.</p>
+
+      <div class="chip-row" id="exChips">
+        <button class="chip active" data-ex="fak1">Faktorisasi A</button>
+        <button class="chip" data-ex="fak2">Faktorisasi B</button>
+        <button class="chip" data-ex="sekawan">Sekawan</button>
+      </div>
+
+      <div class="step-viewer">
+        <div class="step-header"><span id="exTitle">Faktorisasi A</span><span id="exCounter">1 / 5</span></div>
+        <div class="step-body" id="exBody"></div>
+        <div class="step-nav">
+          <button class="btn btn-ghost" id="exPrev">← Sebelumnya</button>
+          <button class="btn btn-primary" id="exNext">Berikutnya →</button>
+        </div>
+      </div>
+      <div class="dot-row" id="exDots"></div>
+    </section>
+
+    <!-- 6. CHALLENGE -->
+    <section class="card" id="challengeSection">
+      <div class="eyebrow">🎯 Challenge</div>
+      <p class="soft small">Jawab ketiga soal berikut. Setiap jawaban langsung diperiksa.</p>
+
+      <div class="locked-note" id="challengeLock">🔒 Isi Nama dan Kelas di bagian atas dulu untuk membuka Challenge.</div>
+
+      <div id="challengeBody" style="display:none;">
+        <!-- Soal 1 -->
+        <div class="q-card">
+          <div class="q-num">Soal 1 <span class="q-diff diff-easy">Mudah</span></div>
+          <p><span class="katex-inline" data-tex="\text{Hitung } \lim_{x\to 5}\dfrac{x^2-25}{x-5}"></span></p>
+          <div id="q1opts"></div>
+          <div class="feedback" id="q1fb" style="display:none;"></div>
+        </div>
+        <!-- Soal 2 -->
+        <div class="q-card">
+          <div class="q-num">Soal 2 <span class="q-diff diff-med">Sedang</span></div>
+          <p>Saat mensubstitusi <span class="katex-inline" data-tex="x=1"></span> ke <span class="katex-inline" data-tex="\dfrac{x^2-1}{x-1}"></span>, hasilnya <span class="katex-inline" data-tex="\tfrac{0}{0}"></span>. Apa arti hasil ini?</p>
+          <div id="q2opts"></div>
+          <div class="feedback" id="q2fb" style="display:none;"></div>
+        </div>
+        <!-- Soal 3 -->
+        <div class="q-card">
+          <div class="q-num">Soal 3 <span class="q-diff diff-hard">Sulit</span></div>
+          <p><span class="katex-inline" data-tex="\text{Hitung } \lim_{x\to 0}\dfrac{\sqrt{x+9}-3}{x} \text{ dengan bentuk sekawan}"></span></p>
+          <div id="q3opts"></div>
+          <div class="feedback" id="q3fb" style="display:none;"></div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="submitChallenge" disabled>Kirim Jawaban Challenge</button>
+        <div class="status-msg" id="challengeStatus"></div>
+      </div>
+    </section>
+
+    <!-- 7. KESALAHAN YANG SERING TERJADI -->
+    <section class="card">
+      <div class="eyebrow">⚠️ Kesalahan yang Sering Terjadi</div>
+
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 1</span>
+        <p><strong>Yang biasa dilakukan:</strong> menganggap <span class="katex-inline" data-tex="\tfrac{0}{0}=0"></span>.</p>
+        <p><strong>Kenapa salah:</strong> <span class="katex-inline" data-tex="\tfrac{0}{0}"></span> bukan angka biasa — itu bentuk tak tentu yang bisa bernilai apa saja tergantung fungsinya, bukan otomatis 0.</p>
+        <p><strong>Cara menghindarinya:</strong> begitu ketemu 0/0, jangan langsung tulis jawaban. Sederhanakan dulu fungsinya, baru substitusi lagi.</p>
+      </div>
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 2</span>
+        <p><strong>Yang biasa dilakukan:</strong> menganggap 0/0 berarti limitnya tidak ada.</p>
+        <p><strong>Kenapa salah:</strong> seperti yang kita lihat di tabel tadi, limitnya justru sering tetap ada — 0/0 hanya menandakan fungsinya "berlubang" di titik itu, bukan berarti nilai yang didekati tidak ada.</p>
+        <p><strong>Cara menghindarinya:</strong> selalu cek dulu lewat faktorisasi atau sekawan sebelum menyimpulkan limit ada atau tidak.</p>
+      </div>
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 3</span>
+        <p><strong>Yang biasa dilakukan:</strong> menganggap grafik yang berlubang berarti limitnya tidak ada.</p>
+        <p><strong>Kenapa salah:</strong> titik kosong hanya berarti fungsi tidak terdefinisi tepat di titik itu — bukan berarti perilaku fungsi di sekitarnya tidak menuju satu nilai tertentu.</p>
+        <p><strong>Cara menghindarinya:</strong> fokus pada ke mana grafik "menuju" dari kedua sisi, bukan pada apakah titiknya terisi atau kosong.</p>
+      </div>
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 4</span>
+        <p><strong>Yang biasa dilakukan:</strong> mencoret angka atau suku sembarangan supaya bentuknya "terlihat" lebih sederhana, bukan lewat faktorisasi yang benar.</p>
+        <p><strong>Kenapa salah:</strong> pencoretan hanya sah untuk <em>faktor</em> yang identik di pembilang dan penyebut, bukan untuk suku yang sekadar terlihat mirip.</p>
+        <p><strong>Cara menghindarinya:</strong> pastikan pembilang dan penyebut sudah benar-benar dalam bentuk perkalian faktor sebelum mencoret apa pun.</p>
+      </div>
+    </section>
+
+    <!-- 8. RINGKASAN -->
+    <section class="card">
+      <div class="eyebrow">📌 Ringkasan</div>
+      <div class="summary-item"><div class="summary-num">1</div><p><span class="katex-inline" data-tex="\tfrac{0}{0}"></span> adalah bentuk tak tentu — tanda untuk menyederhanakan dulu, bukan jawaban akhir.</p></div>
+      <div class="summary-item"><div class="summary-num">2</div><p>Faktor yang sama pada pembilang dan penyebut boleh dicoret, karena saat mendekati, x tidak pernah benar-benar sama dengan a.</p></div>
+      <div class="summary-item"><div class="summary-num">3</div><p>Faktorisasi dipakai untuk fungsi aljabar biasa; bentuk sekawan dipakai ketika ada akar.</p></div>
+      <div class="summary-item"><div class="summary-num">4</div><p>Setelah disederhanakan, substitusi langsung baru bisa dipakai lagi dengan aman.</p></div>
+      <div class="summary-item"><div class="summary-num">5</div><p>Grafik yang berlubang di suatu titik tidak berarti limitnya tidak ada — yang penting adalah ke mana grafik menuju di sekitar titik itu.</p></div>
+    </section>
+
+    <!-- 9. REFLEKSI -->
+    <section class="card" id="reflectionSection">
+      <div class="eyebrow">✍️ Refleksi</div>
+      <div class="locked-note" id="reflectionLock">🔒 Isi Nama dan Kelas di bagian atas dulu untuk membuka Refleksi.</div>
+
+      <div id="reflectionBody" style="display:none;">
+        <div class="field">
+          <label>1. Menurutmu, kenapa <span style="font-style:italic;">0/0</span> disebut "bentuk tak tentu", bukan berarti limitnya tidak ada?</label>
+          <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+        </div>
+        <div class="field">
+          <label>2. Ceritakan dengan kata-katamu sendiri, kenapa kita boleh mencoret faktor (x−a) pada pembilang dan penyebut, padahal x sedang mendekati a?</label>
+          <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+        </div>
+        <button class="btn btn-primary btn-full" id="submitReflection">Kirim Refleksi</button>
+        <div class="status-msg" id="reflectionStatus"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="site-footer">
+    <strong>NUMERA</strong><br>
+    Dikembangkan oleh Kiki Herdiansyah<br>
+    Versi 1.0 · © 2026
+  </footer>
+</div>
+
+<script>
+/* ================= KONFIGURASI GOOGLE APPS SCRIPT ================= */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec"; // <-- Guru: tempel URL Google Apps Script di sini sebelum publish
+const TOPIK = "Ketika Substitusi Tidak Berhasil";
+
+/* ================= UTIL ================= */
+function renderKatex(el, tex, displayMode){
+  if(window.katex){
+    try{ katex.render(tex, el, {throwOnError:false, displayMode: !!displayMode}); }
+    catch(e){ el.textContent = tex; }
+  } else {
+    el.textContent = tex;
+  }
+}
+function renderAllStatic(){
+  document.querySelectorAll('.katex-inline').forEach(el=>{
+    renderKatex(el, el.getAttribute('data-tex'), false);
+  });
+}
+window.addEventListener('load', ()=>{
+  setTimeout(renderAllStatic, 60);
+});
+
+/* progress bar */
+function updateProgress(){
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop || document.body.scrollTop;
+  const height = (doc.scrollHeight || document.body.scrollHeight) - doc.clientHeight;
+  const pct = height > 0 ? Math.min(100,(scrolled/height)*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+window.addEventListener('scroll', updateProgress);
+window.addEventListener('load', updateProgress);
+
+/* conflict table (0/0 build-up) */
+(function(){
+  const container = document.getElementById('conflictTable');
+  const xs = [1.9,1.99,1.999,'⋯',2.001,2.01,2.1];
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:12.5px;">';
+  html += '<tr>'+xs.map(x=>`<td style="padding:4px;color:#64748B;">x=${x}</td>`).join('')+'</tr>';
+  html += '<tr>'+xs.map(x=>{
+    if(x==='⋯') return '<td style="padding:4px;font-weight:700;">⋯</td>';
+    const f = (x*x-4)/(x-2);
+    return `<td style="padding:4px;font-weight:700;color:#2563EB;">${f.toFixed(3)}</td>`;
+  }).join('')+'</tr>';
+  html += '</table>';
+  container.innerHTML = html;
+})();
+
+/* ================= IDENTITY GATING ================= */
+function identityFilled(){
+  return document.getElementById('namaSiswa').value.trim() !== '' &&
+         document.getElementById('kelasSiswa').value.trim() !== '';
+}
+function refreshGates(){
+  const ok = identityFilled();
+  document.getElementById('challengeLock').style.display = ok ? 'none' : 'block';
+  document.getElementById('challengeBody').style.display = ok ? 'block' : 'none';
+  document.getElementById('reflectionLock').style.display = ok ? 'none' : 'block';
+  document.getElementById('reflectionBody').style.display = ok ? 'block' : 'none';
+  if(ok){ setTimeout(renderAllStatic, 30); }
+}
+document.getElementById('namaSiswa').addEventListener('input', refreshGates);
+document.getElementById('kelasSiswa').addEventListener('input', refreshGates);
+refreshGates();
+
+/* ================= LIHAT CARA KERJANYA (graph animation) ================= */
+// f(x) = x+2 for x in domain shown, hole at x=2 (px 130)
+// mapping: x in [0.2, 4.0] -> px in [45,270]; f(x) in [2.2,6.0] -> py in [165,20]
+function xToPx(x){ return 45 + (x-0.2)*(270-45)/(4.0-0.2); }
+function fxToPy(fx){ return 165 - (fx-2.2)*(165-20)/(6.0-2.2); }
+
+let animId = null;
+let animPhase = 'left'; // 'left' then 'right'
+let animX = 0.2;
+const dot = document.getElementById('moveDot');
+const readX = document.getElementById('readX');
+const readFx = document.getElementById('readFx');
+const graphInsight = document.getElementById('graphInsight');
+
+function setDot(x){
+  const fx = x+2;
+  dot.setAttribute('cx', xToPx(x));
+  dot.setAttribute('cy', fxToPy(fx));
+  readX.textContent = x.toFixed(2);
+  readFx.textContent = fx.toFixed(2);
+}
+setDot(0.2);
+
+function stepAnim(){
+  if(animPhase==='left'){
+    animX += 0.02;
+    if(animX >= 1.96){
+      graphInsight.style.display='flex';
+      graphInsight.innerHTML = '<span class="ic">💡</span><span>Dari kiri, nilai f(x) semakin dekat ke 4 — tapi titik x=2 sendiri kosong (tidak terdefinisi).</span>';
+      animPhase='right'; animX = 3.9;
+    }
+  } else {
+    animX -= 0.02;
+    if(animX <= 2.04){
+      graphInsight.style.display='flex';
+      graphInsight.innerHTML = '<span class="ic">💡</span><span>Dari kanan pun, f(x) menuju nilai yang sama: 4. Karena kedua sisi sepakat, limitnya ADA, meski titiknya berlubang.</span>';
+      animPhase='left'; animX = 0.2;
+    }
+  }
+  setDot(animX);
+  animId = requestAnimationFrame(()=>setTimeout(stepAnim, 30));
+}
+document.getElementById('playBtn').addEventListener('click', ()=>{
+  if(!animId){ stepAnim(); }
+});
+document.getElementById('pauseBtn').addEventListener('click', ()=>{
+  if(animId){ cancelAnimationFrame(animId); animId = null; }
+});
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(animId){ cancelAnimationFrame(animId); animId = null; }
+  animPhase='left'; animX=0.2; setDot(0.2);
+  graphInsight.style.display='none';
+});
+
+/* ================= COBA SENDIRI (stepper per contoh) ================= */
+const examples = {
+  fak1: {
+    title: "Faktorisasi A",
+    steps: [
+      {t:"Tulis limitnya", tex:"\\lim_{x\\to 3}\\dfrac{x^2-9}{x-3}", note:"Ini yang ingin kita hitung."},
+      {t:"Coba substitusi x=3", tex:"\\dfrac{(3)^2-9}{(3)-3}=\\dfrac{0}{0}", note:"Bentuk tak tentu — belum boleh disimpulkan apa-apa."},
+      {t:"Faktorkan pembilang", tex:"x^2-9=(x-3)(x+3)", note:"Ingat rumus selisih kuadrat: a²-b² = (a-b)(a+b)."},
+      {t:"Coret faktor (x-3)", tex:"\\dfrac{(x-3)(x+3)}{x-3}=x+3", note:"Boleh dicoret, karena x hanya mendekati 3, tidak pernah benar-benar 3."},
+      {t:"Substitusi ke bentuk sederhana", tex:"3+3=6", note:"Jadi nilai limitnya adalah 6."}
+    ]
+  },
+  fak2: {
+    title: "Faktorisasi B",
+    steps: [
+      {t:"Tulis limitnya", tex:"\\lim_{x\\to -2}\\dfrac{x^2+5x+6}{x+2}", note:"Ini yang ingin kita hitung."},
+      {t:"Coba substitusi x=-2", tex:"\\dfrac{(-2)^2+5(-2)+6}{(-2)+2}=\\dfrac{0}{0}", note:"Bentuk tak tentu lagi — perlu disederhanakan dulu."},
+      {t:"Faktorkan pembilang", tex:"x^2+5x+6=(x+2)(x+3)", note:"Cari dua angka yang jumlahnya 5 dan hasil kalinya 6: yaitu 2 dan 3."},
+      {t:"Coret faktor (x+2)", tex:"\\dfrac{(x+2)(x+3)}{x+2}=x+3", note:"Boleh dicoret, karena x hanya mendekati -2, tidak pernah benar-benar -2."},
+      {t:"Substitusi ke bentuk sederhana", tex:"-2+3=1", note:"Jadi nilai limitnya adalah 1."}
+    ]
+  },
+  sekawan: {
+    title: "Sekawan",
+    steps: [
+      {t:"Tulis limitnya", tex:"\\lim_{x\\to 0}\\dfrac{\\sqrt{x+4}-2}{x}", note:"Ada bentuk akar, faktorisasi biasa tidak bisa dipakai."},
+      {t:"Coba substitusi x=0", tex:"\\dfrac{\\sqrt{4}-2}{0}=\\dfrac{0}{0}", note:"Bentuk tak tentu — perlu trik sekawan."},
+      {t:"Kalikan dengan sekawan", tex:"\\dfrac{(\\sqrt{x+4}-2)(\\sqrt{x+4}+2)}{x(\\sqrt{x+4}+2)}", note:"Sekawan dari √(x+4)-2 adalah √(x+4)+2."},
+      {t:"Sederhanakan pembilang", tex:"\\dfrac{x}{x(\\sqrt{x+4}+2)}=\\dfrac{1}{\\sqrt{x+4}+2}", note:"Pembilang jadi x lewat selisih kuadrat, lalu x dicoret (karena x≠0)."},
+      {t:"Substitusi x=0", tex:"\\dfrac{1}{\\sqrt{4}+2}=\\dfrac{1}{4}", note:"Jadi nilai limitnya adalah 1/4."}
+    ]
+  }
+};
+let currentEx = 'fak1';
+let exStepIdx = 0;
+
+function renderExStep(){
+  const ex = examples[currentEx];
+  const s = ex.steps[exStepIdx];
+  document.getElementById('exTitle').textContent = ex.title;
+  document.getElementById('exCounter').textContent = (exStepIdx+1)+' / '+ex.steps.length;
+  const body = document.getElementById('exBody');
+  body.innerHTML = `<h3>${s.t}</h3><div class="mathbox big" id="exMath"></div><p class="soft small">${s.note}</p>`;
+  renderKatex(document.getElementById('exMath'), s.tex, true);
+  document.getElementById('exPrev').disabled = exStepIdx===0;
+  document.getElementById('exNext').textContent = exStepIdx===ex.steps.length-1 ? 'Ulangi ↻' : 'Berikutnya →';
+  const dots = document.getElementById('exDots');
+  dots.innerHTML = ex.steps.map((_,i)=>`<div class="dot ${i===exStepIdx?'active':''}"></div>`).join('');
+}
+document.getElementById('exPrev').addEventListener('click', ()=>{ if(exStepIdx>0){exStepIdx--; renderExStep();} });
+document.getElementById('exNext').addEventListener('click', ()=>{
+  const ex = examples[currentEx];
+  if(exStepIdx===ex.steps.length-1){ exStepIdx=0; } else { exStepIdx++; }
+  renderExStep();
+});
+document.querySelectorAll('#exChips .chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('#exChips .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    currentEx = chip.getAttribute('data-ex');
+    exStepIdx = 0;
+    renderExStep();
+  });
+});
+renderExStep();
+
+/* ================= CHALLENGE ================= */
+const challenge = {
+  q1: {
+    options: ["0","5","10","tidak terdefinisi"],
+    correct: 2,
+    fb: {
+      correct: "Benar! x²-25 = (x-5)(x+5), coret (x-5), sisa x+5. Substitusi x=5: 5+5=10.",
+      wrong: "Faktorkan dulu pembilangnya: x²-25 = (x-5)(x+5). Coret (x-5), lalu substitusi x=5 ke bentuk yang tersisa."
+    }
+  },
+  q2: {
+    options: [
+      "Limitnya pasti tidak ada",
+      "Limitnya pasti = 0",
+      "Bentuk tersebut masih perlu disederhanakan sebelum bisa disimpulkan",
+      "Limitnya pasti = 1"
+    ],
+    correct: 2,
+    fb: {
+      correct: "Tepat! 0/0 adalah bentuk tak tentu — tanda untuk menyederhanakan (misalnya lewat faktorisasi) sebelum menyimpulkan nilai limitnya.",
+      wrong: "Hati-hati. 0/0 bukan jawaban akhir. Itu tanda bahwa bentuk tersebut masih perlu disederhanakan, bukan berarti limitnya otomatis 0 atau tidak ada."
+    }
+  },
+  q3: {
+    options: ["1/6","1/3","0","tidak terdefinisi"],
+    correct: 0,
+    fb: {
+      correct: "Benar! Kalikan dengan sekawan √(x+9)+3, pembilang jadi x, coret x, sisa 1/(√(x+9)+3). Substitusi x=0: 1/(3+3)=1/6.",
+      wrong: "Kalikan pembilang & penyebut dengan sekawan √(x+9)+3. Pembilang akan menyederhana jadi x (selisih kuadrat), lalu coret x dengan penyebut."
+    }
+  }
+};
+const challengeAnswers = {};
+function renderOptions(qid){
+  const q = challenge[qid];
+  const container = document.getElementById(qid+'opts');
+  container.innerHTML = '';
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.addEventListener('click', ()=>{
+      if(challengeAnswers[qid] !== undefined) return;
+      challengeAnswers[qid] = i;
+      const isCorrect = i === q.correct;
+      Array.from(container.children).forEach((b,bi)=>{
+        b.disabled = true;
+        if(bi===q.correct) b.classList.add('correct');
+        else if(bi===i) b.classList.add('wrong');
+      });
+      const fb = document.getElementById(qid+'fb');
+      fb.style.display = 'block';
+      fb.className = 'feedback ' + (isCorrect ? 'ok' : 'bad');
+      fb.textContent = isCorrect ? q.fb.correct : q.fb.wrong;
+      checkChallengeComplete();
+    });
+    container.appendChild(btn);
+  });
+}
+['q1','q2','q3'].forEach(renderOptions);
+function checkChallengeComplete(){
+  const done = ['q1','q2','q3'].every(q=>challengeAnswers[q]!==undefined);
+  document.getElementById('submitChallenge').disabled = !done;
+}
+document.getElementById('submitChallenge').addEventListener('click', ()=>{
+  const score = ['q1','q2','q3'].filter(q=>challengeAnswers[q]===challenge[q].correct).length;
+  const payload = {
+    jenis: "Challenge",
+    topik: TOPIK,
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim(),
+    skor: score+" / 3",
+    jawaban1: challenge.q1.options[challengeAnswers.q1],
+    jawaban2: challenge.q2.options[challengeAnswers.q2],
+    jawaban3: challenge.q3.options[challengeAnswers.q3],
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  kirimKeGuru(payload, 'challengeStatus');
+  document.getElementById('submitChallenge').disabled = true;
+});
+
+/* ================= REFLEKSI ================= */
+document.getElementById('submitReflection').addEventListener('click', ()=>{
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  if(!r1 || !r2){
+    const st = document.getElementById('reflectionStatus');
+    st.textContent = 'Isi kedua jawaban refleksi dulu ya.';
+    st.className = 'status-msg';
+    return;
+  }
+  const payload = {
+    jenis: "Refleksi",
+    topik: TOPIK,
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim(),
+    jawaban1: r1,
+    jawaban2: r2,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  kirimKeGuru(payload, 'reflectionStatus');
+});
+
+/* ================= KIRIM KE GURU ================= */
+function kirimKeGuru(payload, statusElId){
+  const st = document.getElementById(statusElId);
+  if(!SCRIPT_URL){
+    st.textContent = '⚠️ Belum terhubung ke Google Sheet (SCRIPT_URL kosong). Jawaban belum terkirim ke guru.';
+    st.className = 'status-msg';
+    console.log('Payload (SCRIPT_URL kosong):', payload);
+    return;
+  }
+  st.textContent = 'Mengirim jawaban...';
+  st.className = 'status-msg';
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    st.textContent = '✅ Jawaban berhasil dikirim ke guru!';
+    st.className = 'status-msg ok';
+  }).catch(()=>{
+    st.textContent = '❌ Gagal mengirim jawaban. Periksa koneksi internetmu.';
+    st.className = 'status-msg';
+  });
+}
+</script>
+</body>
+</html>

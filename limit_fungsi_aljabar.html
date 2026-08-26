@@ -1,0 +1,794 @@
+<!--
+NUMERA — Modul Pembelajaran Interaktif
+Judul: Limit Fungsi Aljabar
+Materi: Limit Fungsi — Menghitung Limit Fungsi Aljabar dengan Substitusi Langsung
+Bab: Limit (Modul 3 dari 5)
+Jenis Halaman: Modul Interaktif
+Versi: 1.0 (Master Prompt Limit v1.0)
+Dikembangkan oleh: Kiki Herdiansyah
+© 2026 NUMERA — Seluruh hak cipta dilindungi.
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Limit Fungsi Aljabar — NUMERA</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-soft:#EFF4FF;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --green:#16A34A;
+  --green-soft:#F0FDF4;
+  --red:#DC2626;
+  --red-soft:#FEF2F2;
+  --amber:#D97706;
+  --amber-soft:#FFFBEB;
+  --radius:16px;
+  --radius-sm:10px;
+  --shadow:0 1px 2px rgba(15,23,42,0.04), 0 4px 16px rgba(15,23,42,0.06);
+  --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:20px; --sp-6:24px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,0.92);
+  backdrop-filter:saturate(180%) blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:var(--sp-3) var(--sp-4);
+}
+.topbar-title{font-size:13px;font-weight:600;color:var(--text-soft);letter-spacing:0.02em;}
+.progress-track{height:4px;background:var(--border);border-radius:99px;margin-top:var(--sp-2);overflow:hidden;}
+.progress-fill{height:100%;background:var(--primary);width:0%;transition:width .2s ease;border-radius:99px;}
+
+.content{padding:var(--sp-4) var(--sp-4) var(--sp-6);}
+
+/* Card */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:var(--sp-5);
+  margin-bottom:var(--sp-5);
+}
+.eyebrow{font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:var(--sp-2);}
+h1{font-size:24px;font-weight:800;margin:0 0 var(--sp-2);line-height:1.25;}
+h2{font-size:18px;font-weight:700;margin:0 0 var(--sp-3);line-height:1.35;}
+h3{font-size:15px;font-weight:700;margin:0 0 var(--sp-2);}
+p{font-size:15px;line-height:1.65;color:var(--text);margin:0 0 var(--sp-3);}
+p:last-child{margin-bottom:0;}
+.soft{color:var(--text-soft);}
+.small{font-size:13px;}
+
+.meta-row{display:flex;gap:var(--sp-3);flex-wrap:wrap;margin-bottom:var(--sp-4);}
+.meta-chip{
+  display:flex;align-items:center;gap:6px;
+  background:var(--primary-soft);color:var(--primary);
+  font-size:12px;font-weight:600;
+  padding:6px 12px;border-radius:99px;
+}
+.goal-list{margin:0;padding-left:18px;}
+.goal-list li{font-size:14px;line-height:1.6;color:var(--text-soft);margin-bottom:4px;}
+
+/* Identity box */
+.identity-box{
+  background:var(--primary-soft);
+  border:1px solid #DCE7FF;
+  border-radius:var(--radius);
+  padding:var(--sp-4);
+  margin-top:var(--sp-4);
+}
+.identity-box h3{color:var(--primary);margin-bottom:var(--sp-3);}
+.field{margin-bottom:var(--sp-3);}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-soft);margin-bottom:4px;}
+.field input, .field textarea{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:10px 12px;
+  font-size:14px;
+  font-family:inherit;
+  background:#fff;
+  color:var(--text);
+}
+.field textarea{resize:vertical;min-height:70px;}
+.field input:focus, .field textarea:focus{outline:none;border-color:var(--primary);}
+
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:inherit;font-weight:600;font-size:14px;
+  border:none;border-radius:var(--radius-sm);
+  padding:11px 18px;cursor:pointer;
+  transition:opacity .15s ease, transform .1s ease;
+}
+.btn:active{transform:scale(0.98);}
+.btn-primary{background:var(--primary);color:#fff;}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-ghost{background:var(--border);color:var(--text);}
+.btn-row{display:flex;gap:var(--sp-3);flex-wrap:wrap;}
+.btn-full{width:100%;}
+
+/* chips */
+.chip-row{display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-bottom:var(--sp-3);}
+.chip{
+  border:1px solid var(--border);background:#fff;color:var(--text-soft);
+  font-size:13px;font-weight:600;padding:8px 14px;border-radius:99px;
+  cursor:pointer;transition:.15s ease;
+}
+.chip.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+/* math box */
+.mathbox{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-4);text-align:center;font-size:16px;margin:var(--sp-3) 0;overflow-x:auto;
+}
+.mathbox.big{font-size:18px;}
+
+/* property list */
+.prop-item{border-top:1px solid var(--border);padding:var(--sp-4) 0;}
+.prop-item:first-child{border-top:none;padding-top:0;}
+.prop-name{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px;}
+.prop-example{font-size:13px;color:var(--text-soft);margin-top:6px;}
+
+/* insight box */
+.insight{
+  display:flex;gap:10px;align-items:flex-start;
+  background:var(--amber-soft);border:1px solid #FDE8C8;
+  border-radius:var(--radius-sm);padding:var(--sp-3) var(--sp-4);margin-top:var(--sp-3);
+  font-size:13.5px;line-height:1.55;color:#7C4A03;
+}
+.insight .ic{font-size:16px;flex-shrink:0;}
+
+/* step viewer */
+.step-viewer{border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;}
+.step-header{
+  display:flex;justify-content:space-between;align-items:center;
+  background:var(--bg);padding:var(--sp-3) var(--sp-4);border-bottom:1px solid var(--border);
+}
+.step-header span{font-size:12px;font-weight:700;color:var(--text-soft);}
+.step-body{padding:var(--sp-4);min-height:120px;}
+.step-nav{display:flex;justify-content:space-between;padding:var(--sp-3) var(--sp-4);border-top:1px solid var(--border);}
+.dot-row{display:flex;gap:6px;justify-content:center;padding:var(--sp-3) 0 0;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border);}
+.dot.active{background:var(--primary);width:16px;border-radius:99px;transition:.2s ease;}
+
+/* slider */
+.slider-wrap{margin:var(--sp-4) 0;}
+.slider-label{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:8px;}
+.slider-label .val{color:var(--primary);font-weight:800;}
+input[type="range"]{width:100%;accent-color:var(--primary);height:4px;}
+
+/* result panel */
+.result-panel{
+  display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-top:var(--sp-3);
+}
+.result-cell{
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-3);text-align:center;
+}
+.result-cell .lbl{font-size:11px;color:var(--text-soft);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.result-cell .v{font-size:20px;font-weight:800;color:var(--primary);margin-top:4px;}
+
+/* misconception */
+.mis-item{border-top:1px solid var(--border);padding:var(--sp-4) 0;}
+.mis-item:first-child{border-top:none;padding-top:0;}
+.mis-tag{display:inline-block;background:var(--red-soft);color:var(--red);font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;margin-bottom:8px;}
+
+/* summary */
+.summary-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:var(--sp-3);}
+.summary-item:last-child{margin-bottom:0;}
+.summary-num{
+  flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--primary);
+  color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;
+}
+
+/* challenge */
+.q-card{margin-bottom:var(--sp-4);}
+.q-num{font-size:12px;font-weight:700;color:var(--text-soft);margin-bottom:6px;}
+.q-diff{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;margin-left:6px;}
+.diff-easy{background:var(--green-soft);color:var(--green);}
+.diff-med{background:var(--amber-soft);color:var(--amber);}
+.diff-hard{background:var(--red-soft);color:var(--red);}
+.opt{
+  display:block;width:100%;text-align:left;
+  border:1px solid var(--border);background:#fff;border-radius:var(--radius-sm);
+  padding:12px 14px;margin-bottom:8px;font-size:14px;font-family:inherit;color:var(--text);
+  cursor:pointer;transition:.15s ease;
+}
+.opt:hover{border-color:var(--primary);}
+.opt.correct{border-color:var(--green);background:var(--green-soft);color:#14532D;}
+.opt.wrong{border-color:var(--red);background:var(--red-soft);color:#7F1D1D;}
+.opt:disabled{cursor:default;}
+.feedback{
+  margin-top:10px;padding:12px 14px;border-radius:var(--radius-sm);font-size:13.5px;line-height:1.55;
+}
+.feedback.ok{background:var(--green-soft);color:#14532D;}
+.feedback.bad{background:var(--red-soft);color:#7F1D1D;}
+
+/* status */
+.status-msg{font-size:13px;text-align:center;margin-top:var(--sp-3);color:var(--text-soft);}
+.status-msg.ok{color:var(--green);font-weight:600;}
+
+/* footer */
+.site-footer{
+  text-align:center;padding:var(--sp-6) var(--sp-4);
+  color:var(--text-soft);font-size:12px;line-height:1.7;
+}
+.site-footer strong{color:var(--text);}
+
+.locked-note{
+  font-size:13px;color:var(--text-soft);background:var(--bg);
+  border:1px dashed var(--border);border-radius:var(--radius-sm);
+  padding:var(--sp-3) var(--sp-4);text-align:center;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title">NUMERA · Limit Fungsi Aljabar</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div class="content">
+
+    <!-- 1. HEADER -->
+    <section class="card">
+      <div class="eyebrow">Bab Limit · Modul 3 dari 5</div>
+      <h1>Limit Fungsi Aljabar</h1>
+      <p class="soft">Menghitung Limit Fungsi Aljabar dengan Substitusi Langsung</p>
+      <div class="meta-row">
+        <div class="meta-chip">⏱ 15–20 menit</div>
+        <div class="meta-chip">📐 Substitusi & Sifat Limit</div>
+      </div>
+      <h3>Tujuan Belajar</h3>
+      <ul class="goal-list">
+        <li>Memahami mengapa substitusi langsung bisa dipakai untuk menghitung limit fungsi aljabar tertentu</li>
+        <li>Mengenal dan menggunakan sifat-sifat limit (jumlah, selisih, kali, bagi, pangkat)</li>
+        <li>Mengetahui syarat setiap sifat limit boleh dipakai</li>
+        <li>Menyadari kapan substitusi langsung "tidak cukup" (tanda untuk materi berikutnya)</li>
+      </ul>
+
+      <div class="identity-box">
+        <h3>👤 Identitas Siswa</h3>
+        <div class="field">
+          <label for="namaSiswa">Nama Lengkap</label>
+          <input type="text" id="namaSiswa" placeholder="Tulis namamu di sini">
+        </div>
+        <div class="field">
+          <label for="kelasSiswa">Kelas</label>
+          <input type="text" id="kelasSiswa" placeholder="Contoh: X-2, XI IPA 3">
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+    <section class="card">
+      <div class="eyebrow">🤔 Pernahkah Kamu Berpikir?</div>
+      <p>Di materi sebelumnya, kita menebak nilai limit dengan cara yang cukup panjang: bikin tabel angka yang semakin dekat ke suatu titik, lalu lihat ke angka berapa hasilnya "menuju".</p>
+      <p>Tapi... kalau setiap kali menghitung limit harus bikin tabel dulu, bukankah itu terlalu lama?</p>
+      <p><strong>Coba pikirkan:</strong> untuk grafik yang mulus, tanpa lubang, tanpa patahan — apakah benar-benar perlu mendekat pelan-pelan, atau ada jalan yang lebih singkat menuju jawaban yang sama?</p>
+    </section>
+
+    <!-- 3. PENJELASAN SEDERHANA -->
+    <section class="card">
+      <div class="eyebrow">💡 Penjelasan Sederhana</div>
+
+      <h2>A. Mengingat Kembali</h2>
+      <p>Masih ingat? <span class="katex-inline" data-tex="\lim_{x\to a} f(x) = L"></span> artinya: ketika <span class="katex-inline" data-tex="x"></span> semakin dekat ke <span class="katex-inline" data-tex="a"></span> (tanpa harus sama dengan <span class="katex-inline" data-tex="a"></span>), nilai <span class="katex-inline" data-tex="f(x)"></span> semakin dekat ke <span class="katex-inline" data-tex="L"></span>.</p>
+
+      <h2>B. Jalan Pintas Bernama Substitusi</h2>
+      <p>Perhatikan fungsi <span class="katex-inline" data-tex="f(x) = 2x+1"></span>. Coba lihat tabel berikut ketika <span class="katex-inline" data-tex="x"></span> mendekati <span class="katex-inline" data-tex="3"></span> dari kedua sisi:</p>
+      <div class="mathbox">
+        <div id="recapTable"></div>
+      </div>
+      <p>Nilai <span class="katex-inline" data-tex="f(x)"></span> semakin dekat ke <strong>7</strong>. Sekarang coba substitusi langsung <span class="katex-inline" data-tex="x=3"></span> ke fungsinya:</p>
+      <div class="mathbox big"><span class="katex-inline" data-tex="f(3) = 2(3)+1 = 7"></span></div>
+      <p>Hasilnya sama persis! Untuk fungsi aljabar yang grafiknya <strong>mulus dan tersambung</strong> di sekitar titik yang didekati (tidak berlubang, tidak patah), kita bisa langsung mensubstitusikan nilai <span class="katex-inline" data-tex="a"></span> tanpa perlu bikin tabel.</p>
+      <div class="insight">
+        <span class="ic">💡</span>
+        <span>Substitusi langsung bukan "aturan baru yang terpisah" — ini hanya jalan pintas dari proses mendekati yang sudah kamu pahami sebelumnya.</span>
+      </div>
+
+      <h2>C. Notasinya</h2>
+      <div class="mathbox big"><span class="katex-inline" data-tex="\lim_{x\to a} f(x) = f(a)"></span></div>
+      <p><em>...dengan syarat</em> grafik <span class="katex-inline" data-tex="f(x)"></span> mulus dan tersambung di sekitar <span class="katex-inline" data-tex="x=a"></span>.</p>
+
+      <h2>D. Sifat-Sifat Limit</h2>
+      <p>Kadang fungsinya lebih rumit — gabungan dari beberapa fungsi. Untuk itu, ada beberapa sifat yang membuat perhitungan lebih rapi. Anggap <span class="katex-inline" data-tex="\lim_{x\to a} f(x) = F"></span> dan <span class="katex-inline" data-tex="\lim_{x\to a} g(x) = G"></span>.</p>
+
+      <div class="prop-item">
+        <div class="prop-name">Limit Konstanta</div>
+        <div class="mathbox"><span class="katex-inline" data-tex="\lim_{x\to a} k = k"></span></div>
+        <div class="prop-example">Masuk akal — kalau nilainya tidak pernah berubah, mau x mendekati apapun, hasilnya tetap k.</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-name">Limit Kelipatan Konstanta</div>
+        <div class="mathbox"><span class="katex-inline" data-tex="\lim_{x\to a} k\cdot f(x) = k\cdot F"></span></div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-name">Limit Jumlah &amp; Selisih</div>
+        <div class="mathbox"><span class="katex-inline" data-tex="\lim_{x\to a}[f(x)\pm g(x)] = F \pm G"></span></div>
+        <div class="prop-example">Kalau f(x) mendekati 5 dan g(x) mendekati 3, tentu jumlahnya mendekati 8 — wajar, kan?</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-name">Limit Perkalian</div>
+        <div class="mathbox"><span class="katex-inline" data-tex="\lim_{x\to a}[f(x)\cdot g(x)] = F \cdot G"></span></div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-name">Limit Pembagian</div>
+        <div class="mathbox"><span class="katex-inline" data-tex="\lim_{x\to a}\dfrac{f(x)}{g(x)} = \dfrac{F}{G}"></span></div>
+        <div class="prop-example">⚠️ Syaratnya: <span class="katex-inline" data-tex="G \neq 0"></span>. Kalau penyebutnya mendekati 0, sifat ini <strong>tidak bisa</strong> dipakai begitu saja.</div>
+      </div>
+      <div class="prop-item">
+        <div class="prop-name">Limit Pangkat</div>
+        <div class="mathbox"><span class="katex-inline" data-tex="\lim_{x\to a}[f(x)]^{n} = F^{n}"></span></div>
+      </div>
+
+      <h2>E. Kalau Hasilnya Aneh?</h2>
+      <p>Kadang, saat kamu substitusi, hasil pembagiannya jadi <span class="katex-inline" data-tex="\tfrac{0}{0}"></span>. Ini bukan salahmu — itu justru tanda bahwa fungsi tersebut <strong>berlubang</strong> di titik itu, dan substitusi langsung saja belum cukup. Cara mengatasinya akan kita bahas di modul berikutnya. Untuk sekarang, cukup kenali: kalau ketemu <span class="katex-inline" data-tex="\tfrac{0}{0}"></span>, itu sinyal untuk berhenti dan tidak menyimpulkan apa-apa dulu.</p>
+    </section>
+
+    <!-- 4. LIHAT CARA KERJANYA -->
+    <section class="card">
+      <div class="eyebrow">🎬 Lihat Cara Kerjanya</div>
+      <p>Perhatikan bagaimana substitusi langsung dipakai untuk menghitung <span class="katex-inline" data-tex="\lim_{x\to 2}(3x^2-5x+1)"></span>.</p>
+      <div class="step-viewer">
+        <div class="step-header"><span>Langkah</span><span id="stepCounter">1 / 4</span></div>
+        <div class="step-body" id="stepBody"></div>
+        <div class="step-nav">
+          <button class="btn btn-ghost" id="stepPrev">← Sebelumnya</button>
+          <button class="btn btn-primary" id="stepNext">Berikutnya →</button>
+        </div>
+      </div>
+      <div class="dot-row" id="stepDots"></div>
+    </section>
+
+    <!-- 5. COBA SENDIRI -->
+    <section class="card">
+      <div class="eyebrow">🧪 Coba Sendiri</div>
+      <p>Pilih fungsi, geser nilai <span class="katex-inline" data-tex="a"></span>, dan lihat langkah substitusinya secara langsung.</p>
+
+      <div class="chip-row" id="fnChips">
+        <button class="chip active" data-fn="linear">Linear</button>
+        <button class="chip" data-fn="kuadrat">Kuadrat</button>
+        <button class="chip" data-fn="pecahan">Pecahan</button>
+      </div>
+
+      <div class="mathbox" id="fnDisplay"></div>
+
+      <div class="slider-wrap">
+        <div class="slider-label">Nilai yang didekati (a) <span class="val" id="aVal">3</span></div>
+        <input type="range" id="aSlider" min="0" max="6" step="1" value="3">
+      </div>
+
+      <div class="mathbox big" id="substitutionDisplay"></div>
+
+      <div class="result-panel">
+        <div class="result-cell">
+          <div class="lbl">Limitnya</div>
+          <div class="v" id="limitResult">-</div>
+        </div>
+        <div class="result-cell">
+          <div class="lbl">Sifat yang dipakai</div>
+          <div class="v small" id="propUsed" style="font-size:13px;">-</div>
+        </div>
+      </div>
+
+      <div class="insight" id="tryInsight" style="display:none;"></div>
+    </section>
+
+    <!-- 6. CHALLENGE -->
+    <section class="card" id="challengeSection">
+      <div class="eyebrow">🎯 Challenge</div>
+      <p class="soft small">Jawab ketiga soal berikut. Setiap jawaban langsung diperiksa.</p>
+
+      <div class="locked-note" id="challengeLock">🔒 Isi Nama dan Kelas di bagian atas dulu untuk membuka Challenge.</div>
+
+      <div id="challengeBody" style="display:none;">
+        <!-- Soal 1 -->
+        <div class="q-card">
+          <div class="q-num">Soal 1 <span class="q-diff diff-easy">Mudah</span></div>
+          <p><span class="katex-inline" data-tex="\text{Hitung } \lim_{x\to 3}(2x+4)"></span></p>
+          <div id="q1opts"></div>
+          <div class="feedback" id="q1fb" style="display:none;"></div>
+        </div>
+        <!-- Soal 2 -->
+        <div class="q-card">
+          <div class="q-num">Soal 2 <span class="q-diff diff-med">Sedang</span></div>
+          <p>Diketahui <span class="katex-inline" data-tex="\lim_{x\to 3} f(x) = 6"></span> dan <span class="katex-inline" data-tex="\lim_{x\to 3} g(x) = 0"></span>. Apakah boleh langsung disimpulkan <span class="katex-inline" data-tex="\lim_{x\to 3}\frac{f(x)}{g(x)} = \frac{6}{0}"></span>?</p>
+          <div id="q2opts"></div>
+          <div class="feedback" id="q2fb" style="display:none;"></div>
+        </div>
+        <!-- Soal 3 -->
+        <div class="q-card">
+          <div class="q-num">Soal 3 <span class="q-diff diff-hard">Sulit</span></div>
+          <p>Diketahui <span class="katex-inline" data-tex="\lim_{x\to 2} f(x) = 4"></span> dan <span class="katex-inline" data-tex="\lim_{x\to 2} g(x) = -3"></span>. Tentukan nilai <span class="katex-inline" data-tex="\lim_{x\to 2}\big[2f(x) - g(x)^2\big]"></span></p>
+          <div id="q3opts"></div>
+          <div class="feedback" id="q3fb" style="display:none;"></div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="submitChallenge" disabled>Kirim Jawaban Challenge</button>
+        <div class="status-msg" id="challengeStatus"></div>
+      </div>
+    </section>
+
+    <!-- 7. KESALAHAN YANG SERING TERJADI -->
+    <section class="card">
+      <div class="eyebrow">⚠️ Kesalahan yang Sering Terjadi</div>
+
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 1</span>
+        <p><strong>Yang biasa dilakukan:</strong> mensubstitusikan nilai a ke fungsi pecahan tanpa memeriksa apakah penyebutnya menjadi 0.</p>
+        <p><strong>Kenapa salah:</strong> sifat limit pembagian hanya berlaku kalau limit penyebutnya tidak nol. Kalau langsung dipakai tanpa cek, kesimpulannya bisa keliru.</p>
+        <p><strong>Cara menghindarinya:</strong> selalu substitusi ke penyebut dulu, pastikan hasilnya bukan 0, baru lanjut ke pembilang.</p>
+      </div>
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 2</span>
+        <p><strong>Yang biasa dilakukan:</strong> lupa memasukkan tanda kurung saat mensubstitusi nilai negatif atau pecahan.</p>
+        <p><strong>Kenapa salah:</strong> tanpa tanda kurung, tanda minus atau pangkat bisa salah dihitung, misalnya <span class="katex-inline" data-tex="(-2)^2"></span> berbeda dengan <span class="katex-inline" data-tex="-2^2"></span>.</p>
+        <p><strong>Cara menghindarinya:</strong> selalu bungkus nilai yang disubstitusikan dengan tanda kurung sebelum dihitung.</p>
+      </div>
+      <div class="mis-item">
+        <span class="mis-tag">Kesalahan 3</span>
+        <p><strong>Yang biasa dilakukan:</strong> memakai sifat-sifat limit sebagai rumus hafalan, tanpa mengingat bahwa semuanya bermula dari ide "mendekati".</p>
+        <p><strong>Kenapa salah:</strong> kalau lupa maknanya, siswa sulit mengenali kapan suatu sifat boleh dipakai dan kapan tidak.</p>
+        <p><strong>Cara menghindarinya:</strong> setiap kali memakai sifat limit, coba ingat lagi: "kalau f(x) mendekati sesuatu dan g(x) mendekati sesuatu, hasil gabungannya juga mendekati sesuatu yang wajar."</p>
+      </div>
+    </section>
+
+    <!-- 8. RINGKASAN -->
+    <section class="card">
+      <div class="eyebrow">📌 Ringkasan</div>
+      <div class="summary-item"><div class="summary-num">1</div><p>Substitusi langsung adalah jalan pintas dari proses mendekati, dan berlaku untuk fungsi aljabar yang grafiknya mulus dan tersambung di titik yang didekati.</p></div>
+      <div class="summary-item"><div class="summary-num">2</div><p>Notasinya: <span class="katex-inline" data-tex="\lim_{x\to a} f(x) = f(a)"></span>.</p></div>
+      <div class="summary-item"><div class="summary-num">3</div><p>Sifat-sifat limit (jumlah, selisih, kali, bagi, pangkat) membantu menghitung limit dari fungsi gabungan, satu per satu bagian.</p></div>
+      <div class="summary-item"><div class="summary-num">4</div><p>Sifat pembagian limit hanya berlaku jika limit penyebutnya tidak sama dengan nol.</p></div>
+      <div class="summary-item"><div class="summary-num">5</div><p>Jika substitusi menghasilkan bentuk <span class="katex-inline" data-tex="\tfrac{0}{0}"></span>, itu tanda perlu cara lain — bukan berarti limitnya tidak ada.</p></div>
+    </section>
+
+    <!-- 9. REFLEKSI -->
+    <section class="card" id="reflectionSection">
+      <div class="eyebrow">✍️ Refleksi</div>
+      <div class="locked-note" id="reflectionLock">🔒 Isi Nama dan Kelas di bagian atas dulu untuk membuka Refleksi.</div>
+
+      <div id="reflectionBody" style="display:none;">
+        <div class="field">
+          <label>1. Menurutmu, mengapa untuk fungsi yang grafiknya mulus (tanpa lubang), substitusi langsung bisa memberikan nilai limitnya?</label>
+          <textarea id="ref1" placeholder="Tulis jawabanmu di sini..."></textarea>
+        </div>
+        <div class="field">
+          <label>2. Ceritakan dengan kata-katamu sendiri, syarat apa yang harus dipenuhi supaya sifat pembagian limit boleh dipakai?</label>
+          <textarea id="ref2" placeholder="Tulis jawabanmu di sini..."></textarea>
+        </div>
+        <button class="btn btn-primary btn-full" id="submitReflection">Kirim Refleksi</button>
+        <div class="status-msg" id="reflectionStatus"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="site-footer">
+    <strong>NUMERA</strong><br>
+    Dikembangkan oleh Kiki Herdiansyah<br>
+    Versi 1.0 · © 2026
+  </footer>
+</div>
+
+<script>
+/* ================= KONFIGURASI GOOGLE APPS SCRIPT ================= */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec"; // <-- Guru: tempel URL Google Apps Script di sini sebelum publish
+const TOPIK = "Limit Fungsi Aljabar";
+
+/* ================= UTIL ================= */
+function renderKatex(el, tex, displayMode){
+  if(window.katex){
+    try{ katex.render(tex, el, {throwOnError:false, displayMode: !!displayMode}); }
+    catch(e){ el.textContent = tex; }
+  } else {
+    el.textContent = tex;
+  }
+}
+function renderAllStatic(){
+  document.querySelectorAll('.katex-inline').forEach(el=>{
+    renderKatex(el, el.getAttribute('data-tex'), false);
+  });
+}
+window.addEventListener('load', ()=>{
+  setTimeout(renderAllStatic, 60);
+});
+
+/* progress bar */
+function updateProgress(){
+  const doc = document.documentElement;
+  const scrolled = doc.scrollTop || document.body.scrollTop;
+  const height = (doc.scrollHeight || document.body.scrollHeight) - doc.clientHeight;
+  const pct = height > 0 ? Math.min(100,(scrolled/height)*100) : 0;
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+window.addEventListener('scroll', updateProgress);
+window.addEventListener('load', updateProgress);
+
+/* recap table */
+(function(){
+  const container = document.getElementById('recapTable');
+  const xs = [2.9,2.99,2.999,'⋯',3.001,3.01,3.1];
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+  html += '<tr>'+xs.map(x=>`<td style="padding:4px;color:#64748B;">x=${x}</td>`).join('')+'</tr>';
+  html += '<tr>'+xs.map(x=>{
+    if(x==='⋯') return '<td style="padding:4px;font-weight:700;">⋯</td>';
+    const f = 2*x+1;
+    return `<td style="padding:4px;font-weight:700;color:#2563EB;">${f.toFixed(3)}</td>`;
+  }).join('')+'</tr>';
+  html += '</table>';
+  container.innerHTML = html;
+})();
+
+/* ================= IDENTITY GATING ================= */
+function identityFilled(){
+  return document.getElementById('namaSiswa').value.trim() !== '' &&
+         document.getElementById('kelasSiswa').value.trim() !== '';
+}
+function refreshGates(){
+  const ok = identityFilled();
+  document.getElementById('challengeLock').style.display = ok ? 'none' : 'block';
+  document.getElementById('challengeBody').style.display = ok ? 'block' : 'none';
+  document.getElementById('reflectionLock').style.display = ok ? 'none' : 'block';
+  document.getElementById('reflectionBody').style.display = ok ? 'block' : 'none';
+  if(ok){ setTimeout(renderAllStatic, 30); }
+}
+document.getElementById('namaSiswa').addEventListener('input', refreshGates);
+document.getElementById('kelasSiswa').addEventListener('input', refreshGates);
+refreshGates();
+
+/* ================= LIHAT CARA KERJANYA ================= */
+const steps = [
+  {title:"Tulis limitnya", tex:"\\lim_{x\\to 2}(3x^2-5x+1)", note:"Ini yang ingin kita hitung."},
+  {title:"Cek kemulusan fungsi", tex:"3x^2-5x+1 \\text{ adalah polinomial}", note:"Grafik polinomial selalu mulus dan tersambung di setiap titik, jadi substitusi langsung boleh dipakai."},
+  {title:"Substitusikan x = 2", tex:"3(2)^2-5(2)+1", note:"Ganti setiap x dengan 2, jangan lupa tanda kurung."},
+  {title:"Hitung hasilnya", tex:"3(4)-10+1 = 12-10+1 = 3", note:"Jadi nilai limitnya adalah 3 — sama dengan f(2)."}
+];
+let stepIdx = 0;
+function renderStep(){
+  const s = steps[stepIdx];
+  document.getElementById('stepCounter').textContent = (stepIdx+1)+' / '+steps.length;
+  const body = document.getElementById('stepBody');
+  body.innerHTML = `<h3>${s.title}</h3><div class="mathbox big" id="stepMath"></div><p class="soft small">${s.note}</p>`;
+  renderKatex(document.getElementById('stepMath'), s.tex, true);
+  document.getElementById('stepPrev').disabled = stepIdx===0;
+  document.getElementById('stepNext').textContent = stepIdx===steps.length-1 ? 'Ulangi ↻' : 'Berikutnya →';
+  const dots = document.getElementById('stepDots');
+  dots.innerHTML = steps.map((_,i)=>`<div class="dot ${i===stepIdx?'active':''}"></div>`).join('');
+}
+document.getElementById('stepPrev').addEventListener('click', ()=>{ if(stepIdx>0){stepIdx--; renderStep();} });
+document.getElementById('stepNext').addEventListener('click', ()=>{
+  if(stepIdx===steps.length-1){ stepIdx=0; } else { stepIdx++; }
+  renderStep();
+});
+renderStep();
+
+/* ================= COBA SENDIRI ================= */
+const fnDefs = {
+  linear: {
+    label: "f(x) = 2x + 3", min:0, max:6, step:1, default:3,
+    tex: (a)=>`2x+3`,
+    sub: (a)=>`2(${a})+3`,
+    val: (a)=>2*a+3,
+    prop: "Substitusi langsung (fungsi linear, mulus di semua titik)"
+  },
+  kuadrat: {
+    label: "f(x) = x² − 4x + 1", min:-1, max:6, step:1, default:2,
+    tex: (a)=>`x^2-4x+1`,
+    sub: (a)=>`(${a})^2-4(${a})+1`,
+    val: (a)=>a*a-4*a+1,
+    prop: "Substitusi langsung + sifat pangkat & selisih"
+  },
+  pecahan: {
+    label: "f(x) = (2x + 1) / (x − 5)", min:0, max:4, step:1, default:1,
+    tex: (a)=>`\\dfrac{2x+1}{x-5}`,
+    sub: (a)=>`\\dfrac{2(${a})+1}{(${a})-5}`,
+    val: (a)=>(2*a+1)/(a-5),
+    prop: "Sifat pembagian limit (penyebut tidak pernah 0 di rentang ini)"
+  }
+};
+let currentFn = 'linear';
+
+function setupSlider(){
+  const def = fnDefs[currentFn];
+  const slider = document.getElementById('aSlider');
+  slider.min = def.min; slider.max = def.max; slider.step = def.step;
+  slider.value = def.default;
+  document.getElementById('aVal').textContent = def.default;
+  updateTry();
+}
+function updateTry(){
+  const def = fnDefs[currentFn];
+  const a = Number(document.getElementById('aSlider').value);
+  document.getElementById('aVal').textContent = a;
+  renderKatex(document.getElementById('fnDisplay'), `f(x) = ${def.tex(a)}`, true);
+  renderKatex(document.getElementById('substitutionDisplay'), `f(${a}) = ${def.sub(a)}`, true);
+  const val = def.val(a);
+  const rounded = Number.isInteger(val) ? val : val.toFixed(2);
+  document.getElementById('limitResult').textContent = rounded;
+  document.getElementById('propUsed').textContent = def.prop;
+
+  const insight = document.getElementById('tryInsight');
+  insight.style.display = 'flex';
+  if(currentFn==='pecahan'){
+    insight.innerHTML = `<span class="ic">💡</span><span>Perhatikan: penyebutnya (${a}-5=${a-5}) tidak pernah nol di sini, jadi sifat pembagian limit aman dipakai.</span>`;
+  } else if(currentFn==='kuadrat'){
+    insight.innerHTML = `<span class="ic">💡</span><span>Fungsi kuadrat tetap mulus di semua titik, jadi substitusi langsung selalu berlaku, tidak peduli nilai a berapa pun.</span>`;
+  } else {
+    insight.innerHTML = `<span class="ic">💡</span><span>Fungsi linear adalah bentuk paling sederhana untuk melihat substitusi langsung bekerja.</span>`;
+  }
+}
+document.querySelectorAll('#fnChips .chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('#fnChips .chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    currentFn = chip.getAttribute('data-fn');
+    setupSlider();
+  });
+});
+document.getElementById('aSlider').addEventListener('input', updateTry);
+setupSlider();
+
+/* ================= CHALLENGE ================= */
+const challenge = {
+  q1: {
+    options: ["6","8","10","14"],
+    correct: 2,
+    fb: {
+      correct: "Betul! 2(3)+4 = 10. Karena fungsinya linear (mulus di semua titik), substitusi langsung sudah cukup.",
+      wrong: "Coba substitusikan x=3 ke SETIAP suku: 2(3) + 4 — jangan lupa suku konstanta +4-nya."
+    }
+  },
+  q2: {
+    options: [
+      "Bisa, karena sifat limit pembagian selalu berlaku",
+      "Tidak bisa, karena syarat sifat pembagian adalah limit penyebutnya tidak boleh 0",
+      "Bisa, asalkan f(x) dan g(x) sama-sama fungsi aljabar",
+      "Tidak bisa, karena limit f(x) harus sama dengan limit g(x)"
+    ],
+    correct: 1,
+    fb: {
+      correct: "Tepat! Sifat lim[f(x)/g(x)] = lim f(x) / lim g(x) hanya berlaku kalau limit penyebutnya tidak sama dengan 0.",
+      wrong: "Ingat lagi syarat sifat pembagian limit: limit penyebut (g(x)) tidak boleh 0. Kalau penyebutnya 0, sifat ini tidak bisa langsung dipakai."
+    }
+  },
+  q3: {
+    options: ["-1","5","11","1"],
+    correct: 0,
+    fb: {
+      correct: "Benar! 2(4) - (-3)² = 8 - 9 = -1. Kamu berhasil menggabungkan sifat kelipatan konstanta, pangkat, dan selisih sekaligus.",
+      wrong: "Coba pecah per bagian: hitung dulu 2×f(x) = 2×4 = 8, lalu g(x)² = (-3)² = 9, baru kurangkan: 8-9."
+    }
+  }
+};
+const challengeAnswers = {};
+function renderOptions(qid){
+  const q = challenge[qid];
+  const container = document.getElementById(qid+'opts');
+  container.innerHTML = '';
+  q.options.forEach((opt,i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.textContent = opt;
+    btn.addEventListener('click', ()=>{
+      if(challengeAnswers[qid] !== undefined) return;
+      challengeAnswers[qid] = i;
+      const isCorrect = i === q.correct;
+      Array.from(container.children).forEach((b,bi)=>{
+        b.disabled = true;
+        if(bi===q.correct) b.classList.add('correct');
+        else if(bi===i) b.classList.add('wrong');
+      });
+      const fb = document.getElementById(qid+'fb');
+      fb.style.display = 'block';
+      fb.className = 'feedback ' + (isCorrect ? 'ok' : 'bad');
+      fb.textContent = isCorrect ? q.fb.correct : q.fb.wrong;
+      checkChallengeComplete();
+    });
+    container.appendChild(btn);
+  });
+}
+['q1','q2','q3'].forEach(renderOptions);
+function checkChallengeComplete(){
+  const done = ['q1','q2','q3'].every(q=>challengeAnswers[q]!==undefined);
+  document.getElementById('submitChallenge').disabled = !done;
+}
+document.getElementById('submitChallenge').addEventListener('click', ()=>{
+  const score = ['q1','q2','q3'].filter(q=>challengeAnswers[q]===challenge[q].correct).length;
+  const payload = {
+    jenis: "Challenge",
+    topik: TOPIK,
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim(),
+    skor: score+" / 3",
+    jawaban1: challenge.q1.options[challengeAnswers.q1],
+    jawaban2: challenge.q2.options[challengeAnswers.q2],
+    jawaban3: challenge.q3.options[challengeAnswers.q3],
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  kirimKeGuru(payload, 'challengeStatus');
+  document.getElementById('submitChallenge').disabled = true;
+});
+
+/* ================= REFLEKSI ================= */
+document.getElementById('submitReflection').addEventListener('click', ()=>{
+  const r1 = document.getElementById('ref1').value.trim();
+  const r2 = document.getElementById('ref2').value.trim();
+  if(!r1 || !r2){
+    const st = document.getElementById('reflectionStatus');
+    st.textContent = 'Isi kedua jawaban refleksi dulu ya.';
+    st.className = 'status-msg';
+    return;
+  }
+  const payload = {
+    jenis: "Refleksi",
+    topik: TOPIK,
+    nama: document.getElementById('namaSiswa').value.trim(),
+    kelas: document.getElementById('kelasSiswa').value.trim(),
+    jawaban1: r1,
+    jawaban2: r2,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  kirimKeGuru(payload, 'reflectionStatus');
+});
+
+/* ================= KIRIM KE GURU ================= */
+function kirimKeGuru(payload, statusElId){
+  const st = document.getElementById(statusElId);
+  if(!SCRIPT_URL){
+    st.textContent = '⚠️ Belum terhubung ke Google Sheet (SCRIPT_URL kosong). Jawaban belum terkirim ke guru.';
+    st.className = 'status-msg';
+    console.log('Payload (SCRIPT_URL kosong):', payload);
+    return;
+  }
+  st.textContent = 'Mengirim jawaban...';
+  st.className = 'status-msg';
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    st.textContent = '✅ Jawaban berhasil dikirim ke guru!';
+    st.className = 'status-msg ok';
+  }).catch(()=>{
+    st.textContent = '❌ Gagal mengirim jawaban. Periksa koneksi internetmu.';
+    st.className = 'status-msg';
+  });
+}
+</script>
+</body>
+</html>
