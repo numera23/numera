@@ -540,6 +540,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c4 0 4 12 8 12s4-12 8-12"/></svg>
       Trigonometri
     </button>
+    <button class="chip" data-filter="kalkulus">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6c4 0 4 12 8 12s4-12 8-12"/></svg>
+      Kalkulus
+    </button>
     <button class="chip" data-filter="lainnya">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>
       Lainnya
@@ -846,6 +850,65 @@ const EXPLORATION_DATA = [
     ]
   },
     {
+    id: "limit",
+    filterKey: "kalkulus",
+    name: "Limit Fungsi",
+    description: "Ketahui konsep mendekati.",
+    color: "#556B2F",
+    colorLight: "#B8C5B3",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16l5-5 4 3 7-7"/><path d="M17 7h3v3"/><path d="M4 20h16"/></svg>`,
+    items: [
+      {
+        name: "Mengejar Titik",
+        description: "Geser titik birunya sepanjang garis.",
+        href: "eksplorasi_konsep_mendekati.html",
+        icon: "geser-horizontal"
+      },
+      {
+        name: "Dari Kiri atau Kanan?",
+        description: "Yuk cari tahu sendiri polanya.",
+        href: "eksplorasi_konsep_mendekati.html",
+        icon: "geser-horizontal"
+      },
+      {
+        name: "Apa yang Terjadi di Titik Itu?",
+        description: "Geser titik berlubang dan titik penuh di garis putus-putus itu ke posisi yang kamu mau.",
+        href: "eksplorasi_apa_yang_terjadi_di_titik_itu.html",
+        icon: "geser-horizontal"
+      },
+      {
+        name: "Limit Terlihat dari Grafik",
+        description: "Geser garis vertikal mendekati garis incar putus-putus.",
+        href: "eksplorasi_limit_terlihat_grafik.html",
+        icon: "geser-horizontal"
+      },
+      {
+        name: "Ketika Kiri dan Kanan Berbeda",
+        description: "Apakah kedua titik selalu berakhir di ketinggian yang sama?",
+        href: "eksplorasi_ketika_kiri_kanan_berbeda.html",
+        icon: "geser-vertikal"
+      },
+      {
+        name: "Mengapa 0/0?",
+        description: "Geser x mendekati 2, atau langsung loncat ke x = 2?",
+        href: "eksplorasi_mengapa_00.html",
+        icon: "irisan-elips"
+      },
+      {
+        name: "Mendekati Tak Hingga",
+        description: "Geser slider ke kanan supaya x semakin besar.",
+        href: "eksplorasi_mendekati_tak_hingga.html",
+        icon: "sudut-istimewa"
+      },
+      {
+        name: "Detektif Limit",
+        description: "Apa yang terjadi pada nilainya saat titik semakin dekat?.",
+        href: "eksplorasi_detektif_limit.html",
+        icon: "proses-berantai"
+      }
+    ]
+  },
+  {
     id: "transformasifungsi",
     filterKey: "geometri",
     name: "Transformasi Fungsi",
