@@ -1,0 +1,790 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Keberadaan limit dua sisi
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ketika Kiri dan Kanan Berbeda · Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif keberadaan limit dua sisi — Numera">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-soft:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+
+    --left-color:#2563EB;
+    --right-color:#F59E0B;
+
+    --radius-card:18px;
+    --radius-btn:12px;
+
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:14px;
+    --sp-4:20px;
+    --sp-5:28px;
+    --sp-6:40px;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  body{
+    padding-bottom:var(--sp-6);
+  }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 var(--sp-4);
+  }
+
+  /* Topbar */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+
+  .topbar-inner{
+    max-width:900px;
+    margin:0 auto;
+    padding:var(--sp-3) var(--sp-4);
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-soft);
+    letter-spacing:.2px;
+  }
+
+  .topbar-inner strong{
+    color:var(--primary);
+  }
+
+  .progress-track{
+    height:3px;
+    background:var(--border);
+    width:100%;
+  }
+
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:var(--primary);
+    transition:width 80ms linear;
+  }
+
+  /* Header */
+  .page-header{
+    padding:var(--sp-6) 0 var(--sp-4);
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--primary-light);
+    color:var(--primary-hover);
+    font-size:12.5px;
+    font-weight:700;
+    padding:6px 12px;
+    border-radius:999px;
+    margin-bottom:var(--sp-3);
+  }
+
+  h1{
+    font-size:28px;
+    font-weight:800;
+    margin:0 0 var(--sp-2);
+    letter-spacing:-.5px;
+  }
+
+  .header-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:var(--sp-3);
+    font-size:13.5px;
+    color:var(--text-soft);
+    margin-bottom:var(--sp-3);
+  }
+
+  .header-meta span{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+  }
+
+  .header-link{
+    font-size:13.5px;
+    color:var(--text-soft);
+    margin:0 0 var(--sp-2);
+  }
+
+  .header-invite{
+    font-size:15.5px;
+    font-weight:600;
+    color:var(--text);
+    margin:0;
+  }
+
+  /* Section */
+  section{
+    margin-top:var(--sp-5);
+  }
+
+  .section-title{
+    font-size:17px;
+    font-weight:700;
+    margin:0 0 var(--sp-3);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius-card);
+    box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    padding:var(--sp-4);
+  }
+
+  /* Mission */
+  .mission-card p{
+    margin:0 0 var(--sp-2);
+    font-size:15.5px;
+    line-height:1.5;
+  }
+
+  .mission-card p:last-child{margin-bottom:0;}
+
+  .mission-question{
+    color:var(--primary-hover);
+    font-weight:700;
+  }
+
+  /* Lab */
+  .lab-card{
+    padding:var(--sp-4) var(--sp-4) var(--sp-5);
+  }
+
+  .preset-row{
+    display:flex;
+    gap:var(--sp-2);
+    margin-bottom:var(--sp-4);
+  }
+
+  .preset-btn{
+    flex:1;
+    border:1.5px solid var(--border);
+    background:var(--bg);
+    color:var(--text-soft);
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    padding:10px 8px;
+    border-radius:var(--radius-btn);
+    cursor:pointer;
+    transition:all 200ms ease;
+    min-height:40px;
+  }
+
+  .preset-btn.active{
+    background:var(--primary);
+    border-color:var(--primary);
+    color:#fff;
+  }
+
+  .canvas-wrap{
+    width:100%;
+    background:var(--bg);
+    border-radius:14px;
+    border:1px solid var(--border);
+    overflow:hidden;
+    margin-bottom:var(--sp-4);
+  }
+
+  canvas{
+    display:block;
+    width:100%;
+    height:auto;
+    touch-action:none;
+  }
+
+  .zoom-box{
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    padding:var(--sp-3);
+    background:#F8FAFC;
+  }
+
+  .zoom-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:var(--sp-2);
+  }
+
+  input[type=range]{
+    width:100%;
+    accent-color:var(--primary);
+    height:22px;
+  }
+
+  .readout-row{
+    display:flex;
+    gap:var(--sp-3);
+    margin-top:var(--sp-3);
+    flex-wrap:wrap;
+  }
+
+  .readout-box{
+    flex:1;
+    min-width:130px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:10px 12px;
+    text-align:center;
+  }
+
+  .readout-box.left{border-color:#BFDBFE;}
+  .readout-box.right{border-color:#FDE7C2;}
+
+  .readout-box .label{
+    font-size:11.5px;
+    color:var(--text-soft);
+    font-weight:600;
+    margin-bottom:2px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+  }
+
+  .readout-box .value{
+    font-size:18px;
+    font-weight:800;
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    display:inline-block;
+  }
+
+  .dot.left{background:var(--left-color);}
+  .dot.right{background:var(--right-color);}
+
+  .lab-actions{
+    display:flex;
+    gap:var(--sp-2);
+    margin-top:var(--sp-4);
+    flex-wrap:wrap;
+  }
+
+  .action-btn{
+    flex:1;
+    min-width:140px;
+    border:none;
+    background:var(--primary);
+    color:#fff;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    padding:10px 14px;
+    border-radius:var(--radius-btn);
+    min-height:40px;
+    cursor:pointer;
+    transition:background 200ms ease;
+  }
+
+  .action-btn:hover{background:var(--primary-hover);}
+
+  .action-btn.ghost{
+    background:var(--card);
+    color:var(--text);
+    border:1.5px solid var(--border);
+  }
+
+  .action-btn.ghost:hover{
+    background:var(--bg);
+  }
+
+  /* Dugaan */
+  .guess-card textarea{
+    width:100%;
+    min-height:100px;
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    padding:var(--sp-3);
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--text);
+    resize:vertical;
+    background:var(--bg);
+  }
+
+  .guess-card textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+    background:#fff;
+  }
+
+  .guess-note{
+    font-size:13px;
+    color:var(--text-soft);
+    margin:var(--sp-2) 0 0;
+  }
+
+  /* Next */
+  .next-card{
+    text-align:center;
+    padding:var(--sp-5) var(--sp-4);
+  }
+
+  .next-card p{
+    font-size:15px;
+    line-height:1.6;
+    margin:0 0 var(--sp-4);
+    color:var(--text-soft);
+  }
+
+  .next-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--primary);
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    font-size:15px;
+    padding:12px 24px;
+    border-radius:var(--radius-btn);
+    min-height:44px;
+    transition:background 200ms ease;
+  }
+
+  .next-btn:hover{background:var(--primary-hover);}
+
+  /* Footer */
+  .site-footer{
+    padding:var(--sp-5) 0 var(--sp-6);
+    text-align:center;
+  }
+
+  .footer-divider{
+    height:1px;
+    background:var(--border);
+    margin-bottom:var(--sp-4);
+  }
+
+  .footer-brand{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--primary);
+    margin:0 0 4px;
+  }
+
+  .footer-text{
+    font-size:13px;
+    color:var(--text-soft);
+    margin:0 0 2px;
+  }
+
+  .footer-meta{
+    font-size:12.5px;
+    color:var(--text-soft);
+    margin:0;
+    opacity:.85;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · 🧪 <strong>Ketika Kiri dan Kanan Berbeda</strong> — Eksplorasi</div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="wrap">
+
+  <header class="page-header">
+    <span class="badge">🧪 Eksplorasi</span>
+    <h1>Ketika Kiri dan Kanan Berbeda</h1>
+    <div class="header-meta">
+      <span>⏱️ 3–5 menit</span>
+    </div>
+    <p class="header-link">Bagian dari materi Limit Fungsi · Kerjakan sebelum buka Modul</p>
+    <p class="header-invite">Yuk cari tahu sendiri polanya.</p>
+  </header>
+
+  <section aria-labelledby="misi-title">
+    <h2 class="section-title" id="misi-title">🎯 Misi Eksplorasi</h2>
+    <div class="card mission-card">
+      <p>Geser slider ini untuk mendekatkan dua titik ke garis sasaran dari dua arah sekaligus.</p>
+      <p class="mission-question">Apakah kedua titik selalu berakhir di ketinggian yang sama?</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="lab-title">
+    <h2 class="section-title" id="lab-title">🧪 Laboratorium Matematika</h2>
+    <div class="card lab-card">
+
+      <div class="preset-row">
+        <button class="preset-btn active" id="btnP1" type="button">Grafik 1</button>
+        <button class="preset-btn" id="btnP2" type="button">Grafik 2</button>
+        <button class="preset-btn" id="btnP3" type="button">Grafik 3</button>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="graphCanvas" width="820" height="480"></canvas>
+      </div>
+
+      <div class="zoom-box">
+        <div class="zoom-label"><span>Kedekatan ke Garis Sasaran</span></div>
+        <input type="range" id="sliderZoom" min="0" max="1" step="0.005" value="0">
+        <div class="readout-row">
+          <div class="readout-box left">
+            <div class="label"><span class="dot left"></span>DARI KIRI</div>
+            <div class="value" id="leftVal">—</div>
+          </div>
+          <div class="readout-box right">
+            <div class="label"><span class="dot right"></span>DARI KANAN</div>
+            <div class="value" id="rightVal">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lab-actions">
+        <button class="action-btn ghost" id="btnReset" type="button">↻ Reset Posisi</button>
+        <button class="action-btn" id="btnSwitch" type="button">🔀 Coba Grafik Lain</button>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="dugaan-title">
+    <h2 class="section-title" id="dugaan-title">💭 Dugaan Saya</h2>
+    <div class="card guess-card">
+      <textarea id="guessBox" placeholder="Tulis apa yang kamu perhatikan di sini..."></textarea>
+      <p class="guess-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="lanjut-title">
+    <h2 class="section-title" id="lanjut-title">🚀 Lanjut ke Modul</h2>
+    <div class="card next-card">
+      <p>Kamu sudah punya dugaan sendiri. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GURU: ganti href="#" di bawah ini dengan URL Modul "Keberadaan limit dua sisi" -->
+      <a href="#" class="next-btn">Buka Modul →</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-divider"></div>
+      <p class="footer-brand">Numera</p>
+      <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+      <p class="footer-meta">Versi 1.0 · © 2026</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Progress bar ----------
+  var progressFill = document.getElementById('progressFill');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrollTop = h.scrollTop || document.body.scrollTop;
+    var scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressFill.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // ---------- Presets ----------
+  var X_MIN = 0, X_MAX = 4;
+  var Y_MIN = 0, Y_MAX = 5.4;
+  var GAP = 0.05;
+
+  var presets = {
+    1: {
+      target: 2,
+      fLeft: function(x){ return 0.35*Math.pow(x-2,2) + 1.8; },
+      fRight: function(x){ return 0.35*Math.pow(x-2,2) + 1.8; }
+    },
+    2: {
+      target: 2,
+      fLeft: function(x){ return 0.35*Math.pow(x-2,2) + 1.4; },
+      fRight: function(x){ return 0.35*Math.pow(x-2,2) + 3.6; }
+    },
+    3: {
+      target: 1,
+      fLeft: function(x){ return -0.4*x + 2.6; },
+      fRight: function(x){ return -0.4*x + 4.0; }
+    }
+  };
+
+  var currentPreset = 1;
+
+  function targetX(){ return presets[currentPreset].target; }
+  function fLeft(x){ return presets[currentPreset].fLeft(x); }
+  function fRight(x){ return presets[currentPreset].fRight(x); }
+  function maxEps(){
+    var t = targetX();
+    return Math.min(t, X_MAX - t) - 0.1;
+  }
+
+  // ---------- Canvas ----------
+  var canvas = document.getElementById('graphCanvas');
+  var ctx = canvas.getContext('2d');
+  var W, H, padL = 46, padR = 20, padT = 20, padB = 36;
+  var plotW, plotH;
+
+  function resizeCanvas(){
+    var ratio = window.devicePixelRatio || 1;
+    var cssWidth = canvas.parentElement.clientWidth;
+    var cssHeight = cssWidth * (480/820);
+    canvas.style.width = cssWidth + 'px';
+    canvas.style.height = cssHeight + 'px';
+    canvas.width = cssWidth * ratio;
+    canvas.height = cssHeight * ratio;
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    W = cssWidth; H = cssHeight;
+    plotW = W - padL - padR;
+    plotH = H - padT - padB;
+    draw();
+  }
+
+  function toPx(x, y){
+    return {
+      x: padL + ((x - X_MIN) / (X_MAX - X_MIN)) * plotW,
+      y: padT + plotH - ((y - Y_MIN) / (Y_MAX - Y_MIN)) * plotH
+    };
+  }
+
+  function currentEps(){
+    var t = parseFloat(sliderZoom.value);
+    return maxEps() * (1 - t) + 0.06;
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    var tX = targetX();
+    var eps = currentEps();
+    var lx = Math.max(0, tX - eps);
+    var rx = Math.min(4, tX + eps);
+
+    // axes
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    var origin = toPx(X_MIN, Y_MIN);
+    var xAxisEnd = toPx(X_MAX, Y_MIN);
+    var yAxisEnd = toPx(X_MIN, Y_MAX);
+    ctx.moveTo(origin.x, origin.y); ctx.lineTo(xAxisEnd.x, xAxisEnd.y);
+    ctx.moveTo(origin.x, origin.y); ctx.lineTo(yAxisEnd.x, yAxisEnd.y);
+    ctx.stroke();
+
+    ctx.fillStyle = '#64748B';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    for(var xt=0; xt<=4; xt++){
+      var p = toPx(xt, Y_MIN);
+      ctx.fillText(String(xt), p.x, p.y + 16);
+    }
+
+    // target dashed line
+    ctx.strokeStyle = '#94A3B8';
+    ctx.setLineDash([4,4]);
+    ctx.lineWidth = 1.5;
+    var t1 = toPx(tX, Y_MIN);
+    var t2 = toPx(tX, Y_MAX);
+    ctx.beginPath();
+    ctx.moveTo(t1.x, t1.y);
+    ctx.lineTo(t2.x, t2.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillText('garis sasaran', t1.x, t1.y + 30);
+
+    // curve pieces
+    drawCurve(0, tX - GAP, fLeft, '#0F172A');
+    drawCurve(tX + GAP, 4, fRight, '#0F172A');
+
+    // open endpoints
+    drawOpenCircle(tX, fLeft(tX), '#2563EB');
+    drawOpenCircle(tX, fRight(tX), '#F59E0B');
+
+    // moving points
+    var ly = fLeft(lx);
+    var ry = fRight(rx);
+    drawGuide(lx, ly, '#2563EB');
+    drawGuide(rx, ry, '#F59E0B');
+    drawFilledDot(lx, ly, '#2563EB');
+    drawFilledDot(rx, ry, '#F59E0B');
+  }
+
+  function drawCurve(xFrom, xTo, fn, color){
+    if(xTo <= xFrom) return;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var steps = 50;
+    for(var i=0; i<=steps; i++){
+      var x = xFrom + (xTo - xFrom) * (i/steps);
+      var y = fn(x);
+      var p = toPx(x, y);
+      if(i===0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
+
+  function drawOpenCircle(x, y, color){
+    var p = toPx(x, y);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+    ctx.fillStyle = '#F8FAFC';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
+
+  function drawFilledDot(x, y, color){
+    var p = toPx(x, y);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 7, 0, Math.PI*2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#fff';
+    ctx.stroke();
+  }
+
+  function drawGuide(x, y, color){
+    var p = toPx(x, y);
+    var baseX = toPx(X_MIN, y);
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = 0.3;
+    ctx.setLineDash([3,3]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(baseX.x, baseX.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------- Controls ----------
+  var sliderZoom = document.getElementById('sliderZoom');
+  var leftVal = document.getElementById('leftVal');
+  var rightVal = document.getElementById('rightVal');
+  var btnP1 = document.getElementById('btnP1');
+  var btnP2 = document.getElementById('btnP2');
+  var btnP3 = document.getElementById('btnP3');
+  var btnReset = document.getElementById('btnReset');
+  var btnSwitch = document.getElementById('btnSwitch');
+
+  function refresh(){
+    var tX = targetX();
+    var eps = currentEps();
+    var lx = Math.max(0, tX - eps);
+    var rx = Math.min(4, tX + eps);
+    leftVal.textContent = fLeft(lx).toFixed(2);
+    rightVal.textContent = fRight(rx).toFixed(2);
+    draw();
+  }
+
+  sliderZoom.addEventListener('input', refresh);
+
+  function setPreset(n){
+    currentPreset = n;
+    btnP1.classList.toggle('active', n === 1);
+    btnP2.classList.toggle('active', n === 2);
+    btnP3.classList.toggle('active', n === 3);
+    sliderZoom.value = 0;
+    refresh();
+  }
+
+  btnP1.addEventListener('click', function(){ setPreset(1); });
+  btnP2.addEventListener('click', function(){ setPreset(2); });
+  btnP3.addEventListener('click', function(){ setPreset(3); });
+
+  btnReset.addEventListener('click', function(){
+    sliderZoom.value = 0;
+    refresh();
+  });
+
+  btnSwitch.addEventListener('click', function(){
+    var next = currentPreset === 3 ? 1 : currentPreset + 1;
+    setPreset(next);
+  });
+
+  window.addEventListener('resize', resizeCanvas);
+
+  // ---------- Init ----------
+  resizeCanvas();
+  refresh();
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,803 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Limit kiri dan limit kanan
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Dari Kiri atau Kanan? · Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif limit kiri dan limit kanan — Numera">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-soft:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+
+    --left-color:#2563EB;
+    --right-color:#F59E0B;
+
+    --radius-card:18px;
+    --radius-btn:12px;
+
+    --sp-1:4px;
+    --sp-2:8px;
+    --sp-3:14px;
+    --sp-4:20px;
+    --sp-5:28px;
+    --sp-6:40px;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  body{
+    padding-bottom:var(--sp-6);
+  }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 var(--sp-4);
+  }
+
+  /* Topbar */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+
+  .topbar-inner{
+    max-width:900px;
+    margin:0 auto;
+    padding:var(--sp-3) var(--sp-4);
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-soft);
+    letter-spacing:.2px;
+  }
+
+  .topbar-inner strong{
+    color:var(--primary);
+  }
+
+  .progress-track{
+    height:3px;
+    background:var(--border);
+    width:100%;
+  }
+
+  .progress-fill{
+    height:100%;
+    width:0%;
+    background:var(--primary);
+    transition:width 80ms linear;
+  }
+
+  /* Header */
+  .page-header{
+    padding:var(--sp-6) 0 var(--sp-4);
+  }
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--primary-light);
+    color:var(--primary-hover);
+    font-size:12.5px;
+    font-weight:700;
+    padding:6px 12px;
+    border-radius:999px;
+    margin-bottom:var(--sp-3);
+  }
+
+  h1{
+    font-size:28px;
+    font-weight:800;
+    margin:0 0 var(--sp-2);
+    letter-spacing:-.5px;
+  }
+
+  .header-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:var(--sp-3);
+    font-size:13.5px;
+    color:var(--text-soft);
+    margin-bottom:var(--sp-3);
+  }
+
+  .header-meta span{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+  }
+
+  .header-link{
+    font-size:13.5px;
+    color:var(--text-soft);
+    margin:0 0 var(--sp-2);
+  }
+
+  .header-invite{
+    font-size:15.5px;
+    font-weight:600;
+    color:var(--text);
+    margin:0;
+  }
+
+  /* Section */
+  section{
+    margin-top:var(--sp-5);
+  }
+
+  .section-title{
+    font-size:17px;
+    font-weight:700;
+    margin:0 0 var(--sp-3);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius-card);
+    box-shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+    padding:var(--sp-4);
+  }
+
+  /* Mission */
+  .mission-card p{
+    margin:0 0 var(--sp-2);
+    font-size:15.5px;
+    line-height:1.5;
+  }
+
+  .mission-card p:last-child{margin-bottom:0;}
+
+  .mission-question{
+    color:var(--primary-hover);
+    font-weight:700;
+  }
+
+  /* Lab */
+  .lab-card{
+    padding:var(--sp-4) var(--sp-4) var(--sp-5);
+  }
+
+  .preset-row{
+    display:flex;
+    gap:var(--sp-2);
+    margin-bottom:var(--sp-4);
+  }
+
+  .preset-btn{
+    flex:1;
+    border:1.5px solid var(--border);
+    background:var(--bg);
+    color:var(--text-soft);
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:700;
+    padding:10px 8px;
+    border-radius:var(--radius-btn);
+    cursor:pointer;
+    transition:all 200ms ease;
+    min-height:40px;
+  }
+
+  .preset-btn.active{
+    background:var(--primary);
+    border-color:var(--primary);
+    color:#fff;
+  }
+
+  .canvas-wrap{
+    width:100%;
+    background:var(--bg);
+    border-radius:14px;
+    border:1px solid var(--border);
+    overflow:hidden;
+    margin-bottom:var(--sp-4);
+  }
+
+  canvas{
+    display:block;
+    width:100%;
+    height:auto;
+    touch-action:none;
+  }
+
+  .slider-group{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:var(--sp-3);
+  }
+
+  @media(min-width:620px){
+    .slider-group{
+      grid-template-columns:1fr 1fr;
+    }
+  }
+
+  .slider-box{
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    padding:var(--sp-3);
+  }
+
+  .slider-box.left{
+    border-color:#BFDBFE;
+    background:#F5F9FF;
+  }
+
+  .slider-box.right{
+    border-color:#FDE7C2;
+    background:#FFFAF2;
+  }
+
+  .slider-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:var(--sp-2);
+  }
+
+  .dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:6px;
+    vertical-align:middle;
+  }
+
+  .dot.left{background:var(--left-color);}
+  .dot.right{background:var(--right-color);}
+
+  input[type=range]{
+    width:100%;
+    accent-color:var(--primary);
+    height:22px;
+  }
+
+  .readout{
+    display:flex;
+    justify-content:space-between;
+    font-size:13.5px;
+    color:var(--text-soft);
+    margin-top:var(--sp-2);
+  }
+
+  .readout b{
+    color:var(--text);
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+  }
+
+  .lab-actions{
+    display:flex;
+    gap:var(--sp-2);
+    margin-top:var(--sp-4);
+    flex-wrap:wrap;
+  }
+
+  .action-btn{
+    flex:1;
+    min-width:140px;
+    border:none;
+    background:var(--primary);
+    color:#fff;
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    padding:10px 14px;
+    border-radius:var(--radius-btn);
+    min-height:40px;
+    cursor:pointer;
+    transition:background 200ms ease;
+  }
+
+  .action-btn:hover{background:var(--primary-hover);}
+
+  .action-btn.ghost{
+    background:var(--card);
+    color:var(--text);
+    border:1.5px solid var(--border);
+  }
+
+  .action-btn.ghost:hover{
+    background:var(--bg);
+  }
+
+  /* Dugaan */
+  .guess-card textarea{
+    width:100%;
+    min-height:100px;
+    border:1.5px solid var(--border);
+    border-radius:14px;
+    padding:var(--sp-3);
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--text);
+    resize:vertical;
+    background:var(--bg);
+  }
+
+  .guess-card textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+    background:#fff;
+  }
+
+  .guess-note{
+    font-size:13px;
+    color:var(--text-soft);
+    margin:var(--sp-2) 0 0;
+  }
+
+  /* Next */
+  .next-card{
+    text-align:center;
+    padding:var(--sp-5) var(--sp-4);
+  }
+
+  .next-card p{
+    font-size:15px;
+    line-height:1.6;
+    margin:0 0 var(--sp-4);
+    color:var(--text-soft);
+  }
+
+  .next-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--primary);
+    color:#fff;
+    text-decoration:none;
+    font-weight:700;
+    font-size:15px;
+    padding:12px 24px;
+    border-radius:var(--radius-btn);
+    min-height:44px;
+    transition:background 200ms ease;
+  }
+
+  .next-btn:hover{background:var(--primary-hover);}
+
+  /* Footer */
+  .site-footer{
+    padding:var(--sp-5) 0 var(--sp-6);
+    text-align:center;
+  }
+
+  .footer-divider{
+    height:1px;
+    background:var(--border);
+    margin-bottom:var(--sp-4);
+  }
+
+  .footer-brand{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--primary);
+    margin:0 0 4px;
+  }
+
+  .footer-text{
+    font-size:13px;
+    color:var(--text-soft);
+    margin:0 0 2px;
+  }
+
+  .footer-meta{
+    font-size:12.5px;
+    color:var(--text-soft);
+    margin:0;
+    opacity:.85;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">NUMERA · 🧪 <strong>Limit Kiri dan Limit Kanan</strong> — Eksplorasi</div>
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="wrap">
+
+  <header class="page-header">
+    <span class="badge">🧪 Eksplorasi</span>
+    <h1>Dari Kiri atau Kanan?</h1>
+    <div class="header-meta">
+      <span>⏱️ 3–5 menit</span>
+    </div>
+    <p class="header-link">Bagian dari materi Limit Fungsi · Kerjakan sebelum buka Modul</p>
+    <p class="header-invite">Yuk cari tahu sendiri polanya.</p>
+  </header>
+
+  <section aria-labelledby="misi-title">
+    <h2 class="section-title" id="misi-title">🎯 Misi Eksplorasi</h2>
+    <div class="card mission-card">
+      <p>Geser titik biru dari kiri dan titik oranye dari kanan, dekatkan keduanya ke garis putus-putus di tengah.</p>
+      <p class="mission-question">Perhatikan angka yang muncul di kedua kartu. Apakah angkanya jadi sama, atau tetap berbeda?</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="lab-title">
+    <h2 class="section-title" id="lab-title">🧪 Laboratorium Matematika</h2>
+    <div class="card lab-card">
+
+      <div class="preset-row">
+        <button class="preset-btn active" id="btnPresetA" type="button">Kondisi 1</button>
+        <button class="preset-btn" id="btnPresetB" type="button">Kondisi 2</button>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="graphCanvas" width="820" height="480"></canvas>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-box left">
+          <div class="slider-label"><span><span class="dot left"></span>Dari Kiri</span></div>
+          <input type="range" id="sliderLeft" min="0" max="1.9" step="0.01" value="0.2">
+          <div class="readout">
+            <span>posisi: <b id="xLeftVal">0.20</b></span>
+            <span>hasil: <b id="yLeftVal">3.42</b></span>
+          </div>
+        </div>
+        <div class="slider-box right">
+          <div class="slider-label"><span><span class="dot right"></span>Dari Kanan</span></div>
+          <input type="range" id="sliderRight" min="2.1" max="4" step="0.01" value="3.7">
+          <div class="readout">
+            <span>posisi: <b id="xRightVal">3.70</b></span>
+            <span>hasil: <b id="yRightVal">4.14</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lab-actions">
+        <button class="action-btn ghost" id="btnReset" type="button">↻ Reset Posisi</button>
+        <button class="action-btn" id="btnSwitch" type="button">🔀 Coba Kondisi Lain</button>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="dugaan-title">
+    <h2 class="section-title" id="dugaan-title">💭 Dugaan Saya</h2>
+    <div class="card guess-card">
+      <textarea id="guessBox" placeholder="Tulis apa yang kamu perhatikan di sini..."></textarea>
+      <p class="guess-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="lanjut-title">
+    <h2 class="section-title" id="lanjut-title">🚀 Lanjut ke Modul</h2>
+    <div class="card next-card">
+      <p>Kamu sudah punya dugaan sendiri. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GURU: ganti href="#" di bawah ini dengan URL Modul "Limit kiri dan limit kanan" -->
+      <a href="#" class="next-btn">Buka Modul →</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-divider"></div>
+      <p class="footer-brand">Numera</p>
+      <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+      <p class="footer-meta">Versi 1.0 · © 2026</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Progress bar ----------
+  var progressFill = document.getElementById('progressFill');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrollTop = h.scrollTop || document.body.scrollTop;
+    var scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressFill.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // ---------- Graph state ----------
+  var canvas = document.getElementById('graphCanvas');
+  var ctx = canvas.getContext('2d');
+
+  var TARGET_X = 2;
+  var X_MIN = 0, X_MAX = 4;
+  var Y_MIN = 0, Y_MAX = 5.4;
+
+  var preset = 'A';
+  var traceLeft = [];
+  var traceRight = [];
+  var MAX_TRACE = 6;
+
+  function fLeft(x){
+    return 0.5 * Math.pow(x - TARGET_X, 2) + 1.5;
+  }
+  function fRight(x){
+    var base = 0.5 * Math.pow(x - TARGET_X, 2);
+    return preset === 'A' ? base + 1.5 : base + 2.9;
+  }
+
+  // ---------- Canvas sizing ----------
+  var W, H, padL = 46, padR = 20, padT = 20, padB = 36;
+  var plotW, plotH;
+
+  function resizeCanvas(){
+    var ratio = window.devicePixelRatio || 1;
+    var cssWidth = canvas.parentElement.clientWidth;
+    var cssHeight = cssWidth * (480/820);
+    canvas.style.width = cssWidth + 'px';
+    canvas.style.height = cssHeight + 'px';
+    canvas.width = cssWidth * ratio;
+    canvas.height = cssHeight * ratio;
+    ctx.setTransform(ratio,0,0,ratio,0,0);
+    W = cssWidth; H = cssHeight;
+    plotW = W - padL - padR;
+    plotH = H - padT - padB;
+    draw();
+  }
+
+  function toPx(x, y){
+    return {
+      x: padL + ((x - X_MIN) / (X_MAX - X_MIN)) * plotW,
+      y: padT + plotH - ((y - Y_MIN) / (Y_MAX - Y_MIN)) * plotH
+    };
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // axes
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    var origin = toPx(X_MIN, Y_MIN);
+    var xAxisEnd = toPx(X_MAX, Y_MIN);
+    var yAxisEnd = toPx(X_MIN, Y_MAX);
+    ctx.moveTo(origin.x, origin.y); ctx.lineTo(xAxisEnd.x, xAxisEnd.y);
+    ctx.moveTo(origin.x, origin.y); ctx.lineTo(yAxisEnd.x, yAxisEnd.y);
+    ctx.stroke();
+
+    // x tick labels
+    ctx.fillStyle = '#64748B';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    for(var xt=0; xt<=4; xt++){
+      var p = toPx(xt, Y_MIN);
+      ctx.fillText(String(xt), p.x, p.y + 16);
+    }
+
+    // target dashed line
+    ctx.strokeStyle = '#94A3B8';
+    ctx.setLineDash([4,4]);
+    ctx.lineWidth = 1.5;
+    var t1 = toPx(TARGET_X, Y_MIN);
+    var t2 = toPx(TARGET_X, Y_MAX);
+    ctx.beginPath();
+    ctx.moveTo(t1.x, t1.y);
+    ctx.lineTo(t2.x, t2.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillText('titik tujuan', t1.x, t1.y + 30);
+
+    // curve left piece
+    drawCurve(0, TARGET_X - 0.02, fLeft, '#0F172A');
+    // curve right piece
+    drawCurve(TARGET_X + 0.02, 4, fRight, '#0F172A');
+
+    // open endpoint circles
+    drawOpenCircle(TARGET_X, fLeft(TARGET_X), '#2563EB');
+    drawOpenCircle(TARGET_X, fRight(TARGET_X), '#F59E0B');
+
+    // trace dots
+    traceLeft.forEach(function(pt, i){
+      drawDot(pt.x, pt.y, '#2563EB', 0.15 + (i/traceLeft.length)*0.35, 4);
+    });
+    traceRight.forEach(function(pt, i){
+      drawDot(pt.x, pt.y, '#F59E0B', 0.15 + (i/traceRight.length)*0.35, 4);
+    });
+
+    // current points with guide lines
+    var xl = parseFloat(sliderLeft.value);
+    var yl = fLeft(xl);
+    var xr = parseFloat(sliderRight.value);
+    var yr = fRight(xr);
+
+    drawGuide(xl, yl, '#2563EB');
+    drawGuide(xr, yr, '#F59E0B');
+
+    drawDot(xl, yl, '#2563EB', 1, 7);
+    drawDot(xr, yr, '#F59E0B', 1, 7);
+  }
+
+  function drawCurve(xFrom, xTo, fn, color){
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    var steps = 60;
+    for(var i=0; i<=steps; i++){
+      var x = xFrom + (xTo - xFrom) * (i/steps);
+      var y = fn(x);
+      var p = toPx(x, y);
+      if(i===0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
+
+  function drawOpenCircle(x, y, color){
+    var p = toPx(x, y);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 5, 0, Math.PI*2);
+    ctx.fillStyle = '#F8FAFC';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = color;
+    ctx.stroke();
+  }
+
+  function drawDot(x, y, color, alpha, r){
+    var p = toPx(x, y);
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  function drawGuide(x, y, color){
+    var p = toPx(x, y);
+    var baseY = toPx(x, Y_MIN);
+    var baseX = toPx(X_MIN, y);
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = 0.35;
+    ctx.setLineDash([3,3]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(baseY.x, baseY.y);
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(baseX.x, baseX.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha = 1;
+  }
+
+  // ---------- Controls ----------
+  var sliderLeft = document.getElementById('sliderLeft');
+  var sliderRight = document.getElementById('sliderRight');
+  var xLeftVal = document.getElementById('xLeftVal');
+  var yLeftVal = document.getElementById('yLeftVal');
+  var xRightVal = document.getElementById('xRightVal');
+  var yRightVal = document.getElementById('yRightVal');
+  var btnPresetA = document.getElementById('btnPresetA');
+  var btnPresetB = document.getElementById('btnPresetB');
+  var btnReset = document.getElementById('btnReset');
+  var btnSwitch = document.getElementById('btnSwitch');
+
+  function pushTrace(arr, x, y){
+    arr.push({x:x, y:y});
+    if(arr.length > MAX_TRACE) arr.shift();
+  }
+
+  function updateFromLeft(){
+    var x = parseFloat(sliderLeft.value);
+    var y = fLeft(x);
+    xLeftVal.textContent = x.toFixed(2);
+    yLeftVal.textContent = y.toFixed(2);
+    pushTrace(traceLeft, x, y);
+    draw();
+  }
+
+  function updateFromRight(){
+    var x = parseFloat(sliderRight.value);
+    var y = fRight(x);
+    xRightVal.textContent = x.toFixed(2);
+    yRightVal.textContent = y.toFixed(2);
+    pushTrace(traceRight, x, y);
+    draw();
+  }
+
+  sliderLeft.addEventListener('input', updateFromLeft);
+  sliderRight.addEventListener('input', updateFromRight);
+
+  function setPreset(p){
+    preset = p;
+    btnPresetA.classList.toggle('active', p === 'A');
+    btnPresetB.classList.toggle('active', p === 'B');
+    traceLeft = [];
+    traceRight = [];
+    updateFromLeft();
+    updateFromRight();
+  }
+
+  btnPresetA.addEventListener('click', function(){ setPreset('A'); });
+  btnPresetB.addEventListener('click', function(){ setPreset('B'); });
+
+  btnSwitch.addEventListener('click', function(){
+    setPreset(preset === 'A' ? 'B' : 'A');
+  });
+
+  btnReset.addEventListener('click', function(){
+    sliderLeft.value = 0.2;
+    sliderRight.value = 3.7;
+    traceLeft = [];
+    traceRight = [];
+    updateFromLeft();
+    updateFromRight();
+  });
+
+  window.addEventListener('resize', resizeCanvas);
+
+  // ---------- Init ----------
+  resizeCanvas();
+  updateFromLeft();
+  updateFromRight();
+
+})();
+</script>
+
+</body>
+</html>

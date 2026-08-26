@@ -1,0 +1,733 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Mendekati Tak Hingga
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Mendekati Tak Hingga · Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif: apa yang terjadi pada f(x) ketika x semakin besar?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#2563EB;
+    --primary-hover:#1D4ED8;
+    --primary-light:#DBEAFE;
+    --bg:#F8FAFC;
+    --card:#FFFFFF;
+    --text:#0F172A;
+    --text-soft:#64748B;
+    --border:#E2E8F0;
+    --success:#10B981;
+    --warning:#F59E0B;
+    --error:#EF4444;
+
+    --radius-card:18px;
+    --radius-btn:12px;
+
+    --sp-2:8px;
+    --sp-3:12px;
+    --sp-4:16px;
+    --sp-5:24px;
+    --sp-6:40px;
+
+    --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:0 var(--sp-4);
+  }
+
+  /* ---------- progress bar ---------- */
+  .progress-bar{
+    position:fixed;
+    top:0; left:0;
+    height:3px;
+    width:0%;
+    background:var(--primary);
+    z-index:100;
+    transition:width 80ms linear;
+  }
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:90;
+    background:rgba(248,250,252,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar .wrap{
+    padding:var(--sp-3) var(--sp-4);
+  }
+  .topbar-inner{
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-soft);
+    letter-spacing:.02em;
+  }
+  .topbar-inner strong{
+    color:var(--primary);
+    font-weight:800;
+  }
+
+  main{
+    padding-top:var(--sp-5);
+  }
+
+  section{
+    margin-bottom:var(--sp-5);
+  }
+
+  /* ---------- header ---------- */
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:var(--primary-light);
+    color:var(--primary);
+    font-size:12.5px;
+    font-weight:700;
+    padding:6px 12px;
+    border-radius:999px;
+    margin-bottom:var(--sp-3);
+  }
+
+  h1{
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+    margin:0 0 var(--sp-2);
+    line-height:1.2;
+  }
+
+  .lede{
+    font-size:14.5px;
+    color:var(--text-soft);
+    margin:0 0 4px;
+  }
+
+  .cta-line{
+    font-size:15px;
+    font-weight:600;
+    color:var(--text);
+    margin:var(--sp-2) 0 0;
+  }
+
+  .meta-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:var(--sp-3);
+    font-size:13px;
+    color:var(--text-soft);
+    font-weight:500;
+  }
+  .meta-row .dot{
+    width:4px;height:4px;border-radius:50%;
+    background:var(--text-soft);
+  }
+
+  /* ---------- card ---------- */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius-card);
+    box-shadow:var(--shadow-card);
+    padding:var(--sp-5);
+    border:1px solid var(--border);
+  }
+
+  h2{
+    font-size:19px;
+    font-weight:700;
+    margin:0 0 var(--sp-3);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .instr{
+    font-size:15.5px;
+    font-weight:600;
+    margin:0 0 6px;
+  }
+  .prompt{
+    font-size:14.5px;
+    color:var(--text-soft);
+    margin:0;
+  }
+
+  /* ---------- lab ---------- */
+  .lab-card{
+    padding:var(--sp-4);
+  }
+  @media(min-width:560px){
+    .lab-card{padding:var(--sp-5);}
+  }
+
+  .readout-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:var(--sp-3);
+    margin-bottom:var(--sp-4);
+  }
+
+  .readout{
+    background:var(--bg);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:var(--sp-3) var(--sp-4);
+    text-align:center;
+  }
+  .readout-label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--text-soft);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin:0 0 4px;
+  }
+  .readout-value{
+    font-size:22px;
+    font-weight:800;
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+    word-break:break-word;
+  }
+  .readout-value.accent{
+    color:var(--primary);
+  }
+
+  canvas{
+    width:100%;
+    height:240px;
+    display:block;
+    border-radius:14px;
+    background:var(--bg);
+    border:1px solid var(--border);
+    touch-action:none;
+  }
+
+  .canvas-wrap{
+    margin:var(--sp-4) 0;
+  }
+
+  .slider-wrap{
+    margin-top:var(--sp-4);
+  }
+  .slider-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--text-soft);
+    margin-bottom:6px;
+  }
+
+  input[type=range]{
+    -webkit-appearance:none;
+    appearance:none;
+    width:100%;
+    height:6px;
+    border-radius:999px;
+    background:var(--border);
+    outline:none;
+    margin:0;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    background:var(--primary);
+    border:3px solid #fff;
+    box-shadow:0 2px 6px rgba(37,99,235,.4);
+    cursor:pointer;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:26px;
+    height:26px;
+    border-radius:50%;
+    background:var(--primary);
+    border:3px solid #fff;
+    box-shadow:0 2px 6px rgba(37,99,235,.4);
+    cursor:pointer;
+    border:none;
+  }
+
+  .btn-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:var(--sp-2);
+    margin-top:var(--sp-4);
+  }
+
+  button{
+    font-family:inherit;
+    font-size:14px;
+    font-weight:600;
+    border-radius:var(--radius-btn);
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+    padding:0 16px;
+    height:42px;
+    cursor:pointer;
+    transition:all 200ms ease;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  button:hover{
+    border-color:var(--primary);
+    color:var(--primary);
+  }
+  button:active{
+    transform:scale(.97);
+  }
+  button.primary{
+    background:var(--primary);
+    color:#fff;
+    border-color:var(--primary);
+  }
+  button.primary:hover{
+    background:var(--primary-hover);
+    color:#fff;
+  }
+  button:disabled{
+    opacity:.45;
+    cursor:not-allowed;
+  }
+
+  .hint{
+    font-size:13px;
+    color:var(--text-soft);
+    margin-top:var(--sp-3);
+  }
+
+  /* ---------- dugaan ---------- */
+  textarea{
+    width:100%;
+    min-height:110px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    padding:var(--sp-3);
+    font-family:inherit;
+    font-size:14.5px;
+    color:var(--text);
+    resize:vertical;
+    outline:none;
+    transition:border-color 200ms ease;
+  }
+  textarea:focus{
+    border-color:var(--primary);
+  }
+  .small-note{
+    font-size:13px;
+    color:var(--text-soft);
+    margin-top:var(--sp-2);
+  }
+
+  /* ---------- next ---------- */
+  .next-card{
+    text-align:center;
+    padding:var(--sp-5);
+  }
+  .next-card p{
+    font-size:15px;
+    color:var(--text-soft);
+    margin:0 0 var(--sp-4);
+  }
+  .btn-next{
+    display:inline-flex;
+    height:44px;
+    padding:0 24px;
+  }
+
+  /* ---------- footer ---------- */
+  .site-footer{
+    padding:var(--sp-5) 0 var(--sp-6);
+    text-align:center;
+  }
+  .footer-divider{
+    height:1px;
+    background:var(--border);
+    margin-bottom:var(--sp-4);
+  }
+  .footer-brand{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--primary);
+    margin:0 0 4px;
+  }
+  .footer-text{
+    font-size:13px;
+    color:var(--text-soft);
+    margin:0 0 2px;
+  }
+  .footer-meta{
+    font-size:12.5px;
+    color:var(--text-soft);
+    margin:0;
+    opacity:.85;
+  }
+
+  @media(min-width:520px){
+    .readout-row{grid-template-columns:1fr 1fr;}
+    h1{font-size:32px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="topbar-inner">NUMERA · 🧪 <strong>Mendekati Tak Hingga</strong> — Eksplorasi</div>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- HEADER -->
+  <section>
+    <span class="badge">🧪 Eksplorasi</span>
+    <h1>Mendekati Tak Hingga</h1>
+    <p class="lede">Bagian dari materi Limit Fungsi · Kerjakan sebelum buka Modul</p>
+    <p class="cta-line">Yuk cari tahu sendiri polanya.</p>
+    <div class="meta-row">
+      <span>⏱️ 3–5 menit</span>
+      <span class="dot"></span>
+      <span>Laboratorium interaktif</span>
+    </div>
+  </section>
+
+  <!-- MISI -->
+  <section>
+    <div class="card">
+      <h2>🎯 Misi Eksplorasi</h2>
+      <p class="instr">Geser slider ke kanan supaya x semakin besar.</p>
+      <p class="prompt">Apa yang terjadi pada nilai f(x)?</p>
+    </div>
+  </section>
+
+  <!-- LABORATORIUM -->
+  <section>
+    <div class="card lab-card">
+      <h2>🧪 Laboratorium Matematika</h2>
+
+      <div class="readout-row">
+        <div class="readout">
+          <p class="readout-label">Nilai x</p>
+          <p class="readout-value" id="xValue">1</p>
+        </div>
+        <div class="readout">
+          <p class="readout-label">f(x)</p>
+          <p class="readout-value accent" id="fxValue">4.000000</p>
+        </div>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="graph"></canvas>
+      </div>
+
+      <div class="slider-wrap">
+        <div class="slider-label">
+          <span>x kecil</span>
+          <span>x sangat besar</span>
+        </div>
+        <input type="range" id="xSlider" min="0" max="12" step="1" value="0">
+      </div>
+
+      <div class="btn-row">
+        <button id="playBtn">▶ Play</button>
+        <button id="pauseBtn" disabled>⏸ Pause</button>
+        <button id="resetBtn">↻ Reset</button>
+        <button id="randomBtn">🔀 Coba nilai lain</button>
+      </div>
+
+      <p class="hint">Titik pada grafik meninggalkan jejak setiap kali kamu mencoba nilai x yang baru.</p>
+    </div>
+  </section>
+
+  <!-- DUGAAN SAYA -->
+  <section>
+    <div class="card">
+      <h2>💭 Dugaan Saya</h2>
+      <textarea id="dugaan" placeholder="Tulis apa yang kamu perhatikan di sini..."></textarea>
+      <p class="small-note">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <!-- LANJUT KE MODUL -->
+  <section>
+    <div class="card next-card">
+      <p>Kamu sudah punya dugaan sendiri.<br>Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GANTI href="#" DI BAWAH INI DENGAN URL MODUL "Mendekati Tak Hingga" -->
+      <a href="#"><button class="primary btn-next">🚀 Lanjut ke Modul</button></a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-divider"></div>
+      <p class="footer-brand">Numera</p>
+      <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+      <p class="footer-meta">Versi 1.0 · © 2026</p>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- progress bar ----------
+  var progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrollable = h.scrollHeight - h.clientHeight;
+    var pct = scrollable > 0 ? (h.scrollTop / scrollable) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // ---------- data ----------
+  var xValues = [1,2,5,10,20,50,100,300,1000,5000,20000,100000,1000000];
+
+  function fx(x){
+    return (3*x + 1) / x;
+  }
+
+  var slider = document.getElementById('xSlider');
+  var xValueEl = document.getElementById('xValue');
+  var fxValueEl = document.getElementById('fxValue');
+  var canvas = document.getElementById('graph');
+  var ctx = canvas.getContext('2d');
+
+  var visited = [];
+  var currentIndex = 0;
+
+  function fmtX(x){
+    return x.toLocaleString('id-ID');
+  }
+  function fmtFx(v){
+    return v.toFixed(6);
+  }
+
+  function resizeCanvas(){
+    var rect = canvas.getBoundingClientRect();
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw();
+  }
+
+  var yMin = 2.8, yMax = 4.2;
+  var xLogMin = Math.log10(xValues[0]);
+  var xLogMax = Math.log10(xValues[xValues.length-1]);
+
+  function toCanvasX(x, w, pad){
+    var t = (Math.log10(x) - xLogMin) / (xLogMax - xLogMin);
+    return pad + t * (w - pad*2);
+  }
+  function toCanvasY(y, h, padTop, padBottom){
+    var t = (y - yMin) / (yMax - yMin);
+    return (h - padBottom) - t * (h - padTop - padBottom);
+  }
+
+  function draw(){
+    var rect = canvas.getBoundingClientRect();
+    var w = rect.width;
+    var h = rect.height;
+    ctx.clearRect(0,0,w,h);
+
+    var padL = 14, padR = 14, padTop = 16, padBottom = 16;
+
+    // horizontal gridlines
+    ctx.strokeStyle = '#E2E8F0';
+    ctx.lineWidth = 1;
+    var steps = 4;
+    for(var i=0;i<=steps;i++){
+      var yv = yMin + (i/steps)*(yMax-yMin);
+      var cy = toCanvasY(yv, h, padTop, padBottom);
+      ctx.beginPath();
+      ctx.moveTo(padL, cy);
+      ctx.lineTo(w-padR, cy);
+      ctx.stroke();
+    }
+
+    // trace points
+    for(var j=0;j<visited.length;j++){
+      var idx = visited[j];
+      var xv = xValues[idx];
+      var yv2 = fx(xv);
+      var cx = toCanvasX(xv, w, padL);
+      var cy2 = toCanvasY(yv2, h, padTop, padBottom);
+      var isCurrent = (idx === currentIndex && j === visited.length-1);
+
+      if(!isCurrent){
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(37,99,235,0.28)';
+        ctx.arc(cx, cy2, 5, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    // connecting line through visited points in order visited
+    if(visited.length > 1){
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(37,99,235,0.35)';
+      ctx.lineWidth = 2;
+      for(var k=0;k<visited.length;k++){
+        var vx = xValues[visited[k]];
+        var vy = fx(vx);
+        var pcx = toCanvasX(vx, w, padL);
+        var pcy = toCanvasY(vy, h, padTop, padBottom);
+        if(k===0) ctx.moveTo(pcx,pcy); else ctx.lineTo(pcx,pcy);
+      }
+      ctx.stroke();
+    }
+
+    // current point
+    var curX = xValues[currentIndex];
+    var curY = fx(curX);
+    var ccx = toCanvasX(curX, w, padL);
+    var ccy = toCanvasY(curY, h, padTop, padBottom);
+
+    ctx.beginPath();
+    ctx.fillStyle = '#2563EB';
+    ctx.arc(ccx, ccy, 8, 0, Math.PI*2);
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#fff';
+    ctx.stroke();
+  }
+
+  function update(fromInteraction){
+    currentIndex = parseInt(slider.value, 10);
+    var x = xValues[currentIndex];
+    var y = fx(x);
+
+    xValueEl.textContent = fmtX(x);
+    fxValueEl.textContent = fmtFx(y);
+
+    if(fromInteraction){
+      if(visited.indexOf(currentIndex) === -1 || visited[visited.length-1] !== currentIndex){
+        visited.push(currentIndex);
+      }
+    }
+    draw();
+  }
+
+  slider.addEventListener('input', function(){
+    update(true);
+  });
+
+  // ---------- play / pause / reset ----------
+  var playBtn = document.getElementById('playBtn');
+  var pauseBtn = document.getElementById('pauseBtn');
+  var resetBtn = document.getElementById('resetBtn');
+  var randomBtn = document.getElementById('randomBtn');
+  var playTimer = null;
+
+  function stopPlay(){
+    if(playTimer){
+      clearInterval(playTimer);
+      playTimer = null;
+    }
+    playBtn.disabled = false;
+    pauseBtn.disabled = true;
+  }
+
+  playBtn.addEventListener('click', function(){
+    if(playTimer) return;
+    playBtn.disabled = true;
+    pauseBtn.disabled = false;
+
+    playTimer = setInterval(function(){
+      var next = parseInt(slider.value,10) + 1;
+      if(next > parseInt(slider.max,10)){
+        stopPlay();
+        return;
+      }
+      slider.value = next;
+      update(true);
+      if(next === parseInt(slider.max,10)){
+        stopPlay();
+      }
+    }, 850);
+  });
+
+  pauseBtn.addEventListener('click', function(){
+    stopPlay();
+  });
+
+  resetBtn.addEventListener('click', function(){
+    stopPlay();
+    visited = [];
+    slider.value = 0;
+    update(true);
+  });
+
+  randomBtn.addEventListener('click', function(){
+    stopPlay();
+    var min = 7, max = xValues.length - 1;
+    var randIdx = Math.floor(Math.random() * (max - min + 1)) + min;
+    slider.value = randIdx;
+    update(true);
+  });
+
+  window.addEventListener('resize', resizeCanvas, {passive:true});
+
+  // init
+  visited.push(0);
+  update(false);
+  resizeCanvas();
+
+})();
+</script>
+
+</body>
+</html>

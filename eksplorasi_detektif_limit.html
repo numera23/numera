@@ -1,0 +1,1015 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Integrasi konsep Limit
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif: menyelidiki perilaku fungsi di sekitar sebuah titik.">
+<title>Detektif Limit · Numera</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+  --sp-1:4px;
+  --sp-2:8px;
+  --sp-3:12px;
+  --sp-4:16px;
+  --sp-5:24px;
+  --sp-6:32px;
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  margin:0;
+  font-family:'Inter', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 var(--sp-4);
+}
+
+/* Topbar */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(248,250,252,.9);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+
+.topbar-inner{
+  max-width:900px;
+  margin:0 auto;
+  padding:12px var(--sp-4);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--text-soft);
+  letter-spacing:.02em;
+}
+
+.topbar-inner .accent{color:var(--primary);font-weight:800;}
+
+.progress-track{
+  height:3px;
+  width:100%;
+  background:transparent;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:var(--primary);
+  transition:width 80ms linear;
+}
+
+/* Header */
+.header{
+  padding:var(--sp-6) 0 var(--sp-5);
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--primary-light);
+  color:var(--primary-hover);
+  font-size:12.5px;
+  font-weight:700;
+  padding:6px 12px;
+  border-radius:999px;
+  margin-bottom:var(--sp-3);
+}
+
+.header h1{
+  font-size:32px;
+  font-weight:800;
+  line-height:1.15;
+  margin:0 0 var(--sp-2);
+  letter-spacing:-.01em;
+}
+
+.header .connector{
+  font-size:14px;
+  color:var(--text-soft);
+  margin:0 0 var(--sp-1);
+}
+
+.header .invite{
+  font-size:15px;
+  font-weight:600;
+  color:var(--text);
+  margin:0;
+}
+
+.meta-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  color:var(--text-soft);
+  margin-top:var(--sp-3);
+}
+
+/* Section shell */
+.section{
+  padding:var(--sp-5) 0;
+}
+
+.section-title{
+  font-size:20px;
+  font-weight:700;
+  margin:0 0 var(--sp-3);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  padding:var(--sp-5);
+}
+
+.mission-card p{
+  margin:0 0 var(--sp-2);
+  font-size:16px;
+  line-height:1.55;
+}
+
+.mission-card p:last-child{margin-bottom:0;}
+
+.mission-card .prompt-q{
+  color:var(--primary-hover);
+  font-weight:700;
+}
+
+/* Lab */
+.lab-card{padding:var(--sp-4) var(--sp-4) var(--sp-5);}
+
+.preset-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:var(--sp-4);
+}
+
+.preset-btn{
+  border:1.5px solid var(--border);
+  background:#fff;
+  color:var(--text);
+  font-family:inherit;
+  font-size:13px;
+  font-weight:600;
+  padding:9px 14px;
+  border-radius:var(--radius-btn);
+  cursor:pointer;
+  transition:all 180ms ease;
+  min-height:40px;
+}
+
+.preset-btn:hover{border-color:var(--primary);color:var(--primary-hover);}
+
+.preset-btn.active{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:#fff;
+}
+
+.canvas-wrap{
+  position:relative;
+  width:100%;
+  background:#fff;
+  border-radius:14px;
+  border:1px solid var(--border);
+  overflow:hidden;
+  touch-action:pan-y;
+}
+
+canvas{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.slider-block{
+  margin-top:var(--sp-4);
+}
+
+.slider-label{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  font-size:13px;
+  color:var(--text-soft);
+  margin-bottom:6px;
+}
+
+.slider-label strong{
+  color:var(--primary-hover);
+  font-size:14px;
+}
+
+input[type="range"]{
+  -webkit-appearance:none;
+  appearance:none;
+  width:100%;
+  height:6px;
+  border-radius:999px;
+  background:var(--primary-light);
+  outline:none;
+  margin:8px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:var(--primary);
+  border:3px solid #fff;
+  box-shadow:0 2px 6px rgba(37,99,235,.4);
+  cursor:pointer;
+}
+
+input[type="range"]::-moz-range-thumb{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:var(--primary);
+  border:3px solid #fff;
+  box-shadow:0 2px 6px rgba(37,99,235,.4);
+  cursor:pointer;
+  border:none;
+}
+
+.quick-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:var(--sp-3);
+}
+
+.quick-btn{
+  flex:1 1 auto;
+  min-width:120px;
+  border:none;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  color:var(--text);
+  font-family:inherit;
+  font-size:13px;
+  font-weight:600;
+  padding:10px 12px;
+  border-radius:var(--radius-btn);
+  cursor:pointer;
+  min-height:40px;
+  transition:all 180ms ease;
+}
+
+.quick-btn:hover{
+  background:var(--primary-light);
+  border-color:var(--primary-light);
+  color:var(--primary-hover);
+}
+
+/* Readouts */
+.readout-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:var(--sp-4);
+}
+
+.readout-box{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+}
+
+.readout-box .k{
+  font-size:11.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--text-soft);
+  margin:0 0 4px;
+}
+
+.readout-box .v{
+  font-size:16px;
+  font-weight:700;
+  color:var(--text);
+  margin:0;
+  word-break:break-word;
+}
+
+.readout-box.exact{grid-column:1 / -1;}
+
+.readout-box.exact .v{color:var(--primary-hover);}
+
+.trail-block{
+  margin-top:var(--sp-4);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.trail-col{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 14px;
+  min-height:118px;
+}
+
+.trail-col .k{
+  font-size:11.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--text-soft);
+  margin:0 0 8px;
+}
+
+.trail-col ul{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.trail-col li{
+  font-size:13px;
+  color:var(--text);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:5px 8px;
+  font-variant-numeric:tabular-nums;
+}
+
+.trail-col .empty{
+  font-size:12.5px;
+  color:var(--text-soft);
+  font-style:normal;
+}
+
+/* Guess box */
+.guess-card textarea{
+  width:100%;
+  min-height:110px;
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  padding:14px;
+  font-family:inherit;
+  font-size:15px;
+  color:var(--text);
+  resize:vertical;
+  outline:none;
+  transition:border-color 180ms ease;
+  background:var(--bg);
+}
+
+.guess-card textarea:focus{border-color:var(--primary);background:#fff;}
+
+.guess-hint{
+  font-size:13px;
+  color:var(--text-soft);
+  margin:var(--sp-2) 0 0;
+}
+
+/* Next module */
+.next-card{
+  text-align:center;
+  padding:var(--sp-6) var(--sp-5);
+}
+
+.next-card p{
+  font-size:15px;
+  color:var(--text-soft);
+  margin:0 0 var(--sp-4);
+  line-height:1.6;
+}
+
+.next-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--primary);
+  color:#fff;
+  font-family:inherit;
+  font-weight:700;
+  font-size:15px;
+  text-decoration:none;
+  padding:13px 26px;
+  border-radius:var(--radius-btn);
+  min-height:44px;
+  transition:background 180ms ease, transform 180ms ease;
+}
+
+.next-btn:hover{background:var(--primary-hover);transform:translateY(-1px);}
+
+/* Footer */
+.site-footer{
+  padding:var(--sp-5) 0 var(--sp-6);
+  text-align:center;
+}
+
+.footer-divider{
+  height:1px;
+  background:var(--border);
+  margin-bottom:var(--sp-4);
+}
+
+.footer-brand{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--primary);
+  margin:0 0 4px;
+}
+
+.footer-text{
+  font-size:13px;
+  color:var(--text-soft);
+  margin:0 0 2px;
+}
+
+.footer-meta{
+  font-size:12.5px;
+  color:var(--text-soft);
+  margin:0;
+  opacity:.85;
+}
+
+@media (min-width:640px){
+  .header h1{font-size:38px;}
+  .readout-grid{grid-template-columns:1fr 1fr 1fr;}
+  .readout-box.exact{grid-column:auto;}
+}
+
+@media (max-width:420px){
+  .quick-btn{min-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="accent">NUMERA</span> · 🧪 Limit Fungsi — Eksplorasi
+  </div>
+  <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+</div>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="header">
+    <span class="badge">🧪 Eksplorasi · 3–5 menit</span>
+    <h1>Detektif Limit</h1>
+    <p class="connector">Bagian dari materi Limit Fungsi · Kerjakan sebelum buka Modul</p>
+    <p class="invite">Yuk cari tahu sendiri polanya.</p>
+  </header>
+
+  <!-- MISI EKSPLORASI -->
+  <section class="section" id="misi">
+    <h2 class="section-title">🎯 Misi Eksplorasi</h2>
+    <div class="card mission-card">
+      <p>Pilih salah satu kasus, lalu geser titik birunya mendekati garis putus-putus di <strong>x = 2</strong>.</p>
+      <p class="prompt-q">Apa yang terjadi pada nilainya saat titik semakin dekat?</p>
+    </div>
+  </section>
+
+  <!-- LABORATORIUM -->
+  <section class="section" id="lab">
+    <h2 class="section-title">🧪 Laboratorium Matematika</h2>
+    <div class="card lab-card">
+
+      <div class="preset-row" id="presetRow">
+        <button class="preset-btn active" data-case="1">1 · Lubang</button>
+        <button class="preset-btn" data-case="2">2 · Nilai Beda</button>
+        <button class="preset-btn" data-case="3">3 · Loncat</button>
+        <button class="preset-btn" data-case="4">4 · Bentuk 0/0</button>
+        <button class="preset-btn" data-case="5">5 · Tak Hingga</button>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="labCanvas"></canvas>
+      </div>
+
+      <div class="slider-block">
+        <div class="slider-label">
+          <span>Geser posisi titik</span>
+          <strong id="xReadoutSmall">x = -0.20</strong>
+        </div>
+        <input type="range" id="xSlider" min="-50" max="450" step="1" value="-20">
+      </div>
+
+      <div class="quick-row">
+        <button class="quick-btn" id="btnLeft">◀ Dekati dari kiri</button>
+        <button class="quick-btn" id="btnRight">Dekati dari kanan ▶</button>
+        <button class="quick-btn" id="btnRandom">🎲 Acak titik</button>
+        <button class="quick-btn" id="btnReset">↻ Reset</button>
+      </div>
+
+      <div class="readout-grid">
+        <div class="readout-box">
+          <p class="k">Posisi x</p>
+          <p class="v" id="roX">-0.20</p>
+        </div>
+        <div class="readout-box">
+          <p class="k">Nilai f(x)</p>
+          <p class="v" id="roFx">0.80</p>
+        </div>
+        <div class="readout-box exact">
+          <p class="k">Tepat di x = 2</p>
+          <p class="v" id="roExact">Bolong — tidak ada titik di sini</p>
+        </div>
+      </div>
+
+      <div class="trail-block">
+        <div class="trail-col">
+          <p class="k">Jejak dari kiri</p>
+          <ul id="trailLeft"><li class="empty">Belum ada percobaan</li></ul>
+        </div>
+        <div class="trail-col">
+          <p class="k">Jejak dari kanan</p>
+          <ul id="trailRight"><li class="empty">Belum ada percobaan</li></ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DUGAAN SAYA -->
+  <section class="section" id="dugaan">
+    <h2 class="section-title">💭 Dugaan Saya</h2>
+    <div class="card guess-card">
+      <textarea id="guessBox" placeholder="Tulis pola yang kamu lihat di sini..."></textarea>
+      <p class="guess-hint">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </section>
+
+  <!-- LANJUT KE MODUL -->
+  <section class="section" id="lanjut">
+    <div class="card next-card">
+      <p>Kamu sudah punya dugaan sendiri. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- GURU: ganti href="#" di bawah ini dengan tautan Modul Limit Fungsi -->
+      <a href="#" class="next-btn">🚀 Buka Modul Limit Fungsi</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-divider"></div>
+      <p class="footer-brand">Numera</p>
+      <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+      <p class="footer-meta">Versi 1.0 · © 2026</p>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Scroll progress ---------- */
+  var progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    var h = document.documentElement;
+    var scrollTop = h.scrollTop || document.body.scrollTop;
+    var scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  document.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  /* ---------- Case definitions ---------- */
+  var A = 2; // titik yang diselidiki
+
+  var cases = {
+    1: { // Lubang
+      yMin:-1, yMax:7,
+      f:function(x){
+        if (Math.abs(x-A) < 0.0001) return null;
+        return x + 1;
+      },
+      exactLabel:function(){ return "Bolong — tidak ada titik di sini"; },
+      extra:null
+    },
+    2: { // Nilai titik berbeda
+      yMin:-1, yMax:7,
+      f:function(x){
+        if (Math.abs(x-A) < 0.0001) return 5;
+        return x + 1;
+      },
+      exactLabel:function(){ return "f(2) = 5,00 (titik ini terpisah dari alur kurva)"; },
+      extra:null
+    },
+    3: { // Kiri-kanan berbeda
+      yMin:-1, yMax:8,
+      f:function(x){
+        if (x < A) return x + 1;
+        return x + 4;
+      },
+      exactLabel:function(){ return "f(2) = 6,00 (mengikuti cabang kanan)"; },
+      extra:null
+    },
+    4: { // Bentuk 0/0
+      yMin:-1, yMax:8,
+      f:function(x){
+        if (Math.abs(x-A) < 0.0001) return null;
+        var num = x*x - 4;
+        var den = x - 2;
+        return num/den;
+      },
+      exactLabel:function(){ return "Tidak terdefinisi — bentuknya 0/0"; },
+      extra:function(x){
+        if (Math.abs(x-A) < 0.0001) return null;
+        var num = x*x - 4;
+        var den = x - 2;
+        return "Pembilang: " + num.toFixed(2) + "  ·  Penyebut: " + den.toFixed(2);
+      }
+    },
+    5: { // Tak hingga
+      yMin:-12, yMax:12,
+      f:function(x){
+        if (Math.abs(x-A) < 0.0001) return null;
+        return 1/(x-2);
+      },
+      exactLabel:function(){ return "Tidak terdefinisi — grafik menembus tepi"; },
+      extra:null
+    }
+  };
+
+  var currentCase = 1;
+  var xDomainMin = -0.5, xDomainMax = 4.5;
+
+  /* ---------- State ---------- */
+  var trails = {1:{left:[],right:[]},2:{left:[],right:[]},3:{left:[],right:[]},4:{left:[],right:[]},5:{left:[],right:[]}};
+  var defaultSliderValue = -20; // x = -0.20
+
+  /* ---------- Canvas setup ---------- */
+  var canvas = document.getElementById('labCanvas');
+  var ctx = canvas.getContext('2d');
+  var canvasWrap = document.querySelector('.canvas-wrap');
+  var CW = 600, CH = 380; // logical drawing size, scaled via CSS width
+
+  function resizeCanvas(){
+    var containerWidth = canvasWrap.clientWidth;
+    CW = containerWidth;
+    CH = Math.round(containerWidth * 0.62);
+    var dpr = window.devicePixelRatio || 1;
+    canvas.width = CW * dpr;
+    canvas.height = CH * dpr;
+    canvas.style.width = CW + 'px';
+    canvas.style.height = CH + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw();
+  }
+
+  function mapX(x, cfg){
+    var pad = 30;
+    return pad + (x - xDomainMin) / (xDomainMax - xDomainMin) * (CW - pad*2);
+  }
+  function mapY(y, cfg){
+    var padTop = 20, padBottom = 30;
+    var t = (y - cfg.yMin) / (cfg.yMax - cfg.yMin);
+    return CH - padBottom - t * (CH - padTop - padBottom);
+  }
+
+  function draw(){
+    var cfg = cases[currentCase];
+    ctx.clearRect(0,0,CW,CH);
+
+    // background grid
+    ctx.strokeStyle = '#EEF2F7';
+    ctx.lineWidth = 1;
+    var gridStepX = 0.5;
+    for (var gx = Math.ceil(xDomainMin/gridStepX)*gridStepX; gx <= xDomainMax; gx += gridStepX){
+      var px = mapX(gx, cfg);
+      ctx.beginPath();
+      ctx.moveTo(px, 15);
+      ctx.lineTo(px, CH-25);
+      ctx.stroke();
+    }
+    var gridStepY = (cfg.yMax - cfg.yMin) > 15 ? 4 : 1;
+    for (var gy = Math.ceil(cfg.yMin/gridStepY)*gridStepY; gy <= cfg.yMax; gy += gridStepY){
+      var py = mapY(gy, cfg);
+      ctx.beginPath();
+      ctx.moveTo(30, py);
+      ctx.lineTo(CW-20, py);
+      ctx.stroke();
+    }
+
+    // axes
+    ctx.strokeStyle = '#CBD5E1';
+    ctx.lineWidth = 1.5;
+    if (cfg.yMin < 0 && cfg.yMax > 0){
+      var py0 = mapY(0, cfg);
+      ctx.beginPath(); ctx.moveTo(30, py0); ctx.lineTo(CW-20, py0); ctx.stroke();
+    }
+    var px0 = mapX(0, cfg);
+    if (px0 > 25 && px0 < CW-15){
+      ctx.beginPath(); ctx.moveTo(px0, 15); ctx.lineTo(px0, CH-25); ctx.stroke();
+    }
+
+    // dashed line at x = A
+    var pxA = mapX(A, cfg);
+    ctx.save();
+    ctx.setLineDash([5,5]);
+    ctx.strokeStyle = '#94A3B8';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(pxA, 15);
+    ctx.lineTo(pxA, CH-25);
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = '#64748B';
+    ctx.font = '600 12px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('x = 2', pxA, CH-10);
+
+    // curve
+    ctx.strokeStyle = '#2563EB';
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    var step = (xDomainMax - xDomainMin) / 300;
+    var drawing = false;
+    ctx.beginPath();
+    for (var xv = xDomainMin; xv <= xDomainMax + 1e-9; xv += step){
+      if (Math.abs(xv - A) < step) continue; // skip the exact point, drawn separately
+      var yv = cfg.f(xv);
+      if (yv === null || yv < cfg.yMin - 2 || yv > cfg.yMax + 2){
+        drawing = false;
+        continue;
+      }
+      var cx = mapX(xv, cfg);
+      var cy = mapY(Math.max(cfg.yMin, Math.min(cfg.yMax, yv)), cfg);
+      if (yv < cfg.yMin || yv > cfg.yMax){ drawing = false; continue; }
+      if (!drawing){
+        ctx.moveTo(cx, cy);
+        drawing = true;
+      } else {
+        ctx.lineTo(cx, cy);
+      }
+    }
+    ctx.stroke();
+
+    // open/filled circle markers at x = A depending on case
+    function drawCircle(x, y, filled, color){
+      var cx = mapX(x, cfg), cy = mapY(y, cfg);
+      ctx.beginPath();
+      ctx.arc(cx, cy, 6, 0, Math.PI*2);
+      if (filled){
+        ctx.fillStyle = color || '#2563EB';
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+        ctx.strokeStyle = color || '#2563EB';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      }
+    }
+
+    if (currentCase === 1){
+      drawCircle(A, A+1, false);
+    } else if (currentCase === 2){
+      drawCircle(A, A+1, false);
+      drawCircle(A, 5, true, '#F59E0B');
+    } else if (currentCase === 3){
+      drawCircle(A, A+1, false);
+      drawCircle(A, A+4, true);
+    } else if (currentCase === 4){
+      drawCircle(A, 4, false);
+    } else if (currentCase === 5){
+      // no dot, asymptote implied by dashed line
+    }
+
+    // current student point
+    var x = getCurrentX();
+    var y = cfg.f(x);
+    if (y !== null && y >= cfg.yMin - 0.5 && y <= cfg.yMax + 0.5){
+      var cxp = mapX(x, cfg);
+      var cyp = mapY(Math.max(cfg.yMin, Math.min(cfg.yMax, y)), cfg);
+      ctx.beginPath();
+      ctx.arc(cxp, cyp, 8, 0, Math.PI*2);
+      ctx.fillStyle = '#DBEAFE';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cxp, cyp, 5.5, 0, Math.PI*2);
+      ctx.fillStyle = '#1D4ED8';
+      ctx.fill();
+    }
+
+    // faded trail dots
+    function drawTrailDots(arr){
+      arr.forEach(function(item, i){
+        var yy = cfg.f(item.x);
+        if (yy === null || yy < cfg.yMin - 0.5 || yy > cfg.yMax + 0.5) return;
+        var cx = mapX(item.x, cfg);
+        var cy = mapY(Math.max(cfg.yMin, Math.min(cfg.yMax, yy)), cfg);
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(37,99,235,0.18)';
+        ctx.fill();
+      });
+    }
+    drawTrailDots(trails[currentCase].left);
+    drawTrailDots(trails[currentCase].right);
+  }
+
+  /* ---------- Slider / controls ---------- */
+  var slider = document.getElementById('xSlider');
+  var xReadoutSmall = document.getElementById('xReadoutSmall');
+  var roX = document.getElementById('roX');
+  var roFx = document.getElementById('roFx');
+  var roExact = document.getElementById('roExact');
+  var trailLeftEl = document.getElementById('trailLeft');
+  var trailRightEl = document.getElementById('trailRight');
+
+  function getCurrentX(){
+    return parseInt(slider.value, 10) / 100;
+  }
+
+  function fmt(n){
+    if (n === null || n === undefined || isNaN(n)) return '–';
+    return n.toFixed(2);
+  }
+
+  function renderTrail(el, arr){
+    if (arr.length === 0){
+      el.innerHTML = '<li class="empty">Belum ada percobaan</li>';
+      return;
+    }
+    el.innerHTML = arr.map(function(item){
+      var yLabel = (item.y === null || item.y === undefined) ? 'tidak ada' : fmt(item.y);
+      return '<li>x = ' + fmt(item.x) + '  →  f(x) = ' + yLabel + '</li>';
+    }).join('');
+  }
+
+  function updateReadouts(){
+    var cfg = cases[currentCase];
+    var x = getCurrentX();
+    var y = cfg.f(x);
+
+    xReadoutSmall.textContent = 'x = ' + fmt(x);
+    roX.textContent = fmt(x);
+    roFx.textContent = (y === null) ? 'Tidak terdefinisi' : fmt(y);
+    roExact.textContent = cfg.exactLabel();
+
+    if (cfg.extra){
+      var extraText = cfg.extra(x);
+      if (extraText){
+        roFx.textContent = ((y === null) ? 'Tidak terdefinisi' : fmt(y)) + '  (' + extraText + ')';
+      }
+    }
+  }
+
+  function recordTrail(){
+    var x = getCurrentX();
+    var cfg = cases[currentCase];
+    var y = cfg.f(x);
+    var t = trails[currentCase];
+    var rounded = Math.round(x*100)/100;
+
+    if (Math.abs(x - A) < 0.005) return; // don't record right at A
+
+    var target = (x < A) ? t.left : t.right;
+    var last = target[target.length-1];
+    if (!last || Math.abs(last.x - rounded) > 0.001){
+      target.push({x:rounded, y:y});
+      if (target.length > 5) target.shift();
+    }
+    renderTrail(trailLeftEl, t.left);
+    renderTrail(trailRightEl, t.right);
+  }
+
+  function onSliderChange(){
+    updateReadouts();
+    recordTrail();
+    draw();
+  }
+
+  slider.addEventListener('input', onSliderChange);
+
+  /* ---------- Buttons ---------- */
+  document.getElementById('btnLeft').addEventListener('click', function(){
+    var x = getCurrentX();
+    var nx = (x >= A) ? 1.5 : A - (A - x)/2;
+    nx = Math.max(xDomainMin, Math.round(nx*100)/100);
+    slider.value = Math.round(nx*100);
+    onSliderChange();
+  });
+
+  document.getElementById('btnRight').addEventListener('click', function(){
+    var x = getCurrentX();
+    var nx = (x <= A) ? 2.5 : A + (x - A)/2;
+    nx = Math.min(xDomainMax, Math.round(nx*100)/100);
+    slider.value = Math.round(nx*100);
+    onSliderChange();
+  });
+
+  document.getElementById('btnRandom').addEventListener('click', function(){
+    var r = xDomainMin + Math.random() * (xDomainMax - xDomainMin);
+    r = Math.round(r*100)/100;
+    slider.value = Math.round(r*100);
+    onSliderChange();
+  });
+
+  document.getElementById('btnReset').addEventListener('click', function(){
+    trails[currentCase] = {left:[], right:[]};
+    slider.value = defaultSliderValue;
+    renderTrail(trailLeftEl, []);
+    renderTrail(trailRightEl, []);
+    updateReadouts();
+    draw();
+  });
+
+  /* ---------- Preset switching ---------- */
+  var presetButtons = document.querySelectorAll('.preset-btn');
+  presetButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      presetButtons.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentCase = parseInt(btn.getAttribute('data-case'), 10);
+      slider.value = defaultSliderValue;
+      renderTrail(trailLeftEl, trails[currentCase].left);
+      renderTrail(trailRightEl, trails[currentCase].right);
+      updateReadouts();
+      draw();
+    });
+  });
+
+  /* ---------- Init ---------- */
+  window.addEventListener('resize', resizeCanvas);
+  updateReadouts();
+  resizeCanvas();
+})();
+</script>
+
+</body>
+</html>
