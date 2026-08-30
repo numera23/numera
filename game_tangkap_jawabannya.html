@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Tangkap Jawabannya! — Numera</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    /* Palet diturunkan dari warna tema web #2563EB (skala biru) */
+    --sea-light: #DBEAFE;   /* blue-100 — permukaan air paling terang */
+    --sea-mid: #60A5FA;     /* blue-400 — air pertengahan */
+    --sea-deep: #2563EB;    /* warna tema utama — air dalam / tombol utama */
+    --sea-deeper: #1E3A8A;  /* blue-900 — dasar laut paling gelap */
+    --ink: #0F172A;         /* slate-900 — teks utama */
+    --coral: #F97316;       /* orange-500 — aksen kontras utk salah/bom */
+    --gold: #F59E0B;        /* amber-500 — skor & highlight */
+    --white: #FFFFFF;
+    --card: rgba(255,255,255,0.94);
+    --muted: #64748B;       /* slate-500 */
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color: transparent; }
+  html, body{
+    height:100%;
+    overflow:hidden;
+    font-family:'Inter', sans-serif;
+    background: var(--sea-deeper);
+    color: var(--ink);
+    touch-action: none;
+    overscroll-behavior: none;
+  }
+  /* Elemen interaktif harus tetap merespons sentuhan normal (fokus/ketik/klik)
+     walau area game (#stage) membatasi touch-action secara global. */
+  input, button, select, textarea, a, label{
+    touch-action: manipulation;
+  }
+  h1,h2,h3,.display{ font-family:'Poppins', sans-serif; }
+
+  /* ============================================================
+     1. LAYOUT SHELL
+  ============================================================ */
+  #stage{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    overflow:hidden;
+    background: linear-gradient(180deg, #EFF6FF 0%, var(--sea-light) 12%, var(--sea-mid) 45%, var(--sea-deep) 75%, var(--sea-deeper) 100%);
+  }
+  canvas{ position:absolute; inset:0; display:block; }
+
+  #fishLabels{
+    position:absolute; inset:0;
+    pointer-events:none;
+    z-index: 5;
+    overflow:hidden;
+  }
+  .fish-label{
+    position:absolute;
+    transform: translate(-50%, 0);
+    background: rgba(255,255,255,0.95);
+    border-radius: 11px;
+    padding: 3px 9px;
+    font-weight:700;
+    font-size: 14px;
+    color: #1D4ED8;
+    font-family:'Inter', sans-serif;
+    white-space:nowrap;
+    line-height: 1.3;
+  }
+  .fish-label .katex{ font-size: 1em; }
+
+  /* ============================================================
+     2. HUD / QUESTION PANEL
+  ============================================================ */
+  #hud{
+    position:absolute; top:0; left:0; right:0;
+    z-index:10;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 14px 0;
+    pointer-events:none;
+  }
+  .hud-top{
+    display:flex; justify-content:space-between; align-items:center;
+    gap: 8px;
+    margin-bottom: 10px;
+    pointer-events:none;
+  }
+  .hud-right{ display:flex; align-items:center; gap:8px; pointer-events:none; }
+  .mute-btn{
+    pointer-events:auto;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border:none;
+    background: var(--card);
+    box-shadow: 0 4px 14px rgba(10,79,75,0.18);
+    font-size: 18px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    touch-action: manipulation;
+  }
+  .mute-btn:active{ transform: scale(0.92); }
+  .pill{
+    background: var(--card);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-weight:700;
+    font-size: 14px;
+    color: var(--sea-deeper);
+    box-shadow: 0 4px 14px rgba(10,79,75,0.18);
+  }
+  .pill.score{ color: var(--gold); }
+
+  .question-card{
+    background: var(--card);
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: 0 8px 24px rgba(10,79,75,0.2);
+    text-align:center;
+  }
+  .question-card .qlabel{
+    font-size: 11px; text-transform:uppercase; letter-spacing:1.5px;
+    color: var(--sea-mid); font-weight:700; margin-bottom:6px;
+  }
+  .question-card .qtext{
+    font-size: clamp(17px, 4.6vw, 22px);
+    font-weight: 700;
+    color: var(--ink);
+    line-height:1.35;
+  }
+
+  .instruction{
+    text-align:center;
+    color: rgba(255,255,255,0.85);
+    font-size: 12.5px;
+    margin-top: 8px;
+    font-weight:600;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+
+  /* ============================================================
+     3. FLOATING FEEDBACK TOAST
+  ============================================================ */
+  .toast{
+    position:absolute;
+    font-family:'Poppins', sans-serif;
+    font-weight:700;
+    font-size: 15px;
+    padding: 8px 16px;
+    border-radius: 12px;
+    pointer-events:none;
+    z-index: 15;
+    opacity:0;
+    white-space:nowrap;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  }
+  .toast.good{ background: #22C55E; color:#fff; }
+  .toast.bad{ background: var(--coral); color:#fff; }
+  .toast.neutral{ background: #64748B; color:#fff; }
+
+  /* ============================================================
+     4. OVERLAY SCREENS (start / end)
+  ============================================================ */
+  .overlay{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(180deg, rgba(10,79,75,0.75), rgba(10,79,75,0.92));
+    z-index: 30;
+    padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0px));
+    overflow-y:auto;
+  }
+  .panel{
+    width:100%; max-width: 420px;
+    background: var(--white);
+    border-radius: 24px;
+    padding: 30px 26px;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    text-align:center;
+  }
+  .panel h1{ font-size: clamp(24px,6vw,30px); color: var(--sea-deeper); margin-bottom:6px; }
+  .panel .tagline{ color: var(--muted); font-size: 14px; margin-bottom: 22px; line-height:1.5; }
+
+  .field{ text-align:left; margin-bottom: 14px; }
+  .field label{ font-size:12px; font-weight:700; color: var(--muted); text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px; }
+  .field input{
+    width:100%;
+    border: 2px solid #DBEAFE;
+    background: #F8FAFC;
+    border-radius: 12px;
+    padding: 14px 14px;
+    font-size: 16px;
+    font-family:'Inter';
+    outline:none;
+    color: var(--ink);
+  }
+  .field input:focus{ border-color: var(--sea-mid); background:#fff; }
+
+  .btn{
+    font-family:'Poppins', sans-serif;
+    font-weight:700; font-size:16px;
+    color:#fff;
+    background: linear-gradient(180deg, #60A5FA, var(--sea-deep));
+    border:none; border-radius: 14px;
+    padding: 14px 28px;
+    cursor:pointer;
+    width:100%;
+    box-shadow: 0 6px 0 #1E3A8A, 0 10px 20px rgba(30,58,138,0.25);
+    transition: transform .08s ease;
+    margin-top: 6px;
+  }
+  .btn:active{ transform: translateY(4px); box-shadow: 0 2px 0 #1E3A8A, 0 4px 10px rgba(30,58,138,0.25); }
+  .btn.secondary{
+    background: linear-gradient(180deg, #FDBA74, var(--coral));
+    box-shadow: 0 6px 0 #C2410C, 0 10px 20px rgba(0,0,0,0.2);
+  }
+  .btn.secondary:active{ box-shadow: 0 2px 0 #C2410C, 0 4px 10px rgba(0,0,0,0.2); }
+
+  .hint-row{
+    display:flex; align-items:center; gap:8px;
+    background: #EFF6FF;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: var(--sea-deeper);
+    font-weight:600;
+    text-align:left;
+  }
+
+  .result-emoji{ font-size:52px; margin-bottom:4px; }
+  .result-category{ font-family:'Poppins'; font-weight:700; font-size:20px; color: var(--sea-deeper); margin-bottom: 16px; }
+
+  .stat-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap:10px;
+    margin-bottom: 22px;
+  }
+  .stat-box{
+    background:#F8FAFC;
+    border-radius:14px;
+    padding: 14px 10px;
+  }
+  .stat-box .n{ font-family:'Poppins'; font-weight:800; font-size:24px; color: var(--sea-deeper); }
+  .stat-box .l{ font-size:11.5px; color: var(--muted); font-weight:600; margin-top:2px; }
+  .stat-box.wide{ grid-column: 1 / -1; }
+  .stat-box.wide .n{ color: var(--gold); }
+
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="game"></canvas>
+  <div id="fishLabels"></div>
+
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="pill" id="questionCounter">Soal 1/10</div>
+      <div class="hud-right">
+        <div class="pill score">⭐ <span id="scoreDisplay">0</span></div>
+        <button class="mute-btn" id="btnMute" aria-label="Aktif/matikan suara">🔊</button>
+      </div>
+    </div>
+    <div class="question-card">
+      <div class="qlabel">Tangkap jawabannya</div>
+      <div class="qtext" id="questionText">...</div>
+    </div>
+    <div class="instruction">Ketuk ikan jawabanmu — hati-hati, tiap soal cuma 1 kali tangkapan!</div>
+  </div>
+
+  <!-- START SCREEN -->
+  <div id="startScreen" class="overlay">
+    <div class="panel">
+      <h1>🎣 Tangkap Jawabannya!</h1>
+      <p class="tagline">Baca soalnya. Cari jawabannya. Lalu tangkap!</p>
+      <div class="field">
+        <label>Nama Kamu</label>
+        <input type="text" id="inName" placeholder="Nama panggilan">
+      </div>
+      <div class="field">
+        <label>Kelas (opsional)</label>
+        <input type="text" id="inKelas" placeholder="Contoh: XI-A">
+      </div>
+      <div class="hint-row">🎣 Tidak ada waktu terbatas — pikirkan dulu, baru tangkap.</div>
+      <button class="btn" id="btnStart">Mulai Main</button>
+    </div>
+  </div>
+
+  <!-- END SCREEN -->
+  <div id="endScreen" class="overlay hidden">
+    <div class="panel">
+      <div class="result-emoji" id="resultEmoji">🌟</div>
+      <div class="result-category" id="resultCategory">Mantap!</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="n" id="statCorrect">0</div><div class="l">Jawaban Benar</div></div>
+        <div class="stat-box"><div class="n" id="statWrong">0</div><div class="l">Salah Tangkap</div></div>
+        <div class="stat-box"><div class="n" id="statTrap">0</div><div class="l">Kena Jebakan</div></div>
+        <div class="stat-box"><div class="n" id="statPercent">0%</div><div class="l">Persentase Benar</div></div>
+        <div class="stat-box wide"><div class="n" id="statScore">0</div><div class="l">Skor Akhir</div></div>
+      </div>
+      <button class="btn secondary" id="btnRestart">🔄 Main Lagi</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+  /* ============================================================
+     1. KONFIGURASI GAME
+  ============================================================ */
+  const CONFIG = {
+    pointsCorrect: 10,
+    pointsWrongFish: -2,
+    pointsTrash: -2,
+    pointsBomb: -5,
+    minScoreFloorDisplay: null, // biarkan skor bisa negatif di layar jika terjadi
+    hookSpeed: 7,
+    catchRadius: 42,
+  };
+
+  /* ============================================================
+     1b. SISTEM AUDIO (Web Audio API — tanpa file eksternal)
+     Semua suara disintesis langsung, jadi tetap satu file HTML.
+  ============================================================ */
+  const Sound = (function(){
+    let ctx = null;
+    let muted = false;
+
+    // --- BGM: lapisan ambient "deburan air" + lapisan chord pad lembut ---
+    let bgmMasterGain = null;
+    let waveNodes = null;      // { src, filter, lfo, lfoGain, gain } — noise ombak looping
+    let padScheduler = null;   // interval id (lookahead scheduler)
+    let padNextTime = 0;
+    let padChordIndex = 0;
+    let bgmRunning = false;
+    // Progresi kord lembut & tenang (nuansa danau/laut sore hari), tiap kord 2 nada (kuint),
+    // supaya terasa seperti pad, bukan melodi yang "berjalan".
+    const padChords = [
+      [130.81, 196.00], // C3 + G3
+      [146.83, 220.00], // D3 + A3
+      [174.61, 261.63], // F3 + C4
+      [164.81, 246.94], // E3 + B3
+    ];
+    const PAD_CHORD_DUR = 2.6;   // detik per kord
+    const PAD_LOOKAHEAD = 0.15;  // seberapa jauh di depan kita jadwalkan (detik)
+    const PAD_INTERVAL_MS = 100; // seberapa sering scheduler dicek
+
+    function ensureCtx(){
+      if(!ctx){
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC) return null;
+        ctx = new AC();
+      }
+      if(ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    }
+
+    function tone(freq, duration, type, startTime, gainVal){
+      const c = ensureCtx(); if(!c) return;
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(gainVal, c.currentTime + startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + startTime + duration);
+      osc.connect(gain); gain.connect(c.destination);
+      osc.start(c.currentTime + startTime);
+      osc.stop(c.currentTime + startTime + duration + 0.02);
+    }
+
+    function noiseBurst(duration, gainVal, filterType, freqFrom, freqTo){
+      const c = ensureCtx(); if(!c) return;
+      const size = Math.floor(c.sampleRate * duration);
+      const buffer = c.createBuffer(1, size, c.sampleRate);
+      const data = buffer.getChannelData(0);
+      for(let i=0;i<size;i++){ data[i] = (Math.random()*2-1) * Math.pow(1 - i/size, 1.5); }
+      const src = c.createBufferSource();
+      src.buffer = buffer;
+      const filter = c.createBiquadFilter();
+      filter.type = filterType || 'lowpass';
+      filter.frequency.setValueAtTime(freqFrom, c.currentTime);
+      if(freqTo) filter.frequency.exponentialRampToValueAtTime(freqTo, c.currentTime + duration);
+      const gain = c.createGain();
+      gain.gain.setValueAtTime(gainVal, c.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+      src.connect(filter); filter.connect(gain); gain.connect(c.destination);
+      src.start();
+    }
+
+    function whoosh(){ if(!muted) noiseBurst(0.22, 0.10, 'bandpass', 1200, 300); }
+    function correct(){
+      if(muted) return;
+      tone(523.25, 0.12, 'triangle', 0, 0.16);
+      tone(659.25, 0.12, 'triangle', 0.09, 0.16);
+      tone(783.99, 0.18, 'triangle', 0.18, 0.16);
+    }
+    function wrong(){
+      if(muted) return;
+      tone(220, 0.16, 'sawtooth', 0, 0.10);
+      tone(180, 0.20, 'sawtooth', 0.08, 0.08);
+    }
+    function bomb(){ if(!muted) noiseBurst(0.3, 0.22, 'lowpass', 900, 200); }
+    function trash(){
+      if(muted) return;
+      tone(300, 0.08, 'square', 0, 0.08);
+      tone(180, 0.10, 'square', 0.06, 0.06);
+    }
+    function finish(){
+      if(muted) return;
+      tone(523.25, 0.15, 'triangle', 0, 0.18);
+      tone(659.25, 0.15, 'triangle', 0.15, 0.18);
+      tone(783.99, 0.15, 'triangle', 0.30, 0.18);
+      tone(1046.5, 0.32, 'triangle', 0.45, 0.20);
+    }
+
+    // Lapisan 1: deburan ombak — noise buffer looping disaring lowpass,
+    // frekuensi filter digoyang pelan oleh LFO supaya terdengar "bernapas"
+    // seperti air yang bergerak, bukan desis statis.
+    function startWaveLayer(c){
+      const dur = 4; // buffer 4 detik, di-loop mulus
+      const buffer = c.createBuffer(1, c.sampleRate * dur, c.sampleRate);
+      const data = buffer.getChannelData(0);
+      for(let i=0;i<data.length;i++){ data[i] = Math.random()*2-1; }
+
+      const src = c.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+
+      const filter = c.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.Q.value = 0.7;
+      filter.frequency.value = 500;
+
+      const lfo = c.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.value = 0.09; // sangat lambat, satu siklus ~11 detik
+      const lfoGain = c.createGain();
+      lfoGain.gain.value = 260; // rentang goyangan frekuensi filter
+      lfo.connect(lfoGain);
+      lfoGain.connect(filter.frequency);
+
+      const gain = c.createGain();
+      gain.gain.value = 0.05; // volume ambient — tetap di latar belakang
+
+      src.connect(filter); filter.connect(gain); gain.connect(bgmMasterGain);
+      src.start(); lfo.start();
+
+      waveNodes = { src, filter, lfo, lfoGain, gain };
+    }
+    function stopWaveLayer(){
+      if(!waveNodes) return;
+      try{ waveNodes.src.stop(); waveNodes.lfo.stop(); }catch(e){}
+      waveNodes = null;
+    }
+
+    // Lapisan 2: kord pad lembut, dijadwalkan lewat "lookahead scheduler"
+    // (dijadwalkan lewat clock AudioContext, bukan cuma setTimeout per not),
+    // supaya tempo tetap presisi & tidak "gugup" walau tab browser dibuat sibuk.
+    function scheduleChord(c, freqs, startTime){
+      freqs.forEach((freq, i) => {
+        const osc = c.createOscillator();
+        osc.type = i === 0 ? 'sine' : 'triangle';
+        osc.frequency.value = freq;
+        const g = c.createGain();
+        g.gain.setValueAtTime(0.0001, startTime);
+        g.gain.linearRampToValueAtTime(0.05, startTime + 0.9);           // attack lembut (pad)
+        g.gain.linearRampToValueAtTime(0.05, startTime + PAD_CHORD_DUR - 0.6);
+        g.gain.exponentialRampToValueAtTime(0.0001, startTime + PAD_CHORD_DUR);
+        osc.connect(g); g.connect(bgmMasterGain);
+        osc.start(startTime);
+        osc.stop(startTime + PAD_CHORD_DUR + 0.05);
+      });
+    }
+    function padSchedulerTick(){
+      const c = ctx; if(!c) return;
+      while(padNextTime < c.currentTime + PAD_LOOKAHEAD){
+        scheduleChord(c, padChords[padChordIndex % padChords.length], padNextTime);
+        padChordIndex++;
+        padNextTime += PAD_CHORD_DUR;
+      }
+    }
+    function startPadLayer(c){
+      padChordIndex = 0;
+      padNextTime = c.currentTime + 0.05;
+      padSchedulerTick();
+      padScheduler = setInterval(padSchedulerTick, PAD_INTERVAL_MS);
+    }
+    function stopPadLayer(){
+      if(padScheduler){ clearInterval(padScheduler); padScheduler = null; }
+    }
+
+    function startBgm(){
+      stopBgm();
+      if(muted) return;
+      const c = ensureCtx(); if(!c) return;
+      bgmRunning = true;
+      bgmMasterGain = c.createGain();
+      bgmMasterGain.gain.value = 1;
+      bgmMasterGain.connect(c.destination);
+      startWaveLayer(c);
+      startPadLayer(c);
+    }
+    function stopBgm(){
+      bgmRunning = false;
+      stopPadLayer();
+      stopWaveLayer();
+      if(bgmMasterGain){ try{ bgmMasterGain.disconnect(); }catch(e){} bgmMasterGain = null; }
+    }
+
+    function init(){
+      ensureCtx();
+      startBgm();
+      // Beberapa browser mobile menjeda AudioContext saat tab disembunyikan.
+      // Saat kembali aktif, sambungkan lagi supaya musik tidak diam permanen.
+      document.addEventListener('visibilitychange', () => {
+        if(document.visibilityState === 'visible' && !muted){
+          const c = ensureCtx();
+          if(c && c.state === 'suspended') c.resume();
+          if(c && !bgmRunning) startBgm();
+        }
+      });
+    }
+    function setMuted(v){ muted = v; if(muted){ stopBgm(); } else { startBgm(); } }
+    function isMuted(){ return muted; }
+
+    return { init, whoosh, correct, wrong, bomb, trash, finish, startBgm, stopBgm, setMuted, isMuted };
+  })();
+
+  /* ============================================================
+     11. KONFIGURASI GOOGLE FORM
+     (Kosongkan string jika belum ingin mengirim ke kolom tsb.
+      Game tetap berjalan normal walau semua dikosongkan.)
+  ============================================================ */
+  const GOOGLE_FORM_CONFIG = {
+    formAction: "https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse",
+    nameEntry: "entry.1128873320",
+    classEntry: "entry.1715675447",
+    scoreEntry: "entry.1119427673",
+    correctEntry: "",                 // belum ada kolom "Jumlah Benar" di form saat ini
+    gameEntry: "entry.339753918"
+  };
+  const GAME_NAME = "Tangkap Jawabannya!";
+
+  function kirimSkorKeForm(nama, kelas, skor, jumlahBenar){
+    if(!GOOGLE_FORM_CONFIG.formAction) return; // config kosong -> tidak kirim apa pun, game tetap jalan normal
+    const data = new FormData();
+    if(GOOGLE_FORM_CONFIG.nameEntry)   data.append(GOOGLE_FORM_CONFIG.nameEntry, nama);
+    if(GOOGLE_FORM_CONFIG.classEntry)  data.append(GOOGLE_FORM_CONFIG.classEntry, kelas || "-");
+    if(GOOGLE_FORM_CONFIG.scoreEntry)  data.append(GOOGLE_FORM_CONFIG.scoreEntry, String(skor));
+    if(GOOGLE_FORM_CONFIG.correctEntry)data.append(GOOGLE_FORM_CONFIG.correctEntry, String(jumlahBenar));
+    if(GOOGLE_FORM_CONFIG.gameEntry)   data.append(GOOGLE_FORM_CONFIG.gameEntry, GAME_NAME);
+
+    fetch(GOOGLE_FORM_CONFIG.formAction, { method:"POST", mode:"no-cors", body:data })
+      .catch(err => console.error("Gagal mengirim skor:", err));
+  }
+
+  /* ============================================================
+     2. BANK SOAL
+     Struktur mudah diedit: question, answer, distractors (angka lain yang masuk akal)
+  ============================================================ */
+  const QUESTIONS = [
+    // --- SOAL MUDAH (7 soal): hanya SATU komposisi, (f∘g)(x) atau (g∘f)(x) ---
+    { question: "Diketahui $f(x)=x+3$ dan $g(x)=2x$. Nilai dari $(f \\circ g)(4)$ adalah...", answer: 11, distractors: [14, 7, 9] },
+    { question: "Diketahui $f(x)=3x-2$ dan $g(x)=x+1$. Nilai dari $(g \\circ f)(3)$ adalah...", answer: 8, distractors: [10, 4, 11] },
+    { question: "Diketahui $f(x)=2x$ dan $g(x)=x-5$. Nilai dari $(f \\circ g)(7)$ adalah...", answer: 4, distractors: [9, 14, 6] },
+    { question: "Diketahui $f(x)=x^2$ dan $g(x)=x+2$. Nilai dari $(f \\circ g)(1)$ adalah...", answer: 9, distractors: [3, 1, 16] },
+    { question: "Diketahui $f(x)=x-4$ dan $g(x)=3x$. Nilai dari $(g \\circ f)(6)$ adalah...", answer: 6, distractors: [14, 18, 2] },
+    { question: "Diketahui $f(x)=x^2-3$ dan $g(x)=x+1$. Nilai dari $(f \\circ g)(2)$ adalah...", answer: 6, distractors: [2, 1, 9] },
+    { question: "Diketahui $f(x)=5x$ dan $g(x)=x-2$. Nilai dari $(f \\circ g)(3)$ adalah...", answer: 5, distractors: [13, 15, 3] },
+    // --- SOAL SEDANG (3 soal): gabungan penjumlahan/pengurangan dua komposisi ---
+    { question: "Diketahui $f(x)=x+4$ dan $g(x)=2x$. Nilai dari $(f \\circ g)(3) + (g \\circ f)(1)$ adalah...", answer: 20, distractors: [16, 24, 8] },
+    { question: "Diketahui $f(x)=x^2$ dan $g(x)=x+1$. Nilai dari $(f \\circ g)(2) - (g \\circ f)(2)$ adalah...", answer: 4, distractors: [14, -4, 9] },
+    { question: "Diketahui $f(x)=x^2-1$ dan $g(x)=x+2$. Nilai dari $(f \\circ g)(1) + (g \\circ f)(1)$ adalah...", answer: 10, distractors: [6, 8, 14] },
+  ];
+
+  // Jumlah soal otomatis mengikuti panjang QUESTIONS di atas —
+  // tambah/kurangi soal di array QUESTIONS, angka ini ikut menyesuaikan.
+  const TOTAL_QUESTIONS = QUESTIONS.length;
+
+  const TRAP_TYPES = [
+    { type:'bomb',  emoji:'💣', points: CONFIG.pointsBomb,  msg:'💥 Waduh! Kena bom!' },
+    { type:'trash', emoji:'🗑️', points: CONFIG.pointsTrash, msg:'🗑️ Itu bukan jawaban.' },
+    { type:'boot',  emoji:'👢', points: CONFIG.pointsTrash, msg:'👢 Bukan itu jawabannya.' },
+  ];
+
+  /* ============================================================
+     3. STATE GAME
+  ============================================================ */
+  const stage = document.getElementById('stage');
+  const canvas = document.getElementById('game');
+  const ctx2d = canvas.getContext('2d');
+  let W, H, playTop; // playTop = batas atas area renang (di bawah HUD)
+
+  function resize(){
+    W = canvas.width = stage.clientWidth;
+    H = canvas.height = stage.clientHeight;
+    playTop = Math.min(H * 0.30, 230);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  let state = {
+    screen: 'start', // start | playing | end
+    playerName: '',
+    playerKelas: '',
+    qIndex: 0,
+    score: 0,
+    correctCount: 0,
+    wrongCount: 0,
+    trapCount: 0,
+    order: [], // urutan soal (diacak sekali per sesi)
+    swimmers: [], // {kind:'fish'|'trap', ...}
+    bubbles: [],
+    particles: [],
+    hook: null,
+  };
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+    return a;
+  }
+
+  /* ============================================================
+     4. SISTEM IKAN (jawaban)
+  ============================================================ */
+  const FISH_EMOJIS = ['🐟','🐠','🐡'];
+
+  function makeFish(value, isCorrect, laneY){
+    const fromLeft = Math.random() < 0.5;
+    const s = {
+      kind: 'fish',
+      value, isCorrect,
+      emoji: FISH_EMOJIS[Math.floor(Math.random()*FISH_EMOJIS.length)],
+      x: fromLeft ? -40 : W+40,
+      y: laneY,
+      dir: fromLeft ? 1 : -1,
+      speed: 0.7 + Math.random()*1.3,
+      bob: Math.random()*Math.PI*2,
+      caught: false,
+      alive: true,
+      labelEl: null,
+    };
+    createFishLabel(s);
+    return s;
+  }
+
+  // Label jawaban ikan sebagai elemen HTML (bukan Canvas) supaya bisa
+  // menampilkan notasi KaTeX. Emoji ikan tetap digambar di Canvas seperti semula.
+  function renderFishLabel(el, value){
+    const str = String(value);
+    // Terdeteksi sebagai LaTeX jika: dibungkus $, ATAU mengandung perintah backslash
+    // (\frac, \sqrt, \lim, \sin, dst), ATAU mengandung ^ / _ (pangkat/indeks) —
+    // supaya jawaban seperti "x^2" atau "2_{n}" tetap dirender KaTeX walau
+    // penulisnya lupa membungkusnya dengan tanda $.
+    const looksLikeLatex = /\$/.test(str) || /\\[a-zA-Z]/.test(str) || /[\^_]/.test(str);
+    if(looksLikeLatex && window.katex){
+      const clean = str.replace(/^\$+|\$+$/g, '');
+      try{
+        katex.render(clean, el, {
+          throwOnError: false,
+          errorColor: '#1D4ED8', // kalau ada typo LaTeX, tampil sebagai teks biasa (bukan merah mencolok)
+          strict: false,
+          displayMode: false
+        });
+        return;
+      }catch(e){ /* fallback ke teks biasa di bawah */ }
+    }
+    el.textContent = str;
+  }
+
+  // Render KaTeX di dalam teks soal (mendukung $...$ inline dan $$...$$ display).
+  // Dibuat toleran terhadap kesalahan penulisan LaTeX: kalau satu rumus gagal
+  // di-parse, elemen itu ditampilkan sebagai teks biasa (bukan melempar error
+  // yang bisa menghentikan seluruh ronde).
+  function renderQuestionMath(el){
+    if(!window.renderMathInElement) return;
+    try{
+      renderMathInElement(el, {
+        delimiters: [
+          {left: '$$', right: '$$', display: true},
+          {left: '$', right: '$', display: false}
+        ],
+        throwOnError: false,      // jangan crash game kalau ada typo LaTeX di bank soal
+        errorColor: '#1D4ED8',    // tampil sebagai teks biru biasa, bukan merah mencolok
+        strict: false,
+        // Beberapa singkatan umum supaya bank soal lebih mudah ditulis:
+        macros: {
+          '\\lim': '\\lim\\limits',
+        }
+      });
+    }catch(e){
+      console.error('Gagal merender KaTeX pada soal:', e);
+      // Elemen tetap menampilkan teks asli (sudah di-set lewat textContent
+      // sebelum fungsi ini dipanggil), jadi game tetap bisa lanjut.
+    }
+  }
+
+  function createFishLabel(s){
+    const el = document.createElement('div');
+    el.className = 'fish-label';
+    renderFishLabel(el, s.value);
+    document.getElementById('fishLabels').appendChild(el);
+    s.labelEl = el;
+  }
+
+  function removeFishLabel(s){
+    if(s.labelEl){ s.labelEl.remove(); s.labelEl = null; }
+  }
+
+  // Hitung offset bobbing SEKALI per swimmer per frame, dipakai konsisten
+  // untuk posisi emoji di Canvas maupun posisi label HTML di bawahnya.
+  function getBobY(s){
+    return Math.sin(Date.now()/320 + s.bob) * 4;
+  }
+
+  /* ============================================================
+     6. SISTEM JEBAKAN
+  ============================================================ */
+  function makeTrap(laneY){
+    const t = TRAP_TYPES[Math.floor(Math.random()*TRAP_TYPES.length)];
+    const fromLeft = Math.random() < 0.5;
+    return {
+      kind: 'trap',
+      trapType: t.type, emoji: t.emoji, points: t.points, msg: t.msg,
+      x: fromLeft ? -40 : W+40,
+      y: laneY,
+      dir: fromLeft ? 1 : -1,
+      speed: 0.6 + Math.random()*1.1,
+      bob: Math.random()*Math.PI*2,
+      caught: false,
+      alive: true,
+    };
+  }
+
+  /* ============================================================
+     8. SISTEM SOAL (setup ronde)
+  ============================================================ */
+  function setupRound(){
+    const q = QUESTIONS[state.order[state.qIndex]];
+    const qEl = document.getElementById('questionText');
+    qEl.textContent = q.question;
+    document.getElementById('questionCounter').textContent = `Soal ${state.qIndex+1}/${TOTAL_QUESTIONS}`;
+
+    // render notasi matematika (KaTeX) jika soal mengandung $...$
+    // Dipanggil ULANG setiap setupRound() dipicu, jadi soal baru (konten dinamis)
+    // selalu ikut dirender ulang — bukan cuma soal pertama.
+    renderQuestionMath(qEl);
+
+    const values = shuffle([q.answer, ...q.distractors]);
+    const usableTop = playTop + 20;
+    const usableBottom = H - 40;
+    const laneCount = values.length + 2; // sisakan slot buat jebakan
+    const laneHeight = (usableBottom - usableTop) / laneCount;
+
+    let lanes = shuffle(Array.from({length: laneCount}, (_,i)=> usableTop + laneHeight*i + laneHeight/2));
+
+    document.getElementById('fishLabels').innerHTML = ''; // buang semua label ikan ronde sebelumnya
+    state.swimmers = [];
+    values.forEach(v => {
+      const y = lanes.pop();
+      state.swimmers.push(makeFish(v, v === q.answer, y));
+    });
+
+    const trapCount = 1 + Math.floor(Math.random()*2); // 1-2 jebakan per ronde
+    for(let i=0;i<trapCount && lanes.length;i++){
+      const y = lanes.pop();
+      state.swimmers.push(makeTrap(y));
+    }
+  }
+
+  /* ============================================================
+     5. SISTEM KAIL
+  ============================================================ */
+  function resetHook(){
+    state.hook = { x: W/2, y: 40, targetX: W/2, targetY: 40, state:'idle', carrying:null };
+  }
+
+  function handleTap(clientX, clientY){
+    if(state.screen !== 'playing') return;
+    if(state.hook.state !== 'idle') return;
+    const rect = stage.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    if(y < playTop) return; // jangan bisa mancing di area HUD
+
+    state.hook.x = x;
+    state.hook.targetX = x;
+    state.hook.y = 30;
+    state.hook.targetY = Math.min(Math.max(y, playTop+10), H-30);
+    state.hook.state = 'dropping';
+    Sound.whoosh();
+  }
+
+  stage.addEventListener('mousedown', e => {
+    if(e.target.closest('input, button, select, textarea, a, label')) return;
+    handleTap(e.clientX, e.clientY);
+  });
+  stage.addEventListener('touchstart', e => {
+    // Jangan pernah menghalangi elemen form/tombol — biarkan browser
+    // menangani fokus/ketik/klik seperti biasa.
+    if(e.target.closest('input, button, select, textarea, a, label')) return;
+    // Hanya aktifkan mekanik kail saat benar-benar sedang bermain.
+    if(state.screen !== 'playing') return;
+    e.preventDefault();
+    const t = e.touches[0];
+    handleTap(t.clientX, t.clientY);
+  }, {passive:false});
+
+  function updateHook(){
+    const hook = state.hook;
+    if(hook.state === 'dropping'){
+      hook.y += CONFIG.hookSpeed;
+
+      // cek tabrakan sepanjang perjalanan turun
+      for(const s of state.swimmers){
+        if(!s.alive || s.caught) continue;
+        const d = Math.hypot(s.x - hook.x, s.y - hook.y);
+        if(d < CONFIG.catchRadius){
+          catchObject(s);
+          hook.state = 'reeling';
+          hook.carrying = s;
+          break;
+        }
+      }
+      if(hook.state === 'dropping' && hook.y >= hook.targetY){
+        hook.y = hook.targetY;
+        hook.state = 'reeling'; // sampai tujuan tanpa hasil
+      }
+    } else if(hook.state === 'reeling'){
+      hook.y -= CONFIG.hookSpeed * 1.3;
+      if(hook.carrying){ hook.carrying.x = hook.x; hook.carrying.y = hook.y; }
+      if(hook.y <= 30){
+        if(hook.carrying){
+          hook.carrying.alive = false;
+          removeFishLabel(hook.carrying);
+        }
+        hook.carrying = null;
+        hook.state = 'idle';
+      }
+    }
+  }
+
+  /* ============================================================
+     7. SISTEM SKOR & FEEDBACK
+  ============================================================ */
+  function showToast(text, kind, x, y){
+    const el = document.createElement('div');
+    el.className = `toast ${kind}`;
+    el.textContent = text;
+    el.style.left = Math.min(Math.max(x-70,10), W-160) + 'px';
+    el.style.top = (y-20) + 'px';
+    stage.appendChild(el);
+    requestAnimationFrame(()=>{ el.style.transition='all .9s ease'; el.style.opacity='1'; el.style.transform='translateY(-30px)'; });
+    setTimeout(()=>{ el.style.opacity='0'; }, 900);
+    setTimeout(()=> el.remove(), 1500);
+  }
+
+  function spawnParticles(x,y,color){
+    for(let i=0;i<10;i++){
+      state.particles.push({ x,y, vx:(Math.random()-0.5)*4, vy:-Math.random()*3-1, life:1, color });
+    }
+  }
+
+  function catchObject(s){
+    if(s.kind === 'fish'){
+      if(s.isCorrect){
+        state.score += CONFIG.pointsCorrect;
+        state.correctCount++;
+        Sound.correct();
+        showToast('🎉 Benar! +10', 'good', s.x, s.y);
+        spawnParticles(s.x, s.y, '#22C55E');
+        updateScoreDisplay();
+        s.caught = true;
+        setTimeout(nextQuestionOrEnd, 950);
+      } else {
+        state.score += CONFIG.pointsWrongFish;
+        state.wrongCount++;
+        Sound.wrong();
+        showToast('Hmm... bukan itu.', 'bad', s.x, s.y);
+        spawnParticles(s.x, s.y, '#F97316');
+        updateScoreDisplay();
+        s.caught = true;
+        // Setiap soal hanya 1 kali kesempatan menjawab: tangkap ikan (benar
+        // atau salah) langsung menghitung sebagai jawaban dan lanjut ke
+        // soal berikutnya — sama seperti pada kasus jawaban benar di atas.
+        setTimeout(nextQuestionOrEnd, 950);
+      }
+    } else {
+      state.score += s.points;
+      state.trapCount++;
+      if(s.trapType === 'bomb'){ Sound.bomb(); } else { Sound.trash(); }
+      showToast(s.msg, s.trapType === 'bomb' ? 'bad' : 'neutral', s.x, s.y);
+      spawnParticles(s.x, s.y, s.trapType === 'bomb' ? '#F97316' : '#94A3B8');
+      updateScoreDisplay();
+      s.caught = true;
+    }
+  }
+
+  function updateScoreDisplay(){
+    document.getElementById('scoreDisplay').textContent = state.score;
+  }
+
+  function nextQuestionOrEnd(){
+    state.qIndex++;
+    if(state.qIndex >= TOTAL_QUESTIONS){
+      endGame();
+    } else {
+      setupRound();
+    }
+  }
+
+  /* ============================================================
+     9. SISTEM UI — layar & render
+  ============================================================ */
+  function drawBubbles(){
+    if(Math.random() < 0.05){
+      state.bubbles.push({ x: Math.random()*W, y: H+10, r: 3+Math.random()*5, speed: 0.5+Math.random()*1 });
+    }
+    ctx2d.save();
+    ctx2d.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx2d.lineWidth = 1.2;
+    state.bubbles.forEach(b=>{
+      b.y -= b.speed;
+      ctx2d.beginPath(); ctx2d.arc(b.x, b.y, b.r, 0, Math.PI*2); ctx2d.stroke();
+    });
+    ctx2d.restore();
+    state.bubbles = state.bubbles.filter(b => b.y > playTop);
+  }
+
+  function drawWaterLines(){
+    ctx2d.save();
+    ctx2d.strokeStyle = 'rgba(255,255,255,0.08)';
+    for(let i=0;i<5;i++){
+      const y = playTop + 30 + i*((H-playTop-60)/5);
+      ctx2d.beginPath();
+      const t = Date.now()/900;
+      for(let x=0;x<=W;x+=20){
+        const w = Math.sin(x*0.02 + t + i)*3;
+        if(x===0) ctx2d.moveTo(x,y+w); else ctx2d.lineTo(x,y+w);
+      }
+      ctx2d.stroke();
+    }
+    ctx2d.restore();
+  }
+
+  function drawSwimmer(s, bobY){
+    if(!s.alive) return;
+
+    // gambar emoji ikan/jebakan di Canvas
+    ctx2d.save();
+    ctx2d.translate(s.x, s.y + bobY);
+    const flip = s.dir < 0;
+    if(flip) ctx2d.scale(-1,1);
+    ctx2d.font = '30px serif';
+    ctx2d.textAlign = 'center';
+    ctx2d.textBaseline = 'middle';
+    ctx2d.fillText(s.emoji, 0, 0);
+    ctx2d.restore();
+
+    // posisikan label HTML (jawaban) tepat di bawah ikan — bobY yang sama
+    // dipakai di sini supaya label selalu senada dengan posisi emoji
+    if(s.kind === 'fish' && s.labelEl){
+      s.labelEl.style.left = s.x + 'px';
+      s.labelEl.style.top = (s.y + bobY + 20) + 'px';
+    }
+  }
+
+  function drawHook(){
+    const hook = state.hook;
+    ctx2d.save();
+    ctx2d.strokeStyle = 'rgba(255,255,255,0.7)';
+    ctx2d.lineWidth = 2;
+    ctx2d.beginPath();
+    ctx2d.moveTo(hook.x, playTop-10);
+    ctx2d.lineTo(hook.x, hook.y);
+    ctx2d.stroke();
+    ctx2d.font = '26px serif';
+    ctx2d.textAlign='center'; ctx2d.textBaseline='middle';
+    ctx2d.fillText('🪝', hook.x, hook.y);
+    ctx2d.restore();
+  }
+
+  function drawParticles(){
+    ctx2d.save();
+    state.particles.forEach(p=>{
+      p.x += p.vx; p.y += p.vy; p.vy += 0.15; p.life -= 0.035;
+      ctx2d.globalAlpha = Math.max(p.life,0);
+      ctx2d.fillStyle = p.color;
+      ctx2d.beginPath(); ctx2d.arc(p.x,p.y,3,0,Math.PI*2); ctx2d.fill();
+    });
+    ctx2d.restore();
+    ctx2d.globalAlpha = 1;
+    state.particles = state.particles.filter(p=>p.life>0);
+  }
+
+  function update(){
+    state.swimmers.forEach(s=>{
+      if(!s.alive || s.caught) return;
+      s.x += s.speed * s.dir;
+      if(s.x < -60) s.x = W+60;
+      if(s.x > W+60) s.x = -60;
+    });
+    updateHook();
+  }
+
+  function render(){
+    ctx2d.clearRect(0,0,W,H);
+    drawWaterLines();
+    drawBubbles();
+    state.swimmers.forEach(s=>{
+      if(s.alive && !s.caught) drawSwimmer(s, getBobY(s));
+    });
+    if(state.hook.carrying) drawSwimmer(state.hook.carrying, getBobY(state.hook.carrying));
+    drawHook();
+    drawParticles();
+  }
+
+  function loop(){
+    if(state.screen === 'playing'){ update(); render(); }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* ============================================================
+     10. SISTEM HASIL
+  ============================================================ */
+  function endGame(){
+    state.screen = 'end';
+    document.getElementById('hud').classList.add('hidden');
+    Sound.stopBgm();
+    Sound.finish();
+
+    const percent = Math.round((state.correctCount / TOTAL_QUESTIONS) * 100);
+    document.getElementById('statCorrect').textContent = state.correctCount;
+    document.getElementById('statWrong').textContent = state.wrongCount;
+    document.getElementById('statTrap').textContent = state.trapCount;
+    document.getElementById('statPercent').textContent = percent + '%';
+    document.getElementById('statScore').textContent = state.score;
+
+    let emoji = '💪', cat = 'Coba Sekali Lagi!';
+    if(percent >= 80){ emoji='🌟'; cat='Mantap!'; }
+    else if(percent >= 50){ emoji='👍'; cat='Sudah Bagus!'; }
+    document.getElementById('resultEmoji').textContent = emoji;
+    document.getElementById('resultCategory').textContent = cat;
+
+    kirimSkorKeForm(state.playerName, state.playerKelas, state.score, state.correctCount);
+
+    document.getElementById('endScreen').classList.remove('hidden');
+  }
+
+  function startGame(){
+    state.playerName = document.getElementById('inName').value.trim() || 'Siswa';
+    state.playerKelas = document.getElementById('inKelas').value.trim();
+    state.qIndex = 0;
+    state.score = 0;
+    state.correctCount = 0;
+    state.wrongCount = 0;
+    state.trapCount = 0;
+    state.order = shuffle(QUESTIONS.map((_,i)=>i));
+    state.bubbles = [];
+    state.particles = [];
+    resetHook();
+
+    // Inisialisasi/lanjutkan AudioContext di sini — ini dipicu oleh gesture
+    // pengguna (tap tombol), jadi memenuhi kebijakan autoplay browser mobile.
+    Sound.init();
+
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('endScreen').classList.add('hidden');
+    document.getElementById('hud').classList.remove('hidden');
+    updateScoreDisplay();
+
+    state.screen = 'playing';
+    setupRound();
+  }
+
+  document.getElementById('btnStart').addEventListener('click', startGame);
+  document.getElementById('btnRestart').addEventListener('click', startGame);
+
+  document.getElementById('btnMute').addEventListener('click', ()=>{
+    const nowMuted = !Sound.isMuted();
+    Sound.setMuted(nowMuted);
+    document.getElementById('btnMute').textContent = nowMuted ? '🔇' : '🔊';
+  });
+
+})();
+</script>
+</body>
+</html>
