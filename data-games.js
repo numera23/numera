@@ -233,38 +233,6 @@ const GAMES = [
         deskripsi: "Jelajahi dunia ZEP sambil menjawab soal-soal polinomial.",
         tags: ["polinomial", "sifat polinomial"],
         link: "TEMPEL LINK GAME DI SINI"
-    },
-    {
-        nama: "Persamaan Lingkaran",
-        materi: "Persamaan Lingkaran",
-        platform: "Kahoot",
-        deskripsi: "Kuis interaktif seputar persamaan lingkaran.",
-        tags: ["lingkaran", "persamaan lingkaran"],
-        link: "TEMPEL LINK GAME DI SINI"
-    },
-    {
-        nama: "Pusat dan Jari-jari",
-        materi: "Persamaan Lingkaran",
-        platform: "ZEP",
-        deskripsi: "Jelajahi konsep pusat dan jari-jari melalui permainan interaktif.",
-        tags: ["lingkaran", "pusat lingkaran", "jari-jari", "persamaan lingkaran"],
-        link: "TEMPEL LINK GAME DI SINI"
-    },
-    {
-        nama: "Operasi Aljabar",
-        materi: "Aljabar",
-        platform: "Quizizz",
-        deskripsi: "Latihan cepat operasi aljabar.",
-        tags: ["aljabar", "operasi aljabar"],
-        link: "TEMPEL LINK GAME DI SINI"
-    },
-    {
-        nama: "Balapan Matematika",
-        materi: "Campuran",
-        platform: "Quizizz",
-        deskripsi: "Kuis seru yang mencakup berbagai materi matematika.",
-        tags: ["campuran", "matematika umum"],
-        link: "TEMPEL LINK GAME DI SINI"
     }
 ];
 
