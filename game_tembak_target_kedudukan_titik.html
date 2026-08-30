@@ -337,7 +337,7 @@
 
     <div class="stat-pills">
       <div class="pill"><div class="n" id="info-jumlah-soal">10</div><div class="l">SOAL</div></div>
-      <div class="pill"><div class="n" id="info-waktu">02:00</div><div class="l">WAKTU</div></div>
+      <div class="pill"><div class="n" id="info-waktu">05:00</div><div class="l">WAKTU</div></div>
       <div class="pill"><div class="n" id="info-skormax">100</div><div class="l">SKOR MAKS</div></div>
     </div>
     <p class="reward-hint">Semakin tinggi level, semakin sulit tantangannya — tetapi semakin besar hadiahnya!</p>
@@ -394,7 +394,7 @@
     <div class="hud-stats">
       <div class="stat-box"><div class="v" id="stat-soal">1/10</div><div class="k">SOAL</div></div>
       <div class="stat-box"><div class="v" id="stat-score">0</div><div class="k">SKOR</div></div>
-      <div class="stat-box"><div class="v" id="stat-timer">02:00</div><div class="k">WAKTU</div></div>
+      <div class="stat-box"><div class="v" id="stat-timer">05:00</div><div class="k">WAKTU</div></div>
     </div>
 
     <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
@@ -529,9 +529,9 @@ const QUESTION_BANK = {
    per level. "points" = poin yang didapat untuk SETIAP jawaban benar
    pada level tersebut. */
 const LEVEL_CONFIG = {
-  mudah : { speed: 45,  totalTime: 150, label: "Mudah",  points: 5  },
-  sedang: { speed: 75,  totalTime: 120, label: "Sedang", points: 10 },
-  sulit : { speed: 115, totalTime: 90,  label: "Sulit",  points: 20 },
+  mudah : { speed: 45,  totalTime: 180, label: "Mudah",  points: 5  },
+  sedang: { speed: 75,  totalTime: 300, label: "Sedang", points: 10 },
+  sulit : { speed: 115, totalTime: 480,  label: "Sulit",  points: 20 },
 };
 const JUMLAH_SOAL_DEFAULT = 10; // maksimal soal yang diambil per level tiap main
 
@@ -555,8 +555,8 @@ let state = {
   score: 0,
   correctCount: 0,
   wrongCount: 0,
-  timeLeft: 120,
-  totalTime: 120,
+  timeLeft: 300,
+  totalTime: 300,
   timerInterval: null,
   gameEnded: false,
   targets: [],       // {el, x, y, r, speed, dir, value}
