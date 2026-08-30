@@ -172,8 +172,8 @@ input{font-family:inherit;}
   font-size:30px; filter:drop-shadow(0 3px 4px rgba(0,0,0,.4));
 }
 .wheel-svg{width:100%; height:100%; filter:drop-shadow(0 8px 16px rgba(0,0,0,.35));}
-#wheel-rotor{transition:transform 3.4s cubic-bezier(.12,.62,.14,1); transform-origin:100px 100px;}
-.wlabel{transition:transform 3.4s cubic-bezier(.12,.62,.14,1);}
+#wheel-rotor{transition:transform 8s cubic-bezier(.12,.62,.14,1); transform-origin:100px 100px;}
+.wlabel{transition:transform 8s cubic-bezier(.12,.62,.14,1);}
 .wheel-hub{
   position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:56px; height:56px; border-radius:50%;
   background:radial-gradient(circle at 35% 30%, #FFE79A, var(--gold) 60%, var(--gold-dark));
@@ -836,7 +836,7 @@ function spinWheel(){
     clearInterval(tickTimer);
     AudioEngine.sfxSpinStop();
     onWheelStopped(target);
-  }, 3450);
+  }, 8050);
 }
 
 function onWheelStopped(category){
