@@ -77,7 +77,7 @@ const NUMERA_GAMES = [
    {
         nama: "🤝🏼 Pasangkan & Buktikan",
         materi: "Metode Grafik SPLDV",
-        deskripsi: "Sistem persamaan di kiri, grafik di kanan.",
+        deskripsi: "Pasangkan persamaan dengan grafiknya, lalu buktikan kalau kamu jawabnya gak ngasal.",
         tags: ["spldv", "grafik", "sistem persamaan linear dua variabel", "metode grafik"],
         link: "game_pasangkan_buktikan_grafik_spldv.html",
         tanggal: "2026-08-24",
@@ -101,7 +101,7 @@ const NUMERA_GAMES = [
     {
         nama: "🧩 Susun Langkah",
         materi: "Fungsi Invers",
-        deskripsi: "Urutkan langkahnya, pecahkan masalahnya.",
+        deskripsi: "Urutkan langkah pemecahan masalah.",
         tags: ["fungsi", "fungsi invers", "invers"],
         link: "game_susunlangkah_fungsiinvers.html",
         tanggal: "2026-08-21",
@@ -113,7 +113,7 @@ const NUMERA_GAMES = [
        {
         nama: "🧩 Susun Langkah",
         materi: "Substitusi SPLDV",
-        deskripsi: "Urutkan tahapannya.",
+        deskripsi: "Urutkan langkah pemecahan masalah.",
         tags: ["spldv", "substitusi", "sistem persamaan linear dua variabel", "metode substitusi"],
         link: "game_susunlangkah_SPLDV_substitusi.html",
         tanggal: "2026-08-23",
@@ -125,7 +125,7 @@ const NUMERA_GAMES = [
     {
         nama: "🔐 Escape Room",
         materi: "Polinomial",
-        deskripsi: "Pecahkan soal matematika dan buka jalan keluar.",
+        deskripsi: "Pecahkan soal matematika & dapatkan kodenya.",
         tags: ["suku banyak", "polinomial", "teorema sisa", "pembagian polinomial", "akar polinomial", "faktor polinomial"],
         link: "game_escape_room_polinomial.html",
         tanggal: "2026-08-22",
@@ -137,7 +137,7 @@ const NUMERA_GAMES = [
    {
         nama: "🎡 Putar Dulu",
         materi: "Titik Pusat & Jari-Jari",
-        deskripsi: "Putar roda, hadapi soalnya.",
+        deskripsi: "Putar roda keberuntungan. Semoga kamu tidak sial.",
         tags: ["persamaan lingkaran", "titik pusat", "jari jari", "jari-jari", "bentuk umum", "pusat lingkaran"],
         link: "game_putar_dulu_titik_jarijari_lingkaran.html",
         tanggal: "2026-08-24",
@@ -149,7 +149,7 @@ const NUMERA_GAMES = [
    {
         nama: "🏆 Siapa yang Mau Jadi Juara",
         materi: "Fungsi Trigonometri",
-        deskripsi: "15 tantangan, 3 bantuan.",
+        deskripsi: "Kuis Who Wants to be a Millionaire ala Numera.",
         tags: ["sin", "cos", "tan", "periode", "amplitudo", "fungsi trigonometri", "kuis"],
         link: "game_siapa_mau_juara_fungtrig.html",
         tanggal: "2026-08-25",
@@ -161,7 +161,7 @@ const NUMERA_GAMES = [
    {
         nama: "₪ Labirin Gelap",
         materi: "Teorema Faktor",
-        deskripsi: "Jelajahi, pecahkan tantangan, temukan jalan keluar!.",
+        deskripsi: "Jelajahi, pecahkan tantangan, temukan jalan keluar!",
         tags: ["polinomial", "teorema faktor", "suku banyak"],
         link: "game_labirin_teorema_faktor.html",
         tanggal: "2026-08-24",
@@ -169,6 +169,18 @@ const NUMERA_GAMES = [
         warna: "#CE46AE",
         emoji: "₪",
         badge: ""
+    },
+   {
+        nama: "🎣 Pancing Jawabannya!",
+        materi: "Operasi Komposisi",
+        deskripsi: "Pancing ikan yang bawa jawaban benar.",
+        tags: ["komposisi fungsi", "penjumlahan", "pengurangan", "substitusi", "fungsi invers"],
+        link: "game_tangkap_jawabannya.html",
+        tanggal: "2026-08-30",
+        thumbnail: "",
+        warna: "#143D56",
+        emoji: "🎣",
+        badge: "Baru"
     },
    {
         nama: "🕵️‍♀️ Detektif Misteri",
