@@ -1,0 +1,876 @@
+<!--
+==========================================================
+NUMERA
+
+Judul      : Sudut Berelasi — Hubungan Sudut 180° dan 90°
+Jenis      : Eksplorasi Interaktif
+Versi      : 1.0
+
+Dikembangkan oleh
+Kiki Herdiansyah
+
+Copyright © 2026
+
+Website ini merupakan bagian dari proyek
+"Numera".
+==========================================================
+-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Sudut Berelasi — Eksplorasi | Numera</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Kiki Herdiansyah">
+<meta name="description" content="Eksplorasi interaktif sudut berelasi — coba sendiri sebelum belajar teorinya.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-soft:#64748B;
+  --border:#E2E8F0;
+  --success:#10B981;
+  --warning:#F59E0B;
+  --error:#EF4444;
+
+  --sp-1:4px;
+  --sp-2:8px;
+  --sp-3:14px;
+  --sp-4:20px;
+  --sp-5:32px;
+  --sp-6:48px;
+
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  margin:0;
+  font-family:'Inter', sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+.wrap{
+  max-width:900px;
+  margin:0 auto;
+  padding:0 var(--sp-4);
+}
+
+/* progress bar */
+.progress-bar{
+  position:fixed;
+  top:0; left:0;
+  height:3px;
+  width:0%;
+  background:var(--primary);
+  z-index:1001;
+  transition:width 80ms linear;
+}
+
+/* topbar */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(248,250,252,.9);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:var(--sp-3) 0;
+}
+
+.topbar .wrap{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:var(--sp-2);
+}
+
+.topbar-title{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:.2px;
+}
+
+.topbar-title span{color:var(--primary);}
+
+/* header */
+header.hero{
+  padding:var(--sp-6) 0 var(--sp-4);
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--primary-light);
+  color:var(--primary);
+  font-size:12.5px;
+  font-weight:700;
+  padding:5px 12px;
+  border-radius:999px;
+  margin-bottom:var(--sp-3);
+}
+
+h1{
+  font-size:clamp(24px,5vw,34px);
+  font-weight:800;
+  line-height:1.2;
+  margin:0 0 var(--sp-2);
+}
+
+.hero-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:var(--sp-2) var(--sp-4);
+  font-size:13.5px;
+  color:var(--text-soft);
+  margin-bottom:var(--sp-3);
+}
+
+.hero-line{
+  font-size:14.5px;
+  color:var(--text-soft);
+  margin:0 0 var(--sp-1);
+}
+
+.hero-invite{
+  font-size:16px;
+  font-weight:600;
+  color:var(--text);
+  margin:0;
+}
+
+/* section */
+section{
+  padding:var(--sp-5) 0;
+}
+
+.section-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.6px;
+  color:var(--text-soft);
+  margin-bottom:var(--sp-3);
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow-card);
+  padding:var(--sp-4);
+}
+
+.mission-text{
+  font-size:16.5px;
+  font-weight:600;
+  line-height:1.55;
+  margin:0 0 var(--sp-2);
+}
+
+.mission-sub{
+  font-size:14.5px;
+  color:var(--text-soft);
+  margin:0;
+}
+
+/* lab layout */
+.lab-card{
+  padding:var(--sp-4);
+}
+
+.control-block{margin-bottom:var(--sp-4);}
+
+.control-label{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:var(--sp-2);
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+}
+
+.control-label .val{
+  color:var(--primary);
+  font-weight:800;
+  font-size:15px;
+}
+
+input[type="range"]{
+  width:100%;
+  height:6px;
+  border-radius:999px;
+  background:var(--border);
+  appearance:none;
+  outline:none;
+}
+
+input[type="range"]::-webkit-slider-thumb{
+  appearance:none;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:var(--primary);
+  border:3px solid #fff;
+  box-shadow:0 1px 4px rgba(15,23,42,.25);
+  cursor:pointer;
+}
+
+input[type="range"]::-moz-range-thumb{
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  background:var(--primary);
+  border:3px solid #fff;
+  box-shadow:0 1px 4px rgba(15,23,42,.25);
+  cursor:pointer;
+}
+
+.seg{
+  display:flex;
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius-btn);
+  padding:4px;
+  gap:4px;
+}
+
+.seg button{
+  flex:1;
+  border:none;
+  background:transparent;
+  padding:9px 8px;
+  font-family:inherit;
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--text-soft);
+  border-radius:9px;
+  cursor:pointer;
+  transition:background 200ms, color 200ms;
+}
+
+.seg button.active{
+  background:var(--card);
+  color:var(--primary);
+  box-shadow:0 1px 3px rgba(15,23,42,.1);
+}
+
+.preset-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.preset-btn{
+  border:1.5px solid var(--border);
+  background:var(--card);
+  padding:9px 14px;
+  border-radius:var(--radius-btn);
+  font-family:inherit;
+  font-size:14px;
+  font-weight:700;
+  color:var(--text);
+  cursor:pointer;
+  transition:all 200ms;
+  min-height:40px;
+}
+
+.preset-btn:hover{border-color:var(--primary);}
+
+.preset-btn.active{
+  background:var(--primary);
+  border-color:var(--primary);
+  color:#fff;
+}
+
+.random-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  border:1.5px dashed var(--border);
+  background:transparent;
+  padding:9px 14px;
+  border-radius:var(--radius-btn);
+  font-family:inherit;
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--text-soft);
+  cursor:pointer;
+  min-height:40px;
+  transition:all 200ms;
+}
+
+.random-btn:hover{
+  border-color:var(--primary);
+  color:var(--primary);
+}
+
+/* diagram */
+.diagram-wrap{
+  display:flex;
+  justify-content:center;
+  padding:var(--sp-3) 0;
+}
+
+svg{max-width:100%; height:auto;}
+
+.legend{
+  display:flex;
+  justify-content:center;
+  gap:var(--sp-4);
+  font-size:13px;
+  color:var(--text-soft);
+  margin-top:var(--sp-2);
+  flex-wrap:wrap;
+}
+
+.legend-item{display:flex; align-items:center; gap:6px;}
+
+.dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+
+/* value table */
+.value-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:var(--sp-4);
+  font-size:14.5px;
+}
+
+.value-table th{
+  text-align:center;
+  font-size:12.5px;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+  color:var(--text-soft);
+  padding:8px 6px;
+  border-bottom:2px solid var(--border);
+}
+
+.value-table td{
+  text-align:center;
+  padding:12px 6px;
+  border-bottom:1px solid var(--border);
+  font-variant-numeric:tabular-nums;
+}
+
+.value-table td:first-child{
+  text-align:left;
+  font-weight:700;
+  color:var(--text);
+}
+
+.value-table .col-a{color:var(--primary); font-weight:700;}
+.value-table .col-b{color:var(--warning); font-weight:700;}
+
+.angle-readout{
+  text-align:center;
+  font-size:14px;
+  color:var(--text-soft);
+  margin-top:var(--sp-3);
+}
+
+.angle-readout b{color:var(--text);}
+
+/* dugaan */
+textarea{
+  width:100%;
+  min-height:110px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-btn);
+  padding:var(--sp-3);
+  font-family:inherit;
+  font-size:15px;
+  color:var(--text);
+  resize:vertical;
+  background:var(--card);
+}
+
+textarea:focus{
+  outline:none;
+  border-color:var(--primary);
+}
+
+.hint-text{
+  font-size:13px;
+  color:var(--text-soft);
+  margin-top:var(--sp-2);
+}
+
+/* cta */
+.cta-card{
+  background:var(--primary);
+  color:#fff;
+  border-radius:var(--radius-card);
+  padding:var(--sp-5) var(--sp-4);
+  text-align:center;
+}
+
+.cta-card p{
+  margin:0 0 var(--sp-3);
+  font-size:15px;
+  line-height:1.6;
+  opacity:.95;
+}
+
+.cta-btn{
+  display:inline-block;
+  background:#fff;
+  color:var(--primary);
+  font-weight:700;
+  font-size:15px;
+  padding:12px 26px;
+  border-radius:var(--radius-btn);
+  text-decoration:none;
+  min-height:40px;
+  transition:transform 200ms, box-shadow 200ms;
+}
+
+.cta-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(0,0,0,.15);
+}
+
+/* footer */
+.site-footer{
+  padding:var(--sp-5) 0 var(--sp-6);
+  text-align:center;
+}
+
+.footer-divider{
+  height:1px;
+  background:var(--border);
+  margin-bottom:var(--sp-4);
+}
+
+.footer-brand{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--primary);
+  margin:0 0 4px;
+}
+
+.footer-text{
+  font-size:13px;
+  color:var(--text-soft);
+  margin:0 0 2px;
+}
+
+.footer-meta{
+  font-size:12.5px;
+  color:var(--text-soft);
+  margin:0;
+  opacity:.85;
+}
+
+@media (max-width:520px){
+  .value-table{font-size:13px;}
+  .value-table td, .value-table th{padding:8px 4px;}
+  .preset-btn{font-size:13px; padding:9px 10px;}
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="topbar-title">NUMERA · 🧪 Sudut Berelasi — Eksplorasi</div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="badge">🧪 Eksplorasi</span>
+    <h1>Sudut Berelasi</h1>
+    <div class="hero-meta">
+      <span>⏱ 3–5 menit</span>
+      <span>Bagian dari materi Sudut Berelasi · Kerjakan sebelum buka Modul</span>
+    </div>
+    <p class="hero-invite">Yuk cari tahu sendiri polanya.</p>
+  </div>
+</header>
+
+<section id="misi">
+  <div class="wrap">
+    <div class="section-label">🎯 Misi Eksplorasi</div>
+    <div class="card">
+      <p class="mission-text">Geser sudutnya, lalu pilih salah satu relasi sudut. Bandingkan angka-angka sin, cos, dan tan dari kedua sudut.</p>
+      <p class="mission-sub">Apa yang kamu perhatikan?</p>
+    </div>
+  </div>
+</section>
+
+<section id="lab">
+  <div class="wrap">
+    <div class="section-label">🧪 Laboratorium Matematika</div>
+    <div class="card lab-card">
+
+      <div class="control-block">
+        <div class="control-label">Geser sudut α <span class="val" id="alphaVal">40°</span></div>
+        <input type="range" id="alphaSlider" min="1" max="89" step="1" value="40">
+      </div>
+
+      <div class="control-block">
+        <div class="control-label">Pilih kelompok relasi</div>
+        <div class="seg">
+          <button type="button" class="grp-btn active" data-group="g180">180° &amp; 360°</button>
+          <button type="button" class="grp-btn" data-group="g90">90° &amp; 270°</button>
+        </div>
+      </div>
+
+      <div class="control-block">
+        <div class="control-label">Pilih relasi sudutnya</div>
+        <div class="preset-grid" id="presetGrid"></div>
+      </div>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 300 300" width="300" height="300" id="circleSvg" aria-label="Lingkaran satuan">
+          <circle cx="150" cy="150" r="120" fill="none" stroke="#E2E8F0" stroke-width="2"></circle>
+          <line x1="20" y1="150" x2="280" y2="150" stroke="#E2E8F0" stroke-width="1.5"></line>
+          <line x1="150" y1="20" x2="150" y2="280" stroke="#E2E8F0" stroke-width="1.5"></line>
+
+          <path id="arcA" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" opacity=".6"></path>
+          <path id="arcB" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" opacity=".6"></path>
+          <text id="arcLabelA" font-size="12" font-weight="700" fill="#2563EB" text-anchor="middle" dominant-baseline="middle"></text>
+          <text id="arcLabelB" font-size="12" font-weight="700" fill="#F59E0B" text-anchor="middle" dominant-baseline="middle"></text>
+
+          <line id="projA_x" x1="0" y1="0" x2="0" y2="0" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="4 3" opacity=".6"></line>
+          <line id="projA_y" x1="0" y1="0" x2="0" y2="0" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="4 3" opacity=".6"></line>
+          <line id="projB_x" x1="0" y1="0" x2="0" y2="0" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4 3" opacity=".6"></line>
+          <line id="projB_y" x1="0" y1="0" x2="0" y2="0" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="4 3" opacity=".6"></line>
+
+          <line id="radiusA" x1="150" y1="150" x2="150" y2="150" stroke="#2563EB" stroke-width="2.5"></line>
+          <line id="radiusB" x1="150" y1="150" x2="150" y2="150" stroke="#F59E0B" stroke-width="2.5"></line>
+
+          <circle id="pointA" cx="150" cy="150" r="7" fill="#2563EB"></circle>
+          <circle id="pointB" cx="150" cy="150" r="7" fill="#F59E0B"></circle>
+        </svg>
+      </div>
+
+      <div class="legend">
+        <span class="legend-item"><span class="dot" style="background:#2563EB"></span> Sudut asli (α)</span>
+        <span class="legend-item"><span class="dot" style="background:#F59E0B"></span> Sudut hasil relasi</span>
+      </div>
+
+      <div class="angle-readout">α = <b id="readAlpha">40°</b> &nbsp;·&nbsp; sudut relasi = <b id="readBeta">140°</b></div>
+
+      <table class="value-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-a">Sudut asli</th>
+            <th class="col-b">Sudut relasi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>sin</td>
+            <td class="col-a" id="sinA">0.643</td>
+            <td class="col-b" id="sinB">0.643</td>
+          </tr>
+          <tr>
+            <td>cos</td>
+            <td class="col-a" id="cosA">0.766</td>
+            <td class="col-b" id="cosB">-0.766</td>
+          </tr>
+          <tr>
+            <td>tan</td>
+            <td class="col-a" id="tanA">0.839</td>
+            <td class="col-b" id="tanB">-0.839</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="control-block" style="margin-top:var(--sp-4); text-align:center;">
+        <button type="button" class="random-btn" id="randomBtn">🔀 Acak sudutnya</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="dugaan">
+  <div class="wrap">
+    <div class="section-label">💭 Dugaan Saya</div>
+    <div class="card">
+      <textarea id="dugaanBox" placeholder="Tulis pola yang kamu lihat di sini..."></textarea>
+      <p class="hint-text">Dugaanmu nggak harus tepat. Ini cuma catatan buat diri sendiri.</p>
+    </div>
+  </div>
+</section>
+
+<section id="lanjut">
+  <div class="wrap">
+    <div class="section-label">🚀 Lanjut ke Modul</div>
+    <div class="cta-card">
+      <p>Kamu sudah punya dugaan sendiri. Sekarang buka Modul untuk melihat mengapa pola itu bisa terjadi.</p>
+      <!-- Ganti href di bawah ini dengan URL Modul yang sesuai -->
+      <a href="#" class="cta-btn">Buka Modul →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-divider"></div>
+    <p class="footer-brand">Numera</p>
+    <p class="footer-text">Dikembangkan oleh <strong>Kiki Herdiansyah</strong></p>
+    <p class="footer-meta">Versi 1.0 · © 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var alphaSlider = document.getElementById('alphaSlider');
+  var alphaVal = document.getElementById('alphaVal');
+  var presetGrid = document.getElementById('presetGrid');
+  var grpBtns = document.querySelectorAll('.grp-btn');
+
+  var readAlpha = document.getElementById('readAlpha');
+  var readBeta = document.getElementById('readBeta');
+  var sinA = document.getElementById('sinA');
+  var cosA = document.getElementById('cosA');
+  var tanA = document.getElementById('tanA');
+  var sinB = document.getElementById('sinB');
+  var cosB = document.getElementById('cosB');
+  var tanB = document.getElementById('tanB');
+
+  var pointA = document.getElementById('pointA');
+  var pointB = document.getElementById('pointB');
+  var radiusA = document.getElementById('radiusA');
+  var radiusB = document.getElementById('radiusB');
+  var projA_x = document.getElementById('projA_x');
+  var projA_y = document.getElementById('projA_y');
+  var projB_x = document.getElementById('projB_x');
+  var projB_y = document.getElementById('projB_y');
+  var arcA = document.getElementById('arcA');
+  var arcB = document.getElementById('arcB');
+  var arcLabelA = document.getElementById('arcLabelA');
+  var arcLabelB = document.getElementById('arcLabelB');
+
+  var presets = {
+    g180: [
+      {key:'180-a', label:'180° − α', fn:function(a){return 180 - a;}},
+      {key:'180+a', label:'180° + α', fn:function(a){return 180 + a;}},
+      {key:'360-a', label:'360° − α', fn:function(a){return 360 - a;}}
+    ],
+    g90: [
+      {key:'90-a', label:'90° − α', fn:function(a){return 90 - a;}},
+      {key:'90+a', label:'90° + α', fn:function(a){return 90 + a;}},
+      {key:'270-a', label:'270° − α', fn:function(a){return 270 - a;}},
+      {key:'270+a', label:'270° + α', fn:function(a){return 270 + a;}}
+    ]
+  };
+
+  var state = {
+    alpha: 40,
+    group: 'g180',
+    presetKey: '180-a'
+  };
+
+  function buildPresetButtons(){
+    presetGrid.innerHTML = '';
+    presets[state.group].forEach(function(p, idx){
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'preset-btn';
+      btn.textContent = p.label;
+      btn.dataset.key = p.key;
+      if(idx === 0){
+        state.presetKey = p.key;
+        btn.classList.add('active');
+      }
+      btn.addEventListener('click', function(){
+        document.querySelectorAll('.preset-btn').forEach(function(b){b.classList.remove('active');});
+        btn.classList.add('active');
+        state.presetKey = p.key;
+        update();
+      });
+      presetGrid.appendChild(btn);
+    });
+  }
+
+  function currentBeta(){
+    var list = presets[state.group];
+    var found = list.find(function(p){return p.key === state.presetKey;});
+    if(!found){ found = list[0]; state.presetKey = found.key; }
+    return found.fn(state.alpha);
+  }
+
+  function toRad(deg){ return deg * Math.PI / 180; }
+
+  function fmt(n){
+    if(!isFinite(n)) return '—';
+    return n.toFixed(3);
+  }
+
+  function pointOnCircle(deg){
+    var r = 120, cx = 150, cy = 150;
+    var rad = toRad(deg);
+    return {
+      x: cx + r * Math.cos(rad),
+      y: cy - r * Math.sin(rad)
+    };
+  }
+
+  function polarPoint(deg, r){
+    var rad = toRad(deg);
+    return {
+      x: 150 + r * Math.cos(rad),
+      y: 150 - r * Math.sin(rad)
+    };
+  }
+
+  /* Menggambar arc dari sisi awal (sumbu-x positif, 0°) sampai sisi akhir
+     (jari-jari pada sudut toDeg), SELALU berlawanan arah jarum jam mengikuti
+     besar sudut aktual — bukan jalur terpendek. Contoh: untuk toDeg = 210°,
+     arc melintasi Kuadran I → II → III sampai berhenti di 210°, bukan
+     mengambil jalan pintas lewat Kuadran IV. Berlaku dinamis untuk semua
+     nilai sudut (0°–360°), termasuk kasus tepat 180°/360° (lingkaran penuh
+     tidak digambar karena titik awal = titik akhir; ditangani sebagai large arc). */
+  function updateArcVisual(arcEl, labelEl, toDeg, r, labelR){
+    var fromDeg = 0;
+    // Normalisasi ke rentang [0, 360) — ini besar sudut aktual yang ditempuh
+    // berlawanan arah jarum jam dari sumbu x positif.
+    var d = ((toDeg % 360) + 360) % 360;
+
+    // Karena sistem koordinat titik (polarPoint) sudah dibalik terhadap sumbu-y
+    // SVG, arah "deg" bertambah = berlawanan arah jarum jam di layar. Sweep-flag
+    // SVG untuk arah ini selalu 0, apa pun besar sudutnya.
+    var sweepFlag = 0;
+    var largeArcFlag = d > 180 ? 1 : 0;
+
+    var startP = polarPoint(fromDeg, r);
+    var endP = polarPoint(fromDeg + d, r);
+
+    var path = 'M ' + startP.x.toFixed(2) + ' ' + startP.y.toFixed(2) +
+      ' A ' + r + ' ' + r + ' 0 ' + largeArcFlag + ' ' + sweepFlag + ' ' +
+      endP.x.toFixed(2) + ' ' + endP.y.toFixed(2);
+    arcEl.setAttribute('d', path);
+
+    var midDeg = fromDeg + d / 2;
+    var labelP = polarPoint(midDeg, labelR);
+    labelEl.setAttribute('x', labelP.x.toFixed(2));
+    labelEl.setAttribute('y', labelP.y.toFixed(2));
+    labelEl.textContent = Math.round(d) + '°';
+  }
+
+  function setLine(el, x1, y1, x2, y2){
+    el.setAttribute('x1', x1);
+    el.setAttribute('y1', y1);
+    el.setAttribute('x2', x2);
+    el.setAttribute('y2', y2);
+  }
+
+  function drawAngle(deg, point, radius, projX, projY){
+    var p = pointOnCircle(deg);
+    point.setAttribute('cx', p.x);
+    point.setAttribute('cy', p.y);
+    setLine(radius, 150, 150, p.x, p.y);
+    setLine(projX, p.x, p.y, p.x, 150);
+    setLine(projY, p.x, p.y, 150, p.y);
+  }
+
+  function update(){
+    var a = state.alpha;
+    var b = currentBeta();
+    var bNorm = ((b % 360) + 360) % 360;
+
+    alphaVal.textContent = a + '°';
+    readAlpha.textContent = a + '°';
+    readBeta.textContent = b + '°';
+
+    var ra = toRad(a), rb = toRad(bNorm);
+
+    var sA = Math.sin(ra), cA = Math.cos(ra), tA = sA/cA;
+    var sB = Math.sin(rb), cB = Math.cos(rb), tB = sB/cB;
+
+    sinA.textContent = fmt(sA);
+    cosA.textContent = fmt(cA);
+    tanA.textContent = fmt(tA);
+    sinB.textContent = fmt(sB);
+    cosB.textContent = fmt(cB);
+    tanB.textContent = fmt(tB);
+
+    drawAngle(a, pointA, radiusA, projA_x, projA_y);
+    drawAngle(bNorm, pointB, radiusB, projB_x, projB_y);
+
+    updateArcVisual(arcA, arcLabelA, a, 34, 50);
+    updateArcVisual(arcB, arcLabelB, bNorm, 58, 76);
+  }
+
+  alphaSlider.addEventListener('input', function(){
+    state.alpha = parseInt(alphaSlider.value, 10);
+    update();
+  });
+
+  grpBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      grpBtns.forEach(function(b){b.classList.remove('active');});
+      btn.classList.add('active');
+      state.group = btn.dataset.group;
+      buildPresetButtons();
+      update();
+    });
+  });
+
+  document.getElementById('randomBtn').addEventListener('click', function(){
+    state.alpha = Math.floor(Math.random() * 89) + 1;
+    alphaSlider.value = state.alpha;
+
+    var list = presets[state.group];
+    var randomPreset = list[Math.floor(Math.random() * list.length)];
+    state.presetKey = randomPreset.key;
+    document.querySelectorAll('.preset-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.key === randomPreset.key);
+    });
+
+    update();
+  });
+
+  buildPresetButtons();
+  update();
+
+  /* progress bar */
+  var progressBar = document.getElementById('progressBar');
+  function updateProgress(){
+    var scrollTop = window.scrollY || document.documentElement.scrollTop;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+})();
+</script>
+
+</body>
+</html>
