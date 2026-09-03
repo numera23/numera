@@ -39,10 +39,12 @@
 
     :root {
         --primary: #2563EB;
-        --bg: #F8FAFC;
+        --primary-deep: #1E3A8A;
+        --primary-mid: #1D4ED8;
+        --bg: #F7F9FC;
         --card: #FFFFFF;
-        --border: #E5E7EB;
-        --text: #0F172A;
+        --border: #E6EAF2;
+        --text: #0B1324;
         --text-secondary: #64748B;
     }
 
@@ -60,8 +62,8 @@
         max-width: 440px;
         margin: 0 auto;
         min-height: 100vh;
-        background: var(--bg);
         position: relative;
+        background: radial-gradient(120% 32% at 50% 0%, rgba(37, 99, 235, 0.07), transparent 68%), var(--bg);
     }
 
     @media (min-width: 441px) {
@@ -120,46 +122,54 @@
 
     .hero {
         position: relative;
-        margin: 8px 0 22px;
-        padding: 18px 20px;
-        border-radius: 18px;
+        margin: 12px 0 28px;
+        padding: 28px 22px 24px;
+        border-radius: 22px;
         overflow: hidden;
-        background: linear-gradient(155deg, #EFF4FF 0%, #F8FAFC 65%);
-        border: 1px solid var(--border);
+        background:
+            radial-gradient(130% 150% at 100% 0%, rgba(255, 255, 255, 0.16) 0%, transparent 55%),
+            linear-gradient(155deg, var(--primary-mid) 0%, var(--primary-deep) 100%);
+        box-shadow:
+            0 18px 34px -14px rgba(30, 58, 138, 0.55),
+            inset 0 1px 0 rgba(255, 255, 255, 0.14);
         animation: fadeInUp 0.5s ease both;
     }
 
     .hero-visual {
         position: absolute;
-        right: -18px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 42%;
-        max-width: 170px;
-        opacity: 0.55;
+        right: -10px;
+        bottom: -8px;
+        width: 46%;
+        max-width: 172px;
+        opacity: 0.9;
         pointer-events: none;
     }
 
     .hero-text {
         position: relative;
         z-index: 1;
-        max-width: 72%;
+        max-width: 66%;
     }
 
     .hero-text h2 {
-        font-size: 18px;
+        font-size: 21px;
         font-weight: 700;
         letter-spacing: -0.02em;
         line-height: 1.3;
-        color: var(--text);
-        margin-bottom: 8px;
+        color: #FFFFFF;
+        margin-bottom: 14px;
     }
 
     .hero-tagline {
-        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        font-size: 12.5px;
         font-weight: 600;
-        color: var(--primary);
-        letter-spacing: -0.01em;
+        color: #EAF0FF;
+        letter-spacing: -0.005em;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 6px 12px;
+        border-radius: 20px;
     }
 
     .section {
@@ -177,18 +187,18 @@
     .section-title {
         display: flex;
         align-items: center;
-        gap: 7px;
-        font-size: 13px;
+        gap: 8px;
+        font-size: 16px;
         font-weight: 700;
-        letter-spacing: 0.04em;
+        letter-spacing: -0.015em;
         color: var(--text);
-        text-transform: uppercase;
     }
 
     .section-title svg {
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
         color: var(--primary);
+        flex-shrink: 0;
     }
 
     .section-link {
@@ -220,16 +230,21 @@
         gap: 14px;
         background: var(--card);
         border: 1px solid var(--border);
+        border-left: 3px solid var(--border);
         border-radius: 16px;
-        padding: 14px;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        padding: 14px 14px 14px 15px;
+        box-shadow: 0 3px 10px -6px rgba(15, 23, 42, 0.10);
     }
+
+    .announce-card.red   { border-left-color: #DC2626; }
+    .announce-card.blue  { border-left-color: #2563EB; }
+    .announce-card.green { border-left-color: #16A34A; }
 
     .announce-icon {
         flex-shrink: 0;
         width: 44px;
         height: 44px;
-        border-radius: 12px;
+        border-radius: 11px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -252,10 +267,9 @@
     }
 
     .announce-label {
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 700;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
+        letter-spacing: -0.005em;
     }
 
     .announce-label.red  { color: #DC2626; }
@@ -314,10 +328,11 @@
         display: flex;
         align-items: center;
         gap: 14px;
-        background: #EFF6FF;
-        border: 1px solid #DBEAFE;
-        border-radius: 16px;
-        padding: 14px 16px;
+        background: linear-gradient(155deg, #F5F8FF 0%, #FFFFFF 60%);
+        border: 1px solid #DCE6FB;
+        border-radius: 18px;
+        padding: 15px 15px 15px 16px;
+        box-shadow: 0 8px 20px -14px rgba(37, 99, 235, 0.45);
     }
 
     .recommend-icon {
@@ -325,24 +340,28 @@
         width: 46px;
         height: 46px;
         border-radius: 13px;
-        background: #FFFFFF;
+        background: linear-gradient(155deg, var(--primary-mid), var(--primary-deep));
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--primary);
+        color: #FFFFFF;
+        box-shadow: 0 6px 14px -6px rgba(30, 58, 138, 0.55);
     }
 
-    .recommend-icon svg { width: 22px; height: 22px; }
+    .recommend-icon svg { width: 21px; height: 21px; }
 
     .recommend-body { flex: 1; min-width: 0; }
 
     .recommend-tag {
+        display: inline-block;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: 0.03em;
-        text-transform: uppercase;
+        letter-spacing: -0.005em;
         color: var(--primary);
-        margin-bottom: 2px;
+        background: #EAF1FF;
+        padding: 2px 8px;
+        border-radius: 6px;
+        margin-bottom: 5px;
     }
 
     .recommend-title {
@@ -361,18 +380,17 @@
 
     .recommend-arrow {
         flex-shrink: 0;
-        width: 36px;
-        height: 36px;
+        width: 34px;
+        height: 34px;
         border-radius: 50%;
-        background: #FFFFFF;
+        background: #F7F9FC;
         display: flex;
         align-items: center;
         justify-content: center;
         color: var(--primary);
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
 
-    .recommend-arrow svg { width: 17px; height: 17px; }
+    .recommend-arrow svg { width: 16px; height: 16px; }
 
     .bottom-nav-spacer {
         height: calc(72px + env(safe-area-inset-bottom));
@@ -401,11 +419,11 @@
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        padding: 6px 2px;
+        padding: 7px 2px 6px;
         color: var(--text-secondary);
-        border-radius: 12px;
+        border-radius: 14px;
         text-decoration: none;
-        transition: color 0.15s ease;
+        transition: color 0.15s ease, background 0.15s ease;
     }
 
     .nav-item svg {
@@ -421,6 +439,7 @@
 
     .nav-item.active {
         color: var(--primary);
+        background: #EAF1FF;
     }
 
     .nav-item:active {
@@ -462,15 +481,13 @@
                 <p class="hero-tagline">Belajar &middot; Bereksperimen &middot; Bermain</p>
             </div>
             <svg class="hero-visual" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="150" cy="60" r="34" fill="none" stroke="#2563EB" stroke-width="1.5" opacity="0.18"/>
-                <circle cx="150" cy="150" r="20" fill="#2563EB" opacity="0.14"/>
-                <polygon points="70,150 108,150 89,112" fill="none" stroke="#2563EB" stroke-width="1.6" opacity="0.28"/>
-                <line x1="30" y1="40" x2="30" y2="90" stroke="#2563EB" stroke-width="1.5" opacity="0.22"/>
-                <line x1="6" y1="65" x2="54" y2="65" stroke="#2563EB" stroke-width="1.5" opacity="0.22"/>
-                <path d="M110 30 C 140 30, 160 55, 160 90" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="1 7" stroke-linecap="round" opacity="0.35"/>
-                <circle cx="45" cy="130" r="3" fill="#2563EB" opacity="0.3"/>
-                <circle cx="60" cy="118" r="2" fill="#2563EB" opacity="0.3"/>
-                <circle cx="35" cy="112" r="2" fill="#2563EB" opacity="0.3"/>
+                <line x1="18" y1="18" x2="18" y2="172" stroke="#FFFFFF" stroke-width="1.4" opacity="0.55"/>
+                <line x1="18" y1="172" x2="188" y2="172" stroke="#FFFFFF" stroke-width="1.4" opacity="0.55"/>
+                <path d="M18 150 C 55 30, 130 20, 182 100" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" opacity="0.95"/>
+                <line x1="126" y1="172" x2="126" y2="58" stroke="#FFFFFF" stroke-width="1.2" stroke-dasharray="2 6" stroke-linecap="round" opacity="0.5"/>
+                <line x1="18" y1="58" x2="126" y2="58" stroke="#FFFFFF" stroke-width="1.2" stroke-dasharray="2 6" stroke-linecap="round" opacity="0.5"/>
+                <circle cx="126" cy="58" r="5" fill="#FFFFFF"/>
+                <circle cx="126" cy="58" r="9" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity="0.45"/>
             </svg>
         </div>
 
@@ -569,7 +586,7 @@
         const warna = info.warna;
         const tag = item.link ? "a" : "div";
         const card = document.createElement(tag);
-        card.className = "announce-card";
+        card.className = `announce-card ${warna}`;
         if (item.link) card.href = item.link;
 
         const ctaHTML = item.cta
@@ -609,7 +626,7 @@
     const REKOMENDASI = {
         tipe: "arena",
         judul: "Putar Dulu",
-        alasan: "Putar roda keberuntungan, semoga kamu tidak sial.",
+        alasan: "Putar roda keberuntungan dan mainkan game nya.",
         link: "game_putar_dulu_titik_jarijari_lingkaran.html"
     };
 
