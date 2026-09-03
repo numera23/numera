@@ -458,8 +458,8 @@
 
         <div class="hero">
             <div class="hero-text">
-                <h2>Jadi Mudah, Jadi Seru!</h2>
-                <p class="hero-tagline">Belajar &middot; Bereksplorasi &middot; Bertumbuh</p>
+                <h2>Coba, amati, lalu tanyakan &ldquo;kok bisa?&rdquo;</h2>
+                <p class="hero-tagline">Belajar &middot; Bereksperimen &middot; Bermain</p>
             </div>
             <svg class="hero-visual" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="150" cy="60" r="34" fill="none" stroke="#2563EB" stroke-width="1.5" opacity="0.18"/>
@@ -480,16 +480,9 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a2 2 0 0 0 2 2h1l3.5 4.5V4.5L6 9H5a2 2 0 0 0-2 2Z"/><path d="M14 8a4 4 0 0 1 0 8"/><path d="M17.5 5.5a8 8 0 0 1 0 13"/></svg>
                     Pengumuman
                 </div>
-                <a class="section-link" href="#">
-                    Penting
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <!-- Lingkaran Luar -->
-  <circle cx="12" cy="12" r="10" />
-  <!-- Batang Tanda Seru -->
-  <line x1="12" y1="8" x2="12" y2="12" />
-  <!-- Titik Tanda Seru -->
-  <line x1="12" y1="16" x2="12.01" y2="16" />
-</svg>
+                <a class="section-link" href="pengumuman.html">
+                    Lihat semua
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
             </div>
             <div class="announce-list" id="announceList"></div>
@@ -518,15 +511,15 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h7"/></svg>
             <span>Topik</span>
         </a>
-        <a class="nav-item" href="eksplorasi.html" data-nav="eksplorasi">
+        <a class="nav-item" href="#" data-nav="eksplorasi">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
             <span>Eksplorasi</span>
         </a>
-        <a class="nav-item" href="arena.html" data-nav="arena">
+        <a class="nav-item" href="#" data-nav="arena">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
             <span>Arena Game</span>
         </a>
-        <a class="nav-item" href="cakrawala.html" data-nav="Cakrawala">
+        <a class="nav-item" href="#" data-nav="Cakrawala">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
             <span>Cakrawala</span>
         </a>
@@ -538,20 +531,20 @@
     const PENGUMUMAN = [
         {
             tipe: "ulangan",
-            label: "Ulangan Harian",
-            judul: "XI Isaac Newton",
-            deskripsi: "Polinomial \u00B7 Jangan lupa belajar & siapkan contekan satu lembar.",
-            tanggal: "1 Sep 2026",
+            label: "Ulangan",
+            judul: "Ulangan Polinomial",
+            deskripsi: "Selasa, 11 Agustus 2026 \u00B7 Jam ke-3",
+            tanggal: "11 Ags 2026",
             link: null,
             cta: null
         },
         {
             tipe: "materi",
             label: "Materi",
-            judul: "Persamaan Garis Singgung Lingkaran Jika Gradien Diketahui",
-            deskripsi: "XII Maxwell & XII Nobel",
-            tanggal: "28 Ags 2026",
-            link: "persamaan_lingkaran_pgs.html",
+            judul: "Modul Persamaan Lingkaran",
+            deskripsi: "Modul 1 sudah tersedia.",
+            tanggal: "8 Ags 2026",
+            link: "#",
             cta: "Buka modul"
         }
     ];
@@ -564,6 +557,10 @@
         materi: {
             warna: "blue",
             svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="16.5" x2="15" y2="16.5"/></svg>'
+        },
+        deadline: {
+            warna: "green",
+            svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>'
         }
     };
 
@@ -606,23 +603,28 @@
 
     /* =============================================================
        REKOMENDASI BELAJAR — satu saran langkah berikutnya.
-       tipe: "modul" | "eksplorasi" — menentukan label & ikon.
+       tipe: "modul" | "eksplorasi" | "arena" | "cakrawala" — menentukan label & ikon.
+       Cukup ganti nilai di sini untuk mengganti tampilan card.
        ============================================================= */
     const REKOMENDASI = {
-        tipe: "modul",
+        tipe: "arena",
         judul: "Putar Dulu",
-        alasan: "Putar roda keberuntungan dan semoga kamu tidak sial.",
+        alasan: "Putar roda keberuntungan, semoga kamu tidak sial.",
         link: "game_putar_dulu_titik_jarijari_lingkaran.html"
     };
 
     const REKOMENDASI_ICON = {
         modul: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="16.5" x2="15" y2="16.5"/></svg>',
-        eksplorasi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>'
+        eksplorasi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>',
+        arena: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>',
+        cakrawala: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>'
     };
 
     const REKOMENDASI_LABEL = {
         modul: "Modul",
-        eksplorasi: "Eksplorasi"
+        eksplorasi: "Eksplorasi",
+        arena: "Arena Game",
+        cakrawala: "Cakrawala"
     };
 
     function renderRekomendasi() {
