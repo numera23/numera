@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Four Corners — Guru</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#F8FAFC;color:#2563EB}
+.wrap{max-width:760px;margin:auto;min-height:100vh;background:#fff}
+header{background:#2563EB;color:#fff;padding:22px 20px}h1{margin:0;font-size:26px}header p{margin:5px 0 0;opacity:.75}
+main{padding:18px}.card{border:1px solid #dfe3e7;border-radius:16px;padding:18px;margin-bottom:14px}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#68727c;font-weight:800}
+.question .katex{font-size:1em}.choice .katex{font-size:1em}.opt .katex{font-size:1em}.question{font-size:25px;line-height:1.4;font-weight:850;margin:8px 0 18px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.opt{padding:15px;border-radius:12px;font-weight:850;text-align:left;border:2px solid transparent}
+.red{background:#fce8e8}.yellow{background:#fff7d6}.green{background:#e5f4e9}.blue{background:#e5eefc}
+.answer{margin-top:14px;padding:15px;border-radius:12px;background:#EFF6FF;font-weight:800}
+.buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px}.buttons button{border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:900;cursor:pointer}
+.next{background:#2563EB;color:white}.run{background:#20252b;color:white}.reveal{background:#d9e4f5}
+.state{text-align:center;font-size:28px;font-weight:950;padding:17px;border-radius:13px;background:#EFF6FF;margin:12px 0}
+.small{font-size:13px;color:#69727b;line-height:1.5}
+.list{display:grid;gap:7px;max-height:260px;overflow:auto}.q{border:1px solid #ddd;background:#fafafa;border-radius:9px;padding:10px;text-align:left;cursor:pointer}.q.active{background:#2563EB;color:#fff}
+@media(max-width:520px){.options,.buttons{grid-template-columns:1fr}.question .katex{font-size:1em}.choice .katex{font-size:1em}.opt .katex{font-size:1em}.question{font-size:21px}}
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+</head>
+<body><div class="wrap">
+<header><h1>Four Corners</h1><p>Mode Guru — kendali permainan</p></header>
+<main>
+<div class="card">
+<div class="label">Soal <span id="num"></span></div>
+<div id="question" class="question"></div>
+<div class="options" id="options"></div>
+<div id="answer" class="answer">Jawaban belum di-reveal.</div>
+</div>
+
+<div class="card">
+<div class="label">Kendali permainan</div>
+<div id="state" class="state">SIAP</div>
+<div class="buttons">
+<button class="next" onclick="nextQuestion()">SOAL BERIKUTNYA →</button>
+<button class="run" onclick="setState('LARI!')">🏃 LARI!</button>
+<button class="reveal" onclick="setState('REVEAL')">REVEAL</button>
+
+</div>
+<p class="small">Urutan permainan: pilih soal → siswa memilih warna → LARI! → siswa menuju warna → REVEAL → lanjut soal berikutnya.</p>
+</div>
+
+<div class="card">
+<div class="label">Daftar soal</div>
+<div id="list" class="list"></div>
+</div>
+</main></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import{getDatabase,ref,set,onValue}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyC1N9NgV1xGEP1Ln6JwJKW0czMovdSWzE8",
+authDomain:"numera-d33fe.firebaseapp.com",
+databaseURL:"https://numera-d33fe-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId:"numera-d33fe",
+storageBucket:"numera-d33fe.firebasestorage.app",
+messagingSenderId:"1068514501778",
+appId:"1:1068514501778:web:94f49beec366ca5d40324b"
+};
+const db=getDatabase(initializeApp(firebaseConfig));
+const gameRef=ref(db,"fourCorners/game");
+
+function mathHTML(text){
+  if(typeof katex==="undefined") return text;
+  let html="", pos=0;
+  const re=/\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g;
+  let m;
+  while((m=re.exec(text))){
+    html+=escapeHTML(text.slice(pos,m.index));
+    const expr=m[1]??m[2];
+    html+=katex.renderToString(expr,{throwOnError:false,displayMode:Boolean(m[1])});
+    pos=m.index+m[0].length;
+  }
+  html+=escapeHTML(text.slice(pos));
+  return html;
+}
+function escapeHTML(text){
+  const d=document.createElement("div");
+  d.textContent=text;
+  return d.innerHTML;
+}
+
+const questions=[
+{q:"Hasil dari 24 + 18 adalah ...",o:["40","42","44","46"],a:1},
+{q:"Jika 3x = 27, maka nilai x adalah ...",o:["6","7","8","9"],a:3},
+{q:"Luas persegi dengan sisi 8 cm adalah ...",o:["16 cm²","32 cm²","64 cm²","72 cm²"],a:2},
+{q:"Hasil dari 3/4 + 1/2 adalah ...",o:["1","1 1/4","1 1/2","2"],a:1},
+{q:"Segitiga memiliki alas 12 cm dan tinggi 8 cm. Luasnya adalah ...",o:["24 cm²","40 cm²","48 cm²","96 cm²"],a:2},
+{q:"Nilai dari 5² − 3² adalah ...",o:["8","12","16","22"],a:2},
+{q:"Rata-rata dari 6, 8, dan 10 adalah ...",o:["7","8","9","10"],a:1},
+{q:"Sudut yang besarnya 90° disebut sudut ...",o:["lancip","siku-siku","tumpul","refleks"],a:1}
+];
+
+let localIndex=0;
+let current={question:0,state:"SIAP"};
+
+function draw(){
+const x=questions[current.question];
+document.getElementById("num").textContent=current.question+1;
+document.getElementById("question").innerHTML=mathHTML(x.q);
+document.getElementById("state").textContent=current.state;
+const colors=["red","yellow","green","blue"];
+document.getElementById("options").innerHTML=x.o.map((v,i)=>`<div class="opt ${colors[i]}">${["MERAH","KUNING","HIJAU","BIRU"][i]} — ${mathHTML(v)}</div>`).join("");
+document.getElementById("answer").innerHTML=current.state==="REVEAL"?`JAWABAN BENAR: ${["MERAH","KUNING","HIJAU","BIRU"][x.a]} — ${mathHTML(x.o[x.a])}`:"Jawaban belum di-reveal.";
+document.querySelectorAll(".q").forEach((e,i)=>e.classList.toggle("active",i===current.question));
+}
+function drawList(){
+document.getElementById("list").innerHTML=questions.map((x,i)=>`<button class="q" onclick="chooseQuestion(${i})">Soal ${i+1}. ${x.q}</button>`).join("");
+}
+window.chooseQuestion=async(i)=>{await set(gameRef,{question:i,state:"SIAP"});}
+window.nextQuestion=async()=>{await set(gameRef,{question:(current.question+1)%questions.length,state:"SIAP"});}
+window.setState=async(s)=>{await set(gameRef,{question:current.question,state:s});}
+onValue(gameRef,s=>{current=s.val()||{question:0,state:"SIAP"};draw();});
+drawList();
+</script></body></html>

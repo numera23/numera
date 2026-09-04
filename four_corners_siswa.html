@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Four Corners — Siswa</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#F8FAFC;color:#2563EB}
+.app{min-height:100vh;display:flex;flex-direction:column;background:#fff}
+.top{padding:18px 20px;background:#2563EB;color:#fff}
+.top h1{margin:0;font-size:22px}.top p{margin:4px 0 0;opacity:.85;font-size:13px}
+main{width:100%;max-width:700px;margin:auto;padding:18px}
+.card{border:1px solid #dfe3e7;border-radius:16px;padding:18px;margin-bottom:14px}
+input{width:100%;padding:14px;border:1px solid #d8dde2;border-radius:10px;font-size:17px;margin:7px 0 10px}
+button.start{width:100%;padding:14px;border:0;border-radius:11px;background:#2563EB;color:white;font-weight:900;font-size:16px;cursor:pointer}
+.question{font-size:24px;color:#17202a;font-weight:850;line-height:1.5;margin:8px 0 18px}
+.question .katex,.choice .katex{font-size:1em}
+.label{font-size:12px;color:#68727c;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice{border:0;border-radius:15px;padding:19px 12px;font-size:17px;font-weight:950;cursor:pointer}
+.red{background:#e53935;color:#fff}.yellow{background:#ffd83d;color:#17202a}.green{background:#31a354;color:#fff}.blue{background:#2878d7;color:#fff}
+.choice:disabled{opacity:.55;cursor:not-allowed}
+.state{text-align:center;font-size:31px;font-weight:950;padding:20px;border-radius:14px;background:#EFF6FF;color:#2563EB;margin:14px 0}
+.locked{text-align:center;padding:13px;border-radius:11px;background:#EFF6FF;color:#17202a;font-weight:800}
+.reveal{padding:20px;border-radius:14px;text-align:center;background:#EFF6FF}
+.big{font-size:42px;font-weight:950}.correct{font-weight:900;font-size:19px}
+.fullcolor{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;z-index:20;padding:20px}
+.fullcolor.show{display:flex}
+.fullcolor .inner{font-weight:950;font-size:clamp(42px,12vw,90px);line-height:1.05}
+.fullcolor small{display:block;font-size:18px;margin-top:18px}
+#redScreen{background:#e53935;color:#fff}#yellowScreen{background:#ffd83d;color:#17202a}
+#greenScreen{background:#31a354;color:#fff}#blueScreen{background:#2878d7;color:#fff}
+#resultScreen{z-index:30}
+.hidden{display:none!important}
+.small{font-size:13px;color:#69727b;line-height:1.5}
+@media(max-width:520px){.options{grid-template-columns:1fr}.question{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top"><h1>Four Corners</h1><p>Mode Siswa</p></div>
+<main>
+<div id="setup" class="card">
+<div class="label">Nama Siswa</div>
+<input id="name" placeholder="Masukkan nama">
+<button type="button" class="start" onclick="start()">Mulai</button>
+<p class="small">Masukkan nama satu kali. Setelah itu tunggu soal dari guru.</p>
+</div>
+
+<div id="game" class="hidden">
+<div class="card">
+<div class="label">Soal <span id="num"></span></div>
+<div id="question" class="question"></div>
+<div id="options" class="options"></div>
+<div id="status" class="locked">Pilih jawabanmu.</div>
+<div id="state" class="state">SIAP</div>
+</div>
+<div id="reveal" class="reveal hidden"></div>
+</div>
+</main>
+</div>
+
+<div id="redScreen" class="fullcolor"><div class="inner">🔴<br>MERAH<small id="redInstruction">PILIHANMU</small></div></div>
+<div id="yellowScreen" class="fullcolor"><div class="inner">🟡<br>KUNING<small id="yellowInstruction">PILIHANMU</small></div></div>
+<div id="greenScreen" class="fullcolor"><div class="inner">🟢<br>HIJAU<small id="greenInstruction">PILIHANMU</small></div></div>
+<div id="blueScreen" class="fullcolor"><div class="inner">🔵<br>BIRU<small id="blueInstruction">PILIHANMU</small></div></div>
+<div id="resultScreen" class="fullcolor">
+  <div class="inner">
+    <div id="resultColor">🟡</div>
+    <div id="resultAnswer">KUNING</div>
+    <small id="resultMessage"></small>
+  </div>
+</div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import{getDatabase,ref,onValue}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const firebaseConfig={
+apiKey:"AIzaC1N9NgV1xGEP1Ln6JwJKW0czMovdSWzE8",
+authDomain:"numera-d33fe.firebaseapp.com",
+databaseURL:"https://numera-d33fe-default-rtdb.asia-southeast1.firebasedatabase.app",
+projectId:"numera-d33fe",
+storageBucket:"numera-d33fe.firebasestorage.app",
+messagingSenderId:"1068514501778",
+appId:"1:1068514501778:web:94f49beec366ca5d40324b"
+};
+
+const db=getDatabase(initializeApp(firebaseConfig));
+const gameRef=ref(db,"fourCorners/game");
+
+const questions=[
+{q:"Hasil dari 24 + 18 adalah ...",o:["40","42","44","46"],a:1},
+{q:"Jika $3x=27$, maka nilai $x$ adalah ...",o:["6","7","8","9"],a:3},
+{q:"Luas persegi dengan sisi $8\\text{ cm}$ adalah ...",o:["$16\\text{ cm}^2$","$32\\text{ cm}^2$","$64\\text{ cm}^2$","$72\\text{ cm}^2$"],a:2},
+{q:"Hasil dari $\\frac34+\\frac12$ adalah ...",o:["$1$","$1\\frac14$","$1\\frac12$","$2$"],a:1},
+{q:"Segitiga memiliki alas $12\\text{ cm}$ dan tinggi $8\\text{ cm}$. Luasnya adalah ...",o:["$24\\text{ cm}^2$","$40\\text{ cm}^2$","$48\\text{ cm}^2$","$96\\text{ cm}^2$"],a:2},
+{q:"Nilai dari $5^2-3^2$ adalah ...",o:["8","12","16","22"],a:2},
+{q:"Rata-rata dari $6,8,$ dan $10$ adalah ...",o:["7","8","9","10"],a:1},
+{q:"Sudut yang besarnya $90^\\circ$ disebut sudut ...",o:["lancip","siku-siku","tumpul","refleks"],a:1}
+];
+
+let started=false,name="",choice=null,question=-1,state="SIAP";
+const colors=["red","yellow","green","blue"];
+const names=["MERAH","KUNING","HIJAU","BIRU"];
+const emojis=["🔴","🟡","🟢","🔵"];
+
+function escapeHTML(text){
+const d=document.createElement("div");d.textContent=String(text);return d.innerHTML;
+}
+function mathHTML(text){
+if(typeof katex==="undefined") return escapeHTML(text);
+let html="",pos=0;
+const re=/\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g;
+let m;
+while((m=re.exec(String(text)))){
+html+=escapeHTML(String(text).slice(pos,m.index));
+html+=katex.renderToString(m[1]??m[2],{throwOnError:false,displayMode:Boolean(m[1])});
+pos=m.index+m[0].length;
+}
+html+=escapeHTML(String(text).slice(pos));
+return html;
+}
+
+window.start=()=>{
+name=document.getElementById("name").value.trim();
+if(!name){alert("Masukkan nama terlebih dahulu.");return}
+started=true;
+document.getElementById("setup").classList.add("hidden");
+document.getElementById("game").classList.remove("hidden");
+render();
+};
+
+function hideColors(){
+["redScreen","yellowScreen","greenScreen","blueScreen","resultScreen"]
+.forEach(x=>document.getElementById(x).classList.remove("show"));
+}
+
+function render(){
+if(!started)return;
+
+const x=questions[question<0?0:question];
+document.getElementById("num").textContent=question<0?"":question+1;
+document.getElementById("question").innerHTML=mathHTML(question<0?"Tunggu guru memilih soal.":x.q);
+document.getElementById("state").textContent=state;
+
+const box=document.getElementById("options");
+box.innerHTML="";
+if(question>=0){
+x.o.forEach((v,i)=>{
+const b=document.createElement("button");
+b.className="choice "+colors[i];
+b.innerHTML=names[i]+" — "+mathHTML(v);
+b.disabled=choice!==null;
+b.onclick=()=>pick(i);
+box.appendChild(b);
+});
+}
+
+document.getElementById("status").textContent=
+choice===null?"Pilih jawabanmu.":"🔒 Pilihan "+names[choice]+" terkunci.";
+
+document.getElementById("reveal").classList.add("hidden");
+hideColors();
+
+if(choice!==null && state!=="REVEAL"){
+const screen=document.getElementById(colors[choice]+"Screen");
+screen.classList.add("show");
+const instruction=document.getElementById(colors[choice]+"Instruction");
+instruction.textContent=state==="LARI!"?"🏃 LARI! — MENUJU PILIHANMU":"PILIHANMU";
+instruction.style.fontSize=state==="LARI!"?"clamp(24px,7vw,52px)":"18px";
+instruction.style.marginTop=state==="LARI!"?"28px":"18px";
+}
+
+if(state==="REVEAL" && choice!==null){
+const resultScreen=document.getElementById("resultScreen");
+resultScreen.classList.add("show");
+const correctColor=colors[x.a];
+
+document.getElementById("resultColor").textContent=emojis[x.a];
+document.getElementById("resultAnswer").textContent=names[x.a];
+
+const resultMessage=document.getElementById("resultMessage");
+resultMessage.textContent=choice===x.a?"✓ KAMU BENAR!":"✕ KAMU SALAH!";
+resultMessage.style.fontSize="clamp(26px,7vw,54px)";
+resultMessage.style.marginTop="24px";
+resultMessage.style.display="block";
+
+resultScreen.style.background={
+red:"#e53935",yellow:"#ffd83d",green:"#31a354",blue:"#2878d7"
+}[correctColor];
+resultScreen.style.color=correctColor==="yellow"?"#17202a":"#fff";
+}
+}
+
+function pick(i){
+if(choice!==null||question<0||state==="REVEAL")return;
+choice=i;
+render();
+}
+
+onValue(gameRef,s=>{
+const v=s.val();
+if(!v)return;
+const newQ=v.question??0;
+if(newQ!==question){question=newQ;choice=null;}
+state=v.state||"SIAP";
+render();
+});
+</script>
+</body>
+</html>
