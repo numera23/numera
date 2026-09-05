@@ -3,10 +3,11 @@
    =====================================================================
    SATU SUMBER DATA untuk SEMUA halaman game Numera:
      - arena.html            (menampilkan 3 game Numera terbaru +
-                               preview singkat game eksternal)
+                               preview singkat Aktivitas Kelas)
      - game-numera.html      (daftar LENGKAP semua game buatan Numera)
-     - game-eksternal.html   (daftar LENGKAP game & kuis eksternal +
-                               filter platform)
+     - game-eksternal.html   (daftar LENGKAP Aktivitas Kelas — kegiatan
+                               yang dimainkan bersama guru & siswa
+                               langsung di kelas, bukan game digital)
 
    Guru HANYA perlu mengedit array di file INI. Perubahan otomatis
    muncul di ketiga halaman sekaligus — tidak perlu ubah HTML apa pun.
@@ -43,21 +44,30 @@
                 perlu.
 
    ------------------------------------------------------------
-   2) GAMES — game & kuis dari platform EKSTERNAL
+   2) GAMES — AKTIVITAS KELAS
    ------------------------------------------------------------
-   nama       : nama game/kuis yang tampil ke siswa
-   materi     : nama materi/bab terkait
-   platform   : HARUS salah satu dari "Blooket", "Kahoot", "ZEP",
-                "Quizizz" — selain itu otomatis masuk "Lainnya"
+   Aktivitas kelas yang dimainkan bersama secara langsung (guru +
+   siswa di kelas), BUKAN game/kuis digital yang dimainkan sendiri
+   melalui HP.
+
+   Struktur SENGAJA dibuat sesederhana mungkin — cukup 4 field:
+
+   nama       : nama aktivitas yang tampil ke siswa (boleh diawali
+                emoji), mis. "🏃 Four Corners"
+   materi     : gunakan "Berbagai Materi" (aktivitas kelas biasanya
+                bisa dipakai untuk banyak materi berbeda — bukan
+                nama materi/bab spesifik)
    deskripsi  : deskripsi singkat 1 kalimat
-   tags       : kata kunci materi untuk pencarian. Gunakan array
-                huruf kecil. Satu game boleh memiliki beberapa tag.
-                Tags digunakan HANYA untuk pencarian dan TIDAK
-                ditampilkan pada kartu. Aman dikosongkan ([]) atau
-                dihapus untuk game lama — sistem pencarian tetap
-                berjalan tanpa error.
-   link       : URL lengkap game/kuis tsb (link untuk dimainkan siswa),
-                mis. "https://play.blooket.com/play/xxxxxxx"
+   link       : gunakan null kalau aktivitas ini tidak mempunyai
+                halaman siswa langsung (paling umum, karena
+                dijalankan guru di kelas). Kalau memang ada halaman
+                siswa, isi dengan nama file HTML atau URL lengkapnya.
+                JANGAN isi dengan "#" atau string "null".
+
+   Untuk menambah aktivitas baru, copy salah satu objek di bawah ini
+   lalu ubah nama, materi, deskripsi, dan link — aktivitas otomatis
+   muncul di arena.html dan game-eksternal.html, tanpa perlu
+   mengedit HTML apa pun.
    ------------------------------------------------------------
    ===================================================================== */
 
@@ -209,31 +219,26 @@ const NUMERA_GAMES = [
 ];
 
 const GAMES = [
-    // ---------- GAME & KUIS EKSTERNAL ----------
+
+    // ==================================================
+    // AKTIVITAS KELAS
+    // Tambahkan aktivitas kelas baru di bagian ini.
+    // ==================================================
+
     {
-        nama: "Akar & Faktor Polinomial",
-        materi: "Polinomial",
-        platform: "Blooket",
-        deskripsi: "Uji pemahamanmu tentang akar dan faktor polinomial melalui kuis seru.",
-        tags: ["polinomial", "akar polinomial", "faktor polinomial"],
-        link: "TEMPEL LINK GAME DI SINI"
+        nama: "🏃 Four Corners",
+        materi: "Berbagai Materi",
+        deskripsi: "Pilih jawaban, bergerak ke sudut, dan bertahan sampai akhir.",
+        link: null
     },
+
     {
-        nama: "Operasi Polinomial",
-        materi: "Polinomial",
-        platform: "Kahoot",
-        deskripsi: "Kuis cepat seputar penjumlahan, pengurangan, dan perkalian polinomial.",
-        tags: ["polinomial", "operasi polinomial", "penjumlahan polinomial", "pengurangan polinomial", "perkalian polinomial"],
-        link: "TEMPEL LINK GAME DI SINI"
-    },
-    {
-        nama: "Sifat-sifat Polinomial",
-        materi: "Polinomial",
-        platform: "ZEP",
-        deskripsi: "Jelajahi dunia ZEP sambil menjawab soal-soal polinomial.",
-        tags: ["polinomial", "sifat polinomial"],
-        link: "TEMPEL LINK GAME DI SINI"
+        nama: "🏊 Swim or Sink",
+        materi: "Berbagai Materi",
+        deskripsi: "Jawab soal, selamatkan anggota kelompok, atau tenggelamkan lawan.",
+        link: null
     }
+
 ];
 
 /* =====================================================================
@@ -241,27 +246,9 @@ const GAMES = [
    (fungsi bantu & render — dipakai bersama oleh ketiga halaman)
    ===================================================================== */
 
-const PLATFORM_CONFIG = {
-    Blooket: { label: "Blooket", color: "#7C3AED", icon: "B" },
-    Kahoot:  { label: "Kahoot!", color: "#5B21B6", icon: "K!" },
-    ZEP:     { label: "ZEP",     color: "#2563EB", icon: "Z" },
-    Quizizz: { label: "Quizizz", color: "#EA580C", icon: "Q" }
-};
-const PLATFORM_DEFAULT = {
-    label: "Lainnya",
-    color: "#16A34A",
-    iconSvg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/></svg>'
-};
-
-function platformConfig(platform){
-    return PLATFORM_CONFIG[platform] || PLATFORM_DEFAULT;
-}
-
-function platformBadgeHTML(platform, size){
-    const cfg = platformConfig(platform);
-    const inner = cfg.icon ? cfg.icon : cfg.iconSvg;
-    return `<div class="${size}" style="background:${cfg.color};">${inner}</div>`;
-}
+// Ikon generik untuk semua Aktivitas Kelas (satu kategori, jadi
+// cukup satu ikon konsisten — tidak perlu ikon berbeda per item).
+const AKTIVITAS_KELAS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2.5 20v-1.2A4.3 4.3 0 0 1 6.8 14.5h4.4A4.3 4.3 0 0 1 15.5 18.8V20"/><circle cx="16.7" cy="8.3" r="2.2"/><path d="M15.6 14.6a4 4 0 0 1 3.4 3.9V20"/></svg>';
 
 // Validasi link sederhana: jika guru belum mengganti placeholder
 // (atau field link kosong), tombol tetap aman diklik — cukup
@@ -330,19 +317,19 @@ function buatKartuNumera(game){
     return el;
 }
 
-/* ---------------- GAME & KUIS EKSTERNAL (baris + filter) ---------------- */
+/* ---------------- AKTIVITAS KELAS (baris) ---------------- */
 function buatBarisGame(item){
-    const cfg = platformConfig(item.platform);
+    const filled = isLinkFilled(item.link);
     const { href, targetRel } = safeLinkAttrs(item.link);
     const row = document.createElement('div');
     row.className = 'game-row';
     row.innerHTML = `
-        ${platformBadgeHTML(item.platform, 'game-badge')}
+        <div class="game-badge" style="background:var(--primary);">${AKTIVITAS_KELAS_ICON}</div>
         <div class="game-info">
             <div class="game-name">${item.nama}</div>
-            <div class="game-meta">${cfg.label}<span class="dot"></span>${item.materi}</div>
+            <div class="game-meta">Aktivitas Kelas<span class="dot"></span>${item.materi || ''}</div>
         </div>
-        <a class="btn-outline" href="${href}" ${targetRel}>Mainkan</a>
+        ${filled ? `<a class="btn-outline" href="${href}" ${targetRel}>Mainkan</a>` : ''}
     `;
     return row;
 }
