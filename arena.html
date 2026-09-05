@@ -22,12 +22,14 @@
        Tombol "Lihat semua ->" membuka daftar LENGKAP seluruh
        NUMERA_GAMES (tetap di halaman yang sama, tanpa reload/backend).
 
-    2. GAMES — game & kuis dari platform EKSTERNAL (Blooket, Kahoot!,
-       ZEP, Quizizz, dll). Ditampilkan di section terpisah "Game & Kuis
-       Eksternal" lengkap dengan filter platform + tombol "lihat
-       lainnya". Section ini murni untuk game eksternal — game buatan
-       Numera TIDAK lagi dicampur di sini, supaya siswa jelas
-       membedakan mana produk Numera dan mana platform luar.
+    2. GAMES — AKTIVITAS KELAS (Four Corners, Swim or Sink, dll):
+       kegiatan yang dimainkan bersama guru & siswa langsung di
+       kelas, bukan game/kuis digital yang dimainkan sendiri lewat
+       HP. Ditampilkan di section terpisah "Aktivitas Kelas" lengkap
+       dengan tombol "lihat lainnya". Section ini murni untuk
+       aktivitas kelas — game buatan Numera TIDAK lagi dicampur di
+       sini, supaya siswa jelas membedakan mana produk Numera dan
+       mana aktivitas kelas langsung.
 
     CARA MENGISI LINK
     -------------------------------------------
@@ -36,11 +38,12 @@
       sama dengan arena.html. Kalau di-hosting di alamat lain, isi
       dengan URL lengkapnya, mis. "https://numera23.github.io/games/
       tembak-target.html".
-    - GAMES (eksternal): isi "link" dengan URL lengkap game/kuis
-      tersebut, mis. "https://play.blooket.com/play/xxxxxxx" atau
-      "https://kahoot.it/challenge/xxxxxxx".
-    - Kalau link belum ada, biarkan "TEMPEL LINK GAME DI SINI" — tombol
-      tetap aman diklik (tidak error), cuma belum mengarah ke mana-mana.
+    - GAMES (Aktivitas Kelas): gunakan link: null kalau aktivitas
+      tidak punya halaman siswa langsung (paling umum, karena
+      dijalankan guru di kelas). Kalau memang ada halaman siswa,
+      isi dengan nama file HTML atau URL lengkapnya.
+    - Kalau link bernilai null, kartu aktivitas otomatis tidak
+      menampilkan tombol "Mainkan" — tidak ada tombol/link rusak.
 
     Kerangka teknis & visual (app-shell mobile canvas, typography, warna,
     bottom navigation) mengikuti beranda.html (berandav3_1.html).
@@ -690,7 +693,7 @@
                 <div class="numera-list" id="resultsNumeraList"></div>
             </div>
             <div class="search-results-group" id="resultsEksternalGroup" hidden>
-                <div class="numera-full-label">Game & Kuis Eksternal</div>
+                <div class="numera-full-label">Aktivitas Kelas</div>
                 <div class="game-list" id="resultsEksternalList"></div>
             </div>
             <div class="empty-state" id="searchEmptyArena">
@@ -731,20 +734,20 @@
             </a>
         </div>
 
-        <!-- ================= GAME & KUIS EKSTERNAL (preview singkat) ================= -->
+        <!-- ================= AKTIVITAS KELAS (preview singkat) ================= -->
         <div class="section" id="game-eksternal">
             <div class="section-head">
                 <div class="section-title">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
-                    Game & Kuis Eksternal
+                    Aktivitas Kelas
                 </div>
             </div>
-            <p class="section-sub">Kuis dari platform luar seperti Blooket, Kahoot!, ZEP, dan Quizizz.</p>
+            <p class="section-sub">Aktivitas kelas yang dimainkan bersama secara langsung, bukan game atau kuis yang dimainkan sendiri melalui HP.</p>
 
             <div class="game-list" id="gameListPreview"></div>
 
             <a class="btn-lihat-semua" href="game-eksternal.html">
-                <span>Lihat game lainnya</span>
+                <span>Lihat aktivitas lainnya</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
         </div>
@@ -816,7 +819,7 @@
 
     /* ---------------- PENCARIAN ARENA — mencakup game Numera + eksternal ----------------
        Memakai field yang sama seperti game-numera.html & game-eksternal.html
-       (nama + materi + deskripsi/platform + tags), jadi hasilnya konsisten
+       (nama + materi + deskripsi + tags), jadi hasilnya konsisten
        di mana pun siswa mengetik pencarian. */
     const searchInputArena = document.getElementById('searchArena');
     const searchBoxArena = document.getElementById('searchBoxArena');
@@ -842,7 +845,7 @@
             cocokPencarianArena([g.nama, g.materi, g.deskripsi], g.tags, q)
         );
         const eksternalMatches = GAMES.filter(g =>
-            cocokPencarianArena([g.nama, g.materi, g.platform], g.tags, q)
+            cocokPencarianArena([g.nama, g.materi, g.deskripsi], g.tags, q)
         );
 
         resultsNumeraGroup.hidden = numeraMatches.length === 0;
