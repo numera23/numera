@@ -39,12 +39,10 @@
 
     :root {
         --primary: #2563EB;
-        --primary-deep: #1E3A8A;
-        --primary-mid: #1D4ED8;
-        --bg: #F7F9FC;
+        --bg: #F8FAFC;
         --card: #FFFFFF;
-        --border: #E6EAF2;
-        --text: #0B1324;
+        --border: #E5E7EB;
+        --text: #0F172A;
         --text-secondary: #64748B;
     }
 
@@ -62,8 +60,8 @@
         max-width: 440px;
         margin: 0 auto;
         min-height: 100vh;
+        background: var(--bg);
         position: relative;
-        background: radial-gradient(120% 32% at 50% 0%, rgba(37, 99, 235, 0.07), transparent 68%), var(--bg);
     }
 
     @media (min-width: 441px) {
@@ -99,56 +97,101 @@
     color: var(--text);
     }
 
+    .icon-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        color: var(--text-secondary);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .icon-btn:hover {
+        background: var(--card);
+        color: var(--primary);
+    }
+
+    .icon-btn svg { width: 20px; height: 20px; }
+
     .hero {
         position: relative;
-        margin: 12px 0 28px;
-        padding: 28px 22px 24px;
-        border-radius: 22px;
+        margin: 8px 0 22px;
+        padding: 18px 20px;
+        border-radius: 18px;
         overflow: hidden;
-        background:
-            radial-gradient(130% 150% at 100% 0%, rgba(255, 255, 255, 0.16) 0%, transparent 55%),
-            linear-gradient(155deg, var(--primary-mid) 0%, var(--primary-deep) 100%);
-        box-shadow:
-            0 18px 34px -14px rgba(30, 58, 138, 0.55),
-            inset 0 1px 0 rgba(255, 255, 255, 0.14);
+        background: #2563EB;
+        border: 1px solid var(--border);
         animation: fadeInUp 0.5s ease both;
     }
 
     .hero-visual {
-        position: absolute;
-        right: -10px;
-        bottom: -8px;
-        width: 46%;
-        max-width: 172px;
-        opacity: 0.9;
-        pointer-events: none;
-    }
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52%;
+    max-width: 205px;
+    opacity: 0.42;
+    pointer-events: none;
+    z-index: 0;
+}
 
     .hero-text {
-        position: relative;
-        z-index: 1;
-        max-width: 66%;
+    position: relative;
+    z-index: 2;
+    max-width: 78%;
+}
+
+    .hero-guide {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
 
-    .hero-text h2 {
-        font-size: 21px;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        line-height: 1.3;
-        color: #FFFFFF;
-        margin-bottom: 14px;
-    }
-
-    .hero-tagline {
-        display: inline-flex;
+    .hero-guide-row {
+        display: flex;
         align-items: center;
-        font-size: 12.5px;
+        gap: 7px;
+        white-space: nowrap;
+        min-width: max-content;
+    }
+
+    .hero-guide-row svg {
+        width: 17px;
+        height: 17px;
+        flex: 0 0 17px;
+        color: rgba(255, 255, 255, 0.92);
+    }
+
+    .hero-guide-title {
+        font-size: 14px;
         font-weight: 600;
-        color: #EAF0FF;
-        letter-spacing: -0.005em;
-        background: rgba(255, 255, 255, 0.15);
-        padding: 6px 12px;
-        border-radius: 20px;
+        color: #FFFFFF;
+        letter-spacing: -0.02em;
+    }
+
+    .hero-guide-sep {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.72);
+    }
+
+    .hero-guide-desc {
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.88);
+        letter-spacing: -0.01em;
+    }
+
+    @media (max-width: 380px) {
+        .hero-guide-row { gap: 6px; }
+        .hero-guide-row svg { width: 16px; height: 16px; flex-basis: 16px; }
+        .hero-guide-title { font-size: 13px; }
+        .hero-guide-desc { font-size: 12px; }
     }
 
     .section {
@@ -166,18 +209,18 @@
     .section-title {
         display: flex;
         align-items: center;
-        gap: 8px;
-        font-size: 16px;
+        gap: 7px;
+        font-size: 13px;
         font-weight: 700;
-        letter-spacing: -0.015em;
+        letter-spacing: 0.04em;
         color: var(--text);
+        text-transform: uppercase;
     }
 
     .section-title svg {
-        width: 18px;
-        height: 18px;
+        width: 16px;
+        height: 16px;
         color: var(--primary);
-        flex-shrink: 0;
     }
 
     .section-link {
@@ -209,21 +252,16 @@
         gap: 14px;
         background: var(--card);
         border: 1px solid var(--border);
-        border-left: 3px solid var(--border);
         border-radius: 16px;
-        padding: 14px 14px 14px 15px;
-        box-shadow: 0 3px 10px -6px rgba(15, 23, 42, 0.10);
+        padding: 14px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
     }
-
-    .announce-card.red   { border-left-color: #DC2626; }
-    .announce-card.blue  { border-left-color: #2563EB; }
-    .announce-card.green { border-left-color: #16A34A; }
 
     .announce-icon {
         flex-shrink: 0;
         width: 44px;
         height: 44px;
-        border-radius: 11px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -246,9 +284,10 @@
     }
 
     .announce-label {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
-        letter-spacing: -0.005em;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
     }
 
     .announce-label.red  { color: #DC2626; }
@@ -307,11 +346,10 @@
         display: flex;
         align-items: center;
         gap: 14px;
-        background: linear-gradient(155deg, #F5F8FF 0%, #FFFFFF 60%);
-        border: 1px solid #DCE6FB;
-        border-radius: 18px;
-        padding: 15px 15px 15px 16px;
-        box-shadow: 0 8px 20px -14px rgba(37, 99, 235, 0.45);
+        background: #EFF6FF;
+        border: 1px solid #DBEAFE;
+        border-radius: 16px;
+        padding: 14px 16px;
     }
 
     .recommend-icon {
@@ -319,28 +357,24 @@
         width: 46px;
         height: 46px;
         border-radius: 13px;
-        background: linear-gradient(155deg, var(--primary-mid), var(--primary-deep));
+        background: #FFFFFF;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #FFFFFF;
-        box-shadow: 0 6px 14px -6px rgba(30, 58, 138, 0.55);
+        color: var(--primary);
     }
 
-    .recommend-icon svg { width: 21px; height: 21px; }
+    .recommend-icon svg { width: 22px; height: 22px; }
 
     .recommend-body { flex: 1; min-width: 0; }
 
     .recommend-tag {
-        display: inline-block;
         font-size: 11px;
         font-weight: 700;
-        letter-spacing: -0.005em;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
         color: var(--primary);
-        background: #EAF1FF;
-        padding: 2px 8px;
-        border-radius: 6px;
-        margin-bottom: 5px;
+        margin-bottom: 2px;
     }
 
     .recommend-title {
@@ -359,17 +393,18 @@
 
     .recommend-arrow {
         flex-shrink: 0;
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        background: #F7F9FC;
+        background: #FFFFFF;
         display: flex;
         align-items: center;
         justify-content: center;
         color: var(--primary);
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
     }
 
-    .recommend-arrow svg { width: 16px; height: 16px; }
+    .recommend-arrow svg { width: 17px; height: 17px; }
 
     .bottom-nav-spacer {
         height: calc(72px + env(safe-area-inset-bottom));
@@ -398,11 +433,11 @@
         flex-direction: column;
         align-items: center;
         gap: 4px;
-        padding: 7px 2px 6px;
+        padding: 6px 2px;
         color: var(--text-secondary);
-        border-radius: 14px;
+        border-radius: 12px;
         text-decoration: none;
-        transition: color 0.15s ease, background 0.15s ease;
+        transition: color 0.15s ease;
     }
 
     .nav-item svg {
@@ -418,7 +453,6 @@
 
     .nav-item.active {
         color: var(--primary);
-        background: #EAF1FF;
     }
 
     .nav-item:active {
@@ -443,24 +477,54 @@
 
         <span class="brand-name">Numera</span>
     </div>
+
+    <button class="icon-btn" type="button" aria-label="Cari" data-action="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+    </button>
     </div>
 
     <div class="container">
 
         <div class="hero">
             <div class="hero-text">
-                <h2>Belajar Bereksplorasi Bertumbuh </h2>
-                
+                <div class="hero-guide">
+                    <div class="hero-guide-row">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h7"/></svg>
+                        <span class="hero-guide-title">Topik</span><span class="hero-guide-sep">—</span><span class="hero-guide-desc">Pelajari materi</span>
+                    </div>
+                    <div class="hero-guide-row">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
+                        <span class="hero-guide-title">Eksplorasi</span><span class="hero-guide-sep">—</span><span class="hero-guide-desc">Temukan konsep</span>
+                    </div>
+                    <div class="hero-guide-row">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
+                        <span class="hero-guide-title">Arena Game</span><span class="hero-guide-sep">—</span><span class="hero-guide-desc">Latihan sambil bermain</span>
+                    </div>
+                </div>
             </div>
-            <svg class="hero-visual" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <line x1="18" y1="18" x2="18" y2="172" stroke="#FFFFFF" stroke-width="1.4" opacity="0.55"/>
-                <line x1="18" y1="172" x2="188" y2="172" stroke="#FFFFFF" stroke-width="1.4" opacity="0.55"/>
-                <path d="M18 150 C 55 30, 130 20, 182 100" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" opacity="0.95"/>
-                <line x1="126" y1="172" x2="126" y2="58" stroke="#FFFFFF" stroke-width="1.2" stroke-dasharray="2 6" stroke-linecap="round" opacity="0.5"/>
-                <line x1="18" y1="58" x2="126" y2="58" stroke="#FFFFFF" stroke-width="1.2" stroke-dasharray="2 6" stroke-linecap="round" opacity="0.5"/>
-                <circle cx="126" cy="58" r="5" fill="#FFFFFF"/>
-                <circle cx="126" cy="58" r="9" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity="0.45"/>
-            </svg>
+            <svg class="hero-visual" viewBox="0 0 220 150" fill="none" aria-hidden="true">
+    <g stroke="rgba(255,255,255,0.92)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="104" y="18" width="78" height="105" rx="12" fill="rgba(255,255,255,0.10)"/>
+        <path d="M120 43h45"/>
+        <path d="M120 58h45"/>
+        <path d="M120 73h28"/>
+        <path d="M120 91l10-10 9 7 14-18 12 12"/>
+        <circle cx="57" cy="49" r="25" fill="rgba(255,255,255,0.08)"/>
+        <path d="M47 49h20"/>
+        <path d="M57 39v20"/>
+        <circle cx="53" cy="103" r="18" fill="rgba(255,255,255,0.08)"/>
+        <path d="M46 103l5 5 10-12"/>
+    </g>
+    <g fill="rgba(255,255,255,0.85)">
+        <circle cx="32" cy="26" r="3"/>
+        <circle cx="82" cy="20" r="4"/>
+        <circle cx="83" cy="126" r="3"/>
+        <circle cx="195" cy="45" r="3"/>
+    </g>
+</svg>
         </div>
 
         <div class="section" id="sectionPengumuman">
@@ -469,7 +533,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v2a2 2 0 0 0 2 2h1l3.5 4.5V4.5L6 9H5a2 2 0 0 0-2 2Z"/><path d="M14 8a4 4 0 0 1 0 8"/><path d="M17.5 5.5a8 8 0 0 1 0 13"/></svg>
                     Pengumuman
                 </div>
-                
+                <a class="section-link" href="pengumuman.html">
+                    Lihat semua
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
             </div>
             <div class="announce-list" id="announceList"></div>
         </div>
@@ -478,7 +545,7 @@
             <div class="section-head">
                 <div class="section-title">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.44 1 1.15 1 1.93V17h6v-.37c0-.78.4-1.5 1-1.93A7 7 0 0 0 12 2Z"/></svg>
-                    Rekomendasi Game
+                    Rekomendasi Belajar
                 </div>
             </div>
             <a class="recommend-card" href="#" id="recommendCard"></a>
@@ -497,15 +564,15 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h7"/></svg>
             <span>Topik</span>
         </a>
-        <a class="nav-item" href="eksplorasi.html" data-nav="eksplorasi">
+        <a class="nav-item" href="#" data-nav="eksplorasi">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
             <span>Eksplorasi</span>
         </a>
-        <a class="nav-item" href="arena.html" data-nav="arena">
+        <a class="nav-item" href="#" data-nav="arena">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
             <span>Arena Game</span>
         </a>
-        <a class="nav-item" href="cakrawala.html" data-nav="Cakrawala">
+        <a class="nav-item" href="#" data-nav="Cakrawala">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
             <span>Cakrawala</span>
         </a>
@@ -517,10 +584,10 @@
     const PENGUMUMAN = [
         {
             tipe: "ulangan",
-            label: "Ulangan Polinomial",
-            judul: "XI Isaac Newton",
-            deskripsi: "Jangan lupa buat contekan.",
-            tanggal: "1 Sep 2026",
+            label: "Ulangan",
+            judul: "Ulangan Polinomial",
+            deskripsi: "Selasa, 11 Agustus 2026 \u00B7 Jam ke-3",
+            tanggal: "11 Ags 2026",
             link: null,
             cta: null
         },
@@ -530,6 +597,15 @@
             judul: "Modul Persamaan Lingkaran",
             deskripsi: "Modul 1 sudah tersedia.",
             tanggal: "8 Ags 2026",
+            link: "#",
+            cta: "Buka modul"
+        },
+        {
+            tipe: "deadline",
+            label: "Deadline",
+            judul: "Pengumpulan Latihan 1",
+            deskripsi: "Paling lambat Jumat, 9 Agustus 2026.",
+            tanggal: "9 Ags 2026",
             link: null,
             cta: null
         }
@@ -555,7 +631,7 @@
         const warna = info.warna;
         const tag = item.link ? "a" : "div";
         const card = document.createElement(tag);
-        card.className = `announce-card ${warna}`;
+        card.className = "announce-card";
         if (item.link) card.href = item.link;
 
         const ctaHTML = item.cta
@@ -593,10 +669,10 @@
        Cukup ganti nilai di sini untuk mengganti tampilan card.
        ============================================================= */
     const REKOMENDASI = {
-        tipe: "arena",
-        judul: "Putar Dulu",
-        alasan: "Putar roda keberuntungan dan mainkan game nya.",
-        link: "game_putar_dulu_titik_jarijari_lingkaran.html"
+        tipe: "modul",
+        judul: "Teorema Sisa",
+        alasan: "Lanjutkan setelah kamu menyelesaikan Metode Horner.",
+        link: "teorema-sisa.html"
     };
 
     const REKOMENDASI_ICON = {
@@ -624,22 +700,14 @@
                 <div class="recommend-reason">${REKOMENDASI.alasan}</div>
             </div>
             <div class="recommend-arrow">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-  <!-- Body Gamepad Utama -->
-  <path d="M6 19c-2 0-4-2-4-5V10c0-3 2-5 5-5h10c3 0 5 2 5 5v4c0 3-2 5-4 5a3 3 0 0 1-3-3H9a3 3 0 0 1-3 3z" />
-  
-  <!-- Tombol Arah / D-Pad (Sama tebal dengan line panah Anda) -->
-  <line x1="6" y1="12" x2="10" y2="12" />
-  <line x1="8" y1="10" x2="8" y2="14" />
-  
-  <!-- Tombol Arix / Action Buttons (Bulat presisi) -->
-  <circle cx="16" cy="12" r="1" />
-  <circle cx="18" cy="10" r="1" />
-</svg>
-
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </div>
         `;
     }
+
+    document.querySelector('[data-action="search"]').addEventListener("click", () => {
+        window.location.href = "topik.html";
+    });
 
     renderPengumuman();
     renderRekomendasi();
