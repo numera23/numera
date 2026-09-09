@@ -67,14 +67,14 @@
        mengikuti lebar monitor. Ukuran ini sama dengan halaman Eksplorasi.
        ================================================================= */
     .app-shell {
-        max-width: 560px;
+        max-width: 440px;
         margin: 0 auto;
         min-height: 100vh;
         background: var(--bg);
         position: relative;
     }
 
-    @media (min-width: 561px) {
+    @media (min-width: 441px) {
         .app-shell {
             border-left: 1px solid var(--border);
             border-right: 1px solid var(--border);
@@ -84,63 +84,12 @@
     /* =================================================================
        HEADER / BRAND — konsisten dengan halaman Eksplorasi
        ================================================================= */
-    .site-header {
-        position: relative;
-        z-index: 40;
-        min-height: 142px;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        padding: 22px 20px 20px;
-        background: #2563EB;
-        border-bottom: none;
-    }
-
-    .site-header .header-content {
-        position: relative;
-        z-index: 2;
-        width: 100%;
-    }
-
-    .site-header .header-title {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        margin-bottom: 6px;
-        color: #fff;
-        font-size: 20px;
-        font-weight: 600;
-        letter-spacing: -0.025em;
-        line-height: 1.2;
-    }
-
-    .site-header .header-title svg {
-        width: 22px;
-        height: 22px;
-        flex-shrink: 0;
-        opacity: 0.94;
-    }
-
-    .site-header .header-guide {
-        padding-left: 31px;
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 12px;
-        font-weight: 500;
-        line-height: 1.45;
-    }
-
-    .site-header .header-visual {
-        position: absolute;
-        z-index: 1;
-        right: -10px;
-        top: 50%;
-        width: 52%;
-        max-width: 205px;
-        height: auto;
-        transform: translateY(-50%);
-        opacity: 0.42;
-        pointer-events: none;
-    }
+    .site-header { position: relative; z-index: 40; min-height: 104px; margin: 8px 20px 22px; display:flex; align-items:center; overflow:hidden; padding:18px 20px; border-radius:18px; background:#2563EB; border:1px solid var(--border); }
+    .site-header .header-content { position:relative; z-index:2; width:100%; }
+    .site-header .header-title { display:flex; align-items:center; gap:7px; color:white; font-size:18px; font-weight:600; line-height:1.2; letter-spacing:-0.02em; white-space:nowrap; }
+    .site-header .header-title svg { width:18px; height:18px; flex:0 0 18px; color:rgba(255,255,255,0.92); }
+    .site-header .header-sep { color:rgba(255,255,255,0.72); margin:0 2px; font-weight:400; }
+    .site-header .header-visual { position:absolute; right:-10px; top:50%; transform:translateY(-50%); width:52%; max-width:205px; opacity:.42; pointer-events:none; z-index:0; }
 
     .brand {
         display: flex;
@@ -561,26 +510,18 @@
     <header class="site-header">
         <div class="header-content">
             <div class="header-title">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/>
-                    <path d="M14 3v5h5"/>
-                    <path d="M8.5 13h7M8.5 16.5h7"/>
-                </svg>
-                <span>Topik — Pelajari materi</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h7"/></svg>
+                <span>Topik</span><span class="header-sep">—</span><span>Pelajari materi</span>
             </div>
-            <div class="header-guide">Pilih topik untuk melihat materi dan modul yang tersedia.</div>
         </div>
-
         <svg class="header-visual" viewBox="0 0 220 150" fill="none" aria-hidden="true">
-            <rect x="35" y="17" width="106" height="122" rx="12" stroke="white" stroke-width="3"/>
-            <path d="M55 43h54M55 61h35M55 79h48" stroke="white" stroke-width="3" stroke-linecap="round"/>
-            <path d="M55 111l17-17 15 12 27-31" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="55" cy="111" r="3.5" fill="white"/>
-            <circle cx="72" cy="94" r="3.5" fill="white"/>
-            <circle cx="87" cy="106" r="3.5" fill="white"/>
-            <circle cx="114" cy="75" r="3.5" fill="white"/>
-            <path d="M157 43l7 7 14-16M157 79h29M157 100h18" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <text x="157" y="126" fill="white" font-size="18" font-family="Arial, sans-serif" font-weight="600">x² + y²</text>
+            <g stroke="rgba(255,255,255,0.92)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="104" y="18" width="78" height="105" rx="12" fill="rgba(255,255,255,0.10)"/>
+                <path d="M120 43h45"/><path d="M120 58h45"/><path d="M120 73h28"/>
+                <path d="M120 91l10-10 9 7 14-18 12 12"/>
+                <circle cx="57" cy="49" r="25" fill="rgba(255,255,255,0.08)"/><path d="M47 49h20"/><path d="M57 39v20"/>
+                <circle cx="53" cy="103" r="18" fill="rgba(255,255,255,0.08)"/><path d="M45 103h16"/><path d="M53 95v16"/>
+            </g>
         </svg>
     </header>
 
@@ -588,8 +529,8 @@
 
         <!-- ================= HEADING ================= -->
         <div class="heading">
-            
-            
+            <h1>📚 Topik Pembelajaran</h1>
+            <p>Pilih topik yang ingin dipelajari.</p>
             <p class="topik-count" id="topikCount"></p>
         </div>
 
@@ -631,7 +572,7 @@
     <!-- Ganti atribut href pada tiap <a> sesuai halaman tujuan. -->
     <nav class="bottom-nav" aria-label="Navigasi utama">
         <!-- GANTI href di bawah ini ke halaman Beranda yang sebenarnya -->
-        <a class="nav-item" href="beranda.html" data-nav="beranda">
+        <a class="nav-item" href="#" data-nav="beranda">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
             <span>Beranda</span>
         </a>
@@ -641,17 +582,17 @@
             <span>Topik</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Eksplorasi yang sebenarnya -->
-        <a class="nav-item" href="eksplorasi.html" data-nav="eksplorasi">
+        <a class="nav-item" href="#" data-nav="eksplorasi">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
             <span>Eksplorasi</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Arena Game yang sebenarnya -->
-        <a class="nav-item" href="arena.html" data-nav="arena">
+        <a class="nav-item" href="#" data-nav="arena">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
             <span>Arena Game</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Cakrawala yang sebenarnya -->
-        <a class="nav-item" href="cakrawala.html" data-nav="Cakrawala">
+        <a class="nav-item" href="#" data-nav="Cakrawala">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
             <span>Cakrawala</span>
         </a>
