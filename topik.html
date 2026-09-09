@@ -92,7 +92,7 @@
         padding: 12px 20px 2px;
     }
 
-    .site-header { position: relative; z-index: 40; min-height: 104px; margin: 8px 20px 22px; display:flex; align-items:center; overflow:hidden; padding:18px 20px; border-radius:18px; background:#2563EB; border:1px solid var(--border); }
+    .site-header { position: relative; z-index: 40; min-height: 104px; margin: 8px 20px 12px; display:flex; align-items:center; overflow:hidden; padding:18px 20px; border-radius:18px; background:#2563EB; border:1px solid var(--border); }
     .site-header .header-content { position:relative; z-index:2; width:100%; }
     .site-header .header-title { display:flex; align-items:center; gap:7px; color:white; font-size:18px; font-weight:600; line-height:1.2; letter-spacing:-0.02em; white-space:nowrap; }
     .site-header .header-title svg { width:18px; height:18px; flex:0 0 18px; color:rgba(255,255,255,0.92); }
@@ -157,7 +157,7 @@
     .container {
         max-width: 880px;
         margin: 0 auto;
-        padding: 12px 20px 20px;
+        padding: 4px 20px 20px;
     }
 
     /* (heading dihapus — tidak dipakai lagi) */
@@ -267,8 +267,8 @@
     .topik-card {
         position: relative;
         display: flex;
-        align-items: flex-start;
-        gap: 8px;
+        flex-direction: column;
+        gap: 0;
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 14px;
@@ -303,27 +303,30 @@
         transform: translateY(-1px);
     }
 
+    .topik-top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
     .topik-icon {
         flex-shrink: 0;
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
+        width: 30px;
+        height: 30px;
+        border-radius: 9px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-size: 14px;
         background: color-mix(in srgb, var(--accent, var(--primary)) 12%, white);
     }
 
-    .topik-body {
+    .topik-nama {
         flex: 1;
         min-width: 0;
-    }
-
-    .topik-nama {
         font-size: 12.5px;
         font-weight: 600;
-        margin-bottom: 3px;
         line-height: 1.25;
         letter-spacing: -0.01em;
     }
@@ -599,7 +602,7 @@
     <!-- Ganti atribut href pada tiap <a> sesuai halaman tujuan. -->
     <nav class="bottom-nav" aria-label="Navigasi utama">
         <!-- GANTI href di bawah ini ke halaman Beranda yang sebenarnya -->
-        <a class="nav-item" href="beranda.html" data-nav="beranda">
+        <a class="nav-item" href="#" data-nav="beranda">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
             <span>Beranda</span>
         </a>
@@ -609,17 +612,17 @@
             <span>Topik</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Eksplorasi yang sebenarnya -->
-        <a class="nav-item" href="eksplorasi.html" data-nav="eksplorasi">
+        <a class="nav-item" href="#" data-nav="eksplorasi">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5.5L4.5 18a1.8 1.8 0 0 0 1.6 2.6h11.8A1.8 1.8 0 0 0 19.5 18L14 8.5V3"/><path d="M7.5 14h9"/></svg>
             <span>Eksplorasi</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Arena Game yang sebenarnya -->
-        <a class="nav-item" href="arena.html" data-nav="arena">
+        <a class="nav-item" href="#" data-nav="arena">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="10" rx="5"/><line x1="7" y1="13" x2="7" y2="13.01"/><line x1="7" y1="10.5" x2="7" y2="15.5"/><line x1="5.5" y1="13" x2="8.5" y2="13"/><circle cx="16" cy="11.5" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="14.5" r="1" fill="currentColor" stroke="none"/></svg>
             <span>Arena Game</span>
         </a>
         <!-- GANTI href di bawah ini ke halaman Cakrawala yang sebenarnya -->
-        <a class="nav-item" href="cakrawala.html" data-nav="Cakrawala">
+        <a class="nav-item" href="#" data-nav="Cakrawala">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></svg>
             <span>Cakrawala</span>
         </a>
@@ -826,13 +829,13 @@
                 : "";
 
             card.innerHTML = `
-                <div class="topik-icon">${topik.ikon}</div>
-                <div class="topik-body">
+                <div class="topik-top">
+                    <div class="topik-icon">${topik.ikon}</div>
                     <div class="topik-nama">${topik.nama}</div>
-                    <ul class="topik-modul-list">${daftarModulHTML}</ul>
-                    ${lebihHTML}
-                    <span class="topik-badge">${topik.jumlah} Modul</span>
                 </div>
+                <ul class="topik-modul-list">${daftarModulHTML}</ul>
+                ${lebihHTML}
+                <span class="topik-badge">${topik.jumlah} Modul</span>
                 <div class="topik-arrow">›</div>
             `;
 
