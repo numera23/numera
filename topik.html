@@ -82,8 +82,16 @@
     }
 
     /* =================================================================
-       HEADER / BRAND — konsisten dengan halaman Eksplorasi
+       HEADER / BRAND — konsisten dengan halaman Eksplorasi & Beranda
        ================================================================= */
+    .top-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 20px 2px;
+    }
+
     .site-header { position: relative; z-index: 40; min-height: 104px; margin: 8px 20px 22px; display:flex; align-items:center; overflow:hidden; padding:18px 20px; border-radius:18px; background:#2563EB; border:1px solid var(--border); }
     .site-header .header-content { position:relative; z-index:2; width:100%; }
     .site-header .header-title { display:flex; align-items:center; gap:7px; color:white; font-size:18px; font-weight:600; line-height:1.2; letter-spacing:-0.02em; white-space:nowrap; }
@@ -99,10 +107,10 @@
     }
 
     .brand-mark {
-        width: 26px;
-        height: 26px;
-        border-radius: 10px;
-        background: linear-gradient(150deg, var(--primary), var(--primary-hover));
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        background: #2563EB;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -112,10 +120,36 @@
 
     .brand-name {
         font-weight: 800;
-        font-size: 14px;
-        line-height: 1.15;
+        font-size: 15px;
+        line-height: 1;
         letter-spacing: -0.01em;
     }
+
+    .icon-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        color: var(--text-secondary);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .icon-btn:hover {
+        background: var(--card);
+        color: var(--primary);
+    }
+
+    .icon-btn.active {
+        background: var(--primary-light, #DBEAFE);
+        color: var(--primary);
+    }
+
+    .icon-btn svg { width: 20px; height: 20px; }
 
     /* =================================================================
        KONTAINER UTAMA
@@ -126,37 +160,7 @@
         padding: 12px 20px 20px;
     }
 
-    /* =================================================================
-       HEADING
-       ================================================================= */
-    .heading {
-        text-align: center;
-        margin-bottom: 10px;
-        animation: fadeInUp 0.5s ease both;
-    }
-
-    .heading h1 {
-        font-size: 19px;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        margin-bottom: 3px;
-    }
-
-    .heading p {
-        font-size: 11.5px;
-        color: var(--text-secondary);
-    }
-
-    .topik-count {
-        font-size: 10.5px;
-        color: var(--text-secondary);
-        margin-top: 2px;
-    }
-
-    .topik-count strong {
-        color: var(--primary);
-        font-weight: 600;
-    }
+    /* (heading dihapus — tidak dipakai lagi) */
 
     /* =================================================================
        FILTER KATEGORI (CHIP)
@@ -202,8 +206,17 @@
     .search-wrap {
         position: relative;
         max-width: 520px;
+        margin: 0 auto;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease, opacity 0.2s ease, margin 0.25s ease;
+    }
+
+    .search-wrap.open {
+        max-height: 60px;
+        opacity: 1;
         margin: 0 auto 14px;
-        animation: fadeInUp 0.5s ease 0.06s both;
     }
 
     .search-icon {
@@ -244,14 +257,8 @@
        ================================================================= */
     .topik-grid {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 9px;
-    }
-
-    @media (min-width: 640px) {
-        .topik-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
 
     /* =================================================================
@@ -260,12 +267,12 @@
     .topik-card {
         position: relative;
         display: flex;
-        align-items: center;
-        gap: 10px;
+        align-items: flex-start;
+        gap: 8px;
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 10px 14px;
+        border-radius: 14px;
+        padding: 12px 24px 10px 10px;
         text-decoration: none;
         color: inherit;
         cursor: pointer;
@@ -298,13 +305,13 @@
 
     .topik-icon {
         flex-shrink: 0;
-        width: 38px;
-        height: 38px;
-        border-radius: 11px;
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 16px;
         background: color-mix(in srgb, var(--accent, var(--primary)) 12%, white);
     }
 
@@ -314,25 +321,26 @@
     }
 
     .topik-nama {
-        font-size: 13.5px;
+        font-size: 12.5px;
         font-weight: 600;
         margin-bottom: 3px;
+        line-height: 1.25;
         letter-spacing: -0.01em;
     }
 
     /* daftar modul ringkas (maks. 3 ditampilkan) */
     .topik-modul-list {
         list-style: none;
-        margin: 0 0 2px;
+        margin: 0 0 5px;
         padding: 0;
     }
 
     .topik-modul-list li {
         position: relative;
-        padding-left: 11px;
-        font-size: 10.5px;
+        padding-left: 10px;
+        font-size: 9.5px;
         color: var(--text-secondary);
-        line-height: 1.35;
+        line-height: 1.45;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -347,31 +355,35 @@
     }
 
     .topik-lebih {
-        font-size: 10px;
+        font-size: 9px;
         color: var(--text-secondary);
         opacity: 0.85;
-        margin-bottom: 4px;
+        margin-bottom: 5px;
     }
 
     .topik-badge {
         display: inline-block;
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 600;
         color: var(--accent, var(--primary));
         background: color-mix(in srgb, var(--accent, var(--primary)) 10%, white);
-        padding: 2px 8px;
+        padding: 2px 7px;
         border-radius: 999px;
+        white-space: nowrap;
     }
 
     .topik-arrow {
+        position: absolute;
+        top: 14px;
+        right: 8px;
         flex-shrink: 0;
-        font-size: 16px;
+        font-size: 14px;
         color: var(--text-secondary);
         transition: transform 0.2s ease, color 0.2s ease;
     }
 
     .topik-card:hover .topik-arrow {
-        transform: translateX(4px);
+        transform: translateX(2px);
         color: var(--accent, var(--primary));
     }
 
@@ -506,6 +518,28 @@
 
     <div class="app-shell">
 
+    <!-- ================= TOP BAR (Numera + Search) ================= -->
+    <div class="top-bar">
+        <div class="brand">
+            <div class="brand-mark">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="8.5" stroke="white" stroke-width="1.6"/>
+                    <path d="M12 3.5C14.5 6.5 15.8 9.2 15.8 12C15.8 14.8 14.5 17.5 12 20.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+                    <path d="M12 3.5C9.5 6.5 8.2 9.2 8.2 12C8.2 14.8 9.5 17.5 12 20.5" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="1.4" fill="white"/>
+                </svg>
+            </div>
+            <span class="brand-name">Numera</span>
+        </div>
+
+        <button class="icon-btn" type="button" aria-label="Cari" id="searchToggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+        </button>
+    </div>
+
     <!-- ================= HEADER / BRAND ================= -->
     <header class="site-header">
         <div class="header-content">
@@ -527,18 +561,8 @@
 
     <div class="container">
 
-        <!-- ================= HEADING ================= -->
-        <div class="heading">
-            <h1>📚 Topik Pembelajaran</h1>
-            <p>Pilih topik yang ingin dipelajari.</p>
-            <p class="topik-count" id="topikCount"></p>
-        </div>
-
-        <!-- ================= FILTER KATEGORI (diisi otomatis lewat JS) ================= -->
-        <div class="filter-wrap" id="filterWrap"></div>
-
-        <!-- ================= SEARCH ================= -->
-        <div class="search-wrap">
+        <!-- ================= SEARCH (tersembunyi, dibuka lewat ikon di top-bar) ================= -->
+        <div class="search-wrap" id="searchWrap">
             <span class="search-icon">🔍</span>
             <input
                 type="text"
@@ -547,6 +571,9 @@
                 autocomplete="off"
             >
         </div>
+
+        <!-- ================= FILTER KATEGORI (diisi otomatis lewat JS) ================= -->
+        <div class="filter-wrap" id="filterWrap"></div>
 
         <!-- ================= GRID TOPIK (diisi otomatis lewat JS) ================= -->
         <div class="topik-grid" id="topikGrid"></div>
@@ -742,18 +769,11 @@
         const emptyState = document.getElementById("emptyState");
         const searchInput = document.getElementById("searchInput");
         const filterWrap = document.getElementById("filterWrap");
-        const topikCountEl = document.getElementById("topikCount");
+        const searchToggle = document.getElementById("searchToggle");
+        const searchWrap = document.getElementById("searchWrap");
 
         /* state filter & pencarian yang aktif saat ini */
         let kategoriAktif = "Semua";
-
-        /* =============================================================
-           JUMLAH TOPIK (dihitung otomatis dari TOPIK)
-           ============================================================= */
-        function tampilkanJumlahTopik() {
-            const total = TOPIK.length;
-            topikCountEl.innerHTML = `Saat ini tersedia <strong>${total}</strong> topik pembelajaran.`;
-        }
 
         /* =============================================================
            FILTER KATEGORI — dibuat otomatis dari TOPIK
@@ -865,11 +885,20 @@
         }
 
         searchInput.addEventListener("input", terapkanFilter);
+        searchToggle.addEventListener("click", () => {
+            const isOpen = searchWrap.classList.toggle("open");
+            searchToggle.classList.toggle("active", isOpen);
+            if (isOpen) {
+                searchInput.focus();
+            } else {
+                searchInput.value = "";
+                terapkanFilter();
+            }
+        });
 
         /* =============================================================
            INISIALISASI
            ============================================================= */
-        tampilkanJumlahTopik();
         bangunFilterKategori();
         terapkanFilter();
     </script>
