@@ -146,6 +146,18 @@ const NUMERA_GAMES = [
     },
    {
         nama: "🎡 Putar Dulu",
+        materi: "Nilai Sudut Istimewa",
+        deskripsi: "Putar roda dan jawab soalnya.",
+        tags: ["trigonometri", "nilai sudut istimewa", "sudut", "istimewa"],
+        link: "game_sudut_istimewa.html",
+        tanggal: "2026-09-10",
+        thumbnail: "",
+        warna: "#1C1C1C",
+        emoji: "🎡",
+        badge: "Baru"
+    },
+   {
+        nama: "🎡 Putar Dulu",
         materi: "Titik Pusat & Jari-Jari",
         deskripsi: "Putar roda keberuntungan. Semoga kamu tidak sial.",
         tags: ["persamaan lingkaran", "titik pusat", "jari jari", "jari-jari", "bentuk umum", "pusat lingkaran"],
@@ -166,7 +178,7 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#000080",
         emoji: "🏆",
-        badge: "Baru"
+        badge: ""
     },
    {
         nama: "₪ Labirin Gelap",
@@ -190,7 +202,7 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#143D56",
         emoji: "🎣",
-        badge: "Baru"
+        badge: ""
     },
    {
         nama: "🕵️‍♀️ Detektif Misteri",
