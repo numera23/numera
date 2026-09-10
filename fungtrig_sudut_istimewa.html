@@ -1,0 +1,935 @@
+<!--
+NUMERA
+Modul Interaktif: Nilai Trigonometri Sudut Istimewa
+Jenis: Modul Interaktif (pakai KaTeX)
+Versi: 1.0
+Dikembangkan oleh Kiki Herdiansyah
+Copyright © 2026 Numera. Seluruh hak cipta dilindungi.
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Numera · Nilai Trigonometri Sudut Istimewa</title>
+<meta name="author" content="Kiki Herdiansyah">
+<meta name="application-name" content="Numera">
+<meta name="copyright" content="© 2026 Numera. Dikembangkan oleh Kiki Herdiansyah.">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --primary:#2563EB;
+  --primary-hover:#1D4ED8;
+  --primary-light:#DBEAFE;
+  --bg:#F8FAFC;
+  --card:#FFFFFF;
+  --text:#0F172A;
+  --text-secondary:#64748B;
+  --border:#E2E8F0;
+
+  --success:#10B981;
+  --success-bg:#ECFDF5;
+  --success-border:#A7F3D0;
+  --success-text:#047857;
+
+  --warning:#F59E0B;
+  --warning-bg:#FEF3C7;
+  --warning-text:#B45309;
+
+  --error:#EF4444;
+  --error-bg:#FEE2E2;
+  --error-border:#FECACA;
+  --error-text:#B91C1C;
+
+  --radius-card:18px;
+  --radius-btn:12px;
+  --shadow:0 1px 2px rgba(15,23,42,.04), 0 4px 16px rgba(15,23,42,.06);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;overflow-x:hidden;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:900px;margin:0 auto;padding:0 18px 60px;}
+
+/* Topbar */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(248,250,252,.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:14px 18px;
+  font-weight:600;
+  font-size:14px;
+  color:var(--primary);
+  text-align:center;
+}
+.progress-track{height:3px;background:var(--border);width:100%;position:sticky;top:47px;z-index:49;}
+.progress-bar{height:3px;background:var(--primary);width:0%;transition:width .1s linear;}
+
+/* Card */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  box-shadow:var(--shadow);
+  padding:24px 22px;
+  margin:20px 0;
+}
+.section-title{
+  font-size:20px;font-weight:700;margin:0 0 6px;color:var(--text);
+  display:flex;align-items:center;gap:8px;
+}
+.section-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:8px;
+  background:var(--primary-light);color:var(--primary);
+  font-size:13px;font-weight:700;flex-shrink:0;
+}
+.subheading{font-size:16px;font-weight:700;margin:22px 0 8px;color:var(--primary);}
+p{margin:0 0 12px;font-size:15.5px;}
+.muted{color:var(--text-secondary);font-size:14px;}
+
+/* Header */
+.hero{text-align:center;padding-top:6px;}
+.hero h1{font-size:26px;font-weight:800;margin:8px 0 10px;line-height:1.3;}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px;}
+.chip{
+  background:var(--primary-light);color:var(--primary);
+  font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;
+}
+.tujuan-box{
+  background:var(--bg);border:1px solid var(--border);border-radius:14px;
+  padding:16px 18px;text-align:left;margin-top:14px;
+}
+.tujuan-box ul{margin:8px 0 0;padding-left:20px;}
+.tujuan-box li{margin-bottom:6px;font-size:14.5px;}
+
+/* Identity box */
+.identity-box{
+  background:var(--primary-light);border:1px solid #BFDBFE;border-radius:14px;
+  padding:18px;margin-top:18px;text-align:left;
+}
+.identity-box h3{margin:0 0 10px;font-size:15px;color:var(--primary-hover);}
+.field{margin-bottom:10px;}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text);}
+.field input{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+  font-size:15px;font-family:inherit;background:#fff;
+}
+.field input:focus{outline:2px solid var(--primary);border-color:var(--primary);}
+.identity-note{font-size:12.5px;color:var(--text-secondary);margin-top:6px;}
+
+/* Interactive generic */
+.box{
+  background:var(--bg);border:1px solid var(--border);border-radius:14px;
+  padding:16px 18px;margin:14px 0;
+}
+select, .btn-select{
+  font-family:inherit;font-size:15px;padding:10px 12px;border-radius:10px;
+  border:1px solid var(--border);background:#fff;width:100%;
+}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--primary);color:#fff;border:none;border-radius:var(--radius-btn);
+  padding:0 18px;height:42px;font-size:14.5px;font-weight:600;cursor:pointer;
+  transition:background .2s ease, transform .1s ease;
+}
+.btn:hover{background:var(--primary-hover);}
+.btn:active{transform:scale(.98);}
+.btn.secondary{background:#fff;color:var(--primary);border:1px solid var(--primary);}
+.btn.secondary:hover{background:var(--primary-light);}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+
+/* Insight box */
+.insight{
+  background:var(--warning-bg);border:1px solid #FDE68A;border-radius:12px;
+  padding:12px 14px;margin-top:12px;font-size:14px;color:var(--warning-text);
+  display:none;
+}
+.insight.show{display:block;}
+
+/* Unit circle */
+.circle-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
+svg#unitCircle{width:100%;max-width:320px;height:auto;}
+
+.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;}
+.value-card{
+  background:#fff;border:1px solid var(--border);border-radius:12px;
+  padding:12px 8px;text-align:center;
+}
+.value-card .label{font-size:12px;color:var(--text-secondary);font-weight:600;margin-bottom:4px;}
+.value-card .katex-holder{font-size:15px;min-height:28px;display:flex;align-items:center;justify-content:center;}
+
+/* Table per kuadran */
+.table-wrap{overflow-x:auto;margin:12px 0;border-radius:12px;border:1px solid var(--border);}
+table.sudut-table{width:100%;border-collapse:collapse;background:#fff;font-size:14px;}
+table.sudut-table th, table.sudut-table td{
+  padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+table.sudut-table th{background:var(--bg);color:var(--text-secondary);font-weight:700;font-size:12.5px;}
+table.sudut-table tr:last-child td{border-bottom:none;}
+.kuadran-tag{
+  display:inline-block;font-size:11.5px;font-weight:700;color:var(--primary);
+  background:var(--primary-light);padding:3px 10px;border-radius:999px;margin-bottom:8px;
+}
+
+/* Step viewer */
+.step-viewer{position:relative;}
+.step{display:none;}
+.step.active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.step-dots{display:flex;gap:6px;justify-content:center;margin-top:14px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);}
+.dot.active{background:var(--primary);}
+.step-label{font-size:12.5px;font-weight:700;color:var(--primary);margin-bottom:6px;}
+
+/* Challenge */
+.badge{
+  display:inline-block;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;
+  margin-bottom:10px;
+}
+.badge.mudah{background:var(--success-bg);color:var(--success-text);}
+.badge.sedang{background:var(--warning-bg);color:var(--warning-text);}
+.badge.sulit{background:var(--error-bg);color:var(--error-text);}
+.opsi-list{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.opsi{
+  border:1px solid var(--border);border-radius:12px;padding:12px 14px;
+  cursor:pointer;background:#fff;font-size:15px;transition:.15s ease;
+  display:flex;align-items:center;gap:10px;
+}
+.opsi:hover{border-color:var(--primary);}
+.opsi.selected{border-color:var(--primary);background:var(--primary-light);}
+.opsi.correct{border-color:var(--success);background:var(--success-bg);}
+.opsi.wrong{border-color:var(--error);background:var(--error-bg);}
+.opsi.locked{pointer-events:none;}
+.feedback{
+  border-radius:12px;padding:12px 14px;margin-top:10px;font-size:14px;display:none;
+}
+.feedback.benar{display:block;background:var(--success-bg);border:1px solid var(--success-border);color:var(--success-text);}
+.feedback.salah{display:block;background:var(--error-bg);border:1px solid var(--error-border);color:var(--error-text);}
+.status-kirim{font-size:12px;color:var(--text-secondary);margin-top:8px;}
+input.num-input{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+  font-size:16px;font-family:inherit;
+}
+
+/* Kesalahan umum */
+.mistake{border-left:3px solid var(--error);background:var(--error-bg);border-radius:0 12px 12px 0;padding:12px 16px;margin-bottom:12px;}
+.mistake h4{margin:0 0 6px;font-size:14.5px;color:var(--error-text);}
+.mistake p{margin:0 0 4px;font-size:13.8px;color:var(--text);}
+.mistake .fix{color:var(--success-text);font-weight:600;}
+
+/* Ringkasan */
+.ringkasan-list{list-style:none;margin:0;padding:0;}
+.ringkasan-list li{
+  display:flex;gap:10px;padding:10px 0;border-bottom:1px dashed var(--border);font-size:14.8px;
+}
+.ringkasan-list li:last-child{border-bottom:none;}
+.ringkasan-list .num{
+  flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;
+}
+
+/* Refleksi */
+textarea{
+  width:100%;min-height:90px;border-radius:12px;border:1px solid var(--border);
+  padding:12px;font-family:inherit;font-size:15px;resize:vertical;
+}
+
+/* Fade up */
+.fade-up{opacity:0;transform:translateY(16px);transition:opacity .5s ease, transform .5s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* Footer */
+.footer-identity{
+  text-align:center;padding:26px 10px;color:var(--text-secondary);font-size:12.5px;
+  border-top:1px solid var(--border);margin-top:30px;
+}
+.footer-identity strong{color:var(--primary);}
+
+@media(max-width:420px){
+  .value-grid{grid-template-columns:repeat(3,1fr);gap:6px;}
+  .hero h1{font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">NUMERA · Nilai Trigonometri Sudut Istimewa</div>
+<div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="wrap">
+
+  <!-- 1. HEADER -->
+  <div class="card hero">
+    <span class="chip">📘 Modul Interaktif</span>
+    <h1>Nilai Trigonometri Sudut Istimewa</h1>
+    <div class="badge-row">
+      <span class="chip">⏱️ Sekitar 20 menit</span>
+      <span class="chip">🔺 sin, cos, tan</span>
+    </div>
+    <div class="tujuan-box">
+      <strong>Setelah belajar ini, kamu akan bisa:</strong>
+      <ul>
+        <li>Menjelaskan kenapa beberapa sudut disebut "sudut istimewa" dalam trigonometri.</li>
+        <li>Menyebutkan nilai eksak sin, cos, dan tan untuk sudut istimewa di kuadran I (0°–90°) tanpa kalkulator.</li>
+        <li>Menentukan tanda (positif/negatif) nilai sin, cos, tan di kuadran II, III, dan IV.</li>
+        <li>Menggunakan sudut referensi untuk mencari nilai sin, cos, tan sudut istimewa dari 0° sampai 360°.</li>
+      </ul>
+    </div>
+
+    <div class="identity-box">
+      <h3>🧑‍🎓 Kotak Identitas Siswa</h3>
+      <div class="field">
+        <label for="inputNama">Nama Lengkap</label>
+        <input type="text" id="inputNama" placeholder="Tulis nama lengkapmu">
+      </div>
+      <div class="field">
+        <label for="inputKelas">Kelas</label>
+        <input type="text" id="inputKelas" placeholder="Contoh: X-2, XI IPA 3">
+      </div>
+      <p class="identity-note">Isi dulu ya sebelum mengerjakan Challenge — jawabanmu akan otomatis terkirim ke gurumu.</p>
+    </div>
+  </div>
+
+  <!-- 2. PERNAHKAH KAMU BERPIKIR -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">2</span> Pernahkah Kamu Berpikir?</div>
+    <p>Coba tanya temanmu: <em>"Berapa sih nilai sin 30°?"</em></p>
+    <p>Kalau dia pakai kalkulator, dia akan lihat angka <strong>0,5</strong>. Tapi kalau kamu tanya ke gurumu, dia mungkin langsung jawab <strong>½</strong> — tanpa mikir lama, tanpa kalkulator.</p>
+    <p>Nah, kok bisa ya guru tahu jawaban <em>persis</em> tanpa menghitung? Apakah dia menghafal semua sudut?</p>
+    <p>Sebenarnya tidak. Ada beberapa sudut "spesial" yang nilai sin, cos, dan tan-nya bisa dicari dengan logika sederhana — bukan hafalan buta. Sudut-sudut itulah yang akan kita pelajari sekarang: <strong>sudut istimewa</strong>.</p>
+  </div>
+
+  <!-- 3. PENJELASAN SEDERHANA -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">3</span> Penjelasan Sederhana</div>
+
+    <div class="subheading">Kenapa disebut "sudut istimewa"?</div>
+    <p>Sudut istimewa itu sudut-sudut tertentu (0°, 30°, 45°, 60°, 90°, dan kelipatannya) yang nilai sin, cos, tan-nya bisa dicari <strong>tepat</strong>, tanpa perkiraan.</p>
+    <p>Kenapa bisa tepat? Karena sudut-sudut ini muncul dari dua segitiga siku-siku yang sangat rapi: segitiga siku-siku sama kaki (sudutnya 45°-45°-90°) dan segitiga siku-siku separuh sama sisi (sudutnya 30°-60°-90°). Panjang sisi-sisi kedua segitiga ini sudah diketahui perbandingannya dengan pasti, jadi nilai sin/cos/tan-nya juga pasti — bukan hasil kira-kira kalkulator.</p>
+
+    <div class="subheading">Nilai sudut istimewa di Kuadran I (0°–90°)</div>
+    <p>Kalau kamu bandingkan nilai sin 0°, sin 30°, sin 45°, sin 60°, sin 90°, ada pola yang rapi banget:</p>
+    <div class="box" id="polaBox"></div>
+    <p>Perhatikan: makin besar sudutnya (dari 0° ke 90°), nilai <strong>sin makin besar</strong>, sedangkan nilai <strong>cos makin kecil</strong>. Masuk akal, kan? Semakin sudutnya "berdiri tegak" mendekati 90°, garis tegaknya (sin) makin panjang, dan garis datarnya (cos) makin pendek.</p>
+    <p>Nilai tan didapat dari <span class="katex-inline" id="tanRumus"></span> — jadi tan 90° tidak punya nilai, karena kita tidak boleh membagi dengan 0. Kita sebut ini <strong>tidak terdefinisi</strong>.</p>
+
+    <div class="subheading">Kuadran dan tanda nilai trigonometri</div>
+    <p>Sudut istimewa tidak berhenti di 90°. Ada juga 120°, 210°, 315°, sampai 360°. Untuk memahaminya, kita bagi lingkaran penuh (360°) menjadi <strong>4 kuadran</strong>:</p>
+    <div class="box">
+      <p style="margin-bottom:6px;"><strong>Kuadran I</strong> (0°–90°): sin, cos, tan semua <strong>positif</strong>.</p>
+      <p style="margin-bottom:6px;"><strong>Kuadran II</strong> (90°–180°): hanya <strong>sin</strong> yang positif.</p>
+      <p style="margin-bottom:6px;"><strong>Kuadran III</strong> (180°–270°): hanya <strong>tan</strong> yang positif.</p>
+      <p style="margin-bottom:0;"><strong>Kuadran IV</strong> (270°–360°): hanya <strong>cos</strong> yang positif.</p>
+    </div>
+    <p>Banyak guru menyingkatnya jadi <strong>"All - Sin - Tan - Cos"</strong> (ASTC), dibaca berurutan mulai kuadran I searah jarum jam terbalik. Ini bukan aturan hafalan tanpa alasan — ini muncul dari arah sumbu-x dan sumbu-y yang positif/negatif di tiap kuadran pada lingkaran satuan.</p>
+
+    <div class="subheading">Sudut referensi (sudut rujukan)</div>
+    <p>Ini kunci utamanya. Untuk mencari nilai sudut istimewa <em>di luar</em> kuadran I (misalnya 150°, 240°, 300°), kamu sebenarnya tidak perlu menghafal tabel baru.</p>
+    <p>Caranya: cari dulu <strong>sudut referensi</strong>-nya, yaitu sudut lancip (di kuadran I) terdekat ke sumbu-x mendatar. Nilai sin/cos/tan sudut istimewa manapun besarnya <em>sama</em> dengan sudut referensinya — yang beda cuma tandanya, tergantung kuadran.</p>
+    <div class="box">
+      <p style="margin-bottom:4px;">Kuadran II → sudut referensi = <span class="katex-inline" id="refQ2"></span></p>
+      <p style="margin-bottom:4px;">Kuadran III → sudut referensi = <span class="katex-inline" id="refQ3"></span></p>
+      <p style="margin-bottom:0;">Kuadran IV → sudut referensi = <span class="katex-inline" id="refQ4"></span></p>
+    </div>
+    <p>Contoh singkat: sudut referensi dari 150° adalah 30° (karena 180° − 150° = 30°). Karena 150° ada di kuadran II, dan di kuadran II hanya sin yang positif, maka sin 150° = +sin 30° = ½, tapi cos 150° = −cos 30° = −½√3.</p>
+  </div>
+
+  <!-- 4. LIHAT CARA KERJANYA -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">4</span> Lihat Cara Kerjanya</div>
+    <p>Yuk lihat langkah demi langkah bagaimana cara mencari nilai <strong>sin 150°</strong> memakai sudut referensi.</p>
+    <div class="box step-viewer">
+      <div class="step active" data-step="1">
+        <div class="step-label">Langkah 1 dari 4</div>
+        <p>Sudut 150° berada di antara 90° dan 180°, jadi 150° ada di <strong>Kuadran II</strong>.</p>
+      </div>
+      <div class="step" data-step="2">
+        <div class="step-label">Langkah 2 dari 4</div>
+        <p>Cari sudut referensinya. Untuk kuadran II, rumusnya <span class="katex-inline" id="stepRumusQ2"></span>.</p>
+        <p>Sudut referensi = 180° − 150° = <strong>30°</strong>.</p>
+      </div>
+      <div class="step" data-step="3">
+        <div class="step-label">Langkah 3 dari 4</div>
+        <p>Cek tanda di kuadran II: ingat "All-Sin-Tan-Cos" — di kuadran II hanya <strong>sin</strong> yang positif.</p>
+        <p>Karena kita mencari nilai <strong>sin</strong>, tandanya tetap <strong>positif (+)</strong>.</p>
+      </div>
+      <div class="step" data-step="4">
+        <div class="step-label">Langkah 4 dari 4 — Selesai!</div>
+        <p>Tinggal gabungkan: sin 150° = + sin 30°.</p>
+        <p id="stepFinal" style="font-weight:700;"></p>
+      </div>
+      <div class="btn-row">
+        <button class="btn secondary" id="btnPrevStep" disabled>← Sebelumnya</button>
+        <button class="btn" id="btnNextStep">Selanjutnya →</button>
+      </div>
+      <div class="step-dots" id="stepDots"></div>
+    </div>
+  </div>
+
+  <!-- 5. COBA SENDIRI -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">5</span> Coba Sendiri</div>
+    <p>Sekarang giliranmu. Pilih sudut istimewa di bawah ini, lalu lihat titiknya bergerak di lingkaran satuan dan nilai sin, cos, tan-nya muncul otomatis.</p>
+    <div class="box">
+      <label for="selectSudut" style="font-weight:600;font-size:14px;display:block;margin-bottom:8px;">Pilih sudut:</label>
+      <select id="selectSudut"></select>
+
+      <div class="circle-wrap" style="margin-top:16px;">
+        <svg id="unitCircle" viewBox="0 0 260 260"></svg>
+      </div>
+
+      <div class="value-grid">
+        <div class="value-card"><div class="label">sin θ</div><div class="katex-holder" id="valSin"></div></div>
+        <div class="value-card"><div class="label">cos θ</div><div class="katex-holder" id="valCos"></div></div>
+        <div class="value-card"><div class="label">tan θ</div><div class="katex-holder" id="valTan"></div></div>
+      </div>
+
+      <div class="insight" id="insightBox"></div>
+    </div>
+  </div>
+
+  <!-- Tabel per kuadran -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">📋</span> Tabel Nilai Sudut Istimewa (per Kuadran)</div>
+    <p class="muted">Tabelnya sengaja dipecah per kuadran biar tetap nyaman dibaca di HP, tidak perlu geser layar ke samping.</p>
+
+    <span class="kuadran-tag">Kuadran I</span>
+    <div class="table-wrap"><table class="sudut-table" id="tabelQ1"></table></div>
+
+    <span class="kuadran-tag">Kuadran II</span>
+    <div class="table-wrap"><table class="sudut-table" id="tabelQ2"></table></div>
+
+    <span class="kuadran-tag">Kuadran III</span>
+    <div class="table-wrap"><table class="sudut-table" id="tabelQ3"></table></div>
+
+    <span class="kuadran-tag">Kuadran IV</span>
+    <div class="table-wrap"><table class="sudut-table" id="tabelQ4"></table></div>
+  </div>
+
+  <!-- 6. CHALLENGE -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">6</span> Challenge</div>
+    <p class="muted">Jawabanmu otomatis terkirim ke guru setiap kali kamu menekan "Cek Jawaban".</p>
+
+    <!-- Soal 1 — BENAR/SALAH -->
+    <div class="box" id="soal1Box">
+      <span class="badge mudah">MUDAH · Benar/Salah</span>
+      <p><strong>Soal 1.</strong> Perhatikan pernyataan berikut:</p>
+      <p style="text-align:center;font-weight:600;" id="soal1Rumus"></p>
+      <p class="muted">Menurutmu, pernyataan di atas Benar atau Salah?</p>
+      <div class="opsi-list" id="opsi1"></div>
+      <div class="feedback" id="feedback1"></div>
+      <div class="status-kirim" id="status1"></div>
+    </div>
+
+    <!-- Soal 2 — PILIHAN GANDA -->
+    <div class="box" id="soal2Box">
+      <span class="badge sedang">SEDANG · Pilihan Ganda</span>
+      <p><strong>Soal 2.</strong> Tentukan nilai dari <span class="katex-inline" id="soal2Rumus"></span> .</p>
+      <div class="opsi-list" id="opsi2"></div>
+      <div class="feedback" id="feedback2"></div>
+      <div class="status-kirim" id="status2"></div>
+    </div>
+
+    <!-- Soal 3 — ISIAN SINGKAT -->
+    <div class="box" id="soal3Box">
+      <span class="badge sulit">SULIT · Isian Singkat</span>
+      <p><strong>Soal 3.</strong> Diketahui <span class="katex-inline" id="soal3Rumus"></span>, dan θ berada di <strong>Kuadran III</strong> (180° &lt; θ &lt; 270°). Sudut istimewa manakah yang dimaksud?</p>
+      <p class="muted">Tulis jawabanmu dalam derajat, contoh: 200</p>
+      <input type="number" class="num-input" id="input3" placeholder="Masukkan nilai θ (derajat)">
+      <div class="btn-row"><button class="btn" id="btnCek3">Cek Jawaban</button></div>
+      <div class="feedback" id="feedback3"></div>
+      <div class="status-kirim" id="status3"></div>
+    </div>
+  </div>
+
+  <!-- 7. KESALAHAN UMUM -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">7</span> Kesalahan yang Sering Terjadi</div>
+
+    <div class="mistake">
+      <h4>❌ Lupa memperhatikan tanda per kuadran</h4>
+      <p>Banyak siswa langsung menulis nilai sudut referensinya saja, tanpa cek tandanya. Misalnya menjawab cos 240° = ½ (padahal harusnya −½).</p>
+      <p class="fix">✔️ Cara menghindari: sebelum menjawab, selalu tanya "aku ada di kuadran berapa, dan tanda sin/cos/tan di sana apa?"</p>
+    </div>
+
+    <div class="mistake">
+      <h4>❌ Salah menghitung sudut referensi</h4>
+      <p>Untuk kuadran III dan IV, siswa sering salah pakai rumus — misalnya memakai (180° − θ) padahal seharusnya (θ − 180°) untuk kuadran III.</p>
+      <p class="fix">✔️ Cara menghindari: hafalkan pola arahnya — kuadran II pakai (180° − θ), kuadran III pakai (θ − 180°), kuadran IV pakai (360° − θ).</p>
+    </div>
+
+    <div class="mistake">
+      <h4>❌ Mengira tan 90° dan tan 270° punya nilai</h4>
+      <p>Karena tan = sin/cos, dan cos 90° = cos 270° = 0, maka tan di sudut-sudut itu <strong>tidak terdefinisi</strong> — bukan 0, bukan juga angka besar tertentu.</p>
+      <p class="fix">✔️ Cara menghindari: setiap kali menghitung tan, cek dulu apakah cos-nya nol. Kalau ya, jawabannya "tidak terdefinisi".</p>
+    </div>
+
+    <div class="mistake">
+      <h4>❌ Tertukar antara nilai sin dan cos</h4>
+      <p>Karena pola angkanya mirip (½, ½√2, ½√3), siswa sering tertukar mana untuk sin dan mana untuk cos pada sudut yang sama.</p>
+      <p class="fix">✔️ Cara menghindari: ingat sin dimulai dari 0 (kecil) di 0° dan naik ke 1, sedangkan cos dimulai dari 1 (besar) di 0° dan turun ke 0.</p>
+    </div>
+  </div>
+
+  <!-- 8. RINGKASAN -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">8</span> Ringkasan</div>
+    <ul class="ringkasan-list">
+      <li><span class="num">1</span><span>Sudut istimewa punya nilai sin, cos, tan yang eksak (pasti), berasal dari segitiga siku-siku istimewa dan lingkaran satuan — bukan hasil perkiraan kalkulator.</span></li>
+      <li><span class="num">2</span><span>Di kuadran I (0°–90°), nilai sin dan cos mengikuti pola rapi: 0, ½, ½√2, ½√3, 1 — sin naik, cos turun (kebalikan urutannya).</span></li>
+      <li><span class="num">3</span><span>Lingkaran penuh dibagi 4 kuadran, dan setiap kuadran punya tanda berbeda untuk sin/cos/tan, diingat lewat "All-Sin-Tan-Cos" (ASTC).</span></li>
+      <li><span class="num">4</span><span>Untuk sudut di luar kuadran I, cari dulu sudut referensinya (sudut lancip ke sumbu-x), lalu beri tanda sesuai kuadran tempat sudut itu berada.</span></li>
+      <li><span class="num">5</span><span>Tan tidak terdefinisi saat cos = 0, yaitu tepat di 90° dan 270°.</span></li>
+    </ul>
+  </div>
+
+  <!-- 9. REFLEKSI -->
+  <div class="card fade-up">
+    <div class="section-title"><span class="section-num">9</span> Refleksi</div>
+    <p class="muted">Tidak ada jawaban benar/salah di bagian ini. Tulis saja dengan kata-katamu sendiri.</p>
+
+    <div class="field">
+      <label for="refleksi1" style="font-weight:600;">1. Dengan kata-katamu sendiri, kenapa sudut seperti 30°, 45°, dan 60° disebut "sudut istimewa" dalam trigonometri?</label>
+      <textarea id="refleksi1" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+    <div class="field">
+      <label for="refleksi2" style="font-weight:600;">2. Menurutmu, bagian mana yang paling gampang bikin kamu keliru saat menentukan tanda (positif/negatif) sin, cos, atau tan di kuadran II, III, atau IV? Kenapa?</label>
+      <textarea id="refleksi2" placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+    <div class="btn-row"><button class="btn" id="btnKirimRefleksi">Kirim Refleksi</button></div>
+    <div class="feedback" id="feedbackRefleksi"></div>
+    <div class="status-kirim" id="statusRefleksi"></div>
+  </div>
+
+  <div class="footer-identity">
+    <strong>Numera</strong><br>
+    Dikembangkan oleh Kiki Herdiansyah<br>
+    Versi 1.0 · © 2026
+  </div>
+
+</div>
+
+<script>
+/* ========================= DATA SUDUT ISTIMEWA ========================= */
+// Setiap entri: derajat, sin/cos/tan dalam bentuk {tex, num} dan info kuadran/referensi
+const DATA = [
+  {d:0,   kuadran:0, ref:0,  sin:{tex:"0",v:0},                cos:{tex:"1",v:1},                tan:{tex:"0",v:0}},
+  {d:30,  kuadran:1, ref:30, sin:{tex:"\\tfrac{1}{2}",v:0.5},   cos:{tex:"\\tfrac{1}{2}\\sqrt{3}",v:0.8660254}, tan:{tex:"\\tfrac{1}{3}\\sqrt{3}",v:0.5773503}},
+  {d:45,  kuadran:1, ref:45, sin:{tex:"\\tfrac{1}{2}\\sqrt{2}",v:0.7071068}, cos:{tex:"\\tfrac{1}{2}\\sqrt{2}",v:0.7071068}, tan:{tex:"1",v:1}},
+  {d:60,  kuadran:1, ref:60, sin:{tex:"\\tfrac{1}{2}\\sqrt{3}",v:0.8660254}, cos:{tex:"\\tfrac{1}{2}",v:0.5}, tan:{tex:"\\sqrt{3}",v:1.7320508}},
+  {d:90,  kuadran:0, ref:90, sin:{tex:"1",v:1}, cos:{tex:"0",v:0}, tan:{tex:"\\text{tak terdefinisi}",v:null}},
+  {d:120, kuadran:2, ref:60, sin:{tex:"\\tfrac{1}{2}\\sqrt{3}",v:0.8660254}, cos:{tex:"-\\tfrac{1}{2}",v:-0.5}, tan:{tex:"-\\sqrt{3}",v:-1.7320508}},
+  {d:135, kuadran:2, ref:45, sin:{tex:"\\tfrac{1}{2}\\sqrt{2}",v:0.7071068}, cos:{tex:"-\\tfrac{1}{2}\\sqrt{2}",v:-0.7071068}, tan:{tex:"-1",v:-1}},
+  {d:150, kuadran:2, ref:30, sin:{tex:"\\tfrac{1}{2}",v:0.5}, cos:{tex:"-\\tfrac{1}{2}\\sqrt{3}",v:-0.8660254}, tan:{tex:"-\\tfrac{1}{3}\\sqrt{3}",v:-0.5773503}},
+  {d:180, kuadran:0, ref:0, sin:{tex:"0",v:0}, cos:{tex:"-1",v:-1}, tan:{tex:"0",v:0}},
+  {d:210, kuadran:3, ref:30, sin:{tex:"-\\tfrac{1}{2}",v:-0.5}, cos:{tex:"-\\tfrac{1}{2}\\sqrt{3}",v:-0.8660254}, tan:{tex:"\\tfrac{1}{3}\\sqrt{3}",v:0.5773503}},
+  {d:225, kuadran:3, ref:45, sin:{tex:"-\\tfrac{1}{2}\\sqrt{2}",v:-0.7071068}, cos:{tex:"-\\tfrac{1}{2}\\sqrt{2}",v:-0.7071068}, tan:{tex:"1",v:1}},
+  {d:240, kuadran:3, ref:60, sin:{tex:"-\\tfrac{1}{2}\\sqrt{3}",v:-0.8660254}, cos:{tex:"-\\tfrac{1}{2}",v:-0.5}, tan:{tex:"\\sqrt{3}",v:1.7320508}},
+  {d:270, kuadran:0, ref:90, sin:{tex:"-1",v:-1}, cos:{tex:"0",v:0}, tan:{tex:"\\text{tak terdefinisi}",v:null}},
+  {d:300, kuadran:4, ref:60, sin:{tex:"-\\tfrac{1}{2}\\sqrt{3}",v:-0.8660254}, cos:{tex:"\\tfrac{1}{2}",v:0.5}, tan:{tex:"-\\sqrt{3}",v:-1.7320508}},
+  {d:315, kuadran:4, ref:45, sin:{tex:"-\\tfrac{1}{2}\\sqrt{2}",v:-0.7071068}, cos:{tex:"\\tfrac{1}{2}\\sqrt{2}",v:0.7071068}, tan:{tex:"-1",v:-1}},
+  {d:330, kuadran:4, ref:30, sin:{tex:"-\\tfrac{1}{2}",v:-0.5}, cos:{tex:"\\tfrac{1}{2}\\sqrt{3}",v:0.8660254}, tan:{tex:"-\\tfrac{1}{3}\\sqrt{3}",v:-0.5773503}},
+  {d:360, kuadran:0, ref:0, sin:{tex:"0",v:0}, cos:{tex:"1",v:1}, tan:{tex:"0",v:0}}
+];
+const KUADRAN_NAMA = {0:"Sumbu (batas kuadran)",1:"Kuadran I",2:"Kuadran II",3:"Kuadran III",4:"Kuadran IV"};
+function getData(d){ return DATA.find(x=>x.d===d); }
+
+/* ========================= RENDER TEKS KaTeX ========================= */
+function texSpan(tex){ return '<span class="katex-target">'+tex+'</span>'; }
+
+function renderIntro(){
+  document.getElementById('polaBox').innerHTML =
+    '<div class="table-wrap"><table class="sudut-table"><thead><tr><th>Sudut</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr></thead>'+
+    '<tbody>'+
+    '<tr><td><strong>sin</strong></td><td>\\(0\\)</td><td>\\(\\tfrac{1}{2}\\)</td><td>\\(\\tfrac{1}{2}\\sqrt{2}\\)</td><td>\\(\\tfrac{1}{2}\\sqrt{3}\\)</td><td>\\(1\\)</td></tr>'+
+    '<tr><td><strong>cos</strong></td><td>\\(1\\)</td><td>\\(\\tfrac{1}{2}\\sqrt{3}\\)</td><td>\\(\\tfrac{1}{2}\\sqrt{2}\\)</td><td>\\(\\tfrac{1}{2}\\)</td><td>\\(0\\)</td></tr>'+
+    '</tbody></table></div>';
+  document.getElementById('tanRumus').innerHTML = '\\(\\tan\\theta=\\dfrac{\\sin\\theta}{\\cos\\theta}\\)';
+  document.getElementById('refQ2').innerHTML = '\\(180^\\circ-\\theta\\)';
+  document.getElementById('refQ3').innerHTML = '\\(\\theta-180^\\circ\\)';
+  document.getElementById('refQ4').innerHTML = '\\(360^\\circ-\\theta\\)';
+  document.getElementById('stepRumusQ2').innerHTML = '\\(180^\\circ-\\theta\\)';
+  document.getElementById('stepFinal').innerHTML = 'sin 150° = + \\(\\tfrac{1}{2}\\) = \\(\\tfrac{1}{2}\\)';
+}
+
+/* ========================= STEP VIEWER (Lihat Cara Kerjanya) ========================= */
+(function(){
+  const steps = document.querySelectorAll('.step');
+  const dotsWrap = document.getElementById('stepDots');
+  let idx = 0;
+  steps.forEach((s,i)=>{
+    const dot = document.createElement('div');
+    dot.className = 'dot'+(i===0?' active':'');
+    dotsWrap.appendChild(dot);
+  });
+  const dots = dotsWrap.querySelectorAll('.dot');
+  function show(i){
+    steps.forEach((s,j)=>s.classList.toggle('active', j===i));
+    dots.forEach((d,j)=>d.classList.toggle('active', j===i));
+    document.getElementById('btnPrevStep').disabled = (i===0);
+    document.getElementById('btnNextStep').disabled = (i===steps.length-1);
+    document.getElementById('btnNextStep').textContent = (i===steps.length-1) ? 'Selesai ✓' : 'Selanjutnya →';
+  }
+  document.getElementById('btnNextStep').addEventListener('click',()=>{
+    if(idx<steps.length-1){ idx++; show(idx); }
+  });
+  document.getElementById('btnPrevStep').addEventListener('click',()=>{
+    if(idx>0){ idx--; show(idx); }
+  });
+})();
+
+/* ========================= COBA SENDIRI: LINGKARAN SATUAN ========================= */
+const selectSudut = document.getElementById('selectSudut');
+DATA.forEach(item=>{
+  const opt = document.createElement('option');
+  opt.value = item.d;
+  opt.textContent = item.d + '°';
+  if(item.d===45) opt.selected = true;
+  selectSudut.appendChild(opt);
+});
+
+function drawCircle(deg){
+  const cx=130, cy=130, r=95, ar=34;
+  const rad = deg*Math.PI/180;
+  const px = cx + r*Math.cos(rad);
+  const py = cy - r*Math.sin(rad);
+
+  // posisi label kuadran (diagonal, di dalam lingkaran supaya rapi & tidak menabrak sumbu)
+  const lr = r*0.58;
+  const diag = Math.cos(Math.PI/4)*lr;
+  const q1 = {x:cx+diag, y:cy-diag+4};
+  const q2 = {x:cx-diag, y:cy-diag+4};
+  const q3 = {x:cx-diag, y:cy+diag+4};
+  const q4 = {x:cx+diag, y:cy+diag+4};
+
+  // busur sudut (angle arc): mulai dari sumbu-x positif, berputar berlawanan arah jarum jam, berhenti di garis biru
+  let arcPath = '';
+  if(deg > 0 && deg < 360){
+    const startX = cx + ar, startY = cy;
+    const endX = cx + ar*Math.cos(rad), endY = cy - ar*Math.sin(rad);
+    const largeArc = deg > 180 ? 1 : 0;
+    arcPath = `M ${startX} ${startY} A ${ar} ${ar} 0 ${largeArc} 0 ${endX} ${endY}`;
+  }
+
+  const svg = document.getElementById('unitCircle');
+  svg.innerHTML = `
+    <defs>
+      <marker id="arrowHead" markerWidth="7" markerHeight="7" refX="3.2" refY="3.5" orient="auto">
+        <path d="M0,0 L7,3.5 L0,7 Z" fill="#64748B"/>
+      </marker>
+    </defs>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
+    <line x1="${cx-r-14}" y1="${cy}" x2="${cx+r+14}" y2="${cy}" stroke="#CBD5E1" stroke-width="1"/>
+    <line x1="${cx}" y1="${cy-r-14}" x2="${cx}" y2="${cy+r+14}" stroke="#CBD5E1" stroke-width="1"/>
+    <text x="${q1.x}" y="${q1.y}" font-size="12" font-weight="700" fill="#94A3B8" text-anchor="middle">I</text>
+    <text x="${q2.x}" y="${q2.y}" font-size="12" font-weight="700" fill="#94A3B8" text-anchor="middle">II</text>
+    <text x="${q3.x}" y="${q3.y}" font-size="12" font-weight="700" fill="#94A3B8" text-anchor="middle">III</text>
+    <text x="${q4.x}" y="${q4.y}" font-size="12" font-weight="700" fill="#94A3B8" text-anchor="middle">IV</text>
+    ${arcPath ? `<path d="${arcPath}" fill="none" stroke="#64748B" stroke-width="1.8" marker-end="url(#arrowHead)"/>` : ''}
+    <line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="#2563EB" stroke-width="2"/>
+    <line x1="${px}" y1="${py}" x2="${px}" y2="${cy}" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3,3"/>
+    <circle cx="${px}" cy="${py}" r="5" fill="#2563EB"/>
+    <text x="${cx+r+16}" y="${cy+4}" font-size="10" fill="#64748B">x</text>
+    <text x="${cx-6}" y="${cy-r-16}" font-size="10" fill="#64748B">y</text>
+  `;
+}
+
+function updateCobaSendiri(){
+  const deg = parseInt(selectSudut.value,10);
+  const item = getData(deg);
+  drawCircle(deg);
+  document.getElementById('valSin').innerHTML = '\\('+item.sin.tex+'\\)';
+  document.getElementById('valCos').innerHTML = '\\('+item.cos.tex+'\\)';
+  document.getElementById('valTan').innerHTML = '\\('+item.tan.tex+'\\)';
+
+  const insight = document.getElementById('insightBox');
+  let msg = '';
+  if(item.tan.v===null){
+    msg = '💡 Perhatikan! Di ' + deg + '°, garis cos-nya nol — makanya tan tidak terdefinisi di sini.';
+  } else if(deg===0||deg===90||deg===180||deg===270||deg===360){
+    msg = '💡 ' + deg + '° tepat berada di sumbu, jadi salah satu nilainya pasti 0.';
+  } else {
+    const namaKuadran = KUADRAN_NAMA[item.kuadran];
+    msg = '💡 ' + deg + '° berada di ' + namaKuadran + ', dengan sudut referensi ' + item.ref + '°.';
+  }
+  insight.textContent = msg;
+  insight.classList.add('show');
+  renderKatex();
+}
+selectSudut.addEventListener('change', updateCobaSendiri);
+
+/* ========================= TABEL PER KUADRAN ========================= */
+function buildTable(elId, angles){
+  const rows = angles.map(getData);
+  let html = '<thead><tr><th>Sudut</th>';
+  rows.forEach(r=> html += '<th>'+r.d+'°</th>');
+  html += '</tr></thead><tbody>';
+  html += '<tr><td><strong>sin</strong></td>' + rows.map(r=>'<td>\\('+r.sin.tex+'\\)</td>').join('') + '</tr>';
+  html += '<tr><td><strong>cos</strong></td>' + rows.map(r=>'<td>\\('+r.cos.tex+'\\)</td>').join('') + '</tr>';
+  html += '<tr><td><strong>tan</strong></td>' + rows.map(r=>'<td>\\('+r.tan.tex+'\\)</td>').join('') + '</tr>';
+  html += '</tbody>';
+  document.getElementById(elId).innerHTML = html;
+}
+buildTable('tabelQ1',[0,30,45,60,90]);
+buildTable('tabelQ2',[120,135,150,180]);
+buildTable('tabelQ3',[210,225,240,270]);
+buildTable('tabelQ4',[300,315,330,360]);
+
+/* ========================= IDENTITAS & PENGIRIMAN (Kontrak Code.gs Numera) ========================= */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzcK65GHhWieoZ0MgGrIs4YIyYXyR7E1_UlbfH4fL-OD_movoIiUViBK49EA5mFF9jG/exec';
+const TOPIK = 'Nilai Trigonometri Sudut Istimewa';
+
+function getIdentitas(){
+  return {
+    nama: document.getElementById('inputNama').value.trim(),
+    kelas: document.getElementById('inputKelas').value.trim()
+  };
+}
+function identitasLengkap(){
+  const id = getIdentitas();
+  return id.nama.length>0 && id.kelas.length>0;
+}
+function tampilkanPeringatanIdentitas(targetId){
+  const el = document.getElementById(targetId);
+  if(el){
+    el.className = 'feedback salah';
+    el.textContent = '⚠️ Isi dulu Nama dan Kelas di bagian Header sebelum mengerjakan ya.';
+  }
+  document.getElementById('inputNama').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function kirimKeGuru(nomorSoal, jenis, percobaan, jawaban1, jawaban2, kunci, hasil, statusElId){
+  const id = getIdentitas();
+  const payload = {
+    topik: TOPIK,
+    nama: id.nama,
+    kelas: id.kelas,
+    jenis: jenis,
+    nomorSoal: nomorSoal,
+    percobaan: percobaan,
+    jawaban1: jawaban1,
+    jawaban2: jawaban2,
+    kunci: kunci,
+    hasil: hasil,
+    waktu: new Date().toLocaleString('id-ID')
+  };
+  const statusEl = document.getElementById(statusElId);
+  if(SCRIPT_URL){
+    fetch(SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify(payload)
+    }).then(()=>{
+      if(statusEl) statusEl.textContent = '✓ Terkirim ke guru · ' + payload.waktu;
+    }).catch(()=>{
+      if(statusEl) statusEl.textContent = '⚠️ Gagal terkirim, tapi jawabanmu tetap tersimpan di sini.';
+    });
+  } else {
+    if(statusEl) statusEl.textContent = '✓ Tersimpan (' + payload.waktu + ')';
+  }
+}
+
+/* ========================= CHALLENGE ========================= */
+// Soal 1 — MUDAH — BENAR/SALAH: pernyataan sin 30° + cos 60° = 1 (pernyataan ini BENAR)
+const soal1Kunci = 'Benar';
+let percobaan1 = 0, soal1Selesai=false;
+
+// Soal 2 — SEDANG — PILIHAN GANDA: cos 240°
+const soal2 = { opsi:[
+    {tex:'\\tfrac{1}{2}',              teks:'1/2'},
+    {tex:'-\\tfrac{1}{2}',             teks:'-1/2'},
+    {tex:'\\tfrac{1}{2}\\sqrt{3}',     teks:'1/2√3'},
+    {tex:'-\\tfrac{1}{2}\\sqrt{3}',    teks:'-1/2√3'}
+  ], benar:1 };
+let percobaan2 = 0, soal2Selesai=false;
+
+// Soal 3 — SULIT — ISIAN SINGKAT: sin θ = -1/2√2, kuadran III → θ = 225
+let percobaan3 = 0, soal3Selesai=false;
+const soal3Kunci = 225;
+
+function initSoal1(){
+  document.getElementById('soal1Rumus').innerHTML = '\\(\\sin 30^\\circ + \\cos 60^\\circ = 1\\)';
+  const wrap = document.getElementById('opsi1');
+  wrap.innerHTML='';
+  ['Benar','Salah'].forEach(teks=>{
+    const div = document.createElement('div');
+    div.className='opsi';
+    div.textContent = teks;
+    div.style.justifyContent='center';
+    div.style.fontWeight='600';
+    div.addEventListener('click',()=>cekSoal1(teks,div));
+    wrap.appendChild(div);
+  });
+}
+function cekSoal1(jawabanSiswa, el){
+  if(soal1Selesai) return;
+  if(!identitasLengkap()){ tampilkanPeringatanIdentitas('feedback1'); return; }
+  percobaan1++;
+  const opsiEls = document.querySelectorAll('#opsi1 .opsi');
+  opsiEls.forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  const fb = document.getElementById('feedback1');
+  const benar = (jawabanSiswa===soal1Kunci);
+  if(benar){
+    el.classList.add('correct');
+    opsiEls.forEach(o=>o.classList.add('locked'));
+    fb.className='feedback benar';
+    fb.textContent = '✅ Betul, pernyataan ini Benar! sin 30° = ½ dan cos 60° = ½, jadi ½ + ½ = 1.';
+    soal1Selesai = true;
+  } else {
+    el.classList.add('wrong');
+    fb.className='feedback salah';
+    fb.textContent = '❌ Coba cek lagi satu per satu: berapa sin 30°? Berapa cos 60°? Baru jumlahkan keduanya.';
+  }
+  kirimKeGuru(1,'Challenge',percobaan1,jawabanSiswa,'',soal1Kunci, benar?'BENAR':'SALAH','status1');
+}
+
+function initSoal2(){
+  document.getElementById('soal2Rumus').innerHTML = '\\(\\cos 240^\\circ\\)';
+  const wrap = document.getElementById('opsi2');
+  wrap.innerHTML='';
+  soal2.opsi.forEach((o,i)=>{
+    const div = document.createElement('div');
+    div.className='opsi';
+    div.innerHTML = '\\('+o.tex+'\\)';
+    div.addEventListener('click',()=>cekSoal2(i,div));
+    wrap.appendChild(div);
+  });
+  renderKatex();
+}
+function cekSoal2(i, el){
+  if(soal2Selesai) return;
+  if(!identitasLengkap()){ tampilkanPeringatanIdentitas('feedback2'); return; }
+  percobaan2++;
+  const opsiEls = document.querySelectorAll('#opsi2 .opsi');
+  opsiEls.forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  const fb = document.getElementById('feedback2');
+  const benar = (i===soal2.benar);
+  const jawabanSiswa = soal2.opsi[i].teks;
+  const kunciTeks = soal2.opsi[soal2.benar].teks;
+  if(benar){
+    el.classList.add('correct');
+    opsiEls.forEach(o=>o.classList.add('locked'));
+    fb.className='feedback benar';
+    fb.textContent = '✅ Tepat! 240° ada di Kuadran III (sudut referensi 60°). Di Kuadran III, cos bertanda negatif, jadi cos 240° = −cos 60° = −½.';
+    soal2Selesai = true;
+  } else {
+    el.classList.add('wrong');
+    fb.className='feedback salah';
+    if(i===0){
+      fb.textContent = '❌ Hampir benar angkanya, tapi kamu lupa cek tanda — di Kuadran III, nilai cos itu negatif.';
+    } else {
+      fb.textContent = '❌ Belum tepat. Coba cari dulu sudut referensi 240° (yaitu 240°−180°=60°), baru tentukan tandanya.';
+    }
+  }
+  kirimKeGuru(2,'Challenge',percobaan2,jawabanSiswa,'',kunciTeks, benar?'BENAR':'SALAH','status2');
+}
+
+document.getElementById('btnCek3').addEventListener('click',()=>{
+  if(soal3Selesai) return;
+  if(!identitasLengkap()){ tampilkanPeringatanIdentitas('feedback3'); return; }
+  const inputEl = document.getElementById('input3');
+  const teksJawaban = inputEl.value.trim();
+  const jawaban = parseInt(teksJawaban,10);
+  if(teksJawaban==='' || isNaN(jawaban)){
+    document.getElementById('feedback3').className='feedback salah';
+    document.getElementById('feedback3').textContent = '⚠️ Isi dulu jawabannya dalam angka derajat.';
+    return;
+  }
+  percobaan3++;
+  const fb = document.getElementById('feedback3');
+  const benar = (jawaban===soal3Kunci);
+  if(benar){
+    fb.className='feedback benar';
+    fb.textContent = '✅ Tepat sekali! sin θ = −½√2 punya sudut referensi 45°. Karena di Kuadran III sin bertanda negatif dan cocok, θ = 180° + 45° = 225°.';
+    inputEl.disabled = true;
+    document.getElementById('btnCek3').disabled = true;
+    soal3Selesai = true;
+  } else {
+    fb.className='feedback salah';
+    if(jawaban===135){
+      fb.textContent = '❌ 135° memang punya sin = ½√2 (positif), tapi itu di Kuadran II, bukan Kuadran III seperti yang diminta soal.';
+    } else {
+      fb.textContent = '❌ Belum tepat. Ingat: cari dulu sudut referensi dari nilai ½√2, baru gunakan rumus sudut Kuadran III (θ − 180° = sudut referensi).';
+    }
+  }
+  kirimKeGuru(3,'Challenge',percobaan3,teksJawaban,'',String(soal3Kunci), benar?'BENAR':'SALAH','status3');
+});
+
+/* ========================= REFLEKSI ========================= */
+document.getElementById('btnKirimRefleksi').addEventListener('click',()=>{
+  if(!identitasLengkap()){ tampilkanPeringatanIdentitas('feedbackRefleksi'); return; }
+  const j1 = document.getElementById('refleksi1').value.trim();
+  const j2 = document.getElementById('refleksi2').value.trim();
+  const fb = document.getElementById('feedbackRefleksi');
+  if(j1.length===0 || j2.length===0){
+    fb.className='feedback salah';
+    fb.textContent = '⚠️ Isi dulu kedua pertanyaan refleksi sebelum dikirim ya.';
+    return;
+  }
+  fb.className='feedback benar';
+  fb.textContent = '✅ Terima kasih sudah merefleksikan apa yang kamu pelajari!';
+  kirimKeGuru('Refleksi','Refleksi',1,j1,j2,'—','—','statusRefleksi');
+});
+
+/* ========================= KaTeX RENDER HELPER ========================= */
+function renderKatex(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters:[
+        {left:'\\(', right:'\\)', display:false},
+        {left:'\\[', right:'\\]', display:true}
+      ]
+    });
+  }
+}
+
+/* ========================= FADE UP ========================= */
+function setupFadeUp(){
+  const els = document.querySelectorAll('.fade-up');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  els.forEach(el=>obs.observe(el));
+}
+
+/* ========================= PROGRESS BAR ========================= */
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+  document.getElementById('progressBar').style.width = scrolled + '%';
+});
+
+/* ========================= INIT ========================= */
+window.addEventListener('DOMContentLoaded', ()=>{
+  renderIntro();
+  initSoal1();
+  initSoal2();
+  updateCobaSendiri();
+  setupFadeUp();
+  renderKatex();
+});
+window.addEventListener('load', renderKatex);
+</script>
+</body>
+</html>
