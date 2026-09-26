@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Numera — Kuis TKA Matriks</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{
+  --bg:#f4f5f7; --card:#ffffff; --ink:#1a1d29; --sub:#5b6270; --line:#e3e5ea;
+  --accent:#2563EB; --accent-ink:#ffffff; --good:#1a8a52; --bad:#c23b3b;
+  --radius:14px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14161c; --card:#1d2028; --ink:#eef0f4; --sub:#a2a8b5; --line:#2c2f38;
+    --accent:#5B8DF5; --accent-ink:#0c0e13; --good:#3ecf83; --bad:#ff6b6b;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14161c; --card:#1d2028; --ink:#eef0f4; --sub:#a2a8b5; --line:#2c2f38;
+  --accent:#5B8DF5; --accent-ink:#0c0e13; --good:#3ecf83; --bad:#ff6b6b;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif; line-height:1.5;}
+.wrap{max-width:640px; margin:0 auto; padding:20px 16px 60px;}
+.page{display:none;}
+.page.active{display:block;}
+header.top{text-align:center; margin-bottom:20px;}
+.brand{font-weight:800; letter-spacing:.06em; color:var(--accent); font-size:13px; text-transform:uppercase;}
+h1{font-size:20px; margin:6px 0 2px;}
+h2{font-size:17px; margin:0 0 4px;}
+.meta-line{color:var(--sub); font-size:13.5px;}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-bottom:14px;}
+.identity label{display:block; font-size:13px; font-weight:600; margin-bottom:6px; margin-top:12px;}
+.identity label:first-of-type{margin-top:0;}
+.identity input{width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--ink); font-size:15px;}
+.progress{font-size:12px; color:var(--sub); text-align:center; margin-bottom:10px;}
+.topic-tag{display:inline-block; background:color-mix(in srgb, var(--accent) 14%, transparent); color:var(--accent); font-weight:700; font-size:12.5px; padding:4px 10px; border-radius:20px; margin:3px 4px 3px 0;}
+.scope-list{margin:8px 0 0; padding-left:18px; font-size:13.5px; color:var(--sub);}
+.scope-list li{margin-bottom:4px;}
+.scope-block{margin-bottom:14px;}
+.scope-block b{font-size:14.5px; color:var(--ink);}
+.type-block{border-left:3px solid var(--accent); padding-left:10px; margin-bottom:12px;}
+.type-block b{font-size:14px;}
+.type-block p{margin:2px 0 0; font-size:13px; color:var(--sub);}
+.qhead{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
+.qnum{width:26px; height:26px; border-radius:50%; background:var(--accent); color:var(--accent-ink); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0;}
+.qtype{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, transparent); padding:3px 8px; border-radius:20px;}
+.qtext{font-size:15.5px; margin:0 0 14px; white-space:pre-line;}
+.qtext .katex-display{margin:10px 0;}
+.qtext .katex{font-size:1.05em;}
+.opt{display:flex; align-items:flex-start; gap:10px; padding:11px 12px; border:1px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer;}
+.opt:hover{border-color:var(--accent);}
+.opt input{margin-top:3px; accent-color:var(--accent); flex-shrink:0;}
+.opt span{font-size:14.5px;}
+.opt .katex{font-size:1.05em;}
+.stmt-table{width:100%; border-collapse:collapse; font-size:14px;}
+.stmt-table td{padding:10px 6px; border-bottom:1px solid var(--line); vertical-align:top;}
+.stmt-table tr:last-child td{border-bottom:none;}
+.stmt-text{padding-right:10px;}
+.bs-toggle{display:flex; gap:6px; white-space:nowrap;}
+.bs-toggle label{border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:12.5px; font-weight:600; cursor:pointer;}
+.bs-toggle input{display:none;}
+.bs-toggle label:has(input:checked){background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+.hint{font-size:12px; color:var(--sub); margin-bottom:12px;}
+.data-table{width:100%; border-collapse:collapse; font-size:13px; margin:10px 0 4px;}
+.data-table th, .data-table td{border:1px solid var(--line); padding:8px 6px; text-align:center;}
+.data-table th{background:color-mix(in srgb, var(--accent) 10%, transparent); font-weight:700;}
+.data-table td:first-child, .data-table th:first-child{text-align:left;}
+button.primary{width:100%; padding:14px; border:none; border-radius:12px; background:var(--accent); color:var(--accent-ink); font-size:15.5px; font-weight:700; cursor:pointer; margin-top:6px;}
+.warn{color:var(--bad); font-size:13px; text-align:center; margin-top:10px; display:none;}
+#resultScreen{text-align:center; padding-top:10vh;}
+#resultScreen .score{font-size:44px; font-weight:800; color:var(--accent); margin:10px 0;}
+#resultScreen p{color:var(--sub); font-size:14.5px; max-width:420px; margin:8px auto;}
+[hidden]{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- PAGE 1 -->
+  <div class="page active" id="page1">
+    <header class="top">
+      <div class="brand">Numera</div>
+      <h1>Kuis TKA Matematika Lanjut</h1>
+      <div class="meta-line">Materi · Matriks</div>
+    </header>
+    <div class="card identity">
+      <label for="nama">Nama Lengkap</label>
+      <input type="text" id="nama" autocomplete="off">
+      <label for="kelas">Kelas</label>
+      <input type="text" id="kelas" placeholder="contoh: XI-2" autocomplete="off">
+    </div>
+    <button class="primary" id="toPage2">Lanjut</button>
+    <div class="warn" id="warn1">Isi nama dan kelas terlebih dahulu.</div>
+    <div style="text-align:center; font-size:11.5px; color:var(--sub); margin-top:22px;">Disusun oleh Kiki Herdiansyah — www.numera.my.id</div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page" id="page2">
+    <header class="top">
+      <div class="brand">Numera</div>
+      <h1>Sebelum Mulai</h1>
+      <div class="meta-line">Kenali cakupan materi &amp; bentuk soalnya</div>
+    </header>
+
+    <div class="card">
+      <h2>Materi yang Diuji</h2>
+      <div class="topic-tag">Matriks</div>
+    </div>
+
+    <div class="card">
+      <h2>Ruang Lingkup Materi</h2>
+      <div class="hint" style="margin-bottom:14px;">Sesuai Matriks Asesmen resmi TKA — elemen Aljabar.</div>
+      <div class="scope-block">
+        <b>Matriks</b> <span style="color:var(--sub); font-size:12px;">(Elemen: Aljabar)</span>
+        <ul class="scope-list">
+          <li>Determinan matriks</li>
+          <li>Invers matriks</li>
+          <li>Operasi matriks</li>
+        </ul>
+      </div>
+      <div class="hint">Elemen matriks merupakan bilangan real. Determinan dan invers matriks berukuran 2 × 2 atau 3 × 3.</div>
+    </div>
+
+    <div class="card">
+      <h2>Bentuk Soal TKA</h2>
+      <div class="type-block">
+        <b>Pilihan Ganda</b>
+        <p>Satu pertanyaan, beberapa pilihan jawaban, hanya satu yang benar.</p>
+      </div>
+      <div class="type-block">
+        <b>PG Kompleks · Jawaban Lebih dari Satu</b>
+        <p>Bisa ada lebih dari satu pilihan yang benar — pilih semua yang menurutmu tepat.</p>
+      </div>
+      <div class="type-block">
+        <b>PG Kompleks · Benar–Salah</b>
+        <p>Beberapa pernyataan diberikan sekaligus, kamu menilai tiap pernyataan Benar atau Salah.</p>
+      </div>
+    </div>
+
+    <button class="primary" id="toPage3">Mulai Kuis</button>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="page" id="page3">
+    <header class="top">
+      <div class="brand">Numera</div>
+      <h1>Kuis TKA — Matriks</h1>
+    </header>
+
+    <form id="quizForm">
+      <div class="progress">10 Soal · Kerjakan sebisanya</div>
+
+      <div class="card q" data-qid="q1" data-type="pg" data-correct="e">
+        <div class="qhead"><div class="qnum">1</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Perhatikan matriks berikut!
+\[ F = \begin{pmatrix} 2 & 0 \\ 0 & \frac{1}{2} \end{pmatrix} \]
+Invers dari matriks \(F\) adalah ....</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q1" value="a"><span>\( \begin{pmatrix} 1 & 0 \\ 0 & 2 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q1" value="b"><span>\( \begin{pmatrix} -1 & 0 \\ 0 & -2 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q1" value="c"><span>\( \begin{pmatrix} 2 & 0 \\ 0 & 1 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q1" value="d"><span>\( \begin{pmatrix} -\frac{1}{2} & 0 \\ 0 & -2 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="e"><input type="radio" name="q1" value="e"><span>\( \begin{pmatrix} \frac{1}{2} & 0 \\ 0 & 2 \end{pmatrix} \)</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q2" data-type="pg" data-correct="a">
+        <div class="qhead"><div class="qnum">2</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Sebuah toko roti membuat dua jenis kue, yaitu kue A dan kue B. Kebutuhan tepung dan gula (dalam kg) untuk 1 loyang masing-masing kue dinyatakan dalam matriks \( K = \begin{pmatrix} 2 & 1 \\ 0{,}5 & 0{,}25 \end{pmatrix} \) (baris: tepung, gula; kolom: kue A, kue B). Untuk acara sekolah, toko tersebut membuat 5 kali lipat dari resep dasar tersebut, dinyatakan sebagai \( M = 5K \). Berapa kg gula yang dibutuhkan untuk membuat kue B?</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q2" value="a"><span>1,25 kg</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q2" value="b"><span>2,5 kg</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q2" value="c"><span>0,25 kg</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q2" value="d"><span>5 kg</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q3" data-type="pg" data-correct="a">
+        <div class="qhead"><div class="qnum">3</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Sebuah perusahaan asuransi menghitung indikator risiko gabungan dua produk investasi menggunakan nilai determinan dari matriks risiko \( R = \begin{pmatrix} 6 & 4 \\ 3 & 5 \end{pmatrix} \). Berapakah nilai determinan matriks \(R\) tersebut?</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q3" value="a"><span>18</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q3" value="b"><span>30</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q3" value="c"><span>12</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q3" value="d"><span>2</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q4" data-type="pg" data-correct="a">
+        <div class="qhead"><div class="qnum">4</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Untuk mengenkripsi pesan sederhana, seorang siswa menggunakan matriks kunci \( C = \begin{pmatrix} 2 & 3 \\ 1 & 2 \end{pmatrix} \). Proses dekripsi pesan dilakukan dengan mengalikan matriks pesan dengan invers dari \(C\). Tentukan invers dari matriks \(C\) tersebut (\(C^{-1}\)).</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q4" value="a"><span>\( \begin{pmatrix} 2 & -3 \\ -1 & 2 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q4" value="b"><span>\( \begin{pmatrix} 2 & 3 \\ 1 & 2 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q4" value="c"><span>\( \begin{pmatrix} -2 & 3 \\ 1 & -2 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q4" value="d"><span>\( \begin{pmatrix} 2 & -3 \\ 1 & 2 \end{pmatrix} \)</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q5" data-type="kategori" data-correct="1,1,0">
+        <div class="qhead"><div class="qnum">5</div><div class="qtype">PG Kompleks · Benar–Salah</div></div>
+        <div class="qtext">Seorang analis data menggunakan matriks transformasi \( D = \begin{pmatrix} 4 & 2 \\ 3 & 1 \end{pmatrix} \) untuk mengolah data koordinat. Tentukan Benar (B) atau Salah (S) untuk setiap pernyataan berikut.</div>
+        <div class="hint">Pilih B atau S untuk setiap baris.</div>
+        <table class="stmt-table">
+          <tr><td class="stmt-text">Determinan matriks \(D\) adalah \(-2\).</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q5-0" value="1"><span>B</span></label><label><input type="radio" name="q5-0" value="0"><span>S</span></label></div></td></tr>
+          <tr><td class="stmt-text">Karena determinannya tidak sama dengan nol, matriks \(D\) memiliki invers.</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q5-1" value="1"><span>B</span></label><label><input type="radio" name="q5-1" value="0"><span>S</span></label></div></td></tr>
+          <tr><td class="stmt-text">Invers dari matriks \(D\) adalah \( \begin{pmatrix} 0{,}5 & -1 \\ -1{,}5 & 2 \end{pmatrix} \).</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q5-2" value="1"><span>B</span></label><label><input type="radio" name="q5-2" value="0"><span>S</span></label></div></td></tr>
+        </table>
+      </div>
+
+      <div class="card q" data-qid="q6" data-type="pg" data-correct="e">
+        <div class="qhead"><div class="qnum">6</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Pak Andi memiliki beberapa sapi dan kambing. Semua hewan ternaknya selalu diberikan pakan berupa campuran rumput gajah dan rumput gamal. Setiap hari, ia menyediakan 38 kg rumput gajah dan 34 kg rumput gamal untuk seluruh ternaknya (tanpa sisa). Kebutuhan pakan per ekor: sapi membutuhkan 10 kg rumput gajah dan 10 kg rumput gamal; kambing membutuhkan 2 kg rumput gajah dan 1 kg rumput gamal. Jika banyaknya sapi dan kambing berturut-turut adalah \(x\) dan \(y\), maka \( \binom{x}{y} = ... \)</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q6" value="a"><span>\( \begin{pmatrix} -1 & 1 \\ 10 & -5 \end{pmatrix}\begin{pmatrix} 19 \\ 34 \end{pmatrix} = \begin{pmatrix} 15 \\ 20 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q6" value="b"><span>\( \begin{pmatrix} 10 & -10 \\ -1 & 2 \end{pmatrix}\begin{pmatrix} 38 \\ 34 \end{pmatrix} = \begin{pmatrix} 4 \\ 3 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q6" value="c"><span>\( \begin{pmatrix} -1 & 2 \\ 10 & -10 \end{pmatrix}\begin{pmatrix} 38 \\ 34 \end{pmatrix} = \begin{pmatrix} 3 \\ 4 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q6" value="d"><span>\( \begin{pmatrix} -\frac{1}{10} & \frac{2}{10} \\ 1 & -1 \end{pmatrix}\begin{pmatrix} 34 \\ 38 \end{pmatrix} = \begin{pmatrix} 4 \\ 3 \end{pmatrix} \)</span></label>
+          <label class="opt" data-val="e"><input type="radio" name="q6" value="e"><span>\( \begin{pmatrix} -\frac{1}{5} & \frac{1}{5} \\ 2 & -1 \end{pmatrix}\begin{pmatrix} 19 \\ 34 \end{pmatrix} = \begin{pmatrix} 3 \\ 4 \end{pmatrix} \)</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q7" data-type="mcma" data-correct="c,e">
+        <div class="qhead"><div class="qnum">7</div><div class="qtype">PG Kompleks · Jawaban Lebih dari Satu</div></div>
+        <div class="qtext">Seorang pemilik hotel mengelola 3 hotel yang berada di kota berbeda. Ketiga hotel memiliki konsep dan tipe kamar yang sama, dengan kapasitas dan harga per malam sebagai berikut.</div>
+        <table class="data-table">
+          <tr><th>Tipe Kamar</th><th>Hotel A</th><th>Hotel B</th><th>Hotel C</th><th>Harga/malam</th></tr>
+          <tr><td>Standard Room</td><td>9</td><td>6</td><td>7</td><td>Rp150.000</td></tr>
+          <tr><td>Deluxe Room</td><td>6</td><td>7</td><td>5</td><td>Rp500.000</td></tr>
+          <tr><td>Suite Room</td><td>3</td><td>2</td><td>4</td><td>Rp1.000.000</td></tr>
+        </table>
+        <div class="qtext" style="margin-top:12px;">Pemilik hotel akan menghitung pendapatan dari ketiga hotel tersebut. Bagaimana kondisi pendapatan ketiga hotel dalam 1 hari jika semua tipe kamar terisi penuh? Pilih SEMUA jawaban benar.</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="checkbox" name="q7" value="a"><span>Pendapatan Hotel A dan Hotel C sama besar.</span></label>
+          <label class="opt" data-val="b"><input type="checkbox" name="q7" value="b"><span>Pendapatan Hotel B lebih besar daripada Hotel A.</span></label>
+          <label class="opt" data-val="c"><input type="checkbox" name="q7" value="c"><span>Pendapatan paling besar diperoleh dari Hotel C.</span></label>
+          <label class="opt" data-val="d"><input type="checkbox" name="q7" value="d"><span>Masing-masing hotel memiliki selisih pendapatan yang sama besar.</span></label>
+          <label class="opt" data-val="e"><input type="checkbox" name="q7" value="e"><span>Pendapatan yang diperoleh dari ketiga hotel tersebut lebih dari Rp20.000.000.</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q8" data-type="pg" data-correct="c">
+        <div class="qhead"><div class="qnum">8</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Sebuah pabrik minuman tradisional memproduksi tiga jenis minuman, yaitu wedang jahe (WJ), beras kencur (BK), dan kunir asem (KA). Dalam proses produksinya digunakan tiga bahan utama: jahe (J) dalam gram, gula merah (GM) dalam gram, dan air (A) dalam mililiter. Setiap botol minuman memerlukan bahan sebagai berikut (baris: WJ, BK, KA; kolom: J, GM, A):
+\[ \begin{pmatrix} 20 & 15 & 50 \\ 10 & 25 & 40 \\ 12 & 8 & k \end{pmatrix} \]
+Pada suatu hari pabrik menerima pesanan sebanyak 100 botol WJ, 120 botol BK, dan 80 botol KA. Total bahan baku yang digunakan adalah 4.360 gram jahe, 4.960 gram gula merah, dan 13.000 ml air. Banyak air (\(k\)) yang dibutuhkan untuk memproduksi satu botol kunir asem adalah ....</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q8" value="a"><span>30 ml</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q8" value="b"><span>35 ml</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q8" value="c"><span>40 ml</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q8" value="d"><span>45 ml</span></label>
+          <label class="opt" data-val="e"><input type="radio" name="q8" value="e"><span>50 ml</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q9" data-type="kategori" data-correct="1,0,1">
+        <div class="qhead"><div class="qnum">9</div><div class="qtype">PG Kompleks · Benar–Salah</div></div>
+        <div class="qtext">Diketahui matriks \( F = \begin{pmatrix} 3 & 1 \\ 2 & 4 \end{pmatrix} \) yang digunakan untuk merepresentasikan sebuah transformasi. Tentukan Benar (B) atau Salah (S) untuk setiap pernyataan berikut.</div>
+        <table class="stmt-table">
+          <tr><td class="stmt-text">Determinan matriks \(F\) adalah \(10\).</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q9-0" value="1"><span>B</span></label><label><input type="radio" name="q9-0" value="0"><span>S</span></label></div></td></tr>
+          <tr><td class="stmt-text">Invers matriks \(F\) adalah \( \begin{pmatrix} 4 & -1 \\ -2 & 3 \end{pmatrix} \).</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q9-1" value="1"><span>B</span></label><label><input type="radio" name="q9-1" value="0"><span>S</span></label></div></td></tr>
+          <tr><td class="stmt-text">Karena determinannya tidak sama dengan nol, matriks \(F\) dapat dibalik (invertible).</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q9-2" value="1"><span>B</span></label><label><input type="radio" name="q9-2" value="0"><span>S</span></label></div></td></tr>
+        </table>
+      </div>
+
+      <div class="card q" data-qid="q10" data-type="mcma" data-correct="a,c">
+        <div class="qhead"><div class="qnum">10</div><div class="qtype">PG Kompleks · Jawaban Lebih dari Satu</div></div>
+        <div class="qtext">Diketahui matriks \( G(x) = \begin{pmatrix} x & 2 \\ 3 & x-1 \end{pmatrix} \). Dari beberapa nilai \(x\) berikut, pilih SEMUA nilai \(x\) yang membuat determinan matriks \(G(x)\) sama dengan nol (matriks singular).</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="checkbox" name="q10" value="a"><span>\(x = -2\)</span></label>
+          <label class="opt" data-val="b"><input type="checkbox" name="q10" value="b"><span>\(x = 1\)</span></label>
+          <label class="opt" data-val="c"><input type="checkbox" name="q10" value="c"><span>\(x = 3\)</span></label>
+          <label class="opt" data-val="d"><input type="checkbox" name="q10" value="d"><span>\(x = 2\)</span></label>
+          <label class="opt" data-val="e"><input type="checkbox" name="q10" value="e"><span>\(x = -3\)</span></label>
+        </div>
+      </div>
+
+      <button type="submit" class="primary" id="submitBtn">Kumpulkan Jawaban</button>
+      <div class="warn" id="warn3">Lengkapi semua soal terlebih dahulu.</div>
+    </form>
+
+    <div id="resultScreen" hidden>
+      <div class="brand">Numera</div>
+      <p style="margin-top:14px;">Terima kasih, <b id="rNama"></b> (<span id="rKelas"></span>)!</p>
+      <div class="score" id="rScore"></div>
+      <p>Jawabanmu sudah tersimpan. Skor ini hanya untuk latihan — jangan khawatir kalau belum banyak yang benar, itu normal. Kita akan bahas semua soal ini bersama di kelas.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+document.querySelectorAll('.q[data-type="pg"], .q[data-type="mcma"]').forEach(q=>{
+  const container = q.querySelector('.opts');
+  const opts = [...container.children];
+  shuffle(opts).forEach(o=>container.appendChild(o));
+});
+
+if(window.renderMathInElement){
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: "\\[", right: "\\]", display: true},
+      {left: "\\(", right: "\\)", display: false}
+    ],
+    throwOnError: false
+  });
+}
+
+const nama = document.getElementById('nama');
+const kelas = document.getElementById('kelas');
+
+document.getElementById('toPage2').addEventListener('click', ()=>{
+  if(!nama.value.trim() || !kelas.value.trim()){
+    document.getElementById('warn1').style.display='block';
+    return;
+  }
+  document.getElementById('warn1').style.display='none';
+  document.getElementById('page1').classList.remove('active');
+  document.getElementById('page2').classList.add('active');
+  window.scrollTo(0,0);
+});
+
+document.getElementById('toPage3').addEventListener('click', ()=>{
+  document.getElementById('page2').classList.remove('active');
+  document.getElementById('page3').classList.add('active');
+  window.scrollTo(0,0);
+});
+
+const form = document.getElementById('quizForm');
+const warn3 = document.getElementById('warn3');
+
+const GOOGLE_FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLScYcJrHa1qJUiQl7oWNtFqms15PwV428HeMS7RCu2wfdxzSPg/formResponse';
+const ENTRY_NAMA = 'entry.1128873320';
+const ENTRY_KELAS = 'entry.1715675447';
+const ENTRY_GAME = 'entry.339753918';
+const ENTRY_SKOR = 'entry.1119427673';
+
+function submitToGoogleForm(namaVal, kelasVal, skorVal){
+  const data = new FormData();
+  data.append(ENTRY_NAMA, namaVal);
+  data.append(ENTRY_KELAS, kelasVal);
+  data.append(ENTRY_GAME, 'Kuis TKA - Matriks');
+  data.append(ENTRY_SKOR, skorVal);
+  return fetch(GOOGLE_FORM_ACTION, { method:'POST', mode:'no-cors', body:data }).catch(()=>{});
+}
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  const questions = document.querySelectorAll('.q');
+  let allAnswered = true;
+
+  questions.forEach(q=>{
+    const type=q.dataset.type;
+    if(type==='pg'||type==='mcma'){
+      if(q.querySelectorAll('input:checked').length===0) allAnswered=false;
+    } else if(type==='kategori'){
+      const rows=new Set([...q.querySelectorAll('input')].map(i=>i.name));
+      rows.forEach(name=>{ if(!q.querySelector('input[name="'+name+'"]:checked')) allAnswered=false; });
+    }
+  });
+
+  if(!allAnswered){ warn3.style.display='block'; return; }
+  warn3.style.display='none';
+
+  let correctCount=0;
+  questions.forEach(q=>{
+    const type=q.dataset.type, correct=q.dataset.correct;
+    if(type==='pg'){
+      if(q.querySelector('input:checked').value===correct) correctCount++;
+    } else if(type==='mcma'){
+      const chosen=[...q.querySelectorAll('input:checked')].map(i=>i.value).sort().join(',');
+      if(chosen===correct.split(',').sort().join(',')) correctCount++;
+    } else if(type==='kategori'){
+      const rows=[...new Set([...q.querySelectorAll('input')].map(i=>i.name))].sort();
+      const correctArr=correct.split(',');
+      let ok=true;
+      rows.forEach((name,idx)=>{ if(q.querySelector('input[name="'+name+'"]:checked').value!==correctArr[idx]) ok=false; });
+      if(ok) correctCount++;
+    }
+  });
+
+  const namaVal = nama.value.trim();
+  const kelasVal = kelas.value.trim();
+  const skorVal = correctCount + ' / ' + questions.length;
+
+  submitToGoogleForm(namaVal, kelasVal, skorVal);
+
+  document.getElementById('rNama').textContent=namaVal;
+  document.getElementById('rKelas').textContent=kelasVal;
+  document.getElementById('rScore').textContent=skorVal;
+  form.hidden=true;
+  document.getElementById('resultScreen').hidden=false;
+  window.scrollTo(0,0);
+});
+</script>
+</body>
+</html>

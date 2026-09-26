@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Numera — Kuis TKA Matematika Wajib 1</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{
+  --bg:#f4f5f7; --card:#ffffff; --ink:#1a1d29; --sub:#5b6270; --line:#e3e5ea;
+  --accent:#2563EB; --accent-ink:#ffffff; --good:#1a8a52; --bad:#c23b3b;
+  --radius:14px;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14161c; --card:#1d2028; --ink:#eef0f4; --sub:#a2a8b5; --line:#2c2f38;
+    --accent:#5B8DF5; --accent-ink:#0c0e13; --good:#3ecf83; --bad:#ff6b6b;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14161c; --card:#1d2028; --ink:#eef0f4; --sub:#a2a8b5; --line:#2c2f38;
+  --accent:#5B8DF5; --accent-ink:#0c0e13; --good:#3ecf83; --bad:#ff6b6b;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif; line-height:1.5;}
+.wrap{max-width:640px; margin:0 auto; padding:20px 16px 60px;}
+.page{display:none;}
+.page.active{display:block;}
+header.top{text-align:center; margin-bottom:20px;}
+.brand{font-weight:800; letter-spacing:.06em; color:var(--accent); font-size:13px; text-transform:uppercase;}
+h1{font-size:20px; margin:6px 0 2px;}
+h2{font-size:17px; margin:0 0 4px;}
+.meta-line{color:var(--sub); font-size:13.5px;}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-bottom:14px;}
+.identity label{display:block; font-size:13px; font-weight:600; margin-bottom:6px; margin-top:12px;}
+.identity label:first-of-type{margin-top:0;}
+.identity input{width:100%; padding:11px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--ink); font-size:15px;}
+.progress{font-size:12px; color:var(--sub); text-align:center; margin-bottom:10px;}
+.topic-tag{display:inline-block; background:color-mix(in srgb, var(--accent) 14%, transparent); color:var(--accent); font-weight:700; font-size:12.5px; padding:4px 10px; border-radius:20px; margin:3px 4px 3px 0;}
+.scope-list{margin:8px 0 0; padding-left:18px; font-size:13.5px; color:var(--sub);}
+.scope-list li{margin-bottom:4px;}
+.scope-block{margin-bottom:14px;}
+.scope-block b{font-size:14.5px; color:var(--ink);}
+.type-block{border-left:3px solid var(--accent); padding-left:10px; margin-bottom:12px;}
+.type-block b{font-size:14px;}
+.type-block p{margin:2px 0 0; font-size:13px; color:var(--sub);}
+.qhead{display:flex; align-items:center; gap:8px; margin-bottom:10px;}
+.qnum{width:26px; height:26px; border-radius:50%; background:var(--accent); color:var(--accent-ink); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0;}
+.qtype{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--accent); background:color-mix(in srgb, var(--accent) 14%, transparent); padding:3px 8px; border-radius:20px;}
+.qtext{font-size:15.5px; margin:0 0 14px; white-space:pre-line;}
+.qtext .katex-display{margin:10px 0;}
+.qtext .katex{font-size:1.05em;}
+.opt{display:flex; align-items:flex-start; gap:10px; padding:11px 12px; border:1px solid var(--line); border-radius:10px; margin-bottom:8px; cursor:pointer;}
+.opt:hover{border-color:var(--accent);}
+.opt input{margin-top:3px; accent-color:var(--accent); flex-shrink:0;}
+.opt span{font-size:14.5px;}
+.opt .katex{font-size:1.05em;}
+.stmt-table{width:100%; border-collapse:collapse; font-size:14px;}
+.stmt-table td{padding:10px 6px; border-bottom:1px solid var(--line); vertical-align:top;}
+.stmt-table tr:last-child td{border-bottom:none;}
+.stmt-text{padding-right:10px;}
+.bs-toggle{display:flex; gap:6px; white-space:nowrap;}
+.bs-toggle label{border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:12.5px; font-weight:600; cursor:pointer;}
+.bs-toggle input{display:none;}
+.bs-toggle label:has(input:checked){background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+.hint{font-size:12px; color:var(--sub); margin-bottom:12px;}
+button.primary{width:100%; padding:14px; border:none; border-radius:12px; background:var(--accent); color:var(--accent-ink); font-size:15.5px; font-weight:700; cursor:pointer; margin-top:6px;}
+.warn{color:var(--bad); font-size:13px; text-align:center; margin-top:10px; display:none;}
+#resultScreen{text-align:center; padding-top:10vh;}
+#resultScreen .score{font-size:44px; font-weight:800; color:var(--accent); margin:10px 0;}
+#resultScreen p{color:var(--sub); font-size:14.5px; max-width:420px; margin:8px auto;}
+[hidden]{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- PAGE 1 -->
+  <div class="page active" id="page1">
+    <header class="top">
+      <div class="brand">Numera</div>
+      <h1>Kuis TKA Matematika Wajib 1</h1>
+      <div class="meta-line">Bilangan Real &amp; Persamaan - Pertidaksamaan Linear</div>
+    </header>
+    <div class="card identity">
+      <label for="nama">Nama Lengkap</label>
+      <input type="text" id="nama" autocomplete="off">
+      <label for="kelas">Kelas</label>
+      <input type="text" id="kelas" placeholder="contoh: X-2" autocomplete="off">
+    </div>
+    <button class="primary" id="toPage2">Lanjut</button>
+    <div class="warn" id="warn1">Isi nama dan kelas terlebih dahulu.</div>
+    <div style="text-align:center; font-size:11.5px; color:var(--sub); margin-top:22px;">Disusun oleh Kiki Herdiansyah — www.numera.my.id</div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page" id="page2">
+    <header class="top">
+      <div class="brand">Numera</div>
+      <h1>Sebelum Mulai</h1>
+      <div class="meta-line">Kenali cakupan materi &amp; bentuk soalnya</div>
+    </header>
+
+    <div class="card">
+      <h2>Materi yang Diuji</h2>
+      <div class="topic-tag">Bilangan Real</div>
+      <div class="topic-tag">Persamaan &amp; Pertidaksamaan Linear</div>
+    </div>
+
+    <div class="card">
+      <h2>Ruang Lingkup Materi</h2>
+      <div class="hint" style="margin-bottom:14px;">Sesuai Matriks Asesmen resmi TKA — elemen Bilangan dan Aljabar.</div>
+      <div class="scope-block">
+        <b>Bilangan Real</b> <span style="color:var(--sub); font-size:12px;">(Elemen: Bilangan)</span>
+        <ul class="scope-list">
+          <li>Jenis dan sifat bilangan</li>
+          <li>Operasi bilangan (penjumlahan, pengurangan, perkalian, pembagian, dan gabungannya), beserta sifat komutatif, asosiatif, dan distributif</li>
+          <li>Mencakup bilangan real, termasuk bilangan berpangkat bulat maupun berpangkat pecahan (setara bentuk akar)</li>
+        </ul>
+      </div>
+      <div class="scope-block">
+        <b>Persamaan &amp; Pertidaksamaan Linear</b> <span style="color:var(--sub); font-size:12px;">(Elemen: Aljabar)</span>
+        <ul class="scope-list">
+          <li>Sistem persamaan linear multivariabel (maksimal 3 variabel)</li>
+          <li>Sistem pertidaksamaan linear multivariabel</li>
+          <li>Program linear</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Bentuk Soal TKA</h2>
+      <div class="type-block">
+        <b>Pilihan Ganda</b>
+        <p>Satu pertanyaan, beberapa pilihan jawaban, hanya satu yang benar.</p>
+      </div>
+      <div class="type-block">
+        <b>PG Kompleks · Jawaban Lebih dari Satu</b>
+        <p>Bisa ada lebih dari satu pilihan yang benar — pilih semua yang menurutmu tepat.</p>
+      </div>
+      <div class="type-block">
+        <b>PG Kompleks · Benar–Salah</b>
+        <p>Beberapa pernyataan diberikan sekaligus, kamu menilai tiap pernyataan Benar atau Salah.</p>
+      </div>
+    </div>
+
+    <button class="primary" id="toPage3">Mulai Kuis</button>
+  </div>
+
+  <!-- PAGE 3 -->
+  <div class="page" id="page3">
+    <header class="top">
+      <div class="brand">Numera</div>
+      <h1>Kuis TKA Matematika Wajib 1</h1>
+    </header>
+
+    <form id="quizForm">
+      <div class="progress">10 Soal · Kerjakan sebisanya</div>
+
+      <div class="card q" data-qid="q1" data-type="pg" data-correct="c">
+        <div class="qhead"><div class="qnum">1</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Diberikan tiga himpunan bilangan sebagai berikut:
+\[ A = \{ x \mid x < 6,\ x \in \text{Bilangan Asli} \} \]
+\[ B = \{ x \mid x \text{ bilangan genap},\ x \in \text{Bilangan Cacah} \} \]
+\[ C = \{ x \mid x \le 10,\ x \in \text{Bilangan Prima} \} \]
+Berdasarkan himpunan-himpunan tersebut, hasil dari \( (A \cap B) \cup C \) adalah ....</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q1" value="a"><span>\(\{2, 3, 5, 7\}\)</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q1" value="b"><span>\(\{0, 2, 3, 5, 7\}\)</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q1" value="c"><span>\(\{2, 3, 4, 5, 7\}\)</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q1" value="d"><span>\(\{0, 2, 3, 4, 5, 7\}\)</span></label>
+          <label class="opt" data-val="e"><input type="radio" name="q1" value="e"><span>\(\{2, 3, 4, 5, 7, 10\}\)</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q2" data-type="pg" data-correct="c">
+        <div class="qhead"><div class="qnum">2</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Bentuk sederhana dari \( \dfrac{3^{\frac{2}{3}} \times 8^{\frac{3}{2}}}{2^{\frac{5}{2}} \times 9^{\frac{5}{6}}} \) adalah ....</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q2" value="a"><span>\(\dfrac{1}{42}\)</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q2" value="b"><span>\(\dfrac{2}{3}\)</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q2" value="c"><span>\(\dfrac{4}{3}\)</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q2" value="d"><span>6</span></label>
+          <label class="opt" data-val="e"><input type="radio" name="q2" value="e"><span>12</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q3" data-type="pg" data-correct="a">
+        <div class="qhead"><div class="qnum">3</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Koperasi sekolah "Numera Mart" mencatat hasil penjualan hari ini sebesar Rp600.000. Dari total pendapatan tersebut, \(\dfrac{2}{5}\) bagian digunakan untuk membeli stok barang baru. Dari sisa uang yang ada, \(\dfrac{1}{3}\) bagian kemudian disisihkan sebagai tabungan koperasi. Berapa besar uang yang disisihkan sebagai tabungan koperasi?</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q3" value="a"><span>Rp120.000</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q3" value="b"><span>Rp200.000</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q3" value="c"><span>Rp240.000</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q3" value="d"><span>Rp360.000</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q4" data-type="pg" data-correct="a">
+        <div class="qhead"><div class="qnum">4</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Dalam catatan pelajaran fisika, seorang siswa menemukan sebuah besaran yang dituliskan dalam bentuk pangkat pecahan, yaitu \( 27^{1/3} \) (dibaca: 27 pangkat sepertiga). Bentuk ini senilai dengan akar pangkat tiga dari 27. Berapakah nilai dari \( 27^{1/3} \) tersebut?</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q4" value="a"><span>3</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q4" value="b"><span>6</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q4" value="c"><span>9</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q4" value="d"><span>81</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q5" data-type="kategori" data-correct="1,0,1">
+        <div class="qhead"><div class="qnum">5</div><div class="qtype">PG Kompleks · Benar–Salah</div></div>
+        <div class="qtext">Operasi biner \( \odot \) didefinisikan sebagai \( a \odot b = \dfrac{(a-b)^2 + 2ab}{a+b} \) untuk setiap bilangan real tidak negatif \(a\) dan \(b\). Jika \( a \odot 2 = 5 \), tentukan Benar (B) atau Salah (S) pada setiap pernyataan berikut.</div>
+        <div class="hint">Pilih B atau S untuk setiap baris.</div>
+        <table class="stmt-table">
+          <tr><td class="stmt-text">\(a\) merupakan kelipatan dari 3.</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q5-0" value="1"><span>B</span></label><label><input type="radio" name="q5-0" value="0"><span>S</span></label></div></td></tr>
+          <tr><td class="stmt-text">\(a\) merupakan bilangan prima.</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q5-1" value="1"><span>B</span></label><label><input type="radio" name="q5-1" value="0"><span>S</span></label></div></td></tr>
+          <tr><td class="stmt-text">\( a \odot 0 = 6 \).</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q5-2" value="1"><span>B</span></label><label><input type="radio" name="q5-2" value="0"><span>S</span></label></div></td></tr>
+        </table>
+      </div>
+
+      <div class="card q" data-qid="q6" data-type="pg" data-correct="a">
+        <div class="qhead"><div class="qnum">6</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Seorang tukang bangunan sedang menghitung ukuran sebuah bahan material untuk proyeknya. Panjang bahan tersebut dinyatakan dalam bentuk akar, yaitu hasil dari \( \sqrt{8} \) meter dibagi \( \sqrt{2} \) meter. Ia ingin menuliskan hasilnya dalam bentuk paling sederhana agar mudah dicatat. Berapakah bentuk sederhana dari \( \sqrt{8} \div \sqrt{2} \) tersebut?</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q6" value="a"><span>2</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q6" value="b"><span>4</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q6" value="c"><span>\(2\sqrt{2}\)</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q6" value="d"><span>\(\sqrt{4}\)</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q7" data-type="mcma" data-correct="c,d,e">
+        <div class="qhead"><div class="qnum">7</div><div class="qtype">PG Kompleks · Jawaban Lebih dari Satu</div></div>
+        <div class="qtext">Sebuah kompetisi debat antar sekolah menetapkan syarat kelulusan babak penyisihan berdasarkan skor gabungan tiap peserta. Panitia menentukan bahwa peserta dinyatakan lolos apabila nilai \(x\) pada sistem penilaian mereka memenuhi pertidaksamaan \( 2x - 5 > 3 \). Dari beberapa nilai \(x\) milik peserta berikut, manakah yang memenuhi syarat untuk lolos ke babak berikutnya? (Pilih semua yang benar)</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="checkbox" name="q7" value="a"><span>\(x = 3\)</span></label>
+          <label class="opt" data-val="b"><input type="checkbox" name="q7" value="b"><span>\(x = 4\)</span></label>
+          <label class="opt" data-val="c"><input type="checkbox" name="q7" value="c"><span>\(x = 4{,}5\)</span></label>
+          <label class="opt" data-val="d"><input type="checkbox" name="q7" value="d"><span>\(x = 6\)</span></label>
+          <label class="opt" data-val="e"><input type="checkbox" name="q7" value="e"><span>\(x = 10\)</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q8" data-type="pg" data-correct="c">
+        <div class="qhead"><div class="qnum">8</div><div class="qtype">Pilihan Ganda</div></div>
+        <div class="qtext">Diketahui daerah segitiga tertutup dengan titik-titik sudut \(A(-4, 0)\), \(B(0, 2)\), dan \(C(2, 0)\). Daerah tersebut (termasuk sisi-sisinya) merupakan himpunan penyelesaian dari suatu sistem pertidaksamaan linear. Sistem pertidaksamaan yang sesuai dengan daerah tersebut adalah ....</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="radio" name="q8" value="a"><span>\( \begin{cases} x-2y \ge -4 \\ x+y \le 2 \\ x \ge 0 \\ y \ge 0 \end{cases} \)</span></label>
+          <label class="opt" data-val="b"><input type="radio" name="q8" value="b"><span>\( \begin{cases} x-2y \ge -4 \\ x+y \ge 2 \\ y \ge 0 \end{cases} \)</span></label>
+          <label class="opt" data-val="c"><input type="radio" name="q8" value="c"><span>\( \begin{cases} x-2y \ge -4 \\ x+y \le 2 \\ y \ge 0 \end{cases} \)</span></label>
+          <label class="opt" data-val="d"><input type="radio" name="q8" value="d"><span>\( \begin{cases} 2x-y \le 4 \\ x+y \le 2 \\ y \ge 0 \end{cases} \)</span></label>
+          <label class="opt" data-val="e"><input type="radio" name="q8" value="e"><span>\( \begin{cases} 2x-y \ge 4 \\ x+y \le 2 \\ x \ge 0 \\ y \ge 0 \end{cases} \)</span></label>
+        </div>
+      </div>
+
+      <div class="card q" data-qid="q9" data-type="kategori" data-correct="1,0,1">
+        <div class="qhead"><div class="qnum">9</div><div class="qtype">PG Kompleks · Benar–Salah</div></div>
+        <div class="qtext">Sebuah lahan parkir di pusat perbelanjaan menerapkan tarif berbeda untuk motor dan mobil, yaitu Rp2.000 untuk motor dan Rp5.000 untuk mobil. Pada suatu hari, petugas parkir mencatat bahwa terdapat total 50 kendaraan yang terparkir, dengan total pendapatan yang terkumpul sebesar Rp160.000. Berdasarkan data tersebut, tentukan Benar (B) atau Salah (S) untuk setiap pernyataan berikut.</div>
+        <table class="stmt-table">
+          <tr><td class="stmt-text">Banyak motor yang parkir adalah 30.</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q9-0" value="1"><span>B</span></label><label><input type="radio" name="q9-0" value="0"><span>S</span></label></div></td></tr>
+          <tr><td class="stmt-text">Banyak mobil yang parkir adalah 25.</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q9-1" value="1"><span>B</span></label><label><input type="radio" name="q9-1" value="0"><span>S</span></label></div></td></tr>
+          <tr><td class="stmt-text">Jika mobil bertambah menjadi 25 (motor tetap 30), pendapatan menjadi Rp185.000.</td>
+            <td><div class="bs-toggle"><label><input type="radio" name="q9-2" value="1"><span>B</span></label><label><input type="radio" name="q9-2" value="0"><span>S</span></label></div></td></tr>
+        </table>
+      </div>
+
+      <div class="card q" data-qid="q10" data-type="mcma" data-correct="a,c,e">
+        <div class="qhead"><div class="qnum">10</div><div class="qtype">PG Kompleks · Jawaban Lebih dari Satu</div></div>
+        <div class="qtext">Sebuah pabrik kerajinan memproduksi tas dan dompet setiap hari. Setiap tas membutuhkan waktu pengerjaan 2 jam, sedangkan setiap dompet membutuhkan 1 jam. Total waktu kerja yang tersedia maksimal 40 jam per hari. Jika \(x\) menyatakan banyak tas dan \(y\) menyatakan banyak dompet yang diproduksi, syarat waktu tersebut dapat dituliskan sebagai \( 2x + y \le 40 \). Dari beberapa rencana produksi berikut, pilih SEMUA yang memenuhi syarat waktu produksi tersebut.</div>
+        <div class="opts">
+          <label class="opt" data-val="a"><input type="checkbox" name="q10" value="a"><span>\(x = 10, y = 15\)</span></label>
+          <label class="opt" data-val="b"><input type="checkbox" name="q10" value="b"><span>\(x = 15, y = 12\)</span></label>
+          <label class="opt" data-val="c"><input type="checkbox" name="q10" value="c"><span>\(x = 5, y = 25\)</span></label>
+          <label class="opt" data-val="d"><input type="checkbox" name="q10" value="d"><span>\(x = 18, y = 5\)</span></label>
+          <label class="opt" data-val="e"><input type="checkbox" name="q10" value="e"><span>\(x = 20, y = 0\)</span></label>
+        </div>
+      </div>
+
+      <button type="submit" class="primary" id="submitBtn">Kumpulkan Jawaban</button>
+      <div class="warn" id="warn3">Lengkapi semua soal terlebih dahulu.</div>
+    </form>
+
+    <div id="resultScreen" hidden>
+      <div class="brand">Numera</div>
+      <p style="margin-top:14px;">Terima kasih, <b id="rNama"></b> (<span id="rKelas"></span>)!</p>
+      <div class="score" id="rScore"></div>
+      <p>Jawabanmu sudah tersimpan. Kuis ini hanya untuk latihan, jangan khawatir kalau belum banyak yang benar, itu normal. Kita akan bahas semua soal ini bersama di kelas.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+document.querySelectorAll('.q[data-type="pg"], .q[data-type="mcma"]').forEach(q=>{
+  const container = q.querySelector('.opts');
+  const opts = [...container.children];
+  shuffle(opts).forEach(o=>container.appendChild(o));
+});
+
+if(window.renderMathInElement){
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: "\\[", right: "\\]", display: true},
+      {left: "\\(", right: "\\)", display: false}
+    ],
+    throwOnError: false
+  });
+}
+
+const nama = document.getElementById('nama');
+const kelas = document.getElementById('kelas');
+
+document.getElementById('toPage2').addEventListener('click', ()=>{
+  if(!nama.value.trim() || !kelas.value.trim()){
+    document.getElementById('warn1').style.display='block';
+    return;
+  }
+  document.getElementById('warn1').style.display='none';
+  document.getElementById('page1').classList.remove('active');
+  document.getElementById('page2').classList.add('active');
+  window.scrollTo(0,0);
+});
+
+document.getElementById('toPage3').addEventListener('click', ()=>{
+  document.getElementById('page2').classList.remove('active');
+  document.getElementById('page3').classList.add('active');
+  window.scrollTo(0,0);
+});
+
+const form = document.getElementById('quizForm');
+const warn3 = document.getElementById('warn3');
+
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  const questions = document.querySelectorAll('.q');
+  let allAnswered = true;
+
+  questions.forEach(q=>{
+    const type=q.dataset.type;
+    if(type==='pg'||type==='mcma'){
+      if(q.querySelectorAll('input:checked').length===0) allAnswered=false;
+    } else if(type==='kategori'){
+      const rows=new Set([...q.querySelectorAll('input')].map(i=>i.name));
+      rows.forEach(name=>{ if(!q.querySelector('input[name="'+name+'"]:checked')) allAnswered=false; });
+    }
+  });
+
+  if(!allAnswered){ warn3.style.display='block'; return; }
+  warn3.style.display='none';
+
+  let correctCount=0;
+  questions.forEach(q=>{
+    const type=q.dataset.type, correct=q.dataset.correct;
+    if(type==='pg'){
+      if(q.querySelector('input:checked').value===correct) correctCount++;
+    } else if(type==='mcma'){
+      const chosen=[...q.querySelectorAll('input:checked')].map(i=>i.value).sort().join(',');
+      if(chosen===correct.split(',').sort().join(',')) correctCount++;
+    } else if(type==='kategori'){
+      const rows=[...new Set([...q.querySelectorAll('input')].map(i=>i.name))].sort();
+      const correctArr=correct.split(',');
+      let ok=true;
+      rows.forEach((name,idx)=>{ if(q.querySelector('input[name="'+name+'"]:checked').value!==correctArr[idx]) ok=false; });
+      if(ok) correctCount++;
+    }
+  });
+
+  document.getElementById('rNama').textContent=nama.value.trim();
+  document.getElementById('rKelas').textContent=kelas.value.trim();
+  document.getElementById('rScore').textContent=correctCount+' / '+questions.length;
+  form.hidden=true;
+  document.getElementById('resultScreen').hidden=false;
+  window.scrollTo(0,0);
+});
+</script>
+</body>
+</html>
