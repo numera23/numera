@@ -94,7 +94,7 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#FBCEB1",
         emoji: "🤝🏼",
-        badge: "Baru"
+        badge: ""
     },
    {
         nama: "💪🏻 Tarik ke Posisi yang Benar",
@@ -119,6 +119,30 @@ const NUMERA_GAMES = [
         warna: "#7C3AED",
         emoji: "🧩",
         badge: ""
+    },
+   {
+        nama: "❄️ TKA Matematika Lanjut",
+        materi: "Matriks",
+        deskripsi: "Latih kesiapan TKA kamu dengan kuis ini.",
+        tags: ["TKA", "matematika lanjut", "tingkat lanjut", "mtk", "matriks", "invers matriks"],
+        link: "tkalanjut_matriks1.html",
+        tanggal: "2026-09-26",
+        thumbnail: "",
+        warna: "#FF69B4",
+        emoji: "❄️",
+        badge: "Baru"
+    },
+   {
+        nama: "🔥 TKA Matematika Wajib",
+        materi: "Bilangan Real, Persamaan Pertidaksamaan Linear",
+        deskripsi: "Latih kesiapan TKA kamu dengan kuis ini.",
+        tags: ["TKA", "matematika wajib", "umum", "mtk", "bilangan real", "persamaan pertidaksamaan linear"],
+        link: "tkawajib_bilanganpltsv1.html",
+        tanggal: "2026-09-26",
+        thumbnail: "",
+        warna: "#00FFFF",
+        emoji: "🔥",
+        badge: "Baru"
     },
        {
         nama: "🧩 Susun Langkah",
@@ -154,7 +178,7 @@ const NUMERA_GAMES = [
         thumbnail: "",
         warna: "#1C1C1C",
         emoji: "🎡",
-        badge: "Baru"
+        badge: ""
     },
    {
         nama: "🎡 Putar Dulu",
