@@ -347,6 +347,21 @@ document.getElementById('toPage3').addEventListener('click', ()=>{
 const form = document.getElementById('quizForm');
 const warn3 = document.getElementById('warn3');
 
+const GOOGLE_FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLSfA-K0clG1TvMe2D3fXvOJwQRjYY6_CcxjtKXxzUIVi3WxtPg/formResponse';
+const ENTRY_NAMA = 'entry.782677753';
+const ENTRY_KELAS = 'entry.1779739687';
+const ENTRY_GAME = 'entry.1347524712';
+const ENTRY_SKOR = 'entry.668322021';
+
+function submitToGoogleForm(namaVal, kelasVal, skorVal){
+  const data = new FormData();
+  data.append(ENTRY_NAMA, namaVal);
+  data.append(ENTRY_KELAS, kelasVal);
+  data.append(ENTRY_GAME, 'Kuis TKA - Bilangan Real & Persamaan/Pertidaksamaan Linear');
+  data.append(ENTRY_SKOR, skorVal);
+  return fetch(GOOGLE_FORM_ACTION, { method:'POST', mode:'no-cors', body:data }).catch(()=>{});
+}
+
 form.addEventListener('submit', function(e){
   e.preventDefault();
   const questions = document.querySelectorAll('.q');
@@ -382,9 +397,15 @@ form.addEventListener('submit', function(e){
     }
   });
 
-  document.getElementById('rNama').textContent=nama.value.trim();
-  document.getElementById('rKelas').textContent=kelas.value.trim();
-  document.getElementById('rScore').textContent=correctCount+' / '+questions.length;
+  const namaVal = nama.value.trim();
+  const kelasVal = kelas.value.trim();
+  const skorVal = correctCount + ' / ' + questions.length;
+
+  submitToGoogleForm(namaVal, kelasVal, skorVal);
+
+  document.getElementById('rNama').textContent=namaVal;
+  document.getElementById('rKelas').textContent=kelasVal;
+  document.getElementById('rScore').textContent=skorVal;
   form.hidden=true;
   document.getElementById('resultScreen').hidden=false;
   window.scrollTo(0,0);
