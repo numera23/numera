@@ -265,7 +265,7 @@ const GAMES = [
         nama: "🏃 Four Corners",
         materi: "Berbagai Materi",
         deskripsi: "Pilih jawaban, bergerak ke sudut, dan bertahan sampai akhir.",
-        link: "game_pasangkan_buktikan_grafik_spldv.html"
+        link: "four_corners_siswa.html"
     },
 
     {
