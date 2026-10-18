@@ -58,6 +58,7 @@ main{padding:18px}.card{border:1px solid #dfe3e7;border-radius:16px;padding:18px
 <div class="card">
 <div class="label">Siswa yang bergabung (<span id="pcount">0</span>)</div>
 <div id="players" class="chips"></div>
+<p id="perr" class="small" style="color:#b91c1c;font-weight:700"></p>
 <p class="small">Nama muncul setelah siswa menekan Mulai dan hilang otomatis jika HP siswa terputus atau halamannya ditutup. Siswa yang berbagi HP cukup memasukkan satu nama (misalnya nama kelompok).</p>
 </div>
 
@@ -302,7 +303,11 @@ onValue(ref(db,".info/connected"),s=>{connected=s.val()===true;drawConn();});
 onValue(ref(db,"fourCorners/players"),s=>{
   const v=s.val()||{};
   players=Object.values(v).filter(p=>p&&typeof p.name==="string"&&p.name).sort((a,b)=>(a.joinedAt||0)-(b.joinedAt||0));
+  document.getElementById("perr").textContent="";
   drawPlayers();
+},err=>{
+  console.error(err);
+  document.getElementById("perr").textContent="⚠ Daftar siswa tidak bisa dibaca ("+(err&&err.code?err.code:"error")+"). Periksa Rules Firebase untuk fourCorners/players.";
 });
 drawPlayers();
 drawList();
