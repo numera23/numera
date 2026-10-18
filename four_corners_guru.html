@@ -26,6 +26,7 @@ main{padding:18px}.card{border:1px solid #dfe3e7;border-radius:16px;padding:18px
 .small{font-size:13px;color:#69727b;line-height:1.5}
 .list{display:grid;gap:7px;max-height:300px;overflow:auto}.q{border:1px solid #ddd;background:#fafafa;border-radius:9px;padding:10px;text-align:left;cursor:pointer;color:#17202a}.q.active{background:#2563EB;color:#fff}
 .q:disabled{opacity:.5;cursor:not-allowed}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.chip{background:#EFF6FF;border:1px solid #bfdbfe;color:#17202a;border-radius:99px;padding:6px 12px;font-size:14px;font-weight:700}
 @media(max-width:520px){.options,.buttons{grid-template-columns:1fr}.question{font-size:21px}}
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
@@ -52,6 +53,12 @@ main{padding:18px}.card{border:1px solid #dfe3e7;border-radius:16px;padding:18px
 <button id="btnPause" class="pause" onclick="togglePause()">⏸ PAUSE</button>
 </div>
 <p class="small">Urutan permainan: pilih soal → siswa memilih warna → LARI! → siswa menuju warna → REVEAL → lanjut soal berikutnya. Saat PAUSE, layar siswa menampilkan status jeda dan tombol lain di halaman ini dikunci sampai RESUME.</p>
+</div>
+
+<div class="card">
+<div class="label">Siswa yang bergabung (<span id="pcount">0</span>)</div>
+<div id="players" class="chips"></div>
+<p class="small">Nama muncul setelah siswa menekan Mulai dan hilang otomatis jika HP siswa terputus atau halamannya ditutup. Siswa yang berbagi HP cukup memasukkan satu nama (misalnya nama kelompok).</p>
 </div>
 
 <div class="card">
@@ -211,7 +218,7 @@ const COLORS=["red","yellow","green","blue"];
 const NAMES=["MERAH","KUNING","HIJAU","BIRU"];
 
 let current={question:0,state:"SIAP",paused:false,nonce:0};
-let connected=false,busy=false;
+let connected=false,busy=false,players=[];
 
 function drawConn(){
   const c=document.getElementById("conn");
@@ -246,13 +253,20 @@ function drawList(){
   document.getElementById("list").innerHTML=questionBank.map((x,i)=>`<button class="q" onclick="chooseQuestion(${i})">Soal ${i+1} · ${escapeHTML(x.category)} · ${escapeHTML(x.difficulty)}<br>${escapeHTML(x.question)}</button>`).join("");
 }
 
+function drawPlayers(){
+  document.getElementById("pcount").textContent=players.length;
+  document.getElementById("players").innerHTML=players.length
+    ?players.map(p=>`<span class="chip">${escapeHTML(p.name)}</span>`).join("")
+    :'<span class="small">Belum ada siswa yang bergabung.</span>';
+}
+
 function send(patch){
   if(busy)return false;
   busy=true;setTimeout(()=>{busy=false},450);
   const payload=Object.assign({question:current.question,state:current.state,paused:!!current.paused,nonce:current.nonce||0},patch);
   set(gameRef,payload).catch(err=>{
     console.error(err);
-    alert("Gagal mengirim perubahan ke Firebase. Periksa koneksi internet dan aturan database.");
+    alert("Gagal mengirim perubahan ke Firebase.\n\nKode error: "+(err&&err.code?err.code:"tidak diketahui")+"\n"+(err&&err.message?err.message:"")+"\n\nPeriksa koneksi internet dan aturan (Rules) database.");
   });
   return true;
 }
@@ -285,6 +299,12 @@ onValue(gameRef,s=>{
   draw();
 });
 onValue(ref(db,".info/connected"),s=>{connected=s.val()===true;drawConn();});
+onValue(ref(db,"fourCorners/players"),s=>{
+  const v=s.val()||{};
+  players=Object.values(v).filter(p=>p&&typeof p.name==="string"&&p.name).sort((a,b)=>(a.joinedAt||0)-(b.joinedAt||0));
+  drawPlayers();
+});
+drawPlayers();
 drawList();
 drawConn();
 draw();
