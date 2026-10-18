@@ -11,7 +11,8 @@
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#F8FAFC;color:#2563EB}
 .app{min-height:100vh;display:flex;flex-direction:column;background:#fff}
 .top{padding:18px 20px;background:#2563EB;color:#fff}
-.top h1{margin:0;font-size:22px}.top p{margin:4px 0 0;opacity:.85;font-size:13px}
+.top h1{margin:0;font-size:22px}.top p{margin:4px 0 0;opacity:.9;font-size:13px}
+#conn{font-weight:800}
 main{width:100%;max-width:700px;margin:auto;padding:18px}
 .card{border:1px solid #dfe3e7;border-radius:16px;padding:18px;margin-bottom:14px}
 input{width:100%;padding:14px;border:1px solid #d8dde2;border-radius:10px;font-size:17px;margin:7px 0 10px}
@@ -25,8 +26,8 @@ button.start{width:100%;padding:14px;border:0;border-radius:11px;background:#256
 .choice:disabled{opacity:.55;cursor:not-allowed}
 .state{text-align:center;font-size:31px;font-weight:950;padding:20px;border-radius:14px;background:#EFF6FF;color:#2563EB;margin:14px 0}
 .locked{text-align:center;padding:13px;border-radius:11px;background:#EFF6FF;color:#17202a;font-weight:800}
-.reveal{padding:20px;border-radius:14px;text-align:center;background:#EFF6FF}
-.big{font-size:42px;font-weight:950}.correct{font-weight:900;font-size:19px}
+.reveal{padding:20px;border-radius:14px;text-align:center;background:#EFF6FF;color:#17202a}
+.reveal .big{font-size:34px;font-weight:950}.reveal .exp{margin-top:10px;font-weight:600;line-height:1.5}
 .fullcolor{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;z-index:20;padding:20px}
 .fullcolor.show{display:flex}
 .fullcolor .inner{font-weight:950;font-size:clamp(42px,12vw,90px);line-height:1.05}
@@ -34,6 +35,9 @@ button.start{width:100%;padding:14px;border:0;border-radius:11px;background:#256
 #redScreen{background:#e53935;color:#fff}#yellowScreen{background:#ffd83d;color:#17202a}
 #greenScreen{background:#31a354;color:#fff}#blueScreen{background:#2878d7;color:#fff}
 #resultScreen{z-index:30}
+#pauseScreen{background:#17202a;color:#fff;z-index:50}
+#pauseScreen .inner{font-size:clamp(36px,10vw,72px)}
+#pauseScreen small{font-weight:600}
 .hidden{display:none!important}
 .small{font-size:13px;color:#69727b;line-height:1.5}
 @media(max-width:520px){.options{grid-template-columns:1fr}.question{font-size:21px}}
@@ -41,13 +45,13 @@ button.start{width:100%;padding:14px;border:0;border-radius:11px;background:#256
 </head>
 <body>
 <div class="app">
-<div class="top"><h1>Four Corners</h1><p>Mode Siswa</p></div>
+<div class="top"><h1>Four Corners</h1><p>Mode Siswa · <span id="conn">menghubungkan…</span></p></div>
 <main>
 <div id="setup" class="card">
 <div class="label">Nama Siswa</div>
 <input id="name" placeholder="Masukkan nama">
 <button type="button" class="start" onclick="start()">Mulai</button>
-<p class="small">Masukkan nama satu kali. Setelah itu tunggu soal dari guru.</p>
+<p class="small">Masukkan nama satu kali. Setelah itu tunggu soal dari guru. Tidak membawa HP? Bergabunglah dengan teman atau kelompok kecil dan pilih satu warna bersama.</p>
 </div>
 
 <div id="game" class="hidden">
@@ -72,15 +76,17 @@ button.start{width:100%;padding:14px;border:0;border-radius:11px;background:#256
     <div id="resultColor">🟡</div>
     <div id="resultAnswer">KUNING</div>
     <small id="resultMessage"></small>
+    <small id="resultExplain"></small>
   </div>
 </div>
+<div id="pauseScreen" class="fullcolor"><div class="inner">⏸<br>DIJEDA<small>Tunggu guru melanjutkan permainan.</small></div></div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 import{getDatabase,ref,onValue}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
 const firebaseConfig={
-apiKey:"AIzaC1N9NgV1xGEP1Ln6JwJKW0czMovdSWzE8",
+apiKey:"AIzaSyC1N9NgV1xGEP1Ln6JwJKW0czMovdSWzE8",
 authDomain:"numera-d33fe.firebaseapp.com",
 databaseURL:"https://numera-d33fe-default-rtdb.asia-southeast1.firebasedatabase.app",
 projectId:"numera-d33fe",
@@ -88,22 +94,115 @@ storageBucket:"numera-d33fe.firebasestorage.app",
 messagingSenderId:"1068514501778",
 appId:"1:1068514501778:web:94f49beec366ca5d40324b"
 };
-
 const db=getDatabase(initializeApp(firebaseConfig));
 const gameRef=ref(db,"fourCorners/game");
 
-const questions=[
-{q:"Hasil dari 24 + 18 adalah ...",o:["40","42","44","46"],a:1},
-{q:"Jika $3x=27$, maka nilai $x$ adalah ...",o:["6","7","8","9"],a:3},
-{q:"Luas persegi dengan sisi $8\\text{ cm}$ adalah ...",o:["$16\\text{ cm}^2$","$32\\text{ cm}^2$","$64\\text{ cm}^2$","$72\\text{ cm}^2$"],a:2},
-{q:"Hasil dari $\\frac34+\\frac12$ adalah ...",o:["$1$","$1\\frac14$","$1\\frac12$","$2$"],a:1},
-{q:"Segitiga memiliki alas $12\\text{ cm}$ dan tinggi $8\\text{ cm}$. Luasnya adalah ...",o:["$24\\text{ cm}^2$","$40\\text{ cm}^2$","$48\\text{ cm}^2$","$96\\text{ cm}^2$"],a:2},
-{q:"Nilai dari $5^2-3^2$ adalah ...",o:["8","12","16","22"],a:2},
-{q:"Rata-rata dari $6,8,$ dan $10$ adalah ...",o:["7","8","9","10"],a:1},
-{q:"Sudut yang besarnya $90^\\circ$ disebut sudut ...",o:["lancip","siku-siku","tumpul","refleks"],a:1}
+const questionBank=[
+{"id": 1, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Ibu kota negara Jepang adalah ...", "options": {"A": "Seoul", "B": "Beijing", "C": "Tokyo", "D": "Bangkok"}, "answer": "C", "explanation": "Tokyo adalah ibu kota Jepang."},
+{"id": 2, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Benua yang paling luas di dunia adalah ...", "options": {"A": "Afrika", "B": "Asia", "C": "Eropa", "D": "Amerika Utara"}, "answer": "B", "explanation": "Asia adalah benua terluas, sekitar 44,6 juta km²."},
+{"id": 3, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Proklamasi kemerdekaan Indonesia dibacakan pada tahun ...", "options": {"A": "1928", "B": "1942", "C": "1944", "D": "1945"}, "answer": "D", "explanation": "Proklamasi dibacakan pada 17 Agustus 1945."},
+{"id": 4, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Gunung tertinggi di dunia dilihat dari permukaan laut adalah ...", "options": {"A": "K2", "B": "Kilimanjaro", "C": "Fuji", "D": "Everest"}, "answer": "D", "explanation": "Gunung Everest setinggi sekitar 8.849 m di atas permukaan laut."},
+{"id": 5, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Samudra terluas di dunia adalah Samudra ...", "options": {"A": "Atlantik", "B": "Hindia", "C": "Pasifik", "D": "Arktik"}, "answer": "C", "explanation": "Samudra Pasifik meliputi hampir sepertiga permukaan Bumi."},
+{"id": 6, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Angklung, alat musik tradisional dari Jawa Barat, terbuat dari ...", "options": {"A": "kayu", "B": "bambu", "C": "logam", "D": "kulit hewan"}, "answer": "B", "explanation": "Angklung dibuat dari tabung bambu yang bergetar saat digoyangkan."},
+{"id": 7, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Candi Borobudur terletak di provinsi ...", "options": {"A": "DI Yogyakarta", "B": "Jawa Barat", "C": "Jawa Timur", "D": "Jawa Tengah"}, "answer": "D", "explanation": "Borobudur berada di Kabupaten Magelang, Jawa Tengah."},
+{"id": 8, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Negara yang dijuluki Negeri Kangguru adalah ...", "options": {"A": "Australia", "B": "Selandia Baru", "C": "Afrika Selatan", "D": "Brasil"}, "answer": "A", "explanation": "Kangguru adalah hewan khas Australia."},
+{"id": 9, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Pancasila sebagai dasar negara Indonesia terdiri atas ... sila.", "options": {"A": "3", "B": "4", "C": "5", "D": "7"}, "answer": "C", "explanation": "Pancasila terdiri atas lima sila."},
+{"id": 10, "category": "Pengetahuan Umum", "difficulty": "Mudah", "question": "Menara Eiffel yang terkenal terletak di kota ...", "options": {"A": "London", "B": "Roma", "C": "Paris", "D": "Berlin"}, "answer": "C", "explanation": "Menara Eiffel berdiri di Paris, Prancis."},
+{"id": 11, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Ibu kota negara Australia adalah ...", "options": {"A": "Sydney", "B": "Canberra", "C": "Melbourne", "D": "Perth"}, "answer": "B", "explanation": "Banyak orang mengira Sydney, tetapi ibu kota Australia adalah Canberra."},
+{"id": 12, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Pulau Jawa dan Pulau Sumatra dipisahkan oleh selat ...", "options": {"A": "Malaka", "B": "Bali", "C": "Makassar", "D": "Sunda"}, "answer": "D", "explanation": "Selat Sunda memisahkan Jawa dan Sumatra."},
+{"id": 13, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Sumpah Pemuda diikrarkan pada tahun ...", "options": {"A": "1908", "B": "1928", "C": "1945", "D": "1966"}, "answer": "B", "explanation": "Sumpah Pemuda diikrarkan pada 28 Oktober 1928."},
+{"id": 14, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Kota di Indonesia yang dilalui garis khatulistiwa adalah ...", "options": {"A": "Pontianak", "B": "Medan", "C": "Balikpapan", "D": "Makassar"}, "answer": "A", "explanation": "Pontianak dilalui garis khatulistiwa dan memiliki Tugu Khatulistiwa."},
+{"id": 15, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Pencipta lagu kebangsaan Indonesia Raya adalah ...", "options": {"A": "Ismail Marzuki", "B": "C. Simanjuntak", "C": "W.R. Supratman", "D": "Ki Hajar Dewantara"}, "answer": "C", "explanation": "Lagu Indonesia Raya diciptakan oleh Wage Rudolf Supratman."},
+{"id": 16, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Negara dengan wilayah terluas di dunia adalah ...", "options": {"A": "Rusia", "B": "Kanada", "C": "Tiongkok", "D": "Amerika Serikat"}, "answer": "A", "explanation": "Rusia memiliki luas wilayah sekitar 17 juta km²."},
+{"id": 17, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Piramida Giza yang terkenal berada di negara ...", "options": {"A": "Meksiko", "B": "Sudan", "C": "Mesir", "D": "Peru"}, "answer": "C", "explanation": "Piramida Giza berada di dekat Kairo, Mesir."},
+{"id": 18, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Tari Kecak yang terkenal berasal dari daerah ...", "options": {"A": "Jawa Tengah", "B": "Bali", "C": "Sumatra Barat", "D": "Papua"}, "answer": "B", "explanation": "Tari Kecak berasal dari Bali."},
+{"id": 19, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Benua dengan jumlah negara terbanyak adalah ...", "options": {"A": "Asia", "B": "Eropa", "C": "Afrika", "D": "Amerika Selatan"}, "answer": "C", "explanation": "Afrika memiliki sekitar 54 negara, paling banyak di antara semua benua."},
+{"id": 20, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Selain Soekarno, proklamator kemerdekaan Indonesia lainnya adalah ...", "options": {"A": "Mohammad Hatta", "B": "Sutan Sjahrir", "C": "Ahmad Soebardjo", "D": "Tan Malaka"}, "answer": "A", "explanation": "Soekarno dan Mohammad Hatta menandatangani Proklamasi atas nama bangsa Indonesia."},
+{"id": 21, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Danau terluas di Indonesia yang berada di Sumatra Utara adalah Danau ...", "options": {"A": "Singkarak", "B": "Maninjau", "C": "Poso", "D": "Toba"}, "answer": "D", "explanation": "Danau Toba adalah danau vulkanik terluas di Indonesia."},
+{"id": 22, "category": "Pengetahuan Umum", "difficulty": "Sedang", "question": "Markas besar PBB (Perserikatan Bangsa-Bangsa) berada di kota ...", "options": {"A": "Jenewa", "B": "New York", "C": "Paris", "D": "Brussel"}, "answer": "B", "explanation": "Markas besar PBB berada di New York, Amerika Serikat."},
+{"id": 23, "category": "Pengetahuan Umum", "difficulty": "Menantang", "question": "Konferensi Asia Afrika tahun 1955 diselenggarakan di kota ...", "options": {"A": "Jakarta", "B": "Yogyakarta", "C": "Bandung", "D": "Surabaya"}, "answer": "C", "explanation": "KAA 1955 berlangsung di Gedung Merdeka, Bandung."},
+{"id": 24, "category": "Pengetahuan Umum", "difficulty": "Menantang", "question": "Negara terkecil di dunia berdasarkan luas wilayah adalah ...", "options": {"A": "Monako", "B": "San Marino", "C": "Liechtenstein", "D": "Vatikan"}, "answer": "D", "explanation": "Vatikan hanya seluas sekitar 0,44 km²."},
+{"id": 25, "category": "Pengetahuan Umum", "difficulty": "Menantang", "question": "Sungai terpanjang di Indonesia, yang mengalir di Kalimantan Barat, adalah Sungai ...", "options": {"A": "Kapuas", "B": "Mahakam", "C": "Barito", "D": "Musi"}, "answer": "A", "explanation": "Sungai Kapuas sepanjang sekitar 1.143 km."},
+{"id": 26, "category": "Pengetahuan Umum", "difficulty": "Menantang", "question": "Revolusi Prancis dimulai pada tahun ...", "options": {"A": "1689", "B": "1776", "C": "1789", "D": "1815"}, "answer": "C", "explanation": "Revolusi Prancis dimulai pada 1789 dengan peristiwa penyerbuan Bastille."},
+{"id": 27, "category": "Pengetahuan Umum", "difficulty": "Menantang", "question": "Kota kuno Machu Picchu di Pegunungan Andes adalah peninggalan peradaban ...", "options": {"A": "Maya", "B": "Inca", "C": "Aztek", "D": "Olmek"}, "answer": "B", "explanation": "Machu Picchu dibangun oleh bangsa Inca di Peru."},
+{"id": 28, "category": "Pengetahuan Umum", "difficulty": "Menantang", "question": "Garis bujur nol derajat (meridian utama) melewati kota ...", "options": {"A": "Greenwich (London)", "B": "Paris", "C": "Madrid", "D": "Roma"}, "answer": "A", "explanation": "Meridian utama melewati Royal Observatory di Greenwich, London."},
+{"id": 29, "category": "Pengetahuan Umum", "difficulty": "Menantang", "question": "Letusan Gunung Tambora tahun 1815 terjadi di pulau ...", "options": {"A": "Lombok", "B": "Flores", "C": "Bali", "D": "Sumbawa"}, "answer": "D", "explanation": "Gunung Tambora berada di Pulau Sumbawa; letusannya memengaruhi iklim dunia."},
+{"id": 30, "category": "Pengetahuan Umum", "difficulty": "Menantang", "question": "Olimpiade modern pertama pada tahun 1896 diselenggarakan di kota ...", "options": {"A": "Paris", "B": "Athena", "C": "London", "D": "Roma"}, "answer": "B", "explanation": "Olimpiade modern pertama diadakan di Athena, Yunani."},
+{"id": 31, "category": "Matematika Dasar", "difficulty": "Mudah", "question": "Berapakah 25% dari 200?", "options": {"A": "25", "B": "40", "C": "50", "D": "75"}, "answer": "C", "explanation": "25% × 200 = 0,25 × 200 = 50."},
+{"id": 32, "category": "Matematika Dasar", "difficulty": "Mudah", "question": "Hasil dari 12 × 15 adalah ...", "options": {"A": "150", "B": "160", "C": "170", "D": "180"}, "answer": "D", "explanation": "12 × 15 = 120 + 60 = 180."},
+{"id": 33, "category": "Matematika Dasar", "difficulty": "Mudah", "question": "Hasil dari 0,5 + 0,25 adalah ...", "options": {"A": "0,30", "B": "0,75", "C": "0,80", "D": "1,25"}, "answer": "B", "explanation": "0,50 + 0,25 = 0,75."},
+{"id": 34, "category": "Matematika Dasar", "difficulty": "Mudah", "question": "Kelipatan persekutuan terkecil (KPK) dari 4 dan 6 adalah ...", "options": {"A": "8", "B": "12", "C": "18", "D": "24"}, "answer": "B", "explanation": "Kelipatan 4: 4, 8, 12 ... ; kelipatan 6: 6, 12 ... ; yang sama terkecil adalah 12."},
+{"id": 35, "category": "Matematika Dasar", "difficulty": "Mudah", "question": "Keliling persegi dengan sisi 7 cm adalah ...", "options": {"A": "28 cm", "B": "35 cm", "C": "42 cm", "D": "49 cm"}, "answer": "A", "explanation": "Keliling = 4 × 7 = 28 cm."},
+{"id": 36, "category": "Matematika Dasar", "difficulty": "Mudah", "question": "Banyaknya bilangan prima di antara 10 dan 20 adalah ...", "options": {"A": "2", "B": "3", "C": "4", "D": "5"}, "answer": "C", "explanation": "Bilangan prima di antara 10 dan 20: 11, 13, 17, 19, yaitu 4 bilangan."},
+{"id": 37, "category": "Matematika Dasar", "difficulty": "Sedang", "question": "Sebuah baju berharga Rp80.000 dan mendapat diskon 25%. Harga yang dibayar adalah ...", "options": {"A": "Rp20.000", "B": "Rp40.000", "C": "Rp55.000", "D": "Rp60.000"}, "answer": "D", "explanation": "Diskon 25% × 80.000 = 20.000, sehingga bayar 80.000 − 20.000 = Rp60.000."},
+{"id": 38, "category": "Matematika Dasar", "difficulty": "Sedang", "question": "Perbandingan kelereng Adi dan Budi adalah 3 : 5. Jika jumlahnya 40, kelereng Adi ada ...", "options": {"A": "15", "B": "20", "C": "24", "D": "25"}, "answer": "A", "explanation": "Jumlah perbandingan 8, sehingga 1 bagian = 5. Adi = 3 × 5 = 15."},
+{"id": 39, "category": "Matematika Dasar", "difficulty": "Sedang", "question": "Hasil dari 2/3 + 1/4 adalah ...", "options": {"A": "3/7", "B": "7/12", "C": "5/6", "D": "11/12"}, "answer": "D", "explanation": "2/3 + 1/4 = 8/12 + 3/12 = 11/12."},
+{"id": 40, "category": "Matematika Dasar", "difficulty": "Sedang", "question": "Sebuah mobil melaju 48 km/jam selama 2,5 jam. Jarak yang ditempuh adalah ...", "options": {"A": "96 km", "B": "120 km", "C": "150 km", "D": "180 km"}, "answer": "B", "explanation": "Jarak = 48 × 2,5 = 120 km."},
+{"id": 41, "category": "Matematika Dasar", "difficulty": "Sedang", "question": "Rata-rata empat nilai ulangan adalah 78. Tiga nilai di antaranya 70, 80, dan 76. Nilai keempat adalah ...", "options": {"A": "82", "B": "84", "C": "86", "D": "88"}, "answer": "C", "explanation": "Jumlah keempatnya 4 × 78 = 312. Nilai keempat = 312 − (70 + 80 + 76) = 86."},
+{"id": 42, "category": "Matematika Dasar", "difficulty": "Sedang", "question": "Luas lingkaran berjari-jari 7 cm (π = 22/7) adalah ...", "options": {"A": "154 cm²", "B": "196 cm²", "C": "308 cm²", "D": "616 cm²"}, "answer": "A", "explanation": "Luas = (22/7) × 7 × 7 = 154 cm²."},
+{"id": 43, "category": "Matematika Dasar", "difficulty": "Sedang", "question": "Tiga bilangan genap berurutan berjumlah 48. Bilangan terkecilnya adalah ...", "options": {"A": "12", "B": "14", "C": "16", "D": "18"}, "answer": "B", "explanation": "14 + 16 + 18 = 48, sehingga yang terkecil adalah 14."},
+{"id": 44, "category": "Matematika Dasar", "difficulty": "Sedang", "question": "Dua sudut sebuah segitiga berukuran 50° dan 65°. Sudut ketiganya adalah ...", "options": {"A": "55°", "B": "60°", "C": "65°", "D": "75°"}, "answer": "C", "explanation": "Jumlah sudut segitiga 180°, sehingga 180° − 50° − 65° = 65°."},
+{"id": 45, "category": "Matematika Dasar", "difficulty": "Menantang", "question": "Suku berikutnya dari pola 2, 6, 18, 54, ... adalah ...", "options": {"A": "108", "B": "148", "C": "162", "D": "216"}, "answer": "C", "explanation": "Setiap suku dikali 3, sehingga 54 × 3 = 162."},
+{"id": 46, "category": "Matematika Dasar", "difficulty": "Menantang", "question": "Harga sebuah barang naik 20%, kemudian turun 20%. Dibandingkan harga awal, harga akhir ...", "options": {"A": "turun 4%", "B": "naik 4%", "C": "tetap sama", "D": "turun 20%"}, "answer": "A", "explanation": "Misal harga awal 100: naik menjadi 120, lalu turun 20% menjadi 96. Jadi turun 4%."},
+{"id": 47, "category": "Matematika Dasar", "difficulty": "Menantang", "question": "Banyaknya diagonal pada segi enam adalah ...", "options": {"A": "6", "B": "9", "C": "12", "D": "15"}, "answer": "B", "explanation": "Banyak diagonal = n(n − 3)/2 = 6 × 3 / 2 = 9."},
+{"id": 48, "category": "Matematika Dasar", "difficulty": "Menantang", "question": "Hasil dari 1 + 2 + 3 + ... + 50 adalah ...", "options": {"A": "1.225", "B": "1.250", "C": "1.275", "D": "1.300"}, "answer": "C", "explanation": "Jumlah = 50 × 51 / 2 = 1.275."},
+{"id": 49, "category": "Matematika Dasar", "difficulty": "Menantang", "question": "Sebuah kantong berisi 3 bola merah dan 5 bola biru. Satu bola diambil acak. Peluang terambil bola merah adalah ...", "options": {"A": "3/8", "B": "3/5", "C": "5/8", "D": "1/2"}, "answer": "A", "explanation": "Peluang = 3 bola merah dari 8 bola seluruhnya = 3/8."},
+{"id": 50, "category": "Matematika Dasar", "difficulty": "Menantang", "question": "Bilangan terkecil yang lebih dari 3 dan jika dibagi 4, 5, maupun 6 selalu bersisa 3 adalah ...", "options": {"A": "27", "B": "33", "C": "57", "D": "63"}, "answer": "D", "explanation": "KPK dari 4, 5, 6 adalah 60. Bilangan itu 60 + 3 = 63."},
+{"id": 51, "category": "Sains dan Alam", "difficulty": "Mudah", "question": "Planet yang paling dekat dengan Matahari adalah ...", "options": {"A": "Venus", "B": "Merkurius", "C": "Mars", "D": "Bumi"}, "answer": "B", "explanation": "Merkurius adalah planet terdekat dengan Matahari."},
+{"id": 52, "category": "Sains dan Alam", "difficulty": "Mudah", "question": "Organ yang berfungsi memompa darah ke seluruh tubuh adalah ...", "options": {"A": "paru-paru", "B": "hati", "C": "jantung", "D": "ginjal"}, "answer": "C", "explanation": "Jantung memompa darah ke seluruh tubuh."},
+{"id": 53, "category": "Sains dan Alam", "difficulty": "Mudah", "question": "Pada tekanan udara normal, air mendidih pada suhu ... °C.", "options": {"A": "50", "B": "80", "C": "100", "D": "120"}, "answer": "C", "explanation": "Titik didih air pada tekanan 1 atm adalah 100 °C."},
+{"id": 54, "category": "Sains dan Alam", "difficulty": "Mudah", "question": "Gas yang dibutuhkan manusia untuk bernapas adalah ...", "options": {"A": "oksigen", "B": "nitrogen", "C": "karbon dioksida", "D": "helium"}, "answer": "A", "explanation": "Tubuh memerlukan oksigen untuk proses respirasi sel."},
+{"id": 55, "category": "Sains dan Alam", "difficulty": "Mudah", "question": "Tumbuhan hijau membuat makanannya sendiri melalui proses ...", "options": {"A": "respirasi", "B": "fotosintesis", "C": "transpirasi", "D": "fermentasi"}, "answer": "B", "explanation": "Fotosintesis mengubah air, karbon dioksida, dan cahaya menjadi glukosa dan oksigen."},
+{"id": 56, "category": "Sains dan Alam", "difficulty": "Mudah", "question": "Satuan gaya dalam Sistem Internasional (SI) adalah ...", "options": {"A": "joule", "B": "pascal", "C": "watt", "D": "newton"}, "answer": "D", "explanation": "Satuan SI untuk gaya adalah newton (N)."},
+{"id": 57, "category": "Sains dan Alam", "difficulty": "Sedang", "question": "Bagian sel yang menjadi pusat pengendali dan menyimpan sebagian besar materi genetik (DNA) adalah ...", "options": {"A": "mitokondria", "B": "ribosom", "C": "vakuola", "D": "inti sel"}, "answer": "D", "explanation": "Inti sel mengendalikan kegiatan sel dan menyimpan sebagian besar DNA."},
+{"id": 58, "category": "Sains dan Alam", "difficulty": "Sedang", "question": "Hewan berikut yang termasuk mamalia adalah ...", "options": {"A": "hiu", "B": "lumba-lumba", "C": "pari", "D": "cumi-cumi"}, "answer": "B", "explanation": "Lumba-lumba bernapas dengan paru-paru, melahirkan, dan menyusui anaknya."},
+{"id": 59, "category": "Sains dan Alam", "difficulty": "Sedang", "question": "Bunyi tidak dapat merambat melalui ...", "options": {"A": "ruang hampa", "B": "air", "C": "besi", "D": "udara"}, "answer": "A", "explanation": "Bunyi memerlukan medium perantara; di ruang hampa tidak ada medium."},
+{"id": 60, "category": "Sains dan Alam", "difficulty": "Sedang", "question": "Peristiwa cuaca seperti hujan dan awan terjadi pada lapisan atmosfer yang disebut ...", "options": {"A": "stratosfer", "B": "troposfer", "C": "mesosfer", "D": "termosfer"}, "answer": "B", "explanation": "Troposfer adalah lapisan atmosfer terbawah tempat terjadinya cuaca."},
+{"id": 61, "category": "Sains dan Alam", "difficulty": "Sedang", "question": "Perubahan wujud zat dari padat langsung menjadi gas disebut ...", "options": {"A": "menguap", "B": "mengembun", "C": "menyublim", "D": "membeku"}, "answer": "C", "explanation": "Menyublim adalah perubahan padat langsung menjadi gas, contohnya kapur barus."},
+{"id": 62, "category": "Sains dan Alam", "difficulty": "Sedang", "question": "Planet terbesar di tata surya adalah ...", "options": {"A": "Jupiter", "B": "Saturnus", "C": "Uranus", "D": "Neptunus"}, "answer": "A", "explanation": "Jupiter adalah planet terbesar di tata surya."},
+{"id": 63, "category": "Sains dan Alam", "difficulty": "Sedang", "question": "Vitamin yang dapat dibentuk tubuh saat kulit terkena sinar matahari adalah vitamin ...", "options": {"A": "A", "B": "C", "C": "D", "D": "K"}, "answer": "C", "explanation": "Kulit membentuk vitamin D dengan bantuan sinar ultraviolet matahari."},
+{"id": 64, "category": "Sains dan Alam", "difficulty": "Sedang", "question": "Faktor utama penyebab terjadinya pasang surut air laut adalah ...", "options": {"A": "angin muson", "B": "gravitasi Bulan", "C": "gempa bumi", "D": "rotasi Bumi"}, "answer": "B", "explanation": "Gaya gravitasi Bulan (dibantu Matahari) menarik air laut sehingga terjadi pasang surut."},
+{"id": 65, "category": "Sains dan Alam", "difficulty": "Menantang", "question": "Langit pada siang hari tampak biru karena ...", "options": {"A": "cahaya dipantulkan dari permukaan laut", "B": "cahaya biru dihamburkan molekul udara lebih kuat daripada warna lain", "C": "ozon menyerap semua warna selain biru", "D": "Matahari hanya memancarkan cahaya biru"}, "answer": "B", "explanation": "Molekul udara menghamburkan cahaya berpanjang gelombang pendek (biru) lebih kuat, sehingga langit tampak biru."},
+{"id": 66, "category": "Sains dan Alam", "difficulty": "Menantang", "question": "Jumlah tulang pada tubuh manusia dewasa adalah ...", "options": {"A": "186", "B": "196", "C": "206", "D": "216"}, "answer": "C", "explanation": "Manusia dewasa memiliki 206 tulang."},
+{"id": 67, "category": "Sains dan Alam", "difficulty": "Menantang", "question": "Benda bermassa 5 kg dipercepat 4 m/s². Gaya yang bekerja pada benda adalah ... N.", "options": {"A": "1", "B": "9", "C": "10", "D": "20"}, "answer": "D", "explanation": "F = m × a = 5 × 4 = 20 N."},
+{"id": 68, "category": "Sains dan Alam", "difficulty": "Menantang", "question": "Lapisan Bumi yang paling tebal adalah ...", "options": {"A": "kerak bumi", "B": "inti luar", "C": "mantel", "D": "inti dalam"}, "answer": "C", "explanation": "Mantel memiliki ketebalan sekitar 2.900 km, paling tebal di antara lapisan Bumi."},
+{"id": 69, "category": "Sains dan Alam", "difficulty": "Menantang", "question": "Cahaya Matahari memerlukan waktu sekitar ... untuk sampai ke Bumi.", "options": {"A": "8 menit", "B": "8 detik", "C": "8 jam", "D": "8 hari"}, "answer": "A", "explanation": "Jarak Bumi–Matahari sekitar 150 juta km dan cahaya menempuhnya dalam kira-kira 8 menit."},
+{"id": 70, "category": "Sains dan Alam", "difficulty": "Menantang", "question": "Es batu mengapung di air karena ...", "options": {"A": "es tidak memiliki massa", "B": "es lebih padat daripada air", "C": "gaya magnet air mengangkat es", "D": "massa jenis es lebih kecil daripada air"}, "answer": "D", "explanation": "Saat membeku, air memuai sehingga massa jenis es lebih kecil daripada air cair."},
+{"id": 71, "category": "Logika dan Teka-teki", "difficulty": "Mudah", "question": "Lanjutkan pola: 2, 4, 6, 8, ...", "options": {"A": "9", "B": "10", "C": "11", "D": "12"}, "answer": "B", "explanation": "Pola bertambah 2, sehingga suku berikutnya 10."},
+{"id": 72, "category": "Logika dan Teka-teki", "difficulty": "Mudah", "question": "Lanjutkan pola: 1, 4, 9, 16, ...", "options": {"A": "20", "B": "24", "C": "25", "D": "36"}, "answer": "C", "explanation": "Pola kuadrat bilangan asli: 1², 2², 3², 4², 5² = 25."},
+{"id": 73, "category": "Logika dan Teka-teki", "difficulty": "Mudah", "question": "Jika hari ini Rabu, tiga hari lagi adalah hari ...", "options": {"A": "Kamis", "B": "Jumat", "C": "Sabtu", "D": "Minggu"}, "answer": "C", "explanation": "Rabu → Kamis → Jumat → Sabtu."},
+{"id": 74, "category": "Logika dan Teka-teki", "difficulty": "Mudah", "question": "Ibu dari ayahku adalah ... ku.", "options": {"A": "nenek", "B": "bibi", "C": "sepupu", "D": "kakak"}, "answer": "A", "explanation": "Ibu dari ayah adalah nenek."},
+{"id": 75, "category": "Logika dan Teka-teki", "difficulty": "Mudah", "question": "Lanjutkan pola huruf: A, C, E, G, ...", "options": {"A": "H", "B": "I", "C": "J", "D": "K"}, "answer": "B", "explanation": "Pola melompati satu huruf: A, C, E, G, I."},
+{"id": 76, "category": "Logika dan Teka-teki", "difficulty": "Mudah", "question": "Semua kucing adalah hewan. Tom adalah seekor kucing. Kesimpulan yang pasti benar adalah ...", "options": {"A": "Tom bukan hewan", "B": "Tom adalah anjing", "C": "Semua hewan adalah kucing", "D": "Tom adalah hewan"}, "answer": "D", "explanation": "Karena semua kucing adalah hewan, Tom sebagai kucing pasti hewan."},
+{"id": 77, "category": "Logika dan Teka-teki", "difficulty": "Sedang", "question": "Lanjutkan pola: 1, 1, 2, 3, 5, 8, ...", "options": {"A": "10", "B": "11", "C": "12", "D": "13"}, "answer": "D", "explanation": "Setiap suku adalah jumlah dua suku sebelumnya: 5 + 8 = 13."},
+{"id": 78, "category": "Logika dan Teka-teki", "difficulty": "Sedang", "question": "Umur ayah 4 kali umur Rina, dan selisih umur mereka 27 tahun. Umur Rina adalah ... tahun.", "options": {"A": "9", "B": "12", "C": "18", "D": "27"}, "answer": "A", "explanation": "Selisih 4R − R = 3R = 27, sehingga R = 9."},
+{"id": 79, "category": "Logika dan Teka-teki", "difficulty": "Sedang", "question": "Pada pukul 03.15, besar sudut terkecil antara jarum jam dan jarum menit adalah ...", "options": {"A": "0°", "B": "7,5°", "C": "15°", "D": "30°"}, "answer": "B", "explanation": "Jarum menit di 90°, jarum jam di 97,5°. Selisihnya 7,5°."},
+{"id": 80, "category": "Logika dan Teka-teki", "difficulty": "Sedang", "question": "Lima orang saling berjabat tangan, tiap pasang tepat satu kali. Banyaknya jabat tangan adalah ...", "options": {"A": "5", "B": "9", "C": "10", "D": "20"}, "answer": "C", "explanation": "Banyak pasangan = 5 × 4 / 2 = 10."},
+{"id": 81, "category": "Logika dan Teka-teki", "difficulty": "Sedang", "question": "Dari 30 siswa, 18 suka bakso, 15 suka mie, dan 5 tidak suka keduanya. Siswa yang suka keduanya ada ...", "options": {"A": "3", "B": "5", "C": "8", "D": "10"}, "answer": "C", "explanation": "Yang suka minimal satu = 30 − 5 = 25. Keduanya = 18 + 15 − 25 = 8."},
+{"id": 82, "category": "Logika dan Teka-teki", "difficulty": "Sedang", "question": "Lanjutkan pola: 7, 9, 12, 16, 21, ...", "options": {"A": "23", "B": "25", "C": "26", "D": "27"}, "answer": "D", "explanation": "Selisihnya 2, 3, 4, 5, lalu 6. Jadi 21 + 6 = 27."},
+{"id": 83, "category": "Logika dan Teka-teki", "difficulty": "Sedang", "question": "Jika kemarin hari Kamis, maka dua hari setelah besok adalah hari ...", "options": {"A": "Senin", "B": "Minggu", "C": "Selasa", "D": "Sabtu"}, "answer": "A", "explanation": "Hari ini Jumat, besok Sabtu, dua hari setelahnya Senin."},
+{"id": 84, "category": "Logika dan Teka-teki", "difficulty": "Sedang", "question": "Hubungan yang sama dengan 'Mata : Melihat' adalah ...", "options": {"A": "Kaki : Sepatu", "B": "Telinga : Mendengar", "C": "Buku : Kertas", "D": "Tangan : Jari"}, "answer": "B", "explanation": "Mata berfungsi untuk melihat, telinga berfungsi untuk mendengar."},
+{"id": 85, "category": "Logika dan Teka-teki", "difficulty": "Menantang", "question": "Ada 8 bola identik, satu lebih berat. Dengan timbangan dua piringan, paling sedikit berapa kali penimbangan agar bola berat pasti ditemukan?", "options": {"A": "1", "B": "2", "C": "3", "D": "4"}, "answer": "B", "explanation": "Bagi 3-3-2. Timbang 3 lawan 3, lalu sisa 3 (atau 2) ditimbang lagi. Dua kali cukup."},
+{"id": 86, "category": "Logika dan Teka-teki", "difficulty": "Menantang", "question": "Lanjutkan pola: 1, 2, 4, 7, 11, 16, ...", "options": {"A": "20", "B": "21", "C": "22", "D": "24"}, "answer": "C", "explanation": "Selisihnya 1, 2, 3, 4, 5, lalu 6. Jadi 16 + 6 = 22."},
+{"id": 87, "category": "Logika dan Teka-teki", "difficulty": "Menantang", "question": "Dua ayah dan dua anak berjalan bersama. Jumlah orang paling sedikit yang mungkin adalah ...", "options": {"A": "3", "B": "4", "C": "5", "D": "6"}, "answer": "A", "explanation": "Tiga orang cukup: kakek, ayah, dan cucu. Ayah berperan sebagai anak dan sebagai ayah."},
+{"id": 88, "category": "Logika dan Teka-teki", "difficulty": "Menantang", "question": "Jam dinding berdentang 3 kali dalam 6 detik. Jika berdentang 6 kali, waktu yang dibutuhkan adalah ... detik.", "options": {"A": "10", "B": "12", "C": "15", "D": "18"}, "answer": "C", "explanation": "Tiga dentang berarti 2 jeda = 6 detik, jadi 1 jeda = 3 detik. Enam dentang = 5 jeda = 15 detik."},
+{"id": 89, "category": "Logika dan Teka-teki", "difficulty": "Menantang", "question": "A berkata 'B berbohong', B berkata 'C berbohong', C berkata 'A dan B berbohong'. Siapa yang jujur?", "options": {"A": "C saja", "B": "A saja", "C": "A dan B", "D": "B saja"}, "answer": "D", "explanation": "Jika A jujur, muncul kontradiksi; jika C jujur, juga kontradiksi. Hanya B jujur yang konsisten."},
+{"id": 90, "category": "Logika dan Teka-teki", "difficulty": "Menantang", "question": "Jika 5 mesin membuat 5 barang dalam 5 menit, maka 100 mesin membuat 100 barang dalam ... menit.", "options": {"A": "1", "B": "5", "C": "20", "D": "100"}, "answer": "B", "explanation": "Tiap mesin membuat 1 barang dalam 5 menit, sehingga 100 mesin membuat 100 barang juga dalam 5 menit."},
+{"id": 91, "category": "Bahasa dan Sehari-hari", "difficulty": "Mudah", "question": "Antonim (lawan kata) dari 'rajin' adalah ...", "options": {"A": "pandai", "B": "malas", "C": "cepat", "D": "ramah"}, "answer": "B", "explanation": "Lawan kata rajin adalah malas."},
+{"id": 92, "category": "Bahasa dan Sehari-hari", "difficulty": "Mudah", "question": "Tanggal 21 April diperingati di Indonesia sebagai Hari ...", "options": {"A": "Ibu", "B": "Pahlawan", "C": "Pendidikan Nasional", "D": "Kartini"}, "answer": "D", "explanation": "Hari Kartini diperingati setiap 21 April."},
+{"id": 93, "category": "Bahasa dan Sehari-hari", "difficulty": "Mudah", "question": "Sinonim (persamaan kata) dari 'cantik' adalah ...", "options": {"A": "elok", "B": "rapuh", "C": "kasar", "D": "lamban"}, "answer": "A", "explanation": "Elok bermakna cantik atau indah."},
+{"id": 94, "category": "Bahasa dan Sehari-hari", "difficulty": "Sedang", "question": "Ungkapan 'panjang tangan' berarti ...", "options": {"A": "suka mencuri", "B": "suka menolong", "C": "rajin bekerja", "D": "memiliki lengan panjang"}, "answer": "A", "explanation": "Panjang tangan adalah ungkapan untuk orang yang suka mencuri."},
+{"id": 95, "category": "Bahasa dan Sehari-hari", "difficulty": "Sedang", "question": "Nomor layanan darurat terpadu yang dapat dihubungi untuk berbagai keadaan darurat di Indonesia adalah ...", "options": {"A": "110", "B": "113", "C": "119", "D": "112"}, "answer": "D", "explanation": "112 adalah layanan darurat terpadu. Nomor lain: 110 polisi, 113 pemadam kebakaran, 119 layanan ambulans."},
+{"id": 96, "category": "Bahasa dan Sehari-hari", "difficulty": "Sedang", "question": "Kata 'efisien' bermakna ...", "options": {"A": "boros waktu", "B": "berlebihan", "C": "sulit dilakukan", "D": "tepat guna dan tidak boros"}, "answer": "D", "explanation": "Efisien berarti tepat, cepat, dan hemat tenaga, waktu, atau biaya."},
+{"id": 97, "category": "Bahasa dan Sehari-hari", "difficulty": "Sedang", "question": "Majas hiperbola adalah gaya bahasa yang ...", "options": {"A": "meremehkan sesuatu", "B": "melebih-lebihkan sesuatu", "C": "membandingkan dua hal", "D": "mengulang kata"}, "answer": "B", "explanation": "Hiperbola melebih-lebihkan, misalnya 'suaranya menggelegar membelah langit'."},
+{"id": 98, "category": "Bahasa dan Sehari-hari", "difficulty": "Menantang", "question": "Penulisan kata baku yang benar adalah ...", "options": {"A": "analisa", "B": "analisis", "C": "analisys", "D": "analysis"}, "answer": "B", "explanation": "Bentuk baku dalam KBBI adalah 'analisis'."},
+{"id": 99, "category": "Bahasa dan Sehari-hari", "difficulty": "Menantang", "question": "Penulisan kata baku yang benar adalah ...", "options": {"A": "apotik", "B": "apoteck", "C": "apotek", "D": "afotek"}, "answer": "C", "explanation": "Bentuk baku dalam KBBI adalah 'apotek'."},
+{"id": 100, "category": "Bahasa dan Sehari-hari", "difficulty": "Menantang", "question": "Peribahasa 'Sekali merengkuh dayung, dua tiga pulau terlampaui' bermakna ...", "options": {"A": "mendayung perahu itu melelahkan", "B": "pulau-pulau sebaiknya dikunjungi sekaligus", "C": "dayung harus dipegang dengan kuat", "D": "sekali bekerja, beberapa tujuan sekaligus tercapai"}, "answer": "D", "explanation": "Artinya satu usaha dapat menghasilkan beberapa keuntungan atau tujuan sekaligus."}
 ];
+const LETTERS=["A","B","C","D"];
+const N=questionBank.length;
 
-let started=false,name="",choice=null,question=-1,state="SIAP";
+let started=false,name="",choice=null,question=-1,state="SIAP",paused=false,nonce=0,connected=false;
 const colors=["red","yellow","green","blue"];
 const names=["MERAH","KUNING","HIJAU","BIRU"];
 const emojis=["🔴","🟡","🟢","🔵"];
@@ -112,16 +211,17 @@ function escapeHTML(text){
 const d=document.createElement("div");d.textContent=String(text);return d.innerHTML;
 }
 function mathHTML(text){
+text=String(text);
 if(typeof katex==="undefined") return escapeHTML(text);
 let html="",pos=0;
 const re=/\$\$([\s\S]+?)\$\$|\$([^$]+?)\$/g;
 let m;
-while((m=re.exec(String(text)))){
-html+=escapeHTML(String(text).slice(pos,m.index));
+while((m=re.exec(text))){
+html+=escapeHTML(text.slice(pos,m.index));
 html+=katex.renderToString(m[1]??m[2],{throwOnError:false,displayMode:Boolean(m[1])});
 pos=m.index+m[0].length;
 }
-html+=escapeHTML(String(text).slice(pos));
+html+=escapeHTML(text.slice(pos));
 return html;
 }
 
@@ -139,31 +239,39 @@ function hideColors(){
 .forEach(x=>document.getElementById(x).classList.remove("show"));
 }
 
+function drawConn(){
+const c=document.getElementById("conn");
+c.textContent=connected?"● terhubung":"● terputus — tampilan mungkin tidak terbaru";
+}
+
 function render(){
 if(!started)return;
 
-const x=questions[question<0?0:question];
-document.getElementById("num").textContent=question<0?"":question+1;
-document.getElementById("question").innerHTML=mathHTML(question<0?"Tunggu guru memilih soal.":x.q);
-document.getElementById("state").textContent=state;
+const idx=question<0?0:Math.min(question,N-1);
+const x=questionBank[idx];
+const ans=LETTERS.indexOf(x.answer);
+document.getElementById("num").textContent=question<0?"":(question+1)+" / "+N;
+document.getElementById("question").innerHTML=mathHTML(question<0?"Tunggu guru memilih soal.":x.question);
+document.getElementById("state").textContent=paused?"⏸ DIJEDA":state;
 
 const box=document.getElementById("options");
 box.innerHTML="";
 if(question>=0){
-x.o.forEach((v,i)=>{
+LETTERS.forEach((l,i)=>{
 const b=document.createElement("button");
 b.className="choice "+colors[i];
-b.innerHTML=names[i]+" — "+mathHTML(v);
-b.disabled=choice!==null;
+b.innerHTML=names[i]+" — "+mathHTML(x.options[l]);
+b.disabled=choice!==null||paused;
 b.onclick=()=>pick(i);
 box.appendChild(b);
 });
 }
 
 document.getElementById("status").textContent=
-choice===null?"Pilih jawabanmu.":"🔒 Pilihan "+names[choice]+" terkunci.";
+paused?"⏸ Permainan dijeda oleh guru.":(choice===null?"Pilih jawabanmu.":"🔒 Pilihan "+names[choice]+" terkunci.");
 
-document.getElementById("reveal").classList.add("hidden");
+const rv=document.getElementById("reveal");
+rv.classList.add("hidden");
 hideColors();
 
 if(choice!==null && state!=="REVEAL"){
@@ -175,29 +283,40 @@ instruction.style.fontSize=state==="LARI!"?"clamp(24px,7vw,52px)":"18px";
 instruction.style.marginTop=state==="LARI!"?"28px":"18px";
 }
 
-if(state==="REVEAL" && choice!==null){
+if(state==="REVEAL" && question>=0){
+if(choice!==null){
 const resultScreen=document.getElementById("resultScreen");
 resultScreen.classList.add("show");
-const correctColor=colors[x.a];
+const correctColor=colors[ans];
 
-document.getElementById("resultColor").textContent=emojis[x.a];
-document.getElementById("resultAnswer").textContent=names[x.a];
+document.getElementById("resultColor").textContent=emojis[ans];
+document.getElementById("resultAnswer").textContent=names[ans];
 
 const resultMessage=document.getElementById("resultMessage");
-resultMessage.textContent=choice===x.a?"✓ KAMU BENAR!":"✕ KAMU SALAH!";
+resultMessage.textContent=choice===ans?"✓ KAMU BENAR!":"✕ KAMU SALAH!";
 resultMessage.style.fontSize="clamp(26px,7vw,54px)";
 resultMessage.style.marginTop="24px";
 resultMessage.style.display="block";
+
+const ex=document.getElementById("resultExplain");
+ex.innerHTML="<b>"+mathHTML(x.options[x.answer])+"</b><br>"+mathHTML(x.explanation);
+ex.style.fontSize="17px";ex.style.fontWeight="600";ex.style.marginTop="20px";ex.style.lineHeight="1.4";
 
 resultScreen.style.background={
 red:"#e53935",yellow:"#ffd83d",green:"#31a354",blue:"#2878d7"
 }[correctColor];
 resultScreen.style.color=correctColor==="yellow"?"#17202a":"#fff";
+}else{
+rv.classList.remove("hidden");
+rv.innerHTML='<div class="big">'+emojis[ans]+" "+names[ans]+'</div><div class="correct">'+mathHTML(x.options[x.answer])+'</div><div class="exp">'+mathHTML(x.explanation)+'</div>';
 }
 }
 
+document.getElementById("pauseScreen").classList.toggle("show",paused);
+}
+
 function pick(i){
-if(choice!==null||question<0||state==="REVEAL")return;
+if(choice!==null||question<0||paused||state==="REVEAL")return;
 choice=i;
 render();
 }
@@ -205,11 +324,16 @@ render();
 onValue(gameRef,s=>{
 const v=s.val();
 if(!v)return;
-const newQ=v.question??0;
-if(newQ!==question){question=newQ;choice=null;}
+let newQ=Number(v.question);
+if(!Number.isInteger(newQ)||newQ<0||newQ>=N)newQ=0;
+const newNonce=v.nonce||0;
+if(newQ!==question||newNonce!==nonce){question=newQ;nonce=newNonce;choice=null;}
 state=v.state||"SIAP";
+paused=v.paused===true;
 render();
 });
+onValue(ref(db,".info/connected"),s=>{connected=s.val()===true;drawConn();});
+drawConn();
 </script>
 </body>
 </html>
