@@ -61,6 +61,7 @@ button.start{width:100%;padding:14px;border:0;border-radius:11px;background:#256
 <div id="options" class="options"></div>
 <div id="status" class="locked">Pilih jawabanmu.</div>
 <div id="state" class="state">SIAP</div>
+<div id="joinStatus" class="small" style="text-align:center"></div>
 </div>
 <div id="reveal" class="reveal hidden"></div>
 </div>
@@ -83,7 +84,7 @@ button.start{width:100%;padding:14px;border:0;border-radius:11px;background:#256
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import{getDatabase,ref,onValue}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+import{getDatabase,ref,onValue,set,onDisconnect}from"https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
 const firebaseConfig={
 apiKey:"AIzaSyC1N9NgV1xGEP1Ln6JwJKW0czMovdSWzE8",
@@ -225,10 +226,36 @@ html+=escapeHTML(text.slice(pos));
 return html;
 }
 
+let playerId=null;
+function newId(){return "p"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function getPlayerId(){
+try{
+let id=sessionStorage.getItem("fcPlayerId");
+if(!id){id=newId();sessionStorage.setItem("fcPlayerId",id);}
+return id;
+}catch(e){return newId();}
+}
+function setJoin(t){const e=document.getElementById("joinStatus");if(e)e.textContent=t;}
+function joinRoster(){
+if(!started||!playerId)return;
+if(!connected){setJoin("⏳ Menunggu koneksi untuk mendaftarkan namamu…");return;}
+const r=ref(db,"fourCorners/players/"+playerId);
+setJoin("⏳ Mendaftarkan namamu ke layar guru…");
+onDisconnect(r).remove()
+.then(()=>set(r,{name:name,joinedAt:Date.now()}))
+.then(()=>setJoin("✓ Namamu sudah terdaftar di layar guru."))
+.catch(err=>{
+console.error("Gagal mendaftar ke daftar siswa:",err);
+setJoin("⚠ Namamu gagal terdaftar di guru ("+(err&&err.code?err.code:"error")+"). Beri tahu guru.");
+});
+}
+
 window.start=()=>{
-name=document.getElementById("name").value.trim();
+name=document.getElementById("name").value.trim().slice(0,30);
 if(!name){alert("Masukkan nama terlebih dahulu.");return}
 started=true;
+playerId=getPlayerId();
+joinRoster();
 document.getElementById("setup").classList.add("hidden");
 document.getElementById("game").classList.remove("hidden");
 render();
@@ -332,7 +359,7 @@ state=v.state||"SIAP";
 paused=v.paused===true;
 render();
 });
-onValue(ref(db,".info/connected"),s=>{connected=s.val()===true;drawConn();});
+onValue(ref(db,".info/connected"),s=>{connected=s.val()===true;drawConn();joinRoster();});
 drawConn();
 </script>
 </body>
